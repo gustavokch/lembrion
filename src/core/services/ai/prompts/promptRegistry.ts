@@ -6,11 +6,14 @@ import { Language } from '../../../types';
 
 export interface PromptTemplate {
   id: string;
-  type: 'multipleChoice' | 'dissertative' | 'evaluation' | 'elaborative' | 'retrieval';
+  type: 'multipleChoice' | 'dissertative' | 'evaluation' | 'elaborative';
   content: Record<Language, string>;
   variables: string[];
   description: Record<Language, string>;
 }
+
+/** Options per multiple-choice question; the prompts ask for this many and the parser requires it. */
+export const MULTIPLE_CHOICE_OPTION_COUNT = 4;
 
 /**
  * Core prompt templates for all AI providers
@@ -21,8 +24,8 @@ export const PROMPT_TEMPLATES: Record<string, PromptTemplate> = {
     type: 'multipleChoice',
     variables: ['contextsList', 'instructionsList', 'difficulty'],
     description: {
-      'en-US': 'Generate multiple choice questions with 4 options',
-      'pt-BR': 'Gerar questões de múltipla escolha com 4 opções'
+      'en-US': `Generate multiple choice questions with ${MULTIPLE_CHOICE_OPTION_COUNT} options`,
+      'pt-BR': `Gerar questões de múltipla escolha com ${MULTIPLE_CHOICE_OPTION_COUNT} opções`
     },
     content: {
       'en-US': `You are an expert educational content creator. Your task is to generate questions that align with the specific academic content, level, and scope defined by the study contexts.
@@ -91,8 +94,8 @@ CONTENT REQUIREMENTS:
 RESPONSE FORMAT:
 Return ONLY a JSON object wrapped in \`\`\`json code fences with:
 - question: string (with Markdown formatting, including code blocks when needed)
-- options: array of 4 strings (with Markdown formatting)
-- correctAnswer: number (0-3)
+- options: array of ${MULTIPLE_CHOICE_OPTION_COUNT} strings (with Markdown formatting)
+- correctAnswer: number (0-${MULTIPLE_CHOICE_OPTION_COUNT - 1})
 - explanation: string (detailed explanation with Markdown formatting)
 - difficulty: string ("{difficulty}")
 
@@ -123,7 +126,7 @@ Example format for non-code questions:
 O usuário forneceu contextos de estudo que definem o escopo e nível acadêmico para geração de questões.
 
 **Sua Tarefa:**
-Gere questões educacionais baseadas exclusivamente nas matérias, tópicos e nível acadêmico indicados pelos contextos fornecidos: {studyArea}
+Gere questões educacionais baseadas exclusivamente nas matérias, tópicos e nível acadêmico indicados pelos contextos fornecidos.
 
 **Diretrizes de Interpretação de Contexto:**
 
@@ -183,8 +186,8 @@ REQUISITOS DE CONTEÚDO:
 FORMATO DE RESPOSTA:
 Retorne APENAS um objeto JSON envolvido em \`\`\`json code fences com:
 - question: string (com formatação Markdown, incluindo blocos de código quando necessário)
-- options: array de 4 strings (com formatação Markdown)
-- correctAnswer: number (0-3)
+- options: array de ${MULTIPLE_CHOICE_OPTION_COUNT} strings (com formatação Markdown)
+- correctAnswer: number (0-${MULTIPLE_CHOICE_OPTION_COUNT - 1})
 - explanation: string (explicação detalhada com formatação Markdown)
 - difficulty: string ("{difficulty}")
 
@@ -365,7 +368,7 @@ Formato de exemplo para questões não-código:
   evaluation: {
     id: 'evaluation',
     type: 'evaluation',
-    variables: ['question', 'userAnswer', 'correctAnswer', 'type'],
+    variables: ['question', 'userAnswer', 'correctAnswer', 'criteria', 'type'],
     description: {
       'en-US': 'Evaluate student answers and provide constructive feedback',
       'pt-BR': 'Avaliar respostas de estudantes e fornecer feedback construtivo'
@@ -392,6 +395,8 @@ CONTENT REQUIREMENTS:
 Question: {question}
 Student's Answer: {userAnswer}
 {correctAnswer}
+Evaluation Criteria:
+{criteria}
 Question Type: {type}
 
 RESPONSE FORMAT:
@@ -399,7 +404,13 @@ Provide detailed feedback in Markdown format that includes:
 - Assessment of correctness and understanding
 - Specific strengths in the student's response
 - Areas for improvement with actionable suggestions
-- Encouragement and next steps for learning`,
+- Encouragement and next steps for learning
+
+VERDICT:
+End your response with exactly one fenced JSON block and nothing after it. The score is an integer from 0 to 100 that rates how correct the student's answer is against the correct answer and the evaluation criteria:
+\`\`\`json
+{"score": <integer 0-100>}
+\`\`\``,
       'pt-BR': `Você é um avaliador educacional especialista. Forneça feedback construtivo e encorajador sobre a resposta do estudante.
 
 PRINCÍPIOS DE AVALIAÇÃO:
@@ -421,6 +432,8 @@ REQUISITOS DE CONTEÚDO:
 Questão: {question}
 Resposta do Estudante: {userAnswer}
 {correctAnswer}
+Critérios de Avaliação:
+{criteria}
 Tipo de Questão: {type}
 
 FORMATO DE RESPOSTA:
@@ -428,7 +441,13 @@ Forneça feedback detalhado em formato Markdown que inclua:
 - Avaliação de correção e compreensão
 - Pontos fortes específicos na resposta do estudante
 - Áreas para melhoria com sugestões acionáveis
-- Encorajamento e próximos passos para aprendizado`
+- Encorajamento e próximos passos para aprendizado
+
+VEREDITO:
+Termine sua resposta com exatamente um bloco JSON cercado e nada depois dele. A pontuação é um inteiro de 0 a 100 que avalia o quão correta a resposta do estudante está em relação à resposta correta e aos critérios de avaliação:
+\`\`\`json
+{"score": <inteiro 0-100>}
+\`\`\``
     }
   },
 
@@ -476,102 +495,6 @@ REQUISITOS:
 
 Gere uma única questão de acompanhamento que encoraje pensamento elaborativo sobre os conceitos envolvidos.`
     }
-  },
-
-  retrieval: {
-    id: 'retrieval',
-    type: 'retrieval',
-    variables: ['contextsList', 'previousQuestions'],
-    description: {
-      'en-US': 'Generate retrieval practice questions based on previous content',
-      'pt-BR': 'Gerar questões de prática de recuperação baseadas em conteúdo anterior'
-    },
-    content: {
-      'en-US': `You are an expert in retrieval practice techniques. Create a question that tests recall of previously covered material or connects new concepts to previously learned ones based on the study contexts.
-
-**Your Task:**
-Generate retrieval practice questions based exclusively on the subjects, topics, and academic level indicated by the provided contexts.
-
-**STUDY CONTEXTS:**
-{contextsList}
-
-Previous Questions Context: {previousQuestions}
-
-**CRITICAL CODE REQUIREMENTS:**
-- If your question references code, pseudocode, algorithms, or any programming content, you MUST include the actual code in the question
-- Use proper code formatting with markdown code blocks and language specification
-- Never ask about "the following code" or "the code above" without actually providing the code
-- For programming questions, always include complete, runnable code examples
-- Use \`\`\`language syntax for code blocks (e.g., \`\`\`python, \`\`\`javascript, \`\`\`java)
-
-RETRIEVAL PRACTICE PRINCIPLES:
-- Test recall of key concepts from previous material
-- Connect new information to previously learned concepts
-- Vary question formats to strengthen different retrieval pathways
-- Focus on spaced repetition of important concepts
-- Encourage active recall rather than recognition
-- Generate questions that accurately reflect the subject matter, difficulty level, and scope defined by the study contexts
-- All generated questions must directly relate to the provided contexts
-
-CONTENT REQUIREMENTS:
-1. Use clear, well-formatted Markdown for all content
-2. Use **bold** for emphasis and *italics* for subtle emphasis
-3. Use \`inline code\` for technical terms or specific values
-4. Use code blocks with language specification for code examples
-5. Keep content concise to avoid truncation
-6. **MANDATORY**: If asking about code output, behavior, or analysis, include the complete code in the question
-
-RESPONSE FORMAT:
-Return ONLY a JSON object wrapped in \`\`\`json code fences with:
-- question: string (with Markdown formatting, including code blocks when needed)
-- type: "multipleChoice" or "dissertative"
-- If multipleChoice: options (array), correctAnswer (number), explanation (string)
-- If dissertative: sampleAnswer (string)
-
-Choose the most appropriate question type based on the content and learning objectives.`,
-      'pt-BR': `Você é um especialista em técnicas de prática de recuperação. Crie uma questão que teste a recordação de material previamente coberto ou conecte novos conceitos aos previamente aprendidos baseado nos contextos de estudo.
-
-**Sua Tarefa:**
-Gere questões de prática de recuperação baseadas exclusivamente nas matérias, tópicos e nível acadêmico indicados pelos contextos fornecidos.
-
-**CONTEXTOS DE ESTUDO:**
-{contextsList}
-
-Contexto de Questões Anteriores: {previousQuestions}
-
-**REQUISITOS CRÍTICOS PARA CÓDIGO:**
-- Se sua questão referenciar código, pseudocódigo, algoritmos ou qualquer conteúdo de programação, você DEVE incluir o código real na questão
-- Use formatação adequada de código com blocos de código markdown e especificação de linguagem
-- Nunca pergunte sobre "o seguinte código" ou "o código acima" sem realmente fornecer o código
-- Para questões de programação, sempre inclua exemplos de código completos e executáveis
-- Use a sintaxe \`\`\`linguagem para blocos de código (ex: \`\`\`python, \`\`\`javascript, \`\`\`java)
-
-PRINCÍPIOS DE PRÁTICA DE RECUPERAÇÃO:
-- Teste recordação de conceitos-chave do material anterior
-- Conecte novas informações a conceitos previamente aprendidos
-- Varie formatos de questão para fortalecer diferentes caminhos de recuperação
-- Foque na repetição espaçada de conceitos importantes
-- Encoraje recordação ativa em vez de reconhecimento
-- Gere questões que reflitam com precisão a matéria, nível de dificuldade e escopo definidos pelos contextos de estudo
-- Todas as questões geradas devem se relacionar diretamente com os contextos fornecidos
-
-REQUISITOS DE CONTEÚDO:
-1. Use formatação Markdown clara e bem estruturada para todo o conteúdo
-2. Use **negrito** para ênfase e *itálico* para ênfase sutil
-3. Use \`código inline\` para termos técnicos ou valores específicos
-4. Use blocos de código com especificação de linguagem para exemplos de código
-5. Mantenha o conteúdo conciso para evitar truncamento
-6. **OBRIGATÓRIO**: Se perguntando sobre saída de código, comportamento ou análise, inclua o código completo na questão
-
-FORMATO DE RESPOSTA:
-Retorne APENAS um objeto JSON envolvido em \`\`\`json code fences com:
-- question: string (com formatação Markdown, incluindo blocos de código quando necessário)
-- type: "multipleChoice" ou "dissertative"
-- Se múltipla escolha: options (array), correctAnswer (number), explanation (string)
-- Se dissertativa: sampleAnswer (string)
-
-Escolha o tipo de questão mais apropriado baseado no conteúdo e objetivos de aprendizado.`
-    }
   }
 };
 
@@ -588,48 +511,14 @@ export function getPromptTemplate(id: string, language: Language): string {
 }
 
 /**
- * Replace variables in a prompt template
+ * Replace {name} placeholders in one pass. Values are inserted literally: `$&` and the like
+ * are not replacement patterns, and a value that contains `{otherName}` is not expanded.
  */
 export function replacePromptVariables(
   prompt: string, 
   variables: Record<string, string>
 ): string {
-  let result = prompt;
-  
-  Object.entries(variables).forEach(([key, value]) => {
-    const regex = new RegExp(`\\{${key}\\}`, 'g');
-    result = result.replace(regex, value || '');
-  });
-  
-  return result;
-}
-
-/**
- * Get all available prompt templates
- */
-export function getAllPromptTemplates(): PromptTemplate[] {
-  return Object.values(PROMPT_TEMPLATES);
-}
-
-/**
- * Get prompt templates by type
- */
-export function getPromptTemplatesByType(type: PromptTemplate['type']): PromptTemplate[] {
-  return Object.values(PROMPT_TEMPLATES).filter(template => template.type === type);
-}
-
-/**
- * Validate prompt template variables
- */
-export function validatePromptVariables(
-  templateId: string, 
-  variables: Record<string, string>
-): { valid: boolean; missing: string[] } {
-  const template = PROMPT_TEMPLATES[templateId];
-  if (!template) {
-    return { valid: false, missing: [] };
-  }
-  
-  const missing = template.variables.filter(variable => !variables[variable]);
-  return { valid: missing.length === 0, missing };
+  return prompt.replace(/\{(\w+)\}/g, (placeholder, key: string) =>
+    Object.prototype.hasOwnProperty.call(variables, key) ? variables[key] || '' : placeholder
+  );
 }

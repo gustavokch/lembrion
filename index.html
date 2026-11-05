@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" sizes="16x16 32x32" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     
     <!-- Primary Meta Tags -->
     <title>Studorama - Free AI-Powered Study Sessions | Smart Learning Platform</title>
     <meta name="title" content="Studorama - Free AI-Powered Study Sessions | Smart Learning Platform" />
     <meta name="description" content="Transform your learning with Studorama's free AI-powered study sessions. Generate personalized questions, track progress, and master any subject with intelligent feedback. No account required - start studying instantly!" />
-    <meta name="keywords" content="AI study app, free learning platform, study sessions, OpenAI education, quiz generator, personalized learning, study assistant, spaced repetition, learning techniques, make it stick, retrieval practice, no account required, privacy first learning, estudo com IA, plataforma de aprendizado gratuita, sessões de estudo, educação OpenAI, gerador de quiz, aprendizado personalizado, assistente de estudo, repetição espaçada, técnicas de aprendizado" />
+    <meta name="keywords" content="AI study app, free learning platform, study sessions, quiz generator, personalized learning, study assistant, OpenAI, Gemini, Claude, DeepSeek, Ollama, learning techniques, make it stick, retrieval practice, elaborative interrogation, no account required, estudo com IA, plataforma de aprendizado gratuita, sessões de estudo, gerador de quiz, aprendizado personalizado, assistente de estudo, técnicas de aprendizado" />
     <meta name="author" content="oluiscabral" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="language" content="English" />
@@ -26,29 +26,23 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.studorama.vercel.app/" />
+    <meta property="og:url" content="https://studorama.vercel.app/" />
     <meta property="og:title" content="Studorama - Free AI-Powered Study Sessions | Smart Learning Platform" />
     <meta property="og:description" content="Transform your learning with free AI-powered study sessions. Generate personalized questions, track progress, and master any subject. No account required - start studying instantly!" />
-    <meta property="og:image" content="https://www.studorama.vercel.app/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Studorama - AI-Powered Study Sessions Platform" />
     <meta property="og:site_name" content="Studorama" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:locale:alternate" content="pt_BR" />
     
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@studorama" />
     <meta name="twitter:creator" content="@oluiscabral" />
-    <meta name="twitter:url" content="https://www.studorama.vercel.app/" />
+    <meta name="twitter:url" content="https://studorama.vercel.app/" />
     <meta name="twitter:title" content="Studorama - Free AI-Powered Study Sessions" />
     <meta name="twitter:description" content="Transform your learning with free AI-powered study sessions. Generate personalized questions and track your progress. No account required!" />
-    <meta name="twitter:image" content="https://www.studorama.vercel.app/twitter-image.png" />
-    <meta name="twitter:image:alt" content="Studorama - AI-Powered Study Sessions Platform" />
     
     <!-- Additional SEO -->
-    <link rel="canonical" href="https://www.studorama.vercel.app/" />
+    <link rel="canonical" href="https://studorama.vercel.app/" />
     <meta name="theme-color" content="#ea580c" />
     <meta name="msapplication-TileColor" content="#ea580c" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -59,17 +53,14 @@
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://api.openai.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
     <!-- DNS Prefetch -->
     <link rel="dns-prefetch" href="//api.openai.com" />
-    <link rel="dns-prefetch" href="//www.google-analytics.com" />
     
     <!-- Alternate Language Pages -->
-    <link rel="alternate" hreflang="en" href="https://www.studorama.vercel.app/" />
-    <link rel="alternate" hreflang="pt-BR" href="https://www.studorama.vercel.app/?lang=pt-BR" />
-    <link rel="alternate" hreflang="x-default" href="https://www.studorama.vercel.app/" />
+    <link rel="alternate" hreflang="en" href="https://studorama.vercel.app/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://studorama.vercel.app/?lang=pt-BR" />
+    <link rel="alternate" hreflang="x-default" href="https://studorama.vercel.app/" />
     
     <!-- Structured Data - Organization -->
     <script type="application/ld+json">
@@ -77,8 +68,8 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Studorama",
-      "url": "https://www.studorama.vercel.app",
-      "logo": "https://www.studorama.vercel.app/logo.png",
+      "url": "https://studorama.vercel.app",
+      "logo": "https://studorama.vercel.app/logo.png",
       "description": "Free AI-powered study sessions platform for personalized learning",
       "foundingDate": "2024",
       "founder": {
@@ -87,7 +78,7 @@
         "url": "https://github.com/oluiscabral"
       },
       "sameAs": [
-        "https://github.com/oluiscabral/studorama",
+        "https://github.com/gustavokch/studorama",
         "https://www.linkedin.com/in/oluiscabral"
       ],
       "contactPoint": {
@@ -104,8 +95,8 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Studorama",
-      "description": "Free AI-powered study sessions platform with spaced repetition, interleaving, and proven learning techniques. No account required.",
-      "url": "https://www.studorama.vercel.app/",
+      "description": "Free AI-powered study sessions with multiple-choice and open-ended questions, answer evaluation, and session history. Works with OpenAI, Google Gemini, Anthropic, DeepSeek, or a local Ollama server. No account required.",
+      "url": "https://studorama.vercel.app/",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "Web Browser",
       "browserRequirements": "Requires JavaScript. Supports Chrome, Firefox, Safari, Edge.",
@@ -123,25 +114,19 @@
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock"
       },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "150",
-        "bestRating": "5",
-        "worstRating": "1"
-      },
       "featureList": [
         "AI-generated study questions",
         "Multiple choice and dissertative questions",
-        "Spaced repetition scheduling",
-        "Learning progress tracking",
+        "AI evaluation of written answers",
+        "Elaborative interrogation follow-up questions",
+        "Session history and progress tracking",
+        "Works with OpenAI, Google Gemini, Anthropic, DeepSeek, and Ollama",
         "No account required",
-        "Privacy-first design",
+        "Sessions and settings stored in your browser",
         "Multilingual support (English, Portuguese)",
         "Open source",
-        "Free forever",
+        "Free to use",
         "Mobile responsive design",
-        "Offline capable",
         "Mathematical expression support"
       ],
       "inLanguage": ["en", "pt-BR"],
@@ -155,14 +140,8 @@
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       "name": "Studorama",
-      "url": "https://www.studorama.vercel.app",
+      "url": "https://studorama.vercel.app",
       "description": "Free AI-powered study platform implementing research-based learning techniques",
-      "educationalCredentialAwarded": "Study Progress Tracking",
-      "hasCredential": {
-        "@type": "EducationalOccupationalCredential",
-        "name": "Learning Progress Certificate",
-        "description": "Track your learning progress across multiple subjects"
-      },
       "teaches": [
         "JavaScript", "Python", "Mathematics", "Physics", "Chemistry", "Biology",
         "History", "Literature", "Computer Science", "Engineering", "Medicine",
@@ -177,14 +156,13 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Studorama",
-      "description": "Free AI-powered study sessions with spaced repetition and proven learning techniques",
-      "url": "https://www.studorama.vercel.app",
+      "description": "Free AI-powered study sessions with multiple-choice and open-ended questions, using your own AI provider API key",
+      "url": "https://studorama.vercel.app",
       "applicationCategory": "Education",
       "operatingSystem": "Web",
       "permissions": "No special permissions required",
       "price": "0",
       "priceCurrency": "USD",
-      "screenshot": "https://www.studorama.vercel.app/screenshot.png",
       "softwareVersion": "2.6.3",
       "datePublished": "2024-01-01",
       "publisher": {
@@ -196,8 +174,8 @@
         "price": "0",
         "priceCurrency": "USD"
       },
-      "downloadUrl": "https://www.studorama.vercel.app",
-      "installUrl": "https://www.studorama.vercel.app",
+      "downloadUrl": "https://studorama.vercel.app",
+      "installUrl": "https://studorama.vercel.app",
       "memoryRequirements": "512MB",
       "storageRequirements": "10MB"
     }
@@ -214,7 +192,7 @@
           "name": "Is Studorama really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes! Studorama is completely free to use and always will be. All features including AI-powered questions, spaced repetition, and progress tracking are available at no cost. No account required."
+            "text": "Studorama is free to use and needs no account. Questions are generated with your own API key from the AI provider you choose (OpenAI, Google Gemini, Anthropic, or DeepSeek), and that provider may charge you for usage. Ollama runs models on your own machine with no API cost."
           }
         },
         {
@@ -222,7 +200,7 @@
           "name": "Do I need to create an account?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No account required! Studorama works completely without registration. Your study sessions are saved locally in your browser, ensuring complete privacy."
+            "text": "No. Studorama works without registration. Your study sessions, settings, and API keys are saved in your browser's local storage."
           }
         },
         {
@@ -230,7 +208,7 @@
           "name": "What learning techniques does Studorama use?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Studorama implements research-based learning techniques from 'Make It Stick' including spaced repetition, interleaving, elaborative interrogation, retrieval practice, and desirable difficulties."
+            "text": "Studorama is based on 'Make It Stick'. It quizzes you with active-recall questions, can alternate multiple-choice and open-ended questions in one session, evaluates written answers with AI, and, when elaborative interrogation is enabled, asks a follow-up 'why' question after a wrong answer."
           }
         },
         {
@@ -238,7 +216,7 @@
           "name": "How does the AI generate questions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Studorama uses OpenAI's GPT models to generate personalized study questions. You provide your own OpenAI API key, ensuring your data stays private and you have full control."
+            "text": "Studorama sends your study topics to the AI provider you configure: OpenAI, Google Gemini, Anthropic, DeepSeek, or an Ollama server. You supply your own API key (Ollama needs none) and can use any model id the provider supports."
           }
         },
         {
@@ -246,7 +224,7 @@
           "name": "Is my data private and secure?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Absolutely! Your API key and study data are stored locally in your browser and never transmitted to our servers. Only you have access to your study sessions and progress."
+            "text": "Studorama has no server and no accounts. Your API keys and study sessions are stored in your browser's local storage. To generate and evaluate questions, your browser sends your study topics, answers, and API key directly to the AI provider you selected, which processes them under its own terms. If you run Ollama locally, requests stay on your machine."
           }
         },
         {
@@ -254,7 +232,7 @@
           "name": "Does Studorama work on mobile devices?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes! Studorama is fully responsive and works perfectly on all devices including smartphones, tablets, and desktop computers. The interface adapts to your screen size for optimal usability."
+            "text": "Yes. The interface is responsive and works in mobile and desktop browsers."
           }
         },
         {
@@ -279,25 +257,25 @@
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://www.studorama.vercel.app/"
+          "item": "https://studorama.vercel.app/"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Study Sessions",
-          "item": "https://www.studorama.vercel.app/study"
+          "item": "https://studorama.vercel.app/study"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": "Study History",
-          "item": "https://www.studorama.vercel.app/history"
+          "item": "https://studorama.vercel.app/history"
         },
         {
           "@type": "ListItem",
           "position": 4,
           "name": "Settings",
-          "item": "https://www.studorama.vercel.app/settings"
+          "item": "https://studorama.vercel.app/settings"
         }
       ]
     }
@@ -307,9 +285,7 @@
     <link rel="manifest" href="/manifest.json" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png" />
     
     <!-- Critical CSS for above-the-fold content -->
     <style>
@@ -376,37 +352,5 @@
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- Optimized Service Worker Registration -->
-    <script>
-      // Register service worker only after the page has loaded to avoid blocking
-      window.addEventListener('load', function() {
-        if ('serviceWorker' in navigator) {
-          // Use requestIdleCallback to register SW when browser is idle
-          if ('requestIdleCallback' in window) {
-            requestIdleCallback(function() {
-              navigator.serviceWorker.register('/sw.js')
-                .then(function(registration) {
-                  console.log('SW registered: ', registration);
-                })
-                .catch(function(registrationError) {
-                  console.log('SW registration failed: ', registrationError);
-                });
-            });
-          } else {
-            // Fallback for browsers without requestIdleCallback
-            setTimeout(function() {
-              navigator.serviceWorker.register('/sw.js')
-                .then(function(registration) {
-                  console.log('SW registered: ', registration);
-                })
-                .catch(function(registrationError) {
-                  console.log('SW registration failed: ', registrationError);
-                });
-            }, 1000);
-          }
-        }
-      });
-    </script>
   </body>
 </html>

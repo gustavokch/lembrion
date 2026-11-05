@@ -19,7 +19,7 @@ import {
   Zap
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { STORAGE_KEYS } from '../../../core/config/constants';
+import { clearAllAppData } from '../../../core/services/storage/localStorage';
 import {
   getAllProviders,
   getLocalizedApiKeyLabel,
@@ -34,18 +34,8 @@ import {
   validateProviderConfig
 } from '../../../core/services/ai/providers/registry';
 import { Language } from '../../../core/types';
-import { AIProvider } from '../../../core/types/ai.types';
-import { useLanguage, useLocalStorage, useTheme } from '../../../hooks';
-
-interface MultiProviderSettings {
-  currentProvider: AIProvider;
-  providers: Record<AIProvider, {
-    apiKey: string;
-    model: string;
-    baseUrl?: string;
-    customHeaders?: Record<string, string>;
-  }>;
-}
+import { AIProvider, ProviderSettings } from '../../../core/types/ai.types';
+import { useLanguage, useMultiProviderSettings, useTheme } from '../../../hooks';
 
 interface DeviceInfo {
   type: 'mobile' | 'tablet' | 'desktop';
@@ -57,20 +47,7 @@ export default function SettingsPage() {
   const { themeConfig } = useTheme();
   
   // Multi-provider settings
-  const [multiProviderSettings, setMultiProviderSettings] = useLocalStorage<MultiProviderSettings>(
-    'studorama-multi-provider-settings',
-    {
-      currentProvider: 'openai',
-      providers: {
-        openai: { apiKey: '', model: 'gpt-4o-mini' },
-        gemini: { apiKey: '', model: 'gemini-1.5-flash' },
-        anthropic: { apiKey: '', model: 'claude-3-haiku-20240307' },
-        deepseek: { apiKey: '', model: 'deepseek-chat' },
-        ollama: { apiKey: '', model: 'llama3.1:8b', baseUrl: 'http://localhost:11434/v1' },
-        browser: { apiKey: '', model: 'browser-ai' },
-      }
-    }
-  );
+  const [multiProviderSettings, setMultiProviderSettings] = useMultiProviderSettings();
 
   // UI state
   const [activeTab, setActiveTab] = useState<'providers' | 'language' | 'data'>('providers');
@@ -126,7 +103,7 @@ export default function SettingsPage() {
 
   const handleProviderSettingChange = (
     providerId: AIProvider,
-    key: keyof MultiProviderSettings['providers'][AIProvider],
+    key: keyof ProviderSettings,
     value: string
   ) => {
     setMultiProviderSettings(prev => ({
@@ -157,10 +134,7 @@ export default function SettingsPage() {
 
   const handleDeleteAllData = () => {
     if (window.confirm(t.deleteAllDataConfirm)) {
-      // Clear all localStorage data
-      Object.values(STORAGE_KEYS).forEach(key => {
-        localStorage.removeItem(key);
-      });
+      clearAllAppData();
       
       // Reload the page to reset the app
       window.location.reload();
@@ -178,7 +152,6 @@ export default function SettingsPage() {
       case 'anthropic': return <Shield className="w-5 h-5" />;
       case 'deepseek': return <Brain className="w-5 h-5" />;
       case 'ollama': return <Cpu className="w-5 h-5" />;
-      case 'browser': return <Monitor className="w-5 h-5" />;
       default: return <Brain className="w-5 h-5" />;
     }
   };
@@ -485,33 +458,80 @@ export default function SettingsPage() {
   
                     {/* Model Selection */}
                     <div>
-                      <label className="block text-sm font-semibold mb-2 sm:mb-3" style={{ color: themeConfig.colors.text }}>
+                      <label
+                        htmlFor="provider-model-input"
+                        className="block text-sm font-semibold mb-2 sm:mb-3"
+                        style={{ color: themeConfig.colors.text }}
+                      >
                         {t.model}
                       </label>
-                      <select
+                      <input
+                        id="provider-model-input"
+                        type="text"
+                        list="provider-model-suggestions"
                         value={currentProviderSettings.model}
                         onChange={(e) => handleProviderSettingChange(
                           multiProviderSettings.currentProvider,
                           'model',
-                          e.target.value
+                          e.target.value.trim()
                         )}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 border-2 rounded-xl sm:rounded-2xl focus:border-2 outline-none transition-all duration-200 text-sm sm:text-base appearance-none"
+                        autoComplete="off"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        aria-describedby="provider-model-help"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 border-2 rounded-xl sm:rounded-2xl focus:border-2 outline-none transition-all duration-200 text-sm sm:text-base"
                         style={{
                           backgroundColor: themeConfig.colors.background,
                           borderColor: themeConfig.colors.border,
                           color: themeConfig.colors.text,
-                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23${themeConfig.colors.textMuted.slice(1)}' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-                          backgroundPosition: 'right 1rem center',
-                          backgroundRepeat: 'no-repeat',
-                          backgroundSize: '1.5em 1.5em',
                         }}
-                      >
+                      />
+                      <datalist id="provider-model-suggestions">
                         {currentProviderConfig.models.map((model) => (
                           <option key={model.id} value={model.id}>
-                            {getLocalizedModelName(multiProviderSettings.currentProvider, model.id, language)} {model.recommended ? `(${t.recommended})` : ''}
+                            {getLocalizedModelName(multiProviderSettings.currentProvider, model.id, language)}
                           </option>
                         ))}
-                      </select>
+                      </datalist>
+                      <p id="provider-model-help" className="mt-2 text-xs" style={{ color: themeConfig.colors.textMuted }}>
+                        {t.modelInputHelp}
+                      </p>
+
+                      {/* Registry models as tappable suggestions (datalist support on mobile is unreliable) */}
+                      {currentProviderConfig.models.length > 0 && (
+                        <div className="mt-3">
+                          <p className="text-xs font-semibold mb-2" style={{ color: themeConfig.colors.textSecondary }}>
+                            {t.suggestedModels}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {currentProviderConfig.models.map((model) => {
+                              const isSelected = model.id === currentProviderSettings.model;
+                              return (
+                                <button
+                                  key={model.id}
+                                  type="button"
+                                  aria-pressed={isSelected}
+                                  onClick={() => handleProviderSettingChange(
+                                    multiProviderSettings.currentProvider,
+                                    'model',
+                                    model.id
+                                  )}
+                                  className="min-h-[44px] px-3 py-2 rounded-xl border-2 text-xs sm:text-sm font-medium transition-colors"
+                                  style={{
+                                    backgroundColor: isSelected ? themeConfig.colors.primary + '15' : themeConfig.colors.background,
+                                    borderColor: isSelected ? themeConfig.colors.primary : themeConfig.colors.border,
+                                    color: isSelected ? themeConfig.colors.primary : themeConfig.colors.text,
+                                  }}
+                                >
+                                  {getLocalizedModelName(multiProviderSettings.currentProvider, model.id, language)}
+                                  {model.recommended ? ` (${t.recommended})` : ''}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                       
                       {/* Model Info */}
                       {(() => {
@@ -685,7 +705,7 @@ export default function SettingsPage() {
         </div>
         
         {/* Device Type Indicator (for development) */}
-        {process.env.NODE_ENV === 'development' && (
+        {import.meta.env.DEV && (
           <div className="fixed bottom-2 right-2 px-2 py-1 rounded-full text-xs bg-black/50 text-white">
             <div className="flex items-center space-x-1">
               {deviceInfo.type === 'mobile' && <Smartphone className="w-3 h-3" />}

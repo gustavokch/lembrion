@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b",
+    "test": "vitest run",
     "lint": "eslint .",
     "preview": "vite preview",
     "version:bump": "node scripts/version-manager.js bump",
@@ -16,14 +18,10 @@
     "deploy": "node scripts/deploy.js deploy",
     "deploy:major": "node scripts/deploy.js deploy major",
     "deploy:minor": "node scripts/deploy.js deploy minor",
-    "deploy:patch": "node scripts/deploy.js deploy patch",
-    "predeploy": "npm run lint",
-    "postdeploy": "echo 'Deployment completed successfully!'"
+    "deploy:patch": "node scripts/deploy.js deploy patch"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
-    "json5": "^2.2.3",
-    "lodash": "^4.17.21",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -31,15 +29,12 @@
     "react-router-dom": "^6.30.1",
     "react-syntax-highlighter": "^15.6.1",
     "rehype-highlight": "^7.0.2",
-    "rehype-katex": "^7.0.1",
     "remark-breaks": "^4.0.0",
-    "remark-gfm": "^4.0.1",
-    "remark-math": "^6.0.0"
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@types/dom-helpers": "^3.4.1",
-    "@types/lodash": "^4.17.20",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@types/react-syntax-highlighter": "^15.5.13",
@@ -49,11 +44,12 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
+    "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "terser": "^5.43.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
-    "vite": "^5.4.19"
+    "vite": "^5.4.19",
+    "vitest": "^3.2.7"
   }
 }

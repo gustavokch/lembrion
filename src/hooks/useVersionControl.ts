@@ -4,6 +4,7 @@ import {
   getVersionInfo 
 } from '../core/services/version/versionControl';
 import { APP_VERSION } from '../core/config/constants';
+import { runWhenIdle } from '../core/utils/idle';
 
 /**
  * Hook to manage version control and migration with performance optimizations
@@ -16,10 +17,10 @@ export function useVersionControl() {
     // Perform version check and migration on app startup
     const performMigration = async () => {
       try {
-        // Use requestIdleCallback to avoid blocking the main thread
+        // Run when idle to avoid blocking the main thread
         const runMigration = () => {
           return new Promise<boolean>((resolve) => {
-            requestIdleCallback(() => {
+            runWhenIdle(() => {
               try {
                 const migrated = handleVersionMigration();
                 resolve(migrated);

@@ -1,17 +1,14 @@
 import { Award, BookOpen, Calendar, CheckSquare, ChevronRight, ExternalLink, Heart, History, Info, Star, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { STORAGE_KEYS } from '../../core/config/constants';
 import { formatDate } from '../../core/services/i18n';
 import { useLanguage, useLocalStorage, useTheme } from '../../hooks';
 import { StudySession } from '../../types';
 import Logo from '../ui/Logo';
 
 export default function Dashboard() {
-  const [sessions] = useLocalStorage<StudySession[]>('studorama-sessions', []);
-  // const [apiSettings] = useLocalStorage('studorama-api-settings', { 
-  //   openaiApiKey: '',
-  //   model: 'gpt-4o-mini'
-  // });
+  const [sessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
   const { t, language } = useLanguage();
   const { themeConfig } = useTheme();
   const [showWelcomeTip, setShowWelcomeTip] = useState(true);
@@ -109,84 +106,13 @@ export default function Dashboard() {
         >
           <Star className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 animate-pulse" aria-hidden="true" />
           <span className="text-center leading-tight whitespace-nowrap">
-            {language === 'pt-BR' 
-              ? 'Sem Conta • 100% Gratuito • Privacidade Primeiro'
-              : 'No Account Required • 100% Free • Privacy First'
-            }
+            {t.dashboardBadge}
           </span>
         </div>
       </header>
 
       {/* Status Messages */}
       <div className="space-y-3 sm:space-y-4 max-w-3xl mx-auto">
-        {/* API Key Warning */}
-        {/* {!apiSettings && (
-          <div 
-            className="rounded-xl sm:rounded-2xl p-4 sm:p-5 border shadow-sm animate-slide-up" 
-            role="alert" 
-            aria-live="polite"
-            style={{
-              backgroundColor: themeConfig.colors.warning + '10',
-              borderColor: themeConfig.colors.warning + '30',
-            }}
-          >
-            <div className="flex items-start space-x-3 sm:space-x-4">
-              <div 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: themeConfig.colors.warning + '20' }}
-              >
-                <Bell className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" style={{ color: themeConfig.colors.warning }} />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-sm sm:text-base mb-1" style={{ color: themeConfig.colors.warning }}>
-                  {t.setupRequired}
-                </h3>
-                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.warning }}>
-                  {t.configureApiKey}{' '}
-                  <Link 
-                    to="/settings" 
-                    className="font-medium underline hover:no-underline focus-ring rounded inline-flex items-center"
-                    style={{ color: themeConfig.colors.warning }}
-                  >
-                  {t.settings}
-                    <ChevronRight className="w-3 h-3 ml-0.5" />
-                  </Link> {language === 'pt-BR' ? 'para começar a estudar' : 'to start studying'}.
-                </p>
-              </div>
-            </div>
-          </div>
-        )} */}
-
-        {/* Model Info */}
-        {/* {apiSettings.openaiApiKey && apiSettings.model && (
-          <div 
-            className="rounded-xl sm:rounded-2xl p-4 sm:p-5 border shadow-sm animate-slide-up" 
-            role="status" 
-            aria-live="polite"
-            style={{
-              backgroundColor: themeConfig.colors.success + '10',
-              borderColor: themeConfig.colors.success + '30',
-            }}
-          >
-            <div className="flex items-start space-x-3 sm:space-x-4">
-              <div 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: themeConfig.colors.success + '20' }}
-              >
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.success }} />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-sm sm:text-base mb-1" style={{ color: themeConfig.colors.success }}>
-                  {t.readyToStudy}
-                </h3>
-                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.success }}>
-                  {t.usingModel} <span className="font-semibold">{apiSettings.model}</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )} */}
-
         {/* Privacy Notice */}
         {showWelcomeTip && (
           <div 
@@ -206,7 +132,7 @@ export default function Dashboard() {
               <div className="flex-1">
                 <div className="flex items-start justify-between">
                   <h3 className="font-semibold text-sm sm:text-base mb-1" style={{ color: themeConfig.colors.info }}>
-                    {language === 'pt-BR' ? 'Privacidade Garantida' : 'Privacy Guaranteed'}
+                    {language === 'pt-BR' ? 'Seus dados, seu provedor' : 'Your data, your provider'}
                   </h3>
                   <button 
                     onClick={dismissWelcomeTip} 
@@ -219,8 +145,8 @@ export default function Dashboard() {
                 </div>
                 <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
                   {language === 'pt-BR' 
-                    ? 'Seus dados ficam no seu navegador. Nenhuma conta necessária, nenhum rastreamento.'
-                    : 'Your data stays in your browser. No account needed, no tracking.'
+                    ? 'Sessões e chaves da API ficam no seu navegador. As questões vão apenas ao provedor de IA que você escolher. Sem conta, sem rastreamento.'
+                    : 'Sessions and API keys are stored in your browser. Questions go only to the AI provider you choose. No account, no tracking.'
                   }
                 </p>
               </div>
@@ -253,7 +179,7 @@ export default function Dashboard() {
                   {t.totalSessions}
                 </p>
                 <p className="text-xl sm:text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                  {activeSessions}
+                  {totalSessions}
                 </p>
               </div>
             </div>

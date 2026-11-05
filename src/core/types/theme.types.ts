@@ -47,9 +47,13 @@ export interface ThemeConfig {
     lg: string;
     xl: string;
   };
+  /** Raw CSS values, written to `--effect-*` and used in inline styles. */
   effects: {
+    /** `backdrop-filter` value, e.g. `blur(8px)` or `none`. */
     blur: string;
+    /** `box-shadow` value. */
     glow: string;
+    /** `transition` value, e.g. `all 200ms ease-in-out`. */
     animation: string;
   };
 }

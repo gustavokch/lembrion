@@ -40,9 +40,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
     },
     effects: {
-      blur: 'backdrop-blur-md',
+      blur: 'blur(8px)',
       glow: '0 0 20px rgb(234 88 12 / 0.3)',
-      animation: 'transition-all duration-200 ease-in-out',
+      animation: 'all 200ms ease-in-out',
     },
   },
 
@@ -82,9 +82,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(0 0 0 / 0.6)',
     },
     effects: {
-      blur: 'backdrop-blur-md',
+      blur: 'blur(8px)',
       glow: '0 0 20px rgb(249 115 22 / 0.4)',
-      animation: 'transition-all duration-200 ease-in-out',
+      animation: 'all 200ms ease-in-out',
     },
   },
 
@@ -124,9 +124,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
     },
     effects: {
-      blur: 'backdrop-blur-sm',
+      blur: 'blur(4px)',
       glow: '0 0 15px rgb(99 102 241 / 0.2)',
-      animation: 'transition-all duration-300 ease-out',
+      animation: 'all 300ms ease-out',
     },
   },
 
@@ -166,9 +166,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(0 0 0 / 0.7)',
     },
     effects: {
-      blur: 'backdrop-blur-lg',
+      blur: 'blur(12px)',
       glow: '0 0 25px rgb(59 130 246 / 0.3)',
-      animation: 'transition-all duration-300 ease-in-out',
+      animation: 'all 300ms ease-in-out',
     },
   },
 
@@ -208,9 +208,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(5 150 105 / 0.25)',
     },
     effects: {
-      blur: 'backdrop-blur-md',
+      blur: 'blur(8px)',
       glow: '0 0 20px rgb(5 150 105 / 0.3)',
-      animation: 'transition-all duration-250 ease-out',
+      animation: 'all 250ms ease-out',
     },
   },
 
@@ -250,9 +250,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(8 145 178 / 0.25)',
     },
     effects: {
-      blur: 'backdrop-blur-md',
+      blur: 'blur(8px)',
       glow: '0 0 20px rgb(8 145 178 / 0.3)',
-      animation: 'transition-all duration-300 ease-in-out',
+      animation: 'all 300ms ease-in-out',
     },
   },
 
@@ -292,9 +292,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(249 115 22 / 0.25)',
     },
     effects: {
-      blur: 'backdrop-blur-md',
+      blur: 'blur(8px)',
       glow: '0 0 25px rgb(249 115 22 / 0.4)',
-      animation: 'transition-all duration-200 ease-out',
+      animation: 'all 200ms ease-out',
     },
   },
 
@@ -334,9 +334,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(168 85 247 / 0.6)',
     },
     effects: {
-      blur: 'backdrop-blur-lg',
+      blur: 'blur(12px)',
       glow: '0 0 30px rgb(168 85 247 / 0.6)',
-      animation: 'transition-all duration-150 ease-in-out',
+      animation: 'all 150ms ease-in-out',
     },
   },
 
@@ -376,9 +376,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(0 0 0 / 0.08)',
     },
     effects: {
-      blur: 'backdrop-blur-none',
+      blur: 'none',
       glow: 'none',
-      animation: 'transition-all duration-200 ease-linear',
+      animation: 'all 200ms linear',
     },
   },
 
@@ -418,9 +418,9 @@ export const themes: Record<Theme, ThemeConfig> = {
       xl: '0 20px 25px -5px rgb(220 38 38 / 0.25)',
     },
     effects: {
-      blur: 'backdrop-blur-md',
+      blur: 'blur(8px)',
       glow: '0 0 20px rgb(220 38 38 / 0.3)',
-      animation: 'transition-all duration-250 ease-out',
+      animation: 'all 250ms ease-out',
     },
   },
 };

@@ -2,33 +2,34 @@
  * Google Gemini Provider Implementation
  */
 
-import { AIRequest, AIResponse, AIError } from '../../../types/ai.types';
+import { AIRequest, AIResponse } from '../../../types/ai.types';
+import { createAIError, createHTTPError, toAIError } from '../errors';
 
 export class GeminiProvider {
   private baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
 
   async generateCompletion(request: AIRequest): Promise<AIResponse> {
     if (!request.apiKey) {
-      throw this.createError('API key is required for Gemini', 'MISSING_API_KEY');
+      throw createAIError('gemini', 'API key is required for Gemini', 'MISSING_API_KEY');
     }
 
     try {
-      // Convert messages to Gemini format
       const contents = this.convertMessagesToGeminiFormat(request.messages);
       
       const response = await fetch(
-        `${request.baseUrl || this.baseUrl}/models/${request.model}:generateContent?key=${request.apiKey}`,
+        `${request.baseUrl || this.baseUrl}/models/${request.model}:generateContent`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-goog-api-key': request.apiKey,
             ...request.customHeaders,
           },
           body: JSON.stringify({
             contents,
             generationConfig: {
-              temperature: request.temperature || 0.7,
-              maxOutputTokens: request.maxTokens || 800,
+              temperature: request.temperature ?? 0.7,
+              maxOutputTokens: request.maxTokens ?? 800,
               topP: 0.8,
               topK: 40,
             },
@@ -55,22 +56,17 @@ export class GeminiProvider {
       );
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw this.createError(
-          `Gemini API error: ${response.statusText}. ${errorData.error?.message || ''}`,
-          errorData.error?.code || 'API_ERROR',
-          response.status
-        );
+        throw await createHTTPError('gemini', 'Gemini', response);
       }
 
       const data = await response.json();
       
       if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        throw this.createError('Invalid response format from Gemini', 'INVALID_RESPONSE');
+        throw createAIError('gemini', 'Invalid response format from Gemini', 'INVALID_RESPONSE');
       }
 
       const candidate = data.candidates[0];
-      const content = candidate.content.parts[0]?.text || '';
+      const content = candidate.content.parts?.[0]?.text || '';
 
       return {
         content,
@@ -83,26 +79,21 @@ export class GeminiProvider {
         finishReason: candidate.finishReason,
       };
     } catch (error) {
-      if (error instanceof Error && error.name === 'AIError') {
-        throw error;
-      }
-      
-      throw this.createError(
-        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        'NETWORK_ERROR',
-        undefined,
-        true
-      );
+      throw toAIError(error, 'gemini');
     }
   }
 
+  /**
+   * System text is prepended to the first user turn (older models such as gemini-pro reject
+   * `systemInstruction`). Without a leading user turn, the system text becomes one.
+   */
   private convertMessagesToGeminiFormat(messages: AIRequest['messages']) {
-    const contents = [];
-    let systemInstruction = '';
+    const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
+    const systemParts: string[] = [];
     
     for (const message of messages) {
       if (message.role === 'system') {
-        systemInstruction += message.content + '\n';
+        systemParts.push(message.content);
       } else {
         contents.push({
           role: message.role === 'assistant' ? 'model' : 'user',
@@ -110,27 +101,18 @@ export class GeminiProvider {
         });
       }
     }
-    
-    // If we have system instructions, prepend them to the first user message
-    if (systemInstruction && contents.length > 0 && contents[0].role === 'user') {
-      contents[0].parts[0].text = systemInstruction + '\n' + contents[0].parts[0].text;
+
+    const systemInstruction = systemParts.join('\n').trim();
+    if (!systemInstruction) {
+      return contents;
+    }
+
+    if (contents.length > 0 && contents[0].role === 'user') {
+      contents[0].parts[0].text = systemInstruction + '\n\n' + contents[0].parts[0].text;
+    } else {
+      contents.unshift({ role: 'user', parts: [{ text: systemInstruction }] });
     }
     
     return contents;
-  }
-
-  private createError(
-    message: string, 
-    code?: string, 
-    statusCode?: number, 
-    retryable = false
-  ): AIError {
-    const error = new Error(message) as AIError;
-    error.name = 'AIError';
-    error.provider = 'gemini';
-    error.code = code;
-    error.statusCode = statusCode;
-    error.retryable = retryable;
-    return error;
   }
 }

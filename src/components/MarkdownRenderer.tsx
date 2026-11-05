@@ -6,7 +6,6 @@ import { materialDark, materialLight } from 'react-syntax-highlighter/dist/esm/s
 import rehypeHighlight from 'rehype-highlight';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
 
 interface MarkdownRendererProps {
   content: string;
@@ -47,7 +46,7 @@ function extractTextFromReactElement(element: any): string {
 /**
  * Enhanced mathematical expression processor for human readability
  */
-export function processMathematicalExpressions(text: string): string {
+function processMathematicalExpressions(text: string): string {
   // Enhanced LaTeX to human-readable conversion
   let processed = text;
 
@@ -207,7 +206,7 @@ function containsProgrammingCode(text: string): boolean {
   // Check for common programming patterns
   const programmingPatterns = [
     /\b(?:def|function|class|import|from)\s+\w+/i,
-    /\b(?:if|else|for|while|return)\s*[\(\{]/i,
+    /\b(?:if|else|for|while|return)\s*[({]/i,
     /\b(?:var|let|const|public|private|void|int|string)\s+\w+/i,
     /\b(?:print|console\.log)\s*\(/i,
     /\w+\s*=\s*\w+\s*\([^)]*\)/,
@@ -246,20 +245,13 @@ export default function MarkdownRenderer({
   return (
     <div className={`markdown-renderer ${className}`}>      
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]}
+        remarkPlugins={[remarkGfm, remarkBreaks]}
         rehypePlugins={[rehypeHighlight]}
         components={{
-          code({ node, inline, className, children, ...props }) {
+          code({ node: _node, inline, className, children, ...props }) {
             // CRITICAL FIX: Extract text from React elements properly
             const codeText = extractTextFromReactElement(children).replace(/\n$/, '');
-            
-            console.log('=== DEBUG: Code Component ===');
-            console.log('Inline:', inline);
-            console.log('Children type:', typeof children);
-            console.log('Children value:', children);
-            console.log('Extracted code text:', codeText);
-            console.log('Class name:', className);
-            
+
             const match = /language-(\w+)/.exec(className || '');
             const lang = match?.[1] ?? '';
 
@@ -368,12 +360,7 @@ export default function MarkdownRenderer({
           p({ children }) {
             // CRITICAL FIX: Extract text from React elements
             const textContent = extractTextFromReactElement(children);
-            
-            console.log('=== DEBUG: Paragraph Component ===');
-            console.log('Children type:', typeof children);
-            console.log('Children value:', children);
-            console.log('Extracted text content:', textContent);
-            
+
             // Skip mathematical processing if content contains programming code
             if (containsProgrammingCode(textContent)) {
               return <p className="mb-4 leading-relaxed">{children}</p>;
@@ -396,8 +383,6 @@ export default function MarkdownRenderer({
           
           // Enhanced pre block handling for code blocks
           pre({ children }) {
-            console.log('=== DEBUG: Pre Component ===');
-            console.log('Pre children:', children);
             return <div className="my-4">{children}</div>;
           },
           

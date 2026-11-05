@@ -1,9 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import { setupServiceWorker } from './core/utils/serviceWorker';
 import './index.css';
 
-// Create root and render app
+setupServiceWorker(import.meta.env.PROD, location.hostname);
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

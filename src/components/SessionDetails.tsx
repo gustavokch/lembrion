@@ -1,16 +1,19 @@
-import { ArrowLeft, BookOpen, Calendar, CheckCircle, Clock, Target, TrendingUp, XCircle } from 'lucide-react';
+import { ArrowLeft, BookOpen, Calendar, CheckCircle, Clock, Repeat, Target, TrendingUp, XCircle } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { STORAGE_KEYS } from '../core/config/constants';
 import { useLanguage } from '../hooks/useLanguage';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { StudySession } from '../types';
 import MarkdownRenderer from './MarkdownRenderer';
 import { formatDate } from '../core/services';
+import { difficultyLabels } from './pages/StudyPage/learningTechniques';
 
 export default function SessionDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const [sessions] = useLocalStorage<StudySession[]>('studorama-sessions', []);
+  const levelLabels = difficultyLabels(t);
+  const [sessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
   
   const session = sessions.find(s => s.id === id);
 
@@ -225,6 +228,28 @@ export default function SessionDetails() {
                     </div>
                   )}
 
+                  {question.elaborativeQuestion && (
+                    <div className="bg-sky-50 border border-sky-200 rounded-lg p-4 mb-4">
+                      <h4 className="text-sm font-medium text-sky-800 mb-2">{t.elaborativeInterrogation}</h4>
+                      <div className="text-sm text-sky-900 break-words">
+                        <MarkdownRenderer content={question.elaborativeQuestion} />
+                      </div>
+                      {question.elaborativeAnswer && (
+                        <div className="mt-3 pt-3 border-t border-sky-200">
+                          <h5 className="text-xs font-medium text-sky-800 mb-1">{t.yourAnswer}</h5>
+                          <p className="text-sm text-gray-900 whitespace-pre-wrap break-words">{question.elaborativeAnswer}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {question.selfExplanation && (
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">{t.selfExplanation}</h4>
+                      <p className="text-sm text-gray-900 whitespace-pre-wrap break-words">{question.selfExplanation}</p>
+                    </div>
+                  )}
+
                   <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center">
                       <Clock className="w-4 h-4 mr-1 flex-shrink-0" />
@@ -234,6 +259,25 @@ export default function SessionDetails() {
                       <BookOpen className="w-4 h-4 mr-1 flex-shrink-0" />
                       {question.type === 'multipleChoice' ? t.multipleChoice : t.dissertative}
                     </div>
+                    {question.difficulty && (
+                      <div className="flex items-center">
+                        <TrendingUp className="w-4 h-4 mr-1 flex-shrink-0" />
+                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+                          {levelLabels[question.difficulty]}
+                        </span>
+                      </div>
+                    )}
+                    {question.reviewOf && (
+                      <span className="inline-flex items-center text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
+                        <Repeat className="w-3 h-3 mr-1 flex-shrink-0" />
+                        {t.reviewQuestion}
+                      </span>
+                    )}
+                    {question.type === 'dissertative' && question.score !== undefined && (
+                      <div className="flex items-center font-medium text-gray-700">
+                        {t.answerScore}: {question.score}/100
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

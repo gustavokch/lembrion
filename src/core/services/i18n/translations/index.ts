@@ -14,18 +14,3 @@ const translationsMap: Record<Language, Translations> = {
 export function getTranslations(language: Language): Translations {
   return translationsMap[language] || translationsMap['en-US'];
 }
-
-/**
- * Get all available translations
- */
-export function getAllTranslations(): Record<Language, Translations> {
-  return translationsMap;
-}
-
-/**
- * Add a new language to the translations map
- * This allows for dynamic language additions
- */
-export function addLanguage(language: Language, translations: Translations): void {
-  translationsMap[language] = translations;
-}

@@ -10,18 +10,3 @@ export interface APISettings {
   };
   preloadQuestions?: number; // Number of questions to preload
 }
-
-export interface PreloadingSettings {
-  preloadQuestions: number;
-  enableBackgroundLoading: boolean;
-}
-
-export interface Product {
-  id: string;
-  priceId: string;
-  name: string;
-  description: string;
-  mode: 'payment' | 'subscription';
-  price: number;
-  checkoutUrl?: string; // Optional external checkout URL
-}

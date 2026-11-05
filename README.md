@@ -1,329 +1,153 @@
 # Studorama 🎓
 
-**Multi-Provider AI Study Platform with Research-Backed Learning Techniques**
+**AI-generated study sessions in your browser, using the AI provider you choose**
 
-Transform your learning experience with Studorama, an intelligent study platform that supports multiple AI providers and implements proven learning techniques to enhance your understanding of any subject.
+Studorama turns a list of study topics into a quiz session. An AI model writes multiple-choice or open-ended questions, evaluates your written answers, and keeps a history of every session. The approach is inspired by *Make It Stick: The Science of Successful Learning*.
 
-🌐 **Live at: [www.studorama.vercel.app](https://www.studorama.vercel.app)**
+Studorama is a client-only web app: there is no backend and no account. Your browser calls the AI provider directly with your own API key.
+
+🌐 **Live at: [studorama.vercel.app](https://studorama.vercel.app)**
 
 ![Studorama Banner](https://github.com/user-attachments/assets/9c74ca79-9f32-467d-a264-9641d405da02)
 
-## ✨ Key Features
+## ✨ Features
 
-### 🤖 Multi-Provider AI Support
-- **6 AI Providers**: OpenAI, Google Gemini, Anthropic Claude, DeepSeek, Ollama (local), Browser AI
-- **15+ Models**: From GPT-4o to local Llama models - choose what works best for you
-- **Flexible Configuration**: Switch between providers seamlessly with individual API key management
-- **Cost Optimization**: Mix free local models with premium cloud models based on your needs
+### 📚 Study sessions
+- **Multiple-choice questions** with four options and an explanation, graded in the browser.
+- **Dissertative (open-ended) questions**, evaluated by the AI model with written feedback and a 0-100 score; 70 or more counts as correct.
+- **Mixed mode**: each new question is randomly multiple-choice or dissertative.
+- **Study contexts and instructions**: list the topics to cover and optional instructions (a textbook, an author, a focus area) for the question generator.
+- **Difficulty**: pick easy, medium, or hard when you start a session.
+- **Confidence rating** recorded with each answer.
 
-### 🌍 Full Internationalization
-- **Multi-Language Support**: Complete English and Portuguese (Brazil) localization
-- **Localized AI Content**: Provider descriptions, setup instructions, and model information in your language
-- **Smart Language Switching**: Automatic prompt translation when changing languages
-- **Cultural Adaptation**: Region-specific content and formatting
+### 🧠 Learning techniques
+Each session stores five toggles. They are on by default and can be changed when the session starts or later from the history page.
+- **Spaced repetition**: a missed question comes back, with its options reshuffled, after 3 new questions, up to 2 times. Reviews stay within the session; there is no scheduling across sessions.
+- **Interleaving**: with 2 or more contexts, each new question focuses on the next context in turn.
+- **Elaborative interrogation**: a wrong answer triggers a follow-up "why" question; your answer is saved.
+- **Self-explanation**: after a correct answer (or any answer when elaborative interrogation is off), you explain in your own words why the correct answer is right; the text is saved.
+- **Desirable difficulties**: the difficulty goes up after 3 correct answers in a row at the current level and down after 2 misses in a row.
 
-### 📚 Advanced Question Generation
-- **Multiple Choice Questions**: Quick assessment with 4 options and detailed explanations
-- **Dissertative Questions**: Open-ended questions for deep analysis and critical thinking
-- **Mixed Mode**: Intelligent interleaving of question types for optimal learning
-- **Adaptive Difficulty**: Questions adjust based on your performance and confidence levels
+### 📊 History
+- Dashboard with session counts and recent sessions.
+- Session history with search and a status filter (active / completed).
+- Per-session detail view with every question, your answer, the feedback, the difficulty, the dissertative score, review copies, and your elaborative and self-explanation answers.
+- Edit a session's contexts, instructions, difficulty, and learning settings.
 
-### 🧠 Research-Based Learning Techniques
-**Based on "Make It Stick: The Science of Successful Learning"**
+### 🤖 AI providers
+| Provider | API key | Notes |
+|----------|---------|-------|
+| **OpenAI** | Required | |
+| **Google Gemini** | Required | The key is sent in the `x-goog-api-key` request header |
+| **Anthropic** | Required | |
+| **DeepSeek** | Required | |
+| **Ollama** | Not needed | Runs models on your own machine; default base URL `http://localhost:11434/v1` |
 
-- **Spaced Repetition**: Automatic scheduling of review questions based on performance
-- **Interleaving**: Mix different question types and topics for better retention
-- **Elaborative Interrogation**: "Why" questions to deepen understanding
-- **Retrieval Practice**: Active recall to strengthen memory pathways
-- **Self-Explanation**: Connect new knowledge to existing understanding
-- **Desirable Difficulties**: Appropriate challenges that enhance learning
+- **Model ids are free-form**: Settings suggests known models for each provider, but you can enter any model id the provider accepts.
+- Each provider keeps its own API key, model, and (where supported) base URL.
 
-### 📊 Comprehensive Analytics
-- **Session Tracking**: Detailed progress monitoring with question-by-question breakdowns
-- **Performance Metrics**: Accuracy rates, confidence tracking, and improvement trends
-- **Study History**: Complete session archive with searchable and filterable results
-- **Time Analytics**: Study duration and efficiency measurements
+### 🎨 Interface
+- English and Portuguese (Brazil). Prompts are written per language, so questions come back in the selected language.
+- 10 color themes.
+- Responsive layout for phones, tablets, and desktops.
+- Questions and feedback are rendered as Markdown with code highlighting; LaTeX-style math is converted to readable text.
 
-### 🎯 Personalized Learning Experience
-- **Subject Flexibility**: Study any topic from programming to history to science
-- **Custom Modifiers**: Add specific textbooks, authors, or focus areas
-- **Adaptive AI Prompts**: Customize how AI generates and evaluates questions
-- **Learning Preferences**: Remember your preferred techniques and question types
+## 🔒 Privacy and costs
 
-### 🔒 Privacy-First Design
-- **Local Storage**: All data stays in your browser - complete privacy guaranteed
-- **No Account Required**: Start studying immediately without registration
-- **Secure API Integration**: Your API keys are stored locally and never shared
-- **GDPR Compliant**: Privacy by design with no tracking or data collection
+- **Stored in your browser**: API keys, provider settings, preferences, and study sessions live in `localStorage`. Studorama has no server, no account system, and no analytics.
+- **Sent to your AI provider**: to generate and evaluate questions, your browser sends your study topics, instructions, answers, and API key to the provider you selected. The provider processes them under its own terms. With a local Ollama server, requests stay on your machine.
+- **API keys in URLs**: you can pre-configure a provider with URL parameters (see below). A key in a URL can end up in browser history, bookmarks, or shared links, so treat such links as secrets. The app removes the parameters from the address bar after reading them.
+- **Costs**: Studorama is free and open source. Cloud providers bill API usage to your key. Ollama has no API cost.
+- **Delete everything**: Settings → Data removes all Studorama data from the browser.
 
-## 🚀 Supported AI Providers
+## 🌟 Getting started
 
-### ☁️ Cloud Providers
-| Provider | Models | Strengths | Cost |
-|----------|--------|-----------|------|
-| **OpenAI** | GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-4, GPT-3.5 Turbo | Industry leader, most capable | Medium-High |
-| **Google Gemini** | Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini Pro | Large context windows, fast | Low-Medium |
-| **Anthropic Claude** | Claude 3.5 Sonnet, Claude 3 Haiku, Claude 3 Opus | Safety-focused, excellent reasoning | Medium-High |
-| **DeepSeek** | DeepSeek Chat, DeepSeek Coder | Cost-effective, strong performance | Low |
+### Use the hosted app
+1. Open [studorama.vercel.app](https://studorama.vercel.app).
+2. In **Settings**, pick a provider, paste your API key (not needed for Ollama), and enter or pick a model id.
+3. Choose your language.
+4. Go to **Study**, enter one or more topics, choose the question type, and start.
 
-### 🏠 Local Providers
-| Provider | Models | Benefits | Requirements |
-|----------|--------|----------|--------------|
-| **Ollama** | Llama 3.1 8B/70B, Mistral 7B, Code Llama 13B | Completely free, private | Local installation |
-| **Browser AI** | Browser AI (experimental) | No setup required | Modern browser |
+### Configure a provider from the URL
+```
+https://studorama.vercel.app/?provider=openai&apikey=sk-...&model=gpt-4o-mini
+```
+Supported parameters: `provider`, `apikey` (or `api_key`, `key`), `model`, `baseUrl` (or `base_url`). Without `provider`, the app guesses it from the key format (`sk-ant-` → Anthropic, `sk-` → OpenAI, `AIza` → Gemini). DeepSeek keys also start with `sk-`, so pass `provider=deepseek` for them.
 
-## 🌟 Getting Started
+### Get an API key
+- **OpenAI**: platform.openai.com → API keys
+- **Google Gemini**: aistudio.google.com → Get API key
+- **Anthropic**: console.anthropic.com → API keys
+- **DeepSeek**: platform.deepseek.com → API keys
 
-### 🎯 Quick Start (No Installation)
-1. **Visit [www.studorama.vercel.app](https://www.studorama.vercel.app)**
-2. **Choose your AI provider** and configure API key (or use free local options)
-3. **Select your language** (English or Portuguese)
-4. **Start studying** - enter any subject and begin learning!
-
-### 🛠️ Development Setup
+### Ollama (local)
 ```bash
-# Clone the repository
-git clone https://github.com/oluiscabral/studorama.git
-cd studorama
+# Install Ollama (see https://ollama.com for other platforms)
+curl -fsSL https://ollama.com/install.sh | sh
 
-# Install dependencies
+# Allow the Studorama origin to call the local server, then start it
+OLLAMA_ORIGINS="https://studorama.vercel.app" ollama serve
+
+# Pull a model, then enter its id (e.g. llama3.1:8b) in Studorama's settings
+ollama pull llama3.1:8b
+```
+Browsers block cross-origin requests to Ollama unless `OLLAMA_ORIGINS` includes the page's origin (use `http://localhost:5173` for the dev server).
+
+## 🛠️ Development
+
+Requires Node.js 18.18 or later and npm.
+
+```bash
+git clone https://github.com/gustavokch/studorama.git
+cd studorama
 npm install
 
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
+npm run dev         # Vite dev server on http://localhost:5173
+npm run typecheck   # tsc -b
+npm run test        # Vitest (jsdom)
+npm run lint        # ESLint
+npm run build       # tsc -b, then vite build into dist/
+npm run preview     # serve dist/ on http://localhost:4173
 ```
 
-## 🎨 Modern User Experience
+The service worker registers only in production builds served from a non-localhost host. The dev server and local previews unregister any leftover worker.
 
-### 📱 Responsive Design
-- **Mobile-First**: Optimized for smartphones and tablets
-- **Progressive Web App**: Install on any device for native-like experience
-- **Touch-Friendly**: Intuitive gestures and interactions
-- **Offline Capable**: Continue studying without internet (with local models)
+### Technology
+- React 18 + TypeScript, built with Vite 5
+- Tailwind CSS 3 plus theme CSS variables
+- React Router 6
+- State in React hooks persisted to `localStorage` (no state library)
+- AI providers called with `fetch`; no SDKs, no streaming
+- Custom i18n (en-US, pt-BR)
 
-### 🎭 Beautiful Interface
-- **Modern Design**: Clean, professional interface inspired by leading platforms
-- **Smooth Animations**: Delightful micro-interactions and transitions
-- **Accessibility**: WCAG 2.1 AA compliant with keyboard navigation
-- **Dark/Light Themes**: Multiple theme options for comfortable studying
-
-## 🔧 Advanced Configuration
-
-### 🤖 AI Provider Setup
-
-#### OpenAI
-```
-1. Visit platform.openai.com
-2. Create account and navigate to API Keys
-3. Generate new secret key
-4. Paste in Studorama settings
-```
-
-#### Google Gemini
-```
-1. Visit aistudio.google.com
-2. Sign in with Google account
-3. Create API key
-4. Configure in Studorama
-```
-
-#### Ollama (Local)
+### Releases
 ```bash
-# Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
-
-# Start server
-ollama serve
-
-# Pull a model
-ollama pull llama3.1:8b
-
-# Configure base URL in Studorama (default: http://localhost:11434/v1)
+npm run version:info     # print the current version (read-only)
+npm run version:patch    # bump the version in package.json, index.html and public/sw.js
+npm run deploy           # release a patch: checks, bump, commit, tag, push
 ```
-
-### 🎛️ Customization Options
-- **Custom AI Prompts**: Modify how questions are generated and evaluated
-- **Learning Technique Presets**: Save your preferred learning methods
-- **Subject Modifiers**: Add specific textbooks, authors, or focus areas
-- **Confidence Tracking**: Monitor your certainty levels for better self-assessment
-
-## 📈 Learning Science Foundation
-
-Studorama implements evidence-based learning techniques from cognitive science research:
-
-### 📖 Research Sources
-- **"Make It Stick"** by Brown, Roediger, and McDaniel
-- **Cognitive Load Theory** principles
-- **Spaced Repetition** algorithms
-- **Interleaving** methodologies
-- **Metacognitive** strategy training
-
-### 🧪 Proven Benefits
-- **50-200% improvement** in long-term retention
-- **Better knowledge transfer** to new situations
-- **Enhanced metacognitive awareness**
-- **Reduced forgetting curves**
-- **Improved problem-solving skills**
-
-## 🌐 Internationalization
-
-### 🗣️ Supported Languages
-- **English (US)** - Complete localization
-- **Portuguese (Brazil)** - Complete localization
-- **More languages coming soon**
-
-### 🔄 Smart Language Features
-- **Automatic prompt translation** when switching languages
-- **Localized AI provider information** and setup instructions
-- **Cultural adaptation** of content and examples
-- **Seamless language switching** with preference memory
-
-## 📊 Technical Architecture
-
-### 🏗️ Technology Stack
-- **Frontend**: React 18 + TypeScript
-- **Styling**: Tailwind CSS with custom design system
-- **Build Tool**: Vite for fast development and optimized builds
-- **State Management**: React hooks with local storage persistence
-- **AI Integration**: Multi-provider abstraction layer
-- **Internationalization**: Custom i18n system with dynamic loading
-
-### 🔧 Key Features
-- **Type-Safe**: Full TypeScript implementation
-- **Modular Architecture**: Clean separation of concerns
-- **Performance Optimized**: Code splitting and lazy loading
-- **SEO Friendly**: Server-side rendering ready
-- **PWA Ready**: Service worker and offline capabilities
-
-## 🚀 Deployment & Versioning
-
-### 🌐 Live Deployment
-- **Production**: [www.studorama.vercel.app](https://www.studorama.vercel.app)
-- **CDN**: Global content delivery for fast loading
-- **SSL**: Secure HTTPS with modern encryption
-- **Monitoring**: Real-time performance tracking
-
-### 📦 Version Management
-```bash
-# Automated versioning system
-npm run version:patch    # Bug fixes
-npm run version:minor    # New features  
-npm run version:major    # Breaking changes
-
-# Automated deployment
-npm run deploy          # Deploy with version bump
-npm run deploy:minor    # Deploy with minor version
-npm run deploy:major    # Deploy with major version
-```
+`npm run deploy` (or `deploy:minor` / `deploy:major`) runs only on `main`. It stops on a dirty tree unless you confirm in a terminal, runs lint, typecheck and build before it bumps the version, commits only the three version files, creates an annotated `v<version>` tag, and pushes `main` and the tag to `origin`. The hosted app deploys from `main`.
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Here's how to get involved:
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/my-change`).
+3. Run `npm run typecheck`, `npm run lint`, and `npm run test`.
+4. Commit and open a pull request.
 
-### 🛠️ Development Process
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### 📋 Contribution Guidelines
-- Follow TypeScript best practices
-- Maintain responsive design principles
-- Write clear, descriptive commit messages
-- Test across multiple browsers and devices
-- Ensure accessibility compliance (WCAG 2.1 AA)
-- Use the automated versioning system for releases
-
-### 🎯 Areas for Contribution
-- **New AI Providers**: Add support for additional AI services
-- **Language Support**: Contribute translations for new languages
-- **Learning Techniques**: Implement additional research-backed methods
-- **UI/UX Improvements**: Enhance the user experience
-- **Performance Optimization**: Improve loading times and responsiveness
-- **Accessibility**: Make the platform more inclusive
-
-## 🗺️ Roadmap
-
-### 🔜 Coming Soon
-- [ ] **Study Groups**: Collaborative learning sessions
-- [ ] **Advanced Analytics**: Detailed learning insights and recommendations
-- [ ] **Mobile Apps**: Native iOS and Android applications
-- [ ] **More AI Providers**: Cohere, Hugging Face, and others
-- [ ] **Voice Input**: Speech-to-text for answers
-- [ ] **Export Features**: PDF and CSV export capabilities
-
-### 🎯 Long-term Vision
-- [ ] **LMS Integration**: Connect with popular learning management systems
-- [ ] **AI Study Plans**: Personalized curriculum generation
-- [ ] **Gamification**: Achievements, streaks, and progress rewards
-- [ ] **Social Features**: Share progress and compete with friends
-- [ ] **Advanced Spaced Repetition**: ML-powered review scheduling
-- [ ] **Multi-modal Learning**: Image, audio, and video question support
+Useful areas: new AI providers, translations, making the stored learning-technique toggles affect sessions, accessibility, and tests.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE](LICENSE).
 
 ## 🙏 Acknowledgments
 
-### 🔬 Research Foundation
-- **Peter C. Brown, Henry L. Roediger III, Mark A. McDaniel** - "Make It Stick" research
-- **Cognitive Science Community** - Learning technique validation
-- **Educational Psychology Research** - Evidence-based methodologies
+- **Peter C. Brown, Henry L. Roediger III, Mark A. McDaniel**, authors of *Make It Stick*
+- **Lucide** for the icon set
+- **React** and **Tailwind CSS**
 
-### 🛠️ Technology Partners
-- **OpenAI** - GPT model access and API
-- **Google** - Gemini AI models
-- **Anthropic** - Claude AI models
-- **Meta** - Llama open-source models
-- **React Team** - Excellent framework and documentation
-- **Tailwind CSS** - Utility-first CSS framework
+## 📞 Support
 
-### 🎨 Design Resources
-- **Pexels** - High-quality stock photography
-- **Lucide** - Beautiful icon library
-- **Unsplash** - Additional imagery resources
-
-## 📞 Support & Community
-
-### 🐛 Issues & Bug Reports
-- **GitHub Issues**: [Report bugs and request features](https://github.com/oluiscabral/studorama/issues)
-- **Discussions**: [Join community discussions](https://github.com/oluiscabral/studorama/discussions)
-
-### 💬 Community
-- **Discord**: Coming soon - Join our learning community
-- **Twitter**: Coming soon - Join our learning community
-- **Blog**: Coming soon - Join our learning community
-
-### 📧 Direct Contact
-- **LinkedIn**: [Connect with the founder](https://www.linkedin.com/in/oluiscabral)
-
-## 🌟 Show Your Support
-
-If Studorama helps you learn better, please consider:
-
-- ⭐ **Star the repository** on GitHub
-- 🐦 **Share on social media** with #Studorama
-- 🤝 **Contribute** to the project
-- 📝 **Write a review** or blog post about your experience
-- 💝 **Sponsor the project** to help keep it free for everyone
-
-## 📈 Project Stats
-
-- 🎯 **6 AI Providers** supported
-- 🌍 **2 Languages** fully localized
-- 📚 **6 Learning Techniques** implemented
-- 🔬 **Research-Based** methodology
-- 🆓 **100% Free** and open source
-- 🔒 **Privacy-First** design
-- 📱 **Mobile-Optimized** experience
-
----
-
-*Empowering learners worldwide with AI-driven education technology and evidence-based learning science.*
-
-**🌐 Start learning today at [www.studorama.vercel.app](https://www.studorama.vercel.app)**
+- **Issues**: [github.com/gustavokch/studorama/issues](https://github.com/gustavokch/studorama/issues)
+- **Sponsor**: the in-app **Support Us** page links to sponsorship options.

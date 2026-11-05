@@ -56,7 +56,7 @@ export function useLanguage() {
           }
         }
       }
-    }, 200); // Longer delay to ensure localStorage is fully updated
+    }, 200);
   }, [setLanguageSettings]);
 
   // Get translations for current language

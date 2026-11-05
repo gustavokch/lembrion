@@ -1,9 +1,14 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import { version } from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    // Single runtime source of the app version: package.json.
+    __APP_VERSION__: JSON.stringify(version),
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
     include: ['react', 'react-dom', 'react-router-dom']
@@ -19,7 +24,7 @@ export default defineConfig({
       }
     },
     sourcemap: false, // Disable sourcemaps in production to reduce bundle size
-    minify: 'esbuild', // Use esbuild instead of terser for faster builds
+    minify: 'esbuild',
     target: 'esnext'
   },
   server: {
@@ -28,8 +33,12 @@ export default defineConfig({
     }
   },
   preview: {
-    // Configure preview server to handle SPA routing
     host: true,
     port: 4173
+  },
+  test: {
+    environment: 'jsdom',
+    include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.js'],
+    restoreMocks: true,
   }
 });

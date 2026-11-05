@@ -279,27 +279,6 @@ const OLLAMA_MODELS: AIModel[] = [
 ];
 
 /**
- * Browser AI Provider Configuration
- */
-const BROWSER_MODELS: AIModel[] = [
-  {
-    id: 'browser-ai',
-    name: 'Browser AI',
-    description: 'Local AI running in the browser (experimental)',
-    contextWindow: 4096,
-    costTier: 'free',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: false,
-      evaluation: true,
-      reasoning: false,
-      codeGeneration: false,
-    },
-    recommended: false,
-  },
-];
-
-/**
  * Provider configurations with localized content
  */
 export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
@@ -445,32 +424,6 @@ export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
       evaluation: 0.6,
     },
   },
-
-  browser: {
-    id: 'browser',
-    name: 'Browser AI',
-    description: 'Experimental local AI running in the browser',
-    requiresApiKey: false,
-    apiKeyLabel: '',
-    apiKeyPlaceholder: '',
-    setupInstructions: [
-      'Enable experimental web features in your browser',
-      'This feature is experimental and may not work in all browsers',
-      'Performance may be limited compared to cloud-based models'
-    ],
-    models: BROWSER_MODELS,
-    defaultModel: 'browser-ai',
-    maxTokens: {
-      multipleChoice: 400,
-      dissertative: 600,
-      evaluation: 300,
-    },
-    temperature: {
-      multipleChoice: 0.7,
-      dissertative: 0.8,
-      evaluation: 0.6,
-    },
-  },
 };
 
 /**
@@ -492,13 +445,6 @@ export function getAllProviders(): AIProviderConfig[] {
 }
 
 /**
- * Get providers that don't require API keys
- */
-export function getFreeProviders(): AIProviderConfig[] {
-  return Object.values(AI_PROVIDERS).filter(provider => !provider.requiresApiKey);
-}
-
-/**
  * Get model by provider and model ID
  */
 export function getModel(providerId: AIProvider, modelId: string): AIModel | undefined {
@@ -507,28 +453,10 @@ export function getModel(providerId: AIProvider, modelId: string): AIModel | und
 }
 
 /**
- * Get localized provider name
+ * Get localized provider name (brand names are the same in every language)
  */
-export function getLocalizedProviderName(providerId: AIProvider, language: Language): string {
-  const provider = getProviderConfig(providerId);
-  
-  // Return localized name based on provider
-  switch (providerId) {
-    case 'openai':
-      return 'OpenAI';
-    case 'gemini':
-      return 'Google Gemini';
-    case 'anthropic':
-      return 'Anthropic Claude';
-    case 'deepseek':
-      return 'DeepSeek';
-    case 'ollama':
-      return 'Ollama';
-    case 'browser':
-      return language === 'pt-BR' ? 'IA do Navegador' : 'Browser AI';
-    default:
-      return provider.name;
-  }
+export function getLocalizedProviderName(providerId: AIProvider, _language: Language): string {
+  return getProviderConfig(providerId).name;
 }
 
 /**
@@ -556,10 +484,6 @@ export function getLocalizedProviderDescription(providerId: AIProvider, language
       return language === 'pt-BR'
         ? 'Execute modelos de IA localmente em sua máquina'
         : 'Run AI models locally on your machine';
-    case 'browser':
-      return language === 'pt-BR'
-        ? 'IA local experimental executando no navegador'
-        : 'Experimental local AI running in the browser';
     default:
       // @ts-ignore
       return AI_PROVIDERS[providerId].description;
@@ -625,8 +549,6 @@ export function getLocalizedModelDescription(
         return 'Modelo local rápido e eficiente';
       case 'codellama:13b':
         return 'Modelo local especializado para tarefas de programação';
-      case 'browser-ai':
-        return 'IA local executando no navegador (experimental)';
       default:
         return model.description;
     }
@@ -681,12 +603,6 @@ export function getLocalizedSetupInstructions(providerId: AIProvider, language: 
           'Execute "ollama serve" para iniciar o servidor',
           'Baixe um modelo com "ollama pull llama3.1:8b"',
           'Configure a URL base se diferente do padrão'
-        ];
-      case 'browser':
-        return [
-          'Habilite recursos experimentais da web no seu navegador',
-          'Este recurso é experimental e pode não funcionar em todos os navegadores',
-          'A performance pode ser limitada comparada a modelos baseados em nuvem'
         ];
       default:
         return provider.setupInstructions;
@@ -770,11 +686,11 @@ export function validateProviderConfig(
     errors.push(errorMsg);
   }
   
-  // Check model validity
-  if (settings.model && !provider.models.find(m => m.id === settings.model)) {
+  // Any non-empty model id is accepted; the registry models are only suggestions
+  if (!settings.model?.trim()) {
     const errorMsg = language === 'pt-BR'
-      ? `Modelo inválido: ${settings.model}`
-      : `Invalid model: ${settings.model}`;
+      ? 'Modelo é obrigatório'
+      : 'Model is required';
     errors.push(errorMsg);
   }
   

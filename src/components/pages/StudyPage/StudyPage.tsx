@@ -1,25 +1,15 @@
 import { ArrowRight, Award, BookOpen, Brain, CheckCircle, ChevronDown, ChevronUp, Lightbulb, Loader2, Maximize, MessageSquare, Minimize, Monitor, Play, Settings, Smartphone, Sparkles, Tablet, Target, XCircle, Zap } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { aiService } from "../../../core/services/ai";
+import { STORAGE_KEYS } from "../../../core/config/constants";
+import { aiService, getAIErrorMessage } from "../../../core/services/ai";
+import { debugLog } from "../../../core/services/ai/debug";
 import { getProviderConfig } from "../../../core/services/ai/providers/registry";
-import { AIProvider } from "../../../core/types/ai.types";
-import { useLanguage, useLocalStorage, useTheme } from "../../../hooks";
-import { LearningSettings, Question, StudySession } from "../../../types";
+import { createId } from "../../../core/utils/id";
+import { useLanguage, useLocalStorage, useMultiProviderSettings, useTheme } from "../../../hooks";
+import { Difficulty, LearningSettings, Question, StudySession } from "../../../types";
 import MarkdownRenderer from "../../MarkdownRenderer";
-
-interface MultiProviderSettings {
-  currentProvider: AIProvider;
-  providers: Record<
-    AIProvider,
-    {
-      apiKey: string;
-      model: string;
-      baseUrl?: string;
-      customHeaders?: Record<string, string>;
-    }
-  >;
-}
+import { createReviewCopy, DIFFICULTIES, difficultyLabels, findDueReview, nextDifficulty, nextFocusContext, normalizeLearningSettings } from "./learningTechniques";
 
 export default function StudyPage() {
   const navigate = useNavigate();
@@ -28,18 +18,8 @@ export default function StudyPage() {
   const { themeConfig } = useTheme();
 
   // State management
-  const [sessions, setSessions] = useLocalStorage<StudySession[]>("studorama-sessions", []);
-  const [multiProviderSettings] = useLocalStorage<MultiProviderSettings>("studorama-multi-provider-settings", {
-    currentProvider: "openai",
-    providers: {
-      openai: { apiKey: "", model: "gpt-4o-mini" },
-      gemini: { apiKey: "", model: "gemini-1.5-flash" },
-      anthropic: { apiKey: "", model: "claude-3-haiku-20240307" },
-      deepseek: { apiKey: "", model: "deepseek-chat" },
-      ollama: { apiKey: "", model: "llama3.1:8b", baseUrl: "http://localhost:11434/v1" },
-      browser: { apiKey: "", model: "browser-ai" },
-    },
-  });
+  const [sessions, setSessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
+  const [multiProviderSettings] = useMultiProviderSettings();
 
   // Session state
   const [currentSession, setCurrentSession] = useState<StudySession | null>(null);
@@ -49,6 +29,7 @@ export default function StudyPage() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [elaborativeQuestion, setElaborativeQuestion] = useState("");
   const [elaborativeAnswer, setElaborativeAnswer] = useState("");
+  const [selfExplanation, setSelfExplanation] = useState("");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEvaluating, setIsEvaluating] = useState(false);
@@ -62,15 +43,12 @@ export default function StudyPage() {
   const [instructions, setInstructions] = useState<string[]>([]);
   const [newInstruction, setNewInstruction] = useState("");
   const [questionType, setQuestionType] = useState<"multipleChoice" | "dissertative" | "mixed">("multipleChoice");
-  const [learningSettings, setLearningSettings] = useState<LearningSettings>({
-    spacedRepetition: true,
-    interleaving: true,
-    elaborativeInterrogation: true,
-    selfExplanation: true,
-    desirableDifficulties: true,
-    retrievalPractice: true,
-    generationEffect: true,
-  });
+  const [difficulty, setDifficulty] = useState<Difficulty>("medium");
+  const [learningSettings, setLearningSettings] = useState<LearningSettings>(() => normalizeLearningSettings());
+
+  // Once a session starts or resumes, its own stored settings drive the study flow
+  const sessionSettings = normalizeLearningSettings(currentSession?.learningSettings);
+  const levelLabels = difficultyLabels(t);
 
   // UI state
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
@@ -131,27 +109,9 @@ export default function StudyPage() {
     return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
-  // Load existing session if provided
-  useEffect(() => {
-    const sessionId = location.state?.sessionId;
-    if (sessionId) {
-      const existingSession = sessions.find((s) => s.id === sessionId);
-      if (existingSession && existingSession.status === "active") {
-        setCurrentSession(existingSession);
-        setIsSetupMode(false);
-
-        if (existingSession.currentQuestionIndex !== undefined && existingSession.questions[existingSession.currentQuestionIndex]) {
-          setCurrentQuestion(existingSession.questions[existingSession.currentQuestionIndex]);
-        } else {
-          generateNextQuestion(existingSession);
-        }
-      }
-    }
-  }, [location.state, sessions]);
-
   const startNewSession = async () => {
     if (contexts.length === 0) {
-      setError(language === "pt-BR" ? "Por favor, adicione pelo menos um contexto de estudo" : "Please add at least one study context");
+      setError(t.aiErrorMissingContext);
       return;
     }
 
@@ -165,7 +125,7 @@ export default function StudyPage() {
       setError(null);
 
       const newSession: StudySession = {
-        id: Date.now().toString(),
+        id: createId(),
         contexts: [...contexts],
         instructions: instructions.length > 0 ? [...instructions] : undefined,
         createdAt: new Date().toISOString(),
@@ -175,6 +135,7 @@ export default function StudyPage() {
         totalQuestions: 0,
         questionType,
         learningSettings,
+        difficulty,
         currentQuestionIndex: 0,
       };
 
@@ -184,15 +145,18 @@ export default function StudyPage() {
 
       await generateNextQuestion(newSession);
     } catch (error) {
-      console.error("Error starting session:", error);
-      setError(error instanceof Error ? error.message : "Failed to start session");
+      debugLog("Error starting session:", error);
+      setError(getAIErrorMessage(error, t));
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const generateNextQuestion = async (session: StudySession) => {
-    if (!isProviderConfigured) {
+  const generateNextQuestion = useCallback(async (session: StudySession) => {
+    const settings = normalizeLearningSettings(session.learningSettings);
+    const dueReview = settings.spacedRepetition ? findDueReview(session.questions) : undefined;
+
+    if (!dueReview && !isProviderConfigured) {
       setError(language === "pt-BR" ? "Configure seu provedor de IA nas configurações primeiro" : "Please configure your AI provider in settings first");
       return;
     }
@@ -201,40 +165,53 @@ export default function StudyPage() {
       setIsGenerating(true);
       setError(null);
 
-      let questionTypeToGenerate: "multipleChoice" | "dissertative" = "multipleChoice";
-      if (session.questionType === "mixed") {
-        questionTypeToGenerate = Math.random() > 0.5 ? "multipleChoice" : "dissertative";
-      } else if (session.questionType) {
-        questionTypeToGenerate = session.questionType;
-      }
-
-      const generatedQuestion = await aiService.generateQuestion(
-        {
-          contexts: session.contexts,
-          instructions: session.instructions,
-          type: questionTypeToGenerate,
-          language,
-          difficulty: "medium",
-        },
-        {
-          provider: multiProviderSettings.currentProvider,
-          apiKey: currentProviderSettings.apiKey,
-          model: currentProviderSettings.model,
-          baseUrl: currentProviderSettings.baseUrl,
-          customHeaders: currentProviderSettings.customHeaders,
+      let question: Question;
+      if (dueReview) {
+        // A missed question comes back as a reshuffled copy without an API call
+        const priorCopies = session.questions.filter((q) => q.reviewOf === dueReview.id);
+        question = createReviewCopy(dueReview, priorCopies, createId, Math.random);
+      } else {
+        let questionTypeToGenerate: "multipleChoice" | "dissertative" = "multipleChoice";
+        if (session.questionType === "mixed") {
+          questionTypeToGenerate = Math.random() > 0.5 ? "multipleChoice" : "dissertative";
+        } else if (session.questionType) {
+          questionTypeToGenerate = session.questionType;
         }
-      );
 
-      const question: Question = {
-        id: Date.now().toString(),
-        question: generatedQuestion.question,
-        type: generatedQuestion.type,
-        options: generatedQuestion.options,
-        correctAnswer: generatedQuestion.correctAnswer,
-        correctAnswerText: generatedQuestion.sampleAnswer,
-        attempts: 0,
-        difficulty: generatedQuestion.difficulty,
-      };
+        const requestedDifficulty = session.difficulty ?? "medium";
+        const focusContext = settings.interleaving ? nextFocusContext(session.questions, session.contexts) : undefined;
+
+        const generatedQuestion = await aiService.generateQuestion(
+          {
+            contexts: session.contexts,
+            instructions: session.instructions,
+            type: questionTypeToGenerate,
+            language,
+            difficulty: requestedDifficulty,
+            focusContext,
+          },
+          {
+            provider: multiProviderSettings.currentProvider,
+            apiKey: currentProviderSettings.apiKey,
+            model: currentProviderSettings.model,
+            baseUrl: currentProviderSettings.baseUrl,
+            customHeaders: currentProviderSettings.customHeaders,
+          }
+        );
+
+        question = {
+          id: createId(),
+          question: generatedQuestion.question,
+          type: generatedQuestion.type,
+          options: generatedQuestion.options,
+          correctAnswer: generatedQuestion.correctAnswer,
+          correctAnswerText: generatedQuestion.sampleAnswer,
+          evaluationCriteria: generatedQuestion.evaluationCriteria,
+          attempts: 0,
+          difficulty: requestedDifficulty,
+          context: focusContext,
+        };
+      }
 
       const updatedSession = {
         ...session,
@@ -253,14 +230,39 @@ export default function StudyPage() {
       setShowFeedback(false);
       setElaborativeQuestion("");
       setElaborativeAnswer("");
+      setSelfExplanation("");
       setIsAnswerSubmitted(false);
     } catch (error) {
-      console.error("Error generating question:", error);
-      setError(error instanceof Error ? error.message : "Failed to generate question");
+      debugLog("Error generating question:", error);
+      setError(getAIErrorMessage(error, t));
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [isProviderConfigured, language, t, multiProviderSettings.currentProvider, currentProviderSettings, setSessions]);
+
+  // Load an existing session once per resume request. `sessions` changes after every
+  // answer and question write; re-running the resume logic on those writes would reset
+  // local state and could start a duplicate question generation.
+  const resumeSessionId: string | undefined = location.state?.sessionId;
+  const handledResumeIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!resumeSessionId || handledResumeIdRef.current === resumeSessionId) return;
+
+    const existingSession = sessions.find((s) => s.id === resumeSessionId);
+    if (!existingSession) return;
+    handledResumeIdRef.current = resumeSessionId;
+    if (existingSession.status !== "active") return;
+
+    setCurrentSession(existingSession);
+    setIsSetupMode(false);
+
+    if (existingSession.currentQuestionIndex !== undefined && existingSession.questions[existingSession.currentQuestionIndex]) {
+      setCurrentQuestion(existingSession.questions[existingSession.currentQuestionIndex]);
+    } else {
+      generateNextQuestion(existingSession);
+    }
+  }, [resumeSessionId, sessions, generateNextQuestion]);
 
   const addContext = () => {
     if (newContext.trim() && !contexts.includes(newContext.trim())) {
@@ -292,9 +294,10 @@ export default function StudyPage() {
       setIsAnswerSubmitted(true);
       setError(null);
 
-      const finalAnswer = currentQuestion.type === "multipleChoice" ? selectedOption ?? userAnswer : undefined;
+      const finalAnswer = currentQuestion.type === "multipleChoice" ? selectedOption ?? userAnswer : userAnswer;
       let isCorrect = false;
       let feedback = "";
+      let answerScore: number | undefined;
 
       if (currentQuestion.type === "multipleChoice") {
         isCorrect = finalAnswer === currentQuestion.correctAnswer;
@@ -305,6 +308,7 @@ export default function StudyPage() {
             question: currentQuestion.question,
             userAnswer: finalAnswer?.toString() || "",
             correctAnswer: currentQuestion.correctAnswerText,
+            evaluationCriteria: currentQuestion.evaluationCriteria,
             type: "dissertative",
             language,
           },
@@ -319,6 +323,7 @@ export default function StudyPage() {
 
         isCorrect = evaluation.isCorrect;
         feedback = evaluation.feedback;
+        answerScore = evaluation.score;
       }
 
       const updatedQuestion: Question = {
@@ -326,6 +331,7 @@ export default function StudyPage() {
         userAnswer: finalAnswer,
         isCorrect,
         feedback,
+        score: answerScore,
         attempts: currentQuestion.attempts + 1,
         confidence,
       };
@@ -336,11 +342,13 @@ export default function StudyPage() {
       const correctAnswers = updatedQuestions.filter((q) => q.isCorrect).length;
       const score = updatedQuestions.length > 0 ? Math.round((correctAnswers / updatedQuestions.length) * 100) : 0;
 
+      const settings = normalizeLearningSettings(currentSession.learningSettings);
       const updatedSession: StudySession = {
         ...currentSession,
         questions: updatedQuestions,
         score,
         totalQuestions: updatedQuestions.length,
+        difficulty: settings.desirableDifficulties ? nextDifficulty(updatedQuestions, currentSession.difficulty ?? "medium") : currentSession.difficulty,
       };
 
       setCurrentSession(updatedSession);
@@ -348,7 +356,7 @@ export default function StudyPage() {
       setSessions((prev) => prev.map((s) => (s.id === currentSession.id ? updatedSession : s)));
       setShowFeedback(true);
 
-      if (!isCorrect && learningSettings.elaborativeInterrogation) {
+      if (!isCorrect && settings.elaborativeInterrogation) {
         try {
           const elaborativeQ = await aiService.generateElaborativeQuestion(currentSession.contexts, currentQuestion.question, language as any, {
             provider: multiProviderSettings.currentProvider,
@@ -359,20 +367,33 @@ export default function StudyPage() {
           });
           setElaborativeQuestion(elaborativeQ);
         } catch (error) {
-          console.error("Error generating elaborative question:", error);
+          debugLog("Error generating elaborative question:", error);
         }
       }
     } catch (error) {
-      console.error("Error evaluating answer:", error);
-      setError(error instanceof Error ? error.message : "Failed to evaluate answer");
+      debugLog("Error evaluating answer:", error);
+      setError(getAIErrorMessage(error, t));
     } finally {
       setIsEvaluating(false);
     }
   };
 
   const nextQuestion = () => {
-    if (!currentSession) return;
-    generateNextQuestion(currentSession);
+    if (!currentSession || !currentQuestion) return;
+
+    // Keep the follow-up prompt and the learner's answers with the question they belong to
+    const savedQuestion: Question = {
+      ...currentQuestion,
+      elaborativeQuestion: elaborativeQuestion || currentQuestion.elaborativeQuestion,
+      elaborativeAnswer: elaborativeAnswer.trim() || currentQuestion.elaborativeAnswer,
+      selfExplanation: selfExplanation.trim() || currentQuestion.selfExplanation,
+    };
+    const questions = currentSession.questions.map((q) => (q.id === savedQuestion.id ? savedQuestion : q));
+    const updatedSession: StudySession = { ...currentSession, questions };
+
+    setCurrentSession(updatedSession);
+    setSessions((prev) => prev.map((s) => (s.id === updatedSession.id ? updatedSession : s)));
+    generateNextQuestion(updatedSession);
   };
 
   const endSession = () => {
@@ -384,7 +405,6 @@ export default function StudyPage() {
     };
 
     setSessions((prev) => prev.map((s) => (s.id === currentSession.id ? finalSession : s)));
-    window.location.replace('/history');
     navigate("/history");
   };
 
@@ -734,6 +754,42 @@ export default function StudyPage() {
             </div>
           </div>
 
+          {/* Difficulty Selection */}
+          <div className="mb-6">
+            <label id="difficulty-label" className="block text-sm font-semibold mb-3" style={{ color: themeConfig.colors.text }}>
+              {t.difficulty}
+            </label>
+            <div
+              role="radiogroup"
+              aria-labelledby="difficulty-label"
+              className="grid grid-cols-3 gap-1 p-1 rounded-2xl border"
+              style={{
+                backgroundColor: themeConfig.colors.surface,
+                borderColor: themeConfig.colors.border,
+              }}
+            >
+              {DIFFICULTIES.map((level) => {
+                const isSelected = difficulty === level;
+                return (
+                  <button
+                    key={level}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    onClick={() => setDifficulty(level)}
+                    className="min-h-[44px] px-2 rounded-xl text-sm font-semibold transition-colors duration-200"
+                    style={{
+                      backgroundColor: isSelected ? themeConfig.colors.primary : "transparent",
+                      color: isSelected ? "#ffffff" : themeConfig.colors.textSecondary,
+                    }}
+                  >
+                    {levelLabels[level]}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Advanced Options Toggle */}
           <button
             onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
@@ -764,7 +820,8 @@ export default function StudyPage() {
                   { key: "spacedRepetition", label: t.spacedRepetition, desc: t.spacedRepetitionDesc },
                   { key: "interleaving", label: t.interleaving, desc: t.interleavingDesc },
                   { key: "elaborativeInterrogation", label: t.elaborativeInterrogation, desc: t.elaborativeInterrogationDesc },
-                  { key: "retrievalPractice", label: t.retrievalPractice, desc: t.retrievalPracticeDesc },
+                  { key: "selfExplanation", label: t.selfExplanation, desc: t.selfExplanationDesc },
+                  { key: "desirableDifficulties", label: t.desirableDifficulties, desc: t.desirableDifficultiesDesc },
                 ].map(({ key, label, desc }) => (
                   <label key={key} className="flex items-start space-x-3 cursor-pointer">
                     <div className="relative mt-1">
@@ -847,6 +904,45 @@ export default function StudyPage() {
 
   // Study session UI
   if (!currentSession || !currentQuestion) {
+    // A failed first generation leaves the session without a question: show the error and a way out.
+    if (currentSession && error && !isGenerating) {
+      return (
+        <div className="min-h-screen flex items-center justify-center safe-top safe-bottom px-4" style={{ background: themeConfig.gradients.background }}>
+          <div className="w-full max-w-md space-y-4">
+            <div
+              className="p-4 rounded-2xl border"
+              style={{
+                backgroundColor: themeConfig.colors.error + "10",
+                borderColor: themeConfig.colors.error + "30",
+              }}
+            >
+              <div className="flex items-start space-x-3">
+                <XCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.error }} />
+                <p className="text-sm leading-relaxed" style={{ color: themeConfig.colors.error }}>
+                  {error}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => generateNextQuestion(currentSession)}
+              className="w-full py-3 px-4 rounded-2xl font-semibold text-sm flex items-center justify-center space-x-2 shadow-lg"
+              style={{ background: themeConfig.gradients.primary, color: "#ffffff" }}
+            >
+              <ArrowRight className="w-5 h-5" />
+              <span>{t.tryAgain}</span>
+            </button>
+            <button
+              onClick={endSession}
+              className="w-full py-3 px-4 rounded-2xl font-semibold text-sm border"
+              style={{ borderColor: themeConfig.colors.border, color: themeConfig.colors.textSecondary }}
+            >
+              {t.endSession}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen flex items-center justify-center safe-top safe-bottom" style={{ background: themeConfig.gradients.background }}>
         <div className="text-center">
@@ -1195,6 +1291,39 @@ export default function StudyPage() {
                 </div>
               )}
 
+              {/* Self-Explanation: shown when no elaborative question applies */}
+              {sessionSettings.selfExplanation && (currentQuestion.isCorrect || !sessionSettings.elaborativeInterrogation) && (
+                <div
+                  className="p-4 sm:p-6 rounded-2xl border-2"
+                  style={{
+                    backgroundColor: themeConfig.colors.success + "10",
+                    borderColor: themeConfig.colors.success + "30",
+                  }}
+                >
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: themeConfig.colors.success + "20" }}>
+                      <Brain className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: themeConfig.colors.success }} />
+                    </div>
+                    <label htmlFor="self-explanation" className="font-bold text-sm sm:text-base" style={{ color: themeConfig.colors.success }}>
+                      {t.selfExplanationPrompt}
+                    </label>
+                  </div>
+                  <textarea
+                    id="self-explanation"
+                    value={selfExplanation}
+                    onChange={(e) => setSelfExplanation(e.target.value)}
+                    placeholder={t.selfExplanationPlaceholder}
+                    rows={deviceType === "mobile" ? 2 : 3}
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 rounded-xl focus:border-2 outline-none transition-all duration-200 resize-none text-xs sm:text-sm"
+                    style={{
+                      backgroundColor: themeConfig.colors.background,
+                      borderColor: selfExplanation ? themeConfig.colors.success : themeConfig.colors.border,
+                      color: themeConfig.colors.text,
+                    }}
+                  />
+                </div>
+              )}
+
               {/* Next Question Button */}
               <button
                 onClick={nextQuestion}
@@ -1241,7 +1370,7 @@ export default function StudyPage() {
         )}
 
         {/* Device Type Indicator (for development) */}
-        {process.env.NODE_ENV === "development" && (
+        {import.meta.env.DEV && (
           <div className="fixed bottom-2 right-2 px-2 py-1 rounded-full text-xs bg-black/50 text-white">
             <div className="flex items-center space-x-1">
               {deviceType === "mobile" && <Smartphone className="w-3 h-3" />}

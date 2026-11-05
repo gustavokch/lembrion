@@ -1,99 +1,93 @@
 import { useEffect } from 'react';
 import { DEFAULTS, STORAGE_KEYS } from '../core/config/constants';
+import { isAIProvider, normalizeMultiProviderSettings } from '../core/config/providerSettings';
 import { getProviderConfig, validateProviderConfig } from '../core/services/ai/providers/registry';
+import { getCurrentLanguage } from '../core/services/i18n/languageDetector';
 import { showNotification } from '../core/services/notification';
 import * as localStorage from '../core/services/storage/localStorage';
-import { APISettings } from '../core/types';
-import { AIProvider } from '../core/types/ai.types';
+import { APISettings, Translations } from '../core/types';
+import { AI_PROVIDER_IDS, AIProvider, MultiProviderSettings } from '../core/types/ai.types';
 import { useLanguage } from './useLanguage';
 import { useLocalStorage } from './useLocalStorage';
+import { useMultiProviderSettings } from './useMultiProviderSettings';
 
-// Multi-provider settings interface
-interface MultiProviderSettings {
-  currentProvider: AIProvider;
-  providers: Record<AIProvider, {
-    apiKey: string;
-    model: string;
-    baseUrl?: string;
-    customHeaders?: Record<string, string>;
-  }>;
+const URL_PARAMS = ['apikey', 'api_key', 'key', 'model', 'provider', 'baseUrl', 'base_url'];
+
+/** Stored in STORAGE_KEYS.API_KEY_FROM_URL; read once by useApiKeyFromUrl to show a notice */
+interface ApiKeySuccessFlag {
+  provider: AIProvider;
+  model: string;
+  hasBaseUrl: boolean;
 }
 
+/** Stored in STORAGE_KEYS.API_KEY_ERROR; read once by useApiKeyFromUrl to show a notice */
+type ApiKeyErrorFlag =
+  | { reason: 'unknownProvider'; provider: string }
+  | { reason: 'invalidFormat'; provider: AIProvider }
+  | { reason: 'invalidConfig'; provider: AIProvider; errors: string[] };
+
+const LEGACY_API_SETTINGS_DEFAULT: APISettings = {
+  openaiApiKey: '',
+  model: DEFAULTS.MODEL,
+  customPrompts: {
+    multipleChoice: '',
+    dissertative: '',
+    evaluation: '',
+    elaborativePrompt: '',
+    retrievalPrompt: ''
+  },
+  preloadQuestions: DEFAULTS.PRELOAD_QUESTIONS
+};
+
 /**
- * Extract API key and provider info from URL immediately (before version control)
- * This prevents the API key from being lost during version migrations
+ * Read the API key parameters from the URL
  */
-function extractApiKeyFromUrl(): { 
-  apiKey: string | null; 
-  model: string | null; 
-  provider: AIProvider | null;
+function extractApiKeyFromUrl(): {
+  apiKey: string | null;
+  model: string | null;
+  provider: string | null;
   baseUrl: string | null;
 } {
-  if (typeof window === 'undefined') return { apiKey: null, model: null, provider: null, baseUrl: null };
-
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const apiKey = urlParams.get('apikey') || urlParams.get('api_key') || urlParams.get('key');
-    const model = urlParams.get('model');
-    const provider = urlParams.get('provider') as AIProvider;
-    const baseUrl = urlParams.get('baseUrl') || urlParams.get('base_url');
-    
-    return { apiKey, model, provider, baseUrl };
-  } catch (error) {
-    console.error('Error extracting API key from URL:', error);
-    return { apiKey: null, model: null, provider: null, baseUrl: null };
-  }
+  const urlParams = new URLSearchParams(window.location.search);
+  return {
+    apiKey: urlParams.get('apikey') || urlParams.get('api_key') || urlParams.get('key'),
+    model: urlParams.get('model'),
+    provider: urlParams.get('provider'),
+    baseUrl: urlParams.get('baseUrl') || urlParams.get('base_url'),
+  };
 }
 
 /**
- * Clean URL parameters to avoid showing API key in browser history
+ * Remove the API key parameters from the URL so the key does not stay in the
+ * address bar or browser history. Other parameters stay.
  */
 function cleanUrlParameters(): void {
-  if (typeof window === "undefined") return;
-
   try {
     const cleanUrl = new URL(window.location.href);
-    const hadParams = cleanUrl.searchParams.has('apikey') || 
-                     cleanUrl.searchParams.has('api_key') || 
-                     cleanUrl.searchParams.has('key') || 
-                     cleanUrl.searchParams.has('model') ||
-                     cleanUrl.searchParams.has('provider') ||
-                     cleanUrl.searchParams.has('baseUrl') ||
-                     cleanUrl.searchParams.has('base_url');
-    
-    if (hadParams) {
-      cleanUrl.searchParams.delete('apikey');
-      cleanUrl.searchParams.delete('api_key');
-      cleanUrl.searchParams.delete('key');
-      cleanUrl.searchParams.delete('model');
-      cleanUrl.searchParams.delete('provider');
-      cleanUrl.searchParams.delete('baseUrl');
-      cleanUrl.searchParams.delete('base_url');
-      
-      window.history.replaceState({}, document.title, cleanUrl.toString());
-    }
+    if (!URL_PARAMS.some(param => cleanUrl.searchParams.has(param))) return;
+
+    URL_PARAMS.forEach(param => cleanUrl.searchParams.delete(param));
+    window.history.replaceState(window.history.state, document.title, cleanUrl.toString());
   } catch (error) {
-    console.error("Error cleaning URL parameters:", error);
+    console.error('Error cleaning URL parameters:', error);
   }
 }
 
 /**
- * Detect provider from API key format
+ * Guess the provider from the API key prefix. DeepSeek keys also start with
+ * `sk-` and cannot be told apart from OpenAI keys, so a plain `sk-` key maps to
+ * OpenAI; DeepSeek links need `provider=deepseek`.
  */
-function detectProviderFromApiKey(apiKey: string): AIProvider {
-  if (apiKey.startsWith('sk-')) return 'openai';
-  if (apiKey.startsWith('AIza')) return 'gemini';
+export function detectProviderFromApiKey(apiKey: string): AIProvider {
   if (apiKey.startsWith('sk-ant-')) return 'anthropic';
-  if (apiKey.startsWith('sk-') && apiKey.includes('deepseek')) return 'deepseek';
-  
-  // Default to OpenAI for backward compatibility
+  if (apiKey.startsWith('AIza')) return 'gemini';
   return 'openai';
 }
 
 /**
  * Validate API key format for provider
  */
-function validateApiKeyFormat(apiKey: string, provider: AIProvider): boolean {
+export function validateApiKeyFormat(apiKey: string, provider: AIProvider): boolean {
   switch (provider) {
     case 'openai':
       return apiKey.startsWith('sk-') && apiKey.length > 20;
@@ -104,124 +98,82 @@ function validateApiKeyFormat(apiKey: string, provider: AIProvider): boolean {
     case 'deepseek':
       return apiKey.startsWith('sk-') && apiKey.length > 20;
     case 'ollama':
-    case 'browser':
-      return true; // These don't require API keys
-    default:
-      return apiKey.length > 10; // Generic validation
+      return true; // Ollama does not require an API key
   }
 }
 
+function storeApiKey(apiKey: string, provider: AIProvider, model: string | null, baseUrl: string | null): void {
+  const currentSettings = normalizeMultiProviderSettings(
+    localStorage.getItem<unknown>(STORAGE_KEYS.MULTI_PROVIDER_SETTINGS, null)
+  );
+  const selectedModel = model || getProviderConfig(provider).defaultModel;
+
+  const providerSettings = {
+    ...currentSettings.providers[provider],
+    apiKey,
+    model: selectedModel,
+    ...(baseUrl && { baseUrl })
+  };
+
+  const validation = validateProviderConfig(provider, providerSettings, getCurrentLanguage());
+  if (!validation.valid) {
+    console.warn(`Invalid ${provider.toUpperCase()} configuration:`, validation.errors);
+    const errorFlag: ApiKeyErrorFlag = { reason: 'invalidConfig', provider, errors: validation.errors };
+    localStorage.setItem(STORAGE_KEYS.API_KEY_ERROR, errorFlag);
+    return;
+  }
+
+  const updatedSettings: MultiProviderSettings = {
+    currentProvider: provider,
+    providers: { ...currentSettings.providers, [provider]: providerSettings }
+  };
+  localStorage.setItem(STORAGE_KEYS.MULTI_PROVIDER_SETTINGS, updatedSettings);
+
+  // Keep the legacy single-provider settings in sync for OpenAI
+  if (provider === 'openai') {
+    const legacySettings = localStorage.getItem<APISettings>(STORAGE_KEYS.API_SETTINGS, LEGACY_API_SETTINGS_DEFAULT);
+    localStorage.setItem(STORAGE_KEYS.API_SETTINGS, { ...legacySettings, openaiApiKey: apiKey, model: selectedModel });
+  }
+
+  const successFlag: ApiKeySuccessFlag = { provider, model: selectedModel, hasBaseUrl: !!baseUrl };
+  localStorage.setItem(STORAGE_KEYS.API_KEY_FROM_URL, successFlag);
+  console.log(`${provider.toUpperCase()} API key extracted and stored from URL`);
+}
+
 /**
- * Process API key and provider from URL and store it immediately
- * This runs before version control to preserve the API key during migrations
+ * Store an API key passed as `?apikey=` (with optional `provider=`, `model=`,
+ * `baseUrl=`) in the multi-provider settings, then remove those parameters from
+ * the URL. Runs before the first render. Failures are stored as a flag that
+ * useApiKeyFromUrl turns into a notification.
  */
 export function processApiKeyFromUrl(): void {
-  const { apiKey, model, provider: urlProvider, baseUrl } = extractApiKeyFromUrl();
-  
-  if (apiKey) {
-    // Detect or use specified provider
-    const detectedProvider = urlProvider || detectProviderFromApiKey(apiKey);
-    
-    // Validate API key format for the provider
-    if (validateApiKeyFormat(apiKey, detectedProvider)) {
-      try {
-        // Get current multi-provider settings or use defaults
-        const currentMultiSettings = localStorage.getItem<MultiProviderSettings>('studorama-multi-provider-settings', {
-          currentProvider: 'openai',
-          providers: {
-            openai: { apiKey: '', model: 'gpt-4o-mini' },
-            gemini: { apiKey: '', model: 'gemini-1.5-flash' },
-            anthropic: { apiKey: '', model: 'claude-3-haiku-20240307' },
-            deepseek: { apiKey: '', model: 'deepseek-chat' },
-            ollama: { apiKey: '', model: 'llama3.1:8b', baseUrl: 'http://localhost:11434/v1' },
-            browser: { apiKey: '', model: 'browser-ai' },
-          }
-        });
-        
-        // Get provider config for default model
-        const providerConfig = getProviderConfig(detectedProvider);
-        const defaultModel = model || providerConfig.defaultModel;
-        
-        // Update the specific provider settings
-        const updatedProviderSettings = {
-          ...currentMultiSettings.providers[detectedProvider],
-          apiKey: apiKey,
-          model: defaultModel,
-          ...(baseUrl && { baseUrl: baseUrl })
-        };
-        
-        // Validate the updated settings
-        const validation = validateProviderConfig(detectedProvider, updatedProviderSettings);
-        
-        if (validation.valid) {
-          const updatedMultiSettings = {
-            ...currentMultiSettings,
-            currentProvider: detectedProvider,
-            providers: {
-              ...currentMultiSettings.providers,
-              [detectedProvider]: updatedProviderSettings
-            }
-          };
-          
-          // Store multi-provider settings
-          localStorage.setItem('studorama-multi-provider-settings', updatedMultiSettings);
-          
-          // Also update legacy settings for backward compatibility
-          const legacySettings = localStorage.getItem<APISettings>(STORAGE_KEYS.API_SETTINGS, {
-            openaiApiKey: '',
-            model: DEFAULTS.MODEL,
-            customPrompts: {
-              multipleChoice: '',
-              dissertative: '',
-              evaluation: '',
-              elaborativePrompt: '',
-              retrievalPrompt: ''
-            },
-            preloadQuestions: DEFAULTS.PRELOAD_QUESTIONS
-          });
+  if (typeof window === 'undefined') return;
 
-          // Update legacy settings if it's OpenAI
-          if (detectedProvider === 'openai') {
-            const updatedLegacySettings = {
-              ...legacySettings,
-              openaiApiKey: apiKey,
-              model: defaultModel
-            };
-            localStorage.setItem(STORAGE_KEYS.API_SETTINGS, updatedLegacySettings);
-          }
-          
-          // Set a flag to show notification later
-          localStorage.setItem('studorama-api-key-from-url', JSON.stringify({
-            provider: detectedProvider,
-            model: defaultModel,
-            hasBaseUrl: !!baseUrl
-          }));
-          
-          console.log(`${detectedProvider.toUpperCase()} API key extracted and stored from URL`);
-        } else {
-          console.warn(`Invalid ${detectedProvider.toUpperCase()} configuration:`, validation.errors);
-          // Set error flag for notification
-          localStorage.setItem('studorama-api-key-error', JSON.stringify({
-            provider: detectedProvider,
-            errors: validation.errors
-          }));
-        }
+  try {
+    const { apiKey, model, provider: providerParam, baseUrl } = extractApiKeyFromUrl();
+    if (!apiKey) return;
 
-        // Clean URL parameters immediately
-        cleanUrlParameters();
-      } catch (error) {
-        console.error('Error storing API key from URL:', error);
-        cleanUrlParameters();
-      }
-    } else {
-      console.warn(`Invalid API key format for ${detectedProvider.toUpperCase()} in URL parameter`);
-      // Set error flag for notification
-      localStorage.setItem('studorama-api-key-error', JSON.stringify({
-        provider: detectedProvider,
-        errors: [`Invalid API key format for ${detectedProvider.toUpperCase()}`]
-      }));
-      cleanUrlParameters();
+    if (providerParam !== null && !isAIProvider(providerParam)) {
+      console.warn(`Unknown provider "${providerParam}" in URL parameter`);
+      const errorFlag: ApiKeyErrorFlag = { reason: 'unknownProvider', provider: providerParam };
+      localStorage.setItem(STORAGE_KEYS.API_KEY_ERROR, errorFlag);
+      return;
     }
+
+    const provider = providerParam ?? detectProviderFromApiKey(apiKey);
+
+    if (!validateApiKeyFormat(apiKey, provider)) {
+      console.warn(`Invalid API key format for ${provider.toUpperCase()} in URL parameter`);
+      const errorFlag: ApiKeyErrorFlag = { reason: 'invalidFormat', provider };
+      localStorage.setItem(STORAGE_KEYS.API_KEY_ERROR, errorFlag);
+      return;
+    }
+
+    storeApiKey(apiKey, provider, model, baseUrl);
+  } catch (error) {
+    console.error('Error storing API key from URL:', error);
+  } finally {
+    cleanUrlParameters();
   }
 }
 
@@ -230,41 +182,16 @@ export function processApiKeyFromUrl(): void {
  * This now handles multi-provider settings and shows appropriate notifications
  */
 export function useApiKeyFromUrl() {
-  // Load both legacy and multi-provider settings
-  const [apiSettings] = useLocalStorage<APISettings>(STORAGE_KEYS.API_SETTINGS, {
-    openaiApiKey: "",
-    model: DEFAULTS.MODEL,
-    customPrompts: {
-      multipleChoice: "",
-      dissertative: "",
-      evaluation: "",
-      elaborativePrompt: "",
-      retrievalPrompt: "",
-    },
-    preloadQuestions: DEFAULTS.PRELOAD_QUESTIONS,
-  });
-  
-  const [multiProviderSettings] = useLocalStorage<MultiProviderSettings>('studorama-multi-provider-settings', {
-    currentProvider: 'openai',
-    providers: {
-      openai: { apiKey: '', model: 'gpt-4o-mini' },
-      gemini: { apiKey: '', model: 'gemini-1.5-flash' },
-      anthropic: { apiKey: '', model: 'claude-3-haiku-20240307' },
-      deepseek: { apiKey: '', model: 'deepseek-chat' },
-      ollama: { apiKey: '', model: 'llama3.1:8b', baseUrl: 'http://localhost:11434/v1' },
-      browser: { apiKey: '', model: 'browser-ai' },
-    }
-  });
-  
+  const [apiSettings] = useLocalStorage<APISettings>(STORAGE_KEYS.API_SETTINGS, LEGACY_API_SETTINGS_DEFAULT);
+  const [multiProviderSettings] = useMultiProviderSettings();
   const { t } = useLanguage();
 
   useEffect(() => {
-    // Check if we should show the API key success notification
-    const successData = localStorage.getItem<any>('studorama-api-key-from-url', null);
+    const successData = localStorage.getItem<ApiKeySuccessFlag | null>(STORAGE_KEYS.API_KEY_FROM_URL, null);
     
     if (successData) {
       // Remove the flag immediately to prevent showing again
-      localStorage.removeItem("studorama-api-key-from-url");
+      localStorage.removeItem(STORAGE_KEYS.API_KEY_FROM_URL);
 
       // Small delay to ensure translations are loaded
       setTimeout(() => {
@@ -273,7 +200,7 @@ export function useApiKeyFromUrl() {
         const baseUrlInfo = successData.hasBaseUrl ? ' with custom base URL' : '';
         
         showNotification({
-          type: "success",
+          type: 'success',
           title: t.apiKeyConfigured,
           message: `${providerName} ${t.apiKeyConfiguredDesc}.${modelInfo}${baseUrlInfo}`,
           duration: 6000,
@@ -281,22 +208,18 @@ export function useApiKeyFromUrl() {
       }, 1000);
     }
     
-    // Check if we should show an error notification
-    const errorData = localStorage.getItem<any>('studorama-api-key-error', null);
+    const errorData = localStorage.getItem<ApiKeyErrorFlag | null>(STORAGE_KEYS.API_KEY_ERROR, null);
     
     if (errorData) {
       // Remove the flag immediately to prevent showing again
-      localStorage.removeItem('studorama-api-key-error');
+      localStorage.removeItem(STORAGE_KEYS.API_KEY_ERROR);
       
       // Small delay to ensure translations are loaded
       setTimeout(() => {
-        const providerName = errorData.provider?.toUpperCase() || 'AI';
-        const errors = errorData.errors?.join(', ') || 'Unknown error';
-        
         showNotification({
           type: 'error',
           title: t.invalidApiKey,
-          message: `${providerName}: ${errors}`,
+          message: describeApiKeyError(errorData, t),
           duration: 8000,
         });
       }, 1000);
@@ -322,4 +245,20 @@ export function useApiKeyFromUrl() {
     currentProviderSettings,
     providerConfig
   };
+}
+
+function describeApiKeyError(error: ApiKeyErrorFlag, t: Translations): string {
+  switch (error.reason) {
+    case 'unknownProvider':
+      return t.apiKeyUnknownProvider
+        .replace('{provider}', error.provider)
+        .replace('{providers}', AI_PROVIDER_IDS.join(', '));
+    case 'invalidFormat':
+      return `${error.provider.toUpperCase()}: ${t.invalidApiKeyFormat}`;
+    case 'invalidConfig':
+      return `${error.provider.toUpperCase()}: ${error.errors.join(', ')}`;
+    default:
+      // Flag written by an older version in another shape
+      return t.invalidApiKeyDesc;
+  }
 }

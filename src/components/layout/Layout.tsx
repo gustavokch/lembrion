@@ -59,6 +59,7 @@ export default function Layout({ children }: LayoutProps) {
         style={{ 
           backgroundColor: themeConfig.colors.surface + 'CC',
           backdropFilter: themeConfig.effects.blur,
+          WebkitBackdropFilter: themeConfig.effects.blur,
           borderBottom: `1px solid ${themeConfig.colors.border}`,
         }}
         role="navigation" 
@@ -145,7 +146,7 @@ export default function Layout({ children }: LayoutProps) {
                 }}
               >
                 <Heart className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
-                <span>{language === 'pt-BR' ? '100% Gratuito' : '100% Free'}</span>
+                <span>{t.freeAppBadgeShort}</span>
               </div>
               
               <IconButton
@@ -212,7 +213,7 @@ export default function Layout({ children }: LayoutProps) {
                   }}
                 >
                   <Heart className="w-4 h-4" aria-hidden="true" />
-                  <span>{language === 'pt-BR' ? '100% Gratuito Para Sempre' : '100% Free Forever'}</span>
+                  <span>{t.freeForever}</span>
                 </div>
               </div>
               {supportItems.map(({ path, icon: Icon, label }) => (

@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://www.studorama.vercel.app/sitemap.xml
+Sitemap: https://studorama.vercel.app/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
@@ -44,7 +44,7 @@ User-agent: *
 Allow: /?lang=pt-BR
 
 # Host directive
-Host: https://www.studorama.vercel.app
+Host: https://studorama.vercel.app
 
 # Additional crawling instructions
 User-agent: *

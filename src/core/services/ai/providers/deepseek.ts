@@ -2,14 +2,15 @@
  * DeepSeek Provider Implementation
  */
 
-import { AIRequest, AIResponse, AIError } from '../../../types/ai.types';
+import { AIRequest, AIResponse } from '../../../types/ai.types';
+import { createAIError, createHTTPError, toAIError } from '../errors';
 
 export class DeepSeekProvider {
   private baseUrl = 'https://api.deepseek.com/v1';
 
   async generateCompletion(request: AIRequest): Promise<AIResponse> {
     if (!request.apiKey) {
-      throw this.createError('API key is required for DeepSeek', 'MISSING_API_KEY');
+      throw createAIError('deepseek', 'API key is required for DeepSeek', 'MISSING_API_KEY');
     }
 
     try {
@@ -23,8 +24,8 @@ export class DeepSeekProvider {
         body: JSON.stringify({
           model: request.model,
           messages: request.messages,
-          temperature: request.temperature || 0.7,
-          max_tokens: request.maxTokens || 800,
+          temperature: request.temperature ?? 0.7,
+          max_tokens: request.maxTokens ?? 800,
           top_p: 0.9,
           frequency_penalty: 0.1,
           presence_penalty: 0.1,
@@ -32,18 +33,13 @@ export class DeepSeekProvider {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw this.createError(
-          `DeepSeek API error: ${response.statusText}. ${errorData.error?.message || ''}`,
-          errorData.error?.code || 'API_ERROR',
-          response.status
-        );
+        throw await createHTTPError('deepseek', 'DeepSeek', response);
       }
 
       const data = await response.json();
       
       if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-        throw this.createError('Invalid response format from DeepSeek', 'INVALID_RESPONSE');
+        throw createAIError('deepseek', 'Invalid response format from DeepSeek', 'INVALID_RESPONSE');
       }
 
       return {
@@ -57,31 +53,7 @@ export class DeepSeekProvider {
         finishReason: data.choices[0].finish_reason,
       };
     } catch (error) {
-      if (error instanceof Error && error.name === 'AIError') {
-        throw error;
-      }
-      
-      throw this.createError(
-        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        'NETWORK_ERROR',
-        undefined,
-        true
-      );
+      throw toAIError(error, 'deepseek');
     }
-  }
-
-  private createError(
-    message: string, 
-    code?: string, 
-    statusCode?: number, 
-    retryable = false
-  ): AIError {
-    const error = new Error(message) as AIError;
-    error.name = 'AIError';
-    error.provider = 'deepseek';
-    error.code = code;
-    error.statusCode = statusCode;
-    error.retryable = retryable;
-    return error;
   }
 }

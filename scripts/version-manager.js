@@ -2,318 +2,235 @@
 
 /**
  * Version Manager for Studorama
- * Automatically increments version numbers and updates all relevant files
+ *
+ * Bumps the version in package.json, public/sw.js (CACHE_NAME) and index.html
+ * (JSON-LD "softwareVersion"). Every new file content is computed and checked
+ * in memory first; files are written only when all checks pass.
  */
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '..');
+const DEFAULT_PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-// Version types
-const VERSION_TYPES = {
-  MAJOR: 'major',    // Breaking changes (1.0.0 -> 2.0.0)
-  MINOR: 'minor',    // New features (1.0.0 -> 1.1.0)
-  PATCH: 'patch',    // Bug fixes (1.0.0 -> 1.0.1)
-  BUILD: 'build'     // Build number (1.0.0 -> 1.0.1)
-};
+export const BUMP_TYPES = ['major', 'minor', 'patch'];
 
-class VersionManager {
-  constructor() {
+/** Files the version manager rewrites, relative to the project root. */
+export const VERSION_FILES = ['package.json', 'public/sw.js', 'index.html'];
+
+const SEMVER_PATTERN = '(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)';
+const SEMVER = new RegExp(`^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$`);
+const CACHE_NAME_RE = new RegExp(`const CACHE_NAME = 'studorama-v${SEMVER_PATTERN}';`, 'g');
+const SOFTWARE_VERSION_RE = new RegExp(`"softwareVersion": "${SEMVER_PATTERN}"`, 'g');
+
+function countMatches(content, regex) {
+  return (content.match(regex) || []).length;
+}
+
+export class VersionManager {
+  constructor(projectRoot = DEFAULT_PROJECT_ROOT) {
+    this.projectRoot = projectRoot;
     this.packageJsonPath = path.join(projectRoot, 'package.json');
-    this.envPath = path.join(projectRoot, '.env');
-    this.indexHtmlPath = path.join(projectRoot, 'index.html');
     this.swPath = path.join(projectRoot, 'public/sw.js');
-    this.constantsPath = path.join(projectRoot, 'src/core/config/constants.ts');
+    this.indexHtmlPath = path.join(projectRoot, 'index.html');
   }
 
-  /**
-   * Parse version string into components
-   */
   parseVersion(versionString) {
-    const match = versionString.match(/^(\d+)\.(\d+)\.(\d+)$/);
+    const match = typeof versionString === 'string' ? versionString.match(SEMVER) : null;
     if (!match) {
-      throw new Error(`Invalid version format: ${versionString}`);
+      throw new Error(`Invalid version format: ${JSON.stringify(versionString)} (expected MAJOR.MINOR.PATCH)`);
     }
-    
     return {
-      major: parseInt(match[1], 10),
-      minor: parseInt(match[2], 10),
-      patch: parseInt(match[3], 10)
+      major: Number(match[1]),
+      minor: Number(match[2]),
+      patch: Number(match[3])
     };
   }
 
-  /**
-   * Increment version based on type
-   */
   incrementVersion(currentVersion, type) {
-    const version = this.parseVersion(currentVersion);
-    
-    switch (type) {
-      case VERSION_TYPES.MAJOR:
-        version.major += 1;
-        version.minor = 0;
-        version.patch = 0;
-        break;
-      case VERSION_TYPES.MINOR:
-        version.minor += 1;
-        version.patch = 0;
-        break;
-      case VERSION_TYPES.PATCH:
-      case VERSION_TYPES.BUILD:
-      default:
-        version.patch += 1;
-        break;
+    if (!BUMP_TYPES.includes(type)) {
+      throw new Error(`Invalid bump type: ${JSON.stringify(type)} (expected one of: ${BUMP_TYPES.join(', ')})`);
     }
-    
-    return `${version.major}.${version.minor}.${version.patch}`;
+    const { major, minor, patch } = this.parseVersion(currentVersion);
+    if (type === 'major') return `${major + 1}.0.0`;
+    if (type === 'minor') return `${major}.${minor + 1}.0`;
+    return `${major}.${minor}.${patch + 1}`;
   }
 
-  /**
-   * Get current version from package.json
-   */
+  readFile(filePath) {
+    try {
+      return fs.readFileSync(filePath, 'utf8');
+    } catch (error) {
+      throw new Error(`Cannot read ${path.relative(this.projectRoot, filePath)}: ${error.message}`);
+    }
+  }
+
+  readPackageJson() {
+    const text = this.readFile(this.packageJsonPath);
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      throw new Error(`package.json is not valid JSON: ${error.message}`);
+    }
+  }
+
   getCurrentVersion() {
-    try {
-      const packageJson = JSON.parse(fs.readFileSync(this.packageJsonPath, 'utf8'));
-      return packageJson.version || '1.0.0';
-    } catch (error) {
-      console.warn('Could not read package.json, defaulting to 1.0.0');
-      return '1.0.0';
-    }
+    const { version } = this.readPackageJson();
+    this.parseVersion(version);
+    return version;
   }
 
   /**
-   * Update package.json version
+   * Compute the new content of every version file without writing anything.
+   * Throws if the current version is invalid or any expected version string is missing.
    */
-  updatePackageJson(newVersion) {
-    try {
-      const packageJson = JSON.parse(fs.readFileSync(this.packageJsonPath, 'utf8'));
-      packageJson.version = newVersion;
-      fs.writeFileSync(this.packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
-      console.log(`✓ Updated package.json to version ${newVersion}`);
-    } catch (error) {
-      console.error('Failed to update package.json:', error.message);
-    }
-  }
-
-  /**
-   * Update .env file
-   */
-  updateEnvFile(newVersion) {
-    try {
-      let envContent = '';
-      
-      if (fs.existsSync(this.envPath)) {
-        envContent = fs.readFileSync(this.envPath, 'utf8');
-      }
-      
-      // Update or add APP_VERSION
-      if (envContent.includes('APP_VERSION=')) {
-        envContent = envContent.replace(/APP_VERSION=.*$/m, `APP_VERSION=${newVersion}`);
-      } else {
-        envContent += `\nAPP_VERSION=${newVersion}\n`;
-      }
-      
-      fs.writeFileSync(this.envPath, envContent);
-      console.log(`✓ Updated .env with APP_VERSION=${newVersion}`);
-    } catch (error) {
-      console.error('Failed to update .env:', error.message);
-    }
-  }
-
-  /**
-   * Update index.html structured data
-   */
-  updateIndexHtml(newVersion) {
-    try {
-      let content = fs.readFileSync(this.indexHtmlPath, 'utf8');
-      
-      // Update softwareVersion in structured data
-      content = content.replace(
-        /"softwareVersion": "[^"]*"/g,
-        `"softwareVersion": "${newVersion}"`
-      );
-      
-      fs.writeFileSync(this.indexHtmlPath, content);
-      console.log(`✓ Updated index.html structured data to version ${newVersion}`);
-    } catch (error) {
-      console.error('Failed to update index.html:', error.message);
-    }
-  }
-
-  /**
-   * Update service worker cache names
-   */
-  updateServiceWorker(newVersion) {
-    try {
-      let content = fs.readFileSync(this.swPath, 'utf8');
-      
-      // Update cache name
-      content = content.replace(
-        /const CACHE_NAME = 'studorama-v[^']*'/,
-        `const CACHE_NAME = 'studorama-v${newVersion}'`
-      );
-      
-      fs.writeFileSync(this.swPath, content);
-      console.log(`✓ Updated service worker cache name to v${newVersion}`);
-    } catch (error) {
-      console.error('Failed to update service worker:', error.message);
-    }
-  }
-
-  /**
-   * Update constants file with static version strings
-   */
-  updateConstants(newVersion) {
-    try {
-      let content = fs.readFileSync(this.constantsPath, 'utf8');
-      
-      // Update APP_VERSION constant
-      content = content.replace(
-        /export const APP_VERSION = '[^']*'/,
-        `export const APP_VERSION = '${newVersion}'`
-      );
-      
-      // Update cache names in CACHE_NAMES object
-      content = content.replace(
-        /STATIC: `studorama-static-v[^`]*`/,
-        `STATIC: \`studorama-static-v${newVersion}\``
-      );
-      content = content.replace(
-        /DYNAMIC: `studorama-dynamic-v[^`]*`/,
-        `DYNAMIC: \`studorama-dynamic-v${newVersion}\``
-      );
-      content = content.replace(
-        /MAIN: `studorama-v[^`]*`/,
-        `MAIN: \`studorama-v${newVersion}\``
-      );
-      
-      fs.writeFileSync(this.constantsPath, content);
-      console.log(`✓ Updated constants.ts with static version ${newVersion}`);
-    } catch (error) {
-      console.error('Failed to update constants.ts:', error.message);
-    }
-  }
-
-  /**
-   * Create a version info file
-   */
-  createVersionInfo(newVersion) {
-    const versionInfo = {
-      version: newVersion,
-      buildDate: new Date().toISOString(),
-      buildNumber: Date.now(),
-      environment: process.env.NODE_ENV || 'development'
-    };
-    
-    const versionInfoPath = path.join(projectRoot, 'public/version.json');
-    fs.writeFileSync(versionInfoPath, JSON.stringify(versionInfo, null, 2));
-    console.log(`✓ Created version info file: ${versionInfo.version} (${versionInfo.buildDate})`);
-  }
-
-  /**
-   * Main version bump function
-   */
-  bump(type = VERSION_TYPES.PATCH) {
-    console.log(`🚀 Starting version bump (${type})...`);
-    
-    const currentVersion = this.getCurrentVersion();
+  planBump(type) {
+    const packageJson = this.readPackageJson();
+    const currentVersion = packageJson.version;
     const newVersion = this.incrementVersion(currentVersion, type);
-    
-    console.log(`📦 Current version: ${currentVersion}`);
-    console.log(`📦 New version: ${newVersion}`);
-    
-    // Update all files
-    this.updatePackageJson(newVersion);
-    this.updateEnvFile(newVersion);
-    this.updateIndexHtml(newVersion);
-    this.updateServiceWorker(newVersion);
-    this.updateConstants(newVersion);
-    this.createVersionInfo(newVersion);
-    
-    console.log(`✅ Version bump complete! New version: ${newVersion}`);
-    return newVersion;
+
+    packageJson.version = newVersion;
+    const packageJsonContent = JSON.stringify(packageJson, null, 2) + '\n';
+
+    const swContent = this.readFile(this.swPath);
+    const cacheNameCount = countMatches(swContent, CACHE_NAME_RE);
+    if (cacheNameCount !== 1) {
+      throw new Error(
+        `public/sw.js: expected exactly one "const CACHE_NAME = 'studorama-v<semver>';", found ${cacheNameCount}`
+      );
+    }
+
+    const indexHtmlContent = this.readFile(this.indexHtmlPath);
+    const softwareVersionCount = countMatches(indexHtmlContent, SOFTWARE_VERSION_RE);
+    const softwareVersionKeyCount = countMatches(indexHtmlContent, /"softwareVersion"/g);
+    if (softwareVersionCount === 0) {
+      throw new Error('index.html: no "softwareVersion": "<semver>" entry found');
+    }
+    if (softwareVersionKeyCount !== softwareVersionCount) {
+      throw new Error(
+        `index.html: ${softwareVersionKeyCount} "softwareVersion" keys but only ${softwareVersionCount} in the shape "softwareVersion": "<semver>"`
+      );
+    }
+
+    return {
+      currentVersion,
+      newVersion,
+      files: [
+        { path: this.packageJsonPath, content: packageJsonContent },
+        { path: this.swPath, content: swContent.replace(CACHE_NAME_RE, `const CACHE_NAME = 'studorama-v${newVersion}';`) },
+        { path: this.indexHtmlPath, content: indexHtmlContent.replace(SOFTWARE_VERSION_RE, `"softwareVersion": "${newVersion}"`) }
+      ]
+    };
   }
 
   /**
-   * Get version information
+   * Write every planned file through a temp file + rename, so a failed write
+   * leaves the originals untouched.
    */
+  writeFiles(files) {
+    const tempPaths = [];
+    try {
+      for (const file of files) {
+        const tempPath = `${file.path}.version-manager.tmp`;
+        tempPaths.push(tempPath);
+        fs.writeFileSync(tempPath, file.content);
+      }
+    } catch (error) {
+      for (const tempPath of tempPaths) fs.rmSync(tempPath, { force: true });
+      throw new Error(`Failed to write version files: ${error.message}`);
+    }
+    files.forEach((file, index) => {
+      try {
+        fs.renameSync(tempPaths[index], file.path);
+      } catch (error) {
+        const written = files.slice(0, index).map((f) => path.relative(this.projectRoot, f.path));
+        const partial = new Error(
+          `Failed to replace ${path.relative(this.projectRoot, file.path)}: ${error.message}. ` +
+            `Already updated: ${written.join(', ') || 'none'}. Restore them with: git checkout -- ${VERSION_FILES.join(' ')}`
+        );
+        partial.partialWrite = true;
+        throw partial;
+      }
+    });
+  }
+
+  bump(type) {
+    const plan = this.planBump(type);
+    this.writeFiles(plan.files);
+    console.log(`✓ Bumped version ${plan.currentVersion} → ${plan.newVersion} (${type})`);
+    for (const file of plan.files) {
+      console.log(`  updated ${path.relative(this.projectRoot, file.path)}`);
+    }
+    return plan.newVersion;
+  }
+
   info() {
     const currentVersion = this.getCurrentVersion();
-    const parsed = this.parseVersion(currentVersion);
-    
+    const { major, minor, patch } = this.parseVersion(currentVersion);
     console.log(`📦 Current version: ${currentVersion}`);
-    console.log(`   Major: ${parsed.major}`);
-    console.log(`   Minor: ${parsed.minor}`);
-    console.log(`   Patch: ${parsed.patch}`);
-    
+    console.log(`   Major: ${major}`);
+    console.log(`   Minor: ${minor}`);
+    console.log(`   Patch: ${patch}`);
     return currentVersion;
   }
 }
 
-// CLI Interface
-function main() {
-  const args = process.argv.slice(2);
-  const command = args[0];
-  const type = args[1] || VERSION_TYPES.PATCH;
-  
-  const versionManager = new VersionManager();
-  
-  switch (command) {
-    case 'bump':
-      if (!Object.values(VERSION_TYPES).includes(type)) {
-        console.error(`❌ Invalid version type: ${type}`);
-        console.log(`Valid types: ${Object.values(VERSION_TYPES).join(', ')}`);
-        process.exit(1);
-      }
-      versionManager.bump(type);
-      break;
-      
-    case 'info':
-      versionManager.info();
-      break;
-      
-    case 'major':
-      versionManager.bump(VERSION_TYPES.MAJOR);
-      break;
-      
-    case 'minor':
-      versionManager.bump(VERSION_TYPES.MINOR);
-      break;
-      
-    case 'patch':
-      versionManager.bump(VERSION_TYPES.PATCH);
-      break;
-      
-    default:
-      console.log(`
+const USAGE = `
 📦 Studorama Version Manager
 
 Usage:
-  node scripts/version-manager.js <command> [type]
+  node scripts/version-manager.js <command>
 
 Commands:
-  bump [type]    Bump version by type (patch, minor, major)
+  bump [type]    Bump version by type: ${BUMP_TYPES.join(', ')} (default: patch)
   major          Bump major version (breaking changes)
   minor          Bump minor version (new features)
   patch          Bump patch version (bug fixes)
-  info           Show current version info
+  info           Show current version info (read-only)
 
-Examples:
-  node scripts/version-manager.js bump patch
-  node scripts/version-manager.js major
-  node scripts/version-manager.js info
-      `);
-      break;
+Updates: ${VERSION_FILES.join(', ')}
+`;
+
+/**
+ * CLI entry point. Returns the process exit code.
+ */
+export function main(args = process.argv.slice(2), projectRoot = DEFAULT_PROJECT_ROOT) {
+  const [command, type] = args;
+  const versionManager = new VersionManager(projectRoot);
+
+  try {
+    switch (command) {
+      case 'bump':
+        versionManager.bump(type === undefined ? 'patch' : type);
+        return 0;
+      case 'major':
+      case 'minor':
+      case 'patch':
+        versionManager.bump(command);
+        return 0;
+      case 'info':
+        versionManager.info();
+        return 0;
+      case undefined:
+      case 'help':
+      case '--help':
+        console.log(USAGE);
+        return 0;
+      default:
+        console.error(`❌ Unknown command: ${command}`);
+        console.log(USAGE);
+        return 1;
+    }
+  } catch (error) {
+    console.error(`❌ ${error.message}`);
+    if (!error.partialWrite) console.error('No files were changed.');
+    return 1;
   }
 }
 
-// Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  process.exitCode = main();
 }
 
 export default VersionManager;

@@ -2,7 +2,23 @@
  * Core AI types for multi-provider support
  */
 
-export type AIProvider = 'openai' | 'gemini' | 'anthropic' | 'deepseek' | 'ollama' | 'browser';
+export const AI_PROVIDER_IDS = ['openai', 'gemini', 'anthropic', 'deepseek', 'ollama'] as const;
+
+export type AIProvider = typeof AI_PROVIDER_IDS[number];
+
+/** Settings for one provider, persisted inside MultiProviderSettings. */
+export interface ProviderSettings {
+  apiKey: string;
+  model: string;
+  baseUrl?: string;
+  customHeaders?: Record<string, string>;
+}
+
+/** Shape persisted under STORAGE_KEYS.MULTI_PROVIDER_SETTINGS. */
+export interface MultiProviderSettings {
+  currentProvider: AIProvider;
+  providers: Record<AIProvider, ProviderSettings>;
+}
 
 export interface AIModel {
   id: string;
@@ -81,11 +97,13 @@ export interface AIResponse {
 
 export interface QuestionGenerationRequest {
   contexts: string[]; // Minimum 1 context required (replaces subject)
-  type: 'multipleChoice' | 'dissertative' | 'evaluation';
+  type: 'multipleChoice' | 'dissertative';
   language: string;
   instructions?: string[];
   previousQuestions?: string[];
   difficulty?: 'easy' | 'medium' | 'hard';
+  /** One of `contexts` to center this question on; the others only define scope */
+  focusContext?: string;
   customPrompt?: string;
 }
 
@@ -110,6 +128,7 @@ export interface AnswerEvaluationRequest {
   question: string;
   userAnswer: string;
   correctAnswer?: string;
+  evaluationCriteria?: string[];
   type: 'multipleChoice' | 'dissertative';
   language: string;
   customPrompt?: string;
@@ -133,4 +152,6 @@ export interface AIError extends Error {
   code?: string;
   statusCode?: number;
   retryable?: boolean;
+  /** Provider-supplied error text from an HTTP error body; shown untranslated */
+  detail?: string;
 }

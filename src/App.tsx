@@ -6,16 +6,18 @@ import PricingPage from './components/pricing/PricingPage';
 import SessionDetails from './components/SessionDetails';
 import SettingsPage from './components/pages/SettingsPage/SettingsPage';
 import StudyPage from './components/pages/StudyPage/StudyPage';
-import SuccessPage from './components/success/SuccessPage';
 import { processApiKeyFromUrl, useApiKeyFromUrl, useVersionControl } from './hooks';
 import { cleanupCorruptedEntries } from './core/services/storage/localStorage';
+import { applyLanguageFromUrl } from './core/services/i18n/languageDetector';
 import LoadingScreen from './components/LoadingScreen';
 
 // Clean up any corrupted localStorage entries first
 cleanupCorruptedEntries();
 
-// Process API key from URL immediately before any React rendering
-// This ensures the API key is preserved during version migrations
+// Apply ?lang=<Language> before anything reads the language setting
+applyLanguageFromUrl();
+
+// Store an API key passed in the URL before the first render
 processApiKeyFromUrl();
 
 function App() {
@@ -40,8 +42,7 @@ function App() {
           <Route path="/session/:id" element={<SessionDetails />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/success" element={<SuccessPage />} />
-          {/* Catch all route - redirect to home */}
+          {/* Unknown paths render the dashboard; the URL is left unchanged */}
           <Route path="*" element={<Dashboard />} />
         </Routes>
       </Layout>

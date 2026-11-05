@@ -1,14 +1,38 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { localStorage } from "../core/services";
+import { getCurrentLanguage, getTranslations, localStorage, showNotification } from "../core/services";
+
+// Minimum gap between two "could not save" notifications, so a full storage
+// does not raise one toast per keystroke.
+const WRITE_FAILURE_NOTICE_INTERVAL_MS = 10000;
+let lastWriteFailureNoticeAt = -Infinity;
 
 /**
- * Custom hook for using localStorage with React state
- * Optimized for performance with large datasets
+ * Tell the user that a value could not be persisted (e.g. storage quota exceeded).
+ * Uses the stored language directly: this hook cannot import useLanguage, which depends on it.
+ */
+function notifyWriteFailure(): void {
+  const now = Date.now();
+  if (now - lastWriteFailureNoticeAt < WRITE_FAILURE_NOTICE_INTERVAL_MS) return;
+  lastWriteFailureNoticeAt = now;
+
+  const t = getTranslations(getCurrentLanguage());
+  showNotification({
+    type: "error",
+    title: t.storageWriteFailed,
+    message: t.storageWriteFailedDesc,
+    duration: 8000,
+  });
+}
+
+/**
+ * Custom hook for using localStorage with React state.
+ * setValue persists synchronously, so code that navigates or reloads right after
+ * a set (and components that mount afterwards) see the new value.
  */
 export function useLocalStorage<T>(key: string, initialValue: T) {
   // Use ref to track if we're initializing to prevent unnecessary re-renders
   const isInitializing = useRef(true);
-  const lastValueRef = useRef<T>();
+  const lastValueRef = useRef<T>(initialValue);
 
   // Get stored value or initialize with provided default
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -29,32 +53,24 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     (value: T | ((val: T) => T)) => {
       try {
         // Allow value to be a function for previous state pattern
-        const valueToStore = value instanceof Function ? value(lastValueRef.current || storedValue) : value;
+        const valueToStore = value instanceof Function ? value(lastValueRef.current) : value;
 
         // Only update if value actually changed (deep comparison for objects)
         if (JSON.stringify(lastValueRef.current) === JSON.stringify(valueToStore)) {
           return;
         }
 
-        // Update refs first
         lastValueRef.current = valueToStore;
-
-        // Update state
         setStoredValue(valueToStore);
 
-        // Save to localStorage asynchronously to avoid blocking
-        requestIdleCallback(() => {
-          try {
-            localStorage.setItem(key, valueToStore);
-          } catch (error) {
-            console.error(`Error setting localStorage key "${key}":`, error);
-          }
-        });
+        if (!localStorage.setItem(key, valueToStore)) {
+          notifyWriteFailure();
+        }
       } catch (error) {
         console.error(`Error processing localStorage update for key "${key}":`, error);
       }
     },
-    [key, storedValue]
+    [key]
   );
 
   // Sync with localStorage changes from other tabs/windows

@@ -1,27 +1,23 @@
-import { AlertTriangle, BookOpen, Brain, Check, ChevronRight, Clock, Eye, History, Info, Plus, Save, Settings, Target, Trash2, X, Zap } from 'lucide-react';
+import { AlertTriangle, BookOpen, Brain, Check, ChevronRight, Clock, Eye, History, Info, Plus, Save, Settings, Target, Trash2, TrendingUp, X, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
 import { useTheme } from '../hooks/useTheme';
-import { LearningSettings, StudySession } from '../types';
+import { Difficulty, LearningSettings, StudySession } from '../types';
+import { SessionEditUpdates } from './pages/sessionEdits';
+import { DIFFICULTIES, difficultyLabels, normalizeLearningSettings } from './pages/StudyPage/learningTechniques';
 import IconButton from './ui/IconButton';
 
 interface SessionEditModalProps {
   session: StudySession;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updates: {
-    contexts?: string[];
-    instructions?: string[];
-    learningSettings?: LearningSettings;
-    questionType?: 'multipleChoice' | 'dissertative' | 'mixed';
-    enableLatex?: boolean;
-    enableCodeVisualization?: boolean;
-  }) => void;
+  onSave: (updates: SessionEditUpdates) => void;
 }
 
 export default function SessionEditModal({ session, isOpen, onClose, onSave }: SessionEditModalProps) {
   const { t, language } = useLanguage();
   const { themeConfig } = useTheme();
+  const levelLabels = difficultyLabels(t);
   
   // Form state
   const [contexts, setContexts] = useState<string[]>(session.contexts || []);
@@ -33,17 +29,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
   );
   const [enableLatex, setEnableLatex] = useState(session.enableLatex || false);
   const [enableCodeVisualization, setEnableCodeVisualization] = useState(session.enableCodeVisualization || false);
-  const [learningSettings, setLearningSettings] = useState<LearningSettings>(
-    session.learningSettings || {
-      spacedRepetition: true,
-      interleaving: true,
-      elaborativeInterrogation: true,
-      selfExplanation: true,
-      desirableDifficulties: true,
-      retrievalPractice: true,
-      generationEffect: true
-    }
+  const [learningSettings, setLearningSettings] = useState<LearningSettings>(() =>
+    normalizeLearningSettings(session.learningSettings)
   );
+  const [difficulty, setDifficulty] = useState<Difficulty>(session.difficulty ?? 'medium');
   
   // UI state
   const [activeTab, setActiveTab] = useState<'basic' | 'learning' | 'advanced' | 'history'>('basic');
@@ -76,15 +65,8 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
       setQuestionType(session.questionType || 'multipleChoice');
       setEnableLatex(session.enableLatex || false);
       setEnableCodeVisualization(session.enableCodeVisualization || false);
-      setLearningSettings(session.learningSettings || {
-        spacedRepetition: true,
-        interleaving: true,
-        elaborativeInterrogation: true,
-        selfExplanation: true,
-        desirableDifficulties: true,
-        retrievalPractice: true,
-        generationEffect: true
-      });
+      setLearningSettings(normalizeLearningSettings(session.learningSettings));
+      setDifficulty(session.difficulty ?? 'medium');
       setNewContext('');
       setNewInstruction('');
       setHasChanges(false);
@@ -99,16 +81,18 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
     const hasQuestionTypeChange = questionType !== (session.questionType || 'multipleChoice');
     const hasLatexChange = enableLatex !== (session.enableLatex || false);
     const hasCodeChange = enableCodeVisualization !== (session.enableCodeVisualization || false);
-    const hasLearningChange = JSON.stringify(learningSettings) !== JSON.stringify(session.learningSettings);
+    const hasLearningChange = JSON.stringify(learningSettings) !== JSON.stringify(normalizeLearningSettings(session.learningSettings));
+    const hasDifficultyChange = difficulty !== (session.difficulty ?? 'medium');
     setHasChanges(
       hasContextsChange || 
       hasInstructionsChange || 
       hasQuestionTypeChange || 
       hasLatexChange || 
       hasCodeChange || 
-      hasLearningChange
+      hasLearningChange ||
+      hasDifficultyChange
     );
-  }, [contexts, instructions, questionType, enableLatex, enableCodeVisualization, learningSettings, session]);
+  }, [contexts, instructions, questionType, enableLatex, enableCodeVisualization, learningSettings, difficulty, session]);
 
   if (!isOpen) return null;
 
@@ -142,7 +126,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
   };
 
   const handleSave = () => {
-    const updates: any = {};
+    const updates: SessionEditUpdates = {};
     
     if (JSON.stringify(contexts) !== JSON.stringify(session.contexts || [])) {
       updates.contexts = contexts;
@@ -164,8 +148,12 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
       updates.enableCodeVisualization = enableCodeVisualization;
     }
     
-    if (JSON.stringify(learningSettings) !== JSON.stringify(session.learningSettings)) {
+    if (JSON.stringify(learningSettings) !== JSON.stringify(normalizeLearningSettings(session.learningSettings))) {
       updates.learningSettings = learningSettings;
+    }
+
+    if (difficulty !== (session.difficulty ?? 'medium')) {
+      updates.difficulty = difficulty;
     }
     
     onSave(updates);
@@ -242,30 +230,16 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
     { 
       key: 'selfExplanation', 
       label: t.selfExplanation, 
-      desc: t.selfExplanationHow,
+      desc: t.selfExplanationDesc,
       icon: Settings,
       color: themeConfig.colors.success
     },
     { 
-      key: 'retrievalPractice', 
-      label: t.retrievalPractice, 
-      desc: t.retrievalPracticeDesc,
-      icon: Target,
-      color: themeConfig.colors.secondary
-    },
-    { 
       key: 'desirableDifficulties', 
       label: t.desirableDifficulties, 
-      desc: t.desirableDifficultiesHow,
+      desc: t.desirableDifficultiesDesc,
       icon: Plus,
       color: themeConfig.colors.error
-    },
-    { 
-      key: 'generationEffect', 
-      label: t.generationEffect || 'Generation Effect', 
-      desc: 'Learn by generating answers rather than just reading',
-      icon: Zap,
-      color: themeConfig.colors.accent
     }
   ];
 
@@ -562,6 +536,40 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                       </p>
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Difficulty */}
+              <div className="space-y-3">
+                <span id="edit-difficulty-label" className="flex items-center space-x-2 text-sm sm:text-base font-semibold" style={{ color: themeConfig.colors.text }}>
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.warning }} />
+                  <span>{t.difficulty}</span>
+                </span>
+                <div
+                  role="radiogroup"
+                  aria-labelledby="edit-difficulty-label"
+                  className="grid grid-cols-3 gap-1 p-1 rounded-xl sm:rounded-2xl border-2"
+                  style={{ borderColor: themeConfig.colors.border, backgroundColor: themeConfig.colors.background }}
+                >
+                  {DIFFICULTIES.map(level => {
+                    const isSelected = difficulty === level;
+                    return (
+                      <button
+                        key={level}
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        onClick={() => setDifficulty(level)}
+                        className="min-h-[44px] px-2 rounded-lg sm:rounded-xl text-sm font-semibold transition-colors duration-200"
+                        style={{
+                          backgroundColor: isSelected ? themeConfig.colors.warning : 'transparent',
+                          color: isSelected ? '#ffffff' : themeConfig.colors.textSecondary,
+                        }}
+                      >
+                        {levelLabels[level]}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

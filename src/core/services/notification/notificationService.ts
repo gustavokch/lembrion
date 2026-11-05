@@ -121,11 +121,14 @@ export function showNotification({
           ${scheme.icon}
         </div>
         <div>
-          <div style="font-weight: 600; margin-bottom: 2px;">${title}</div>
-          <div style="opacity: 0.9; font-size: 12px; line-height: 1.4;">${message}</div>
+          <div data-notification-title style="font-weight: 600; margin-bottom: 2px;"></div>
+          <div data-notification-message style="opacity: 0.9; font-size: 12px; line-height: 1.4;"></div>
         </div>
       </div>
     `;
+    // Title and message can contain URL-supplied text: insert them as text, never as HTML.
+    notification.querySelector('[data-notification-title]')!.textContent = title;
+    notification.querySelector('[data-notification-message]')!.textContent = message;
     
     document.body.appendChild(notification);
     

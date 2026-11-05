@@ -1,0 +1,150 @@
+# Repository Guidelines
+
+## Project Overview
+
+Studorama is a client-only React SPA for AI-generated study sessions: multiple-choice and dissertative questions, answer evaluation, and session history, based on "Make It Stick" learning techniques. There is no backend. The browser calls AI providers directly with user-supplied API keys stored in `localStorage`. The UI supports `en-US` and `pt-BR`. Production is a static deploy on Vercel (`studorama.vercel.app`; the `www.` host fails TLS, so do not use it). No script calls a host CLI; `scripts/deploy.js` only pushes `main` and a tag, so the host build is presumably push-triggered.
+
+## Architecture & Data Flow
+
+**Boot sequence**
+1. `index.html` loads `/src/main.tsx`, then `src/App.tsx`. `main.tsx` calls `setupServiceWorker` (`src/core/utils/serviceWorker.ts`): it registers `/sw.js` only in a production build on a host other than `localhost`/`127.0.0.1`. Everywhere else it unregisters leftover workers.
+2. At module scope, `App.tsx` runs `cleanupCorruptedEntries()`, `applyLanguageFromUrl()` (`?lang=pt-BR` becomes the stored language), and `processApiKeyFromUrl()` before the first render.
+3. `useVersionControl()` shows `<LoadingScreen/>` until the version migration completes.
+4. `BrowserRouter` renders `components/layout/Layout.tsx` and then the routes below.
+
+|Route|Component|
+|---|---|
+|`/` and `*`|`components/pages/Dashboard.tsx` (unknown paths render it; the URL is not changed)|
+|`/study`|`components/pages/StudyPage/StudyPage.tsx` (~1.39k lines)|
+|`/history`|`components/pages/SessionHistory.tsx`|
+|`/session/:id`|`components/SessionDetails.tsx`|
+|`/settings`|`components/pages/SettingsPage/SettingsPage.tsx` (tabs: providers, language, data)|
+|`/pricing`|`components/pricing/PricingPage.tsx` (Patreon and GitHub links; no Stripe)|
+
+**State.** The app has no React context and no store library. Each component reads and writes `localStorage` through `useLocalStorage(key, default)` (`src/hooks/useLocalStorage.ts`). `setValue` updates React state and persists in the same call. A failed write (for example, quota) shows a localized toast. The hook syncs other tabs through the `storage` event. It does not sync two components on the same page. A language or theme change does a hard redirect to `/`. Provider settings are read through `useMultiProviderSettings()`, which always returns normalized settings.
+
+**AI layer** (`src/core/services/ai/`)
+- `aiService.ts` exports the singleton `aiService` with `generateQuestion`, `evaluateAnswer`, and `generateElaborativeQuestion`. Providers are held in a `Record<AIProvider, …>`, so `tsc` reports a missing one.
+- Each method follows the same pipeline: `validateProviderConfig` → `getProviderConfig` (`providers/registry.ts`) → prompt from `prompts/promptRegistry.ts` (`getPromptTemplate` + `replacePromptVariables`, per-language content, en-US fallback) → provider `generateCompletion(AIRequest): Promise<AIResponse>`. Question generation sends the template as a `system` message plus a `user` prompt; evaluation and elaborative requests send one `user` message. Anthropic and Gemini map `system` text to their own fields.
+- Providers in `providers/*.ts` use plain `fetch`. The code uses no SDKs and no streaming. Anthropic requests send `anthropic-dangerous-direct-browser-access: true`.
+- `questionParser.ts` (`parseQuestionResponse`) extracts the fenced ` ```json ` block (or a brace-matched object) and validates it: multiple choice needs exactly 4 non-empty options and an integer `correctAnswer` in range (a digit string is converted). Invalid output throws an `AIError` with code `INVALID_RESPONSE`, `retryable: true`.
+- Evaluation output is markdown feedback that ends with a ` ```json {"score": 0-100} ``` ` block. `parseEvaluationResponse` (`questionParser.ts`) reads the last such block, clamps the score, and removes the block from the feedback. `isCorrect` is `score >= PASS_SCORE` (70, `aiService.ts`). The evaluation prompt also gets the question's `evaluationCriteria`.
+- `generateQuestion` and `evaluateAnswer` retry once on `INVALID_RESPONSE` (`withInvalidResponseRetry`). They do not retry other codes.
+- `errors.ts`: `createAIError`, `createHTTPError` (code `API_ERROR`, the HTTP status, and the provider's error text in `detail`), `toAIError`, and `getAIErrorMessage(error, t)`, which returns localized text by code and status. `debug.ts`: `debugLog` prints only when `import.meta.env.DEV`; do not log prompts, model output, or keys with `console.*`.
+
+**Study session flow**
+1. The settings come from `STORAGE_KEYS.MULTI_PROVIDER_SETTINGS` (`studorama-multi-provider-settings`), type `MultiProviderSettings` (`src/core/types/ai.types.ts`): `{ currentProvider, providers: Record<AIProvider, { apiKey, model, baseUrl?, customHeaders? }> }`. The one default object is `DEFAULT_MULTI_PROVIDER_SETTINGS` and `normalizeMultiProviderSettings` drops unknown providers and fills missing ones (`src/core/config/providerSettings.ts`). `SettingsPage` writes them, or URL params do (`?provider=&apikey=&model=&baseUrl=`, via `useApiKeyFromUrl.ts`, removed from the URL with `history.replaceState`).
+2. `StudyPage.startNewSession` creates a `StudySession` (id = `createId()`, a UUID) in `STORAGE_KEYS.SESSIONS`.
+3. `generateNextQuestion` first checks `findDueReview`. With `spacedRepetition` on, a missed question comes back as a review copy (options shuffled, no API call). Otherwise it calls `aiService.generateQuestion` with `session.difficulty` and, with `interleaving` on and 2+ contexts, a `focusContext`. In `mixed` mode, the question type is random for each question. If the first question fails, the page shows the localized error with "Try Again" and "End Session".
+4. `submitAnswer` grades multiple-choice answers locally. Dissertative answers go to `aiService.evaluateAnswer` and store `score`. With `desirableDifficulties` on, `nextDifficulty` updates `session.difficulty`. A wrong answer with `elaborativeInterrogation` on triggers `generateElaborativeQuestion`. With `selfExplanation` on, other answers show an "explain why" textarea. `nextQuestion` saves the elaborative question and answer and the self-explanation on the question. The flow reads the normalized `currentSession.learningSettings`, not the setup-form state. The rules are pure functions in `StudyPage/learningTechniques.ts`; the design is in `docs/superpowers/specs/2026-11-05-learning-techniques-design.md`.
+5. `endSession` sets `status: 'completed'` and calls `navigate('/history')`. Dashboard, SessionHistory, and SessionDetails read the same key.
+
+**Version migration.** `APP_VERSION` (`src/core/config/constants.ts`) is `__APP_VERSION__`, which `vite.config.ts` `define`s from `package.json`. When it differs from the stored version, `handleVersionMigration` (`src/core/services/version/versionControl.ts`) synchronously deletes every `studorama-*` key that is not in `PRESERVED_STORAGE_KEYS`, then writes the new version. Keys of other apps on the same origin are not touched. Preserved: API settings, multi-provider settings, language, sessions, theme, the version marker, and the two URL-key notice flags. If you add a persisted key, add it to `STORAGE_KEYS`. If it must survive releases, also add it to `PRESERVED_STORAGE_KEYS`.
+
+## Key Directories
+
+|Path|Purpose|
+|---|---|
+|`src/core/services/ai/`|`AIService`, provider classes, provider/model registry, prompt templates, question parser, error helpers|
+|`src/core/services/storage/`|`localStorage` wrapper (no cache: every `getItem` reads the browser, corruption cleanup, `clearAllAppData`). Exported as namespace `localStorage`, which shadows the DOM global in files that import it|
+|`src/core/services/{i18n,theme,version,notification}/`|Translations and language detection, 10-theme registry, version migration, toast notifications|
+|`src/core/config/`|`constants.ts` (`APP_VERSION`, `STORAGE_KEYS`, `DEFAULTS`, `PRESERVED_STORAGE_KEYS`), `providerSettings.ts`|
+|`src/core/utils/`|`runWhenIdle` (`idle.ts`), `createId` (`id.ts`), `setupServiceWorker` (`serviceWorker.ts`)|
+|`src/core/types/`|Service-side types: `ai.types.ts` (import directly; not in the barrel), `language.types.ts` (`Language`, `Translations`), theme, api|
+|`src/types/index.ts`|Component-side types: `StudySession`, `Question`, `LearningSettings`|
+|`src/hooks/`|`useLocalStorage`, `useMultiProviderSettings`, `useLanguage`, `useTheme`, `useVersionControl`, `useApiKeyFromUrl`|
+|`src/components/{layout,ui}/`|`Layout`, `Logo`, `ThemeSelector`, `IconButton`|
+|`scripts/`|`version-manager.js`, `deploy.js` (ESM Node scripts) and their tests|
+|`public/`|`sw.js`, `manifest.json`, PWA icons (`android-chrome-192x192.png`, `android-chrome-512x512.png`, `maskable-icon-512x512.png`), `logo.png` (JSON-LD), manifest screenshots, SEO files, SPA redirect files|
+|`graft/`|Code map generated by trail. Gitignored. Do not edit; `trail build` regenerates it|
+
+## Development Commands
+
+```bash
+npm install            # no lockfile is committed (package-lock.json is gitignored)
+npm run dev            # Vite dev server, default port 5173
+npm run typecheck      # tsc -b; the type gate
+npm test               # vitest run (jsdom); tests are colocated *.test.ts / scripts/*.test.js
+npm run lint           # eslint . (TS/TSX, scripts/**/*.js, public/sw.js)
+npm run build          # tsc -b && vite build -> dist/
+npm run preview        # serve dist/ on port 4173
+npm run version:info   # read-only
+```
+
+A bare `npx tsc --noEmit` checks nothing (`tsconfig.json` has `"files": []`). Use `npm run typecheck`.
+
+**Mutating commands. Run them only when the user asks.**
+- `npm run version:{patch,minor,major,bump}` (`bump` = patch) rewrites `package.json`, `public/sw.js` (`CACHE_NAME`), and `index.html` (every `"softwareVersion"`). It computes all three files first and writes nothing if any expected string is missing or malformed; it then exits 1. Only `major`, `minor`, and `patch` are accepted. It makes no git commit.
+- `npm run deploy[:patch|:minor|:major]` and `node scripts/deploy.js deploy [type]` run only on `main`. They stop on a dirty tree unless a terminal user confirms, run `npm run lint`, `typecheck`, and `build` before the bump, commit only the three version files, create an annotated `v<version>` tag, and run `git push --atomic origin main refs/tags/v<version>`. Any failure exits non-zero; a failed commit restores the three files. A bare `node scripts/deploy.js` prints usage. Test changes to these scripts in a throwaway clone whose `origin` is a local bare repo.
+
+## Code Conventions & Common Patterns
+
+- **TypeScript**: `strict`, `noUnusedLocals`, and `noUnusedParameters` (`tsconfig.app.json`). `lib` is ES2020, so ES2021+ APIs (`replaceAll`, `.at()`, `Object.hasOwn`) fail `tsc`.
+- **Imports**: relative and extensionless. The repo has no path alias (no `@/`). Barrels: `src/hooks/index.ts`, `src/core/services/index.ts` (excludes `ai`), `src/core/services/ai/index.ts`, `src/core/types/index.ts` (excludes `ai.types`).
+- **Naming**: components are PascalCase `.tsx` with a default export and `interface XProps`. Hooks are `useX.ts` with named exports. Services are `src/core/services/<domain>/<camelCase>.ts` with an `index.ts` barrel. Types are `*.types.ts`. Constants are `UPPER_SNAKE`. Storage keys are `studorama-*`.
+- **Formatting**: the repo has no Prettier or EditorConfig, and quote style is mixed (`StudyPage.tsx` uses double quotes, most files use single). Use the style of the file you edit.
+- **Registry pattern (no DI container)**: a typed `Record<Union, Config>` plus `getX` and `getLocalizedX(id, language)` getters. Examples: `AI_PROVIDERS` (`providers/registry.ts`), `themes` (`theme/themeRegistry.ts`), `PROMPT_TEMPLATES` (`prompts/promptRegistry.ts`), `translationsMap` (`i18n/translations/index.ts`). Ids are string-literal unions: `AIProvider` (derived from `AI_PROVIDER_IDS`), `Theme`, `Language`.
+- **Errors**: providers throw `AIError` (`core/types/ai.types.ts`) through `createAIError` / `createHTTPError` / `toAIError` (`ai/errors.ts`). Pages show `getAIErrorMessage(error, t)` through `setError`, never the raw English `error.message`. Storage helpers catch, log with `console.error`, and return a default value or `false`.
+- **Async**: `async/await` inside `try/catch`. Deferred work uses `runWhenIdle` (never bare `requestIdleCallback`; Safari lacks it). Redirects use `setTimeout`.
+- **State updates**: use functional updates (`setSessions(prev => …)`) and never mutate the previous state (see `components/pages/sessionEdits.ts`). Use `STORAGE_KEYS`, not string literals.
+- **IDs**: use `createId()` (`src/core/utils/id.ts`). `crypto.randomUUID` alone throws on insecure origins (http on a LAN IP).
+- **Env**: `import.meta.env.DEV` / `PROD` only. The app reads no other env vars.
+- **Tests**: Vitest + jsdom, colocated `*.test.ts`; `scripts/*.test.js` start with `// @vitest-environment node`. Test behavior, not wiring.
+- **i18n**: to add a string, add the key to `Translations` (`src/core/types/language.types.ts`), add the value to `translations/en-US.ts` and `translations/pt-BR.ts`, and read it with `const { t } = useLanguage(); t.key`. Outside React (hooks that `useLanguage` depends on, services), use `getTranslations(getCurrentLanguage())`. Only `tsc` enforces that the two locales match. Some localized text lives outside `Translations`: the `getLocalized*` switches in `providers/registry.ts` and `themeRegistry.ts`, and inline `language === 'pt-BR' ? … : …` ternaries.
+- **Theming**: `useTheme()` writes `themeConfig` to `--color-*`, `--gradient-*`, `--shadow-*`, and `--effect-*` on `document.documentElement`, and sets the body class `theme-<id>`. `effects.blur` is a `backdrop-filter` value and `effects.animation` a `transition` value (real CSS, not Tailwind classes). To make styles follow the theme, use the `.theme-*` classes in `src/index.css` or inline `style={{ color: themeConfig.colors.text }}`. Tints of a CSS variable use `color-mix(in srgb, var(--color-primary) 12.5%, transparent)`; `var(--x)20` is invalid CSS. The Tailwind palette is static hex, and `dark:` follows the OS, not the app theme. Color tokens must be 6-digit hex, because code appends alpha (`surface + 'CC'`).
+- **Adding an AI provider**:
+  1. Add the id to `AI_PROVIDER_IDS` in `ai.types.ts` and a default entry to `DEFAULT_MULTI_PROVIDER_SETTINGS`.
+  2. Create a `providers/<id>.ts` class with `generateCompletion` that throws through `createAIError` / `toAIError`.
+  3. Register the class in the `AIService` constructor `Record`.
+  4. Add a `<ID>_MODELS` array (suggestions only) and an `AI_PROVIDERS` entry in `registry.ts`. Because the type is `Record<AIProvider, …>`, `tsc` reports a missing entry.
+  5. Add `getLocalized*` cases.
+  6. Add key detection in `detectProviderFromApiKey` (`useApiKeyFromUrl.ts`) if the key prefix is unique.
+
+  The Settings UI shows the new provider through `getAllProviders()`. Model ids are free-form: `validateProviderConfig` accepts any non-empty id, and the registry models are suggestions in a `<datalist>`.
+
+**Traps**
+- URL key detection: `sk-ant-` → Anthropic, `sk-` → OpenAI, `AIza` → Gemini. DeepSeek keys also start with `sk-`, so they need an explicit `provider=deepseek`. An unknown `provider=` value stores nothing and shows an error notice.
+- The Gemini provider sends the API key in the `x-goog-api-key` header. Google's CORS preflight allows that header from browser origins.
+- Learning techniques: `LearningSettings` has 5 toggles. The thresholds are in `learningTechniques.ts`: a review comes 3 questions after a miss, at most 2 reviews per question; the level goes up after 3 correct answers in a row at that level and down after 2 misses. Review copies keep their original difficulty, so they do not count toward a streak at another level. Old stored sessions can hold extra toggle keys; `normalizeLearningSettings` drops them.
+- A model that returns other than 4 options, or an evaluation without the score block, is rejected (`INVALID_RESPONSE`). The service retries once, then the page shows a localized error.
+- Version strings: do not edit them by hand. `version-manager.js` needs exact shapes (`const CACHE_NAME = 'studorama-v…';` once in `public/sw.js`, `"softwareVersion": "…"` in `index.html`) and fails loudly when they change.
+- Unread `Translations` keys were deleted on 2026-11-05. No code reads a key by computed name (`t[...]`); keep it that way, so `tsc` catches a key deleted by mistake.
+- SPA fallback rules are in four files: `vercel.json`, `netlify.toml`, `public/_redirects`, and `public/.htaccess`. URLs are root-absolute, so the app must be deployed at `/`.
+- `color-mix()` needs Chrome 111+, Safari 16.2+, or Firefox 113+; older browsers drop those tint rules.
+
+## Important Files
+
+- `index.html`: the entry, the static English loader (with the inline `.loading-spinner` style), and SEO/JSON-LD blocks. Keep JSON-LD claims true to the code (no ratings, no unsupported features).
+- `src/App.tsx`: the module-load side effects, the version gate, and the routes.
+- `src/core/config/constants.ts`: `APP_VERSION`, `STORAGE_KEYS`, `DEFAULTS`, `PRESERVED_STORAGE_KEYS`.
+- `src/core/services/ai/aiService.ts`, `questionParser.ts`, `errors.ts`, `providers/registry.ts`, `prompts/promptRegistry.ts`: the AI pipeline, validation, error mapping, providers and models, and prompts.
+- `src/components/pages/StudyPage/StudyPage.tsx`: the session lifecycle. `learningTechniques.ts` next to it: the review, interleaving, and difficulty rules.
+- `public/sw.js`: network-first. It caches only `/`, `/index.html`, and `/manifest.json`. `CACHE_NAME` is a literal that the version manager updates.
+- `vite.config.ts`: `define: { __APP_VERSION__ }`, `manualChunks` (vendor, router, icons), esbuild minify, no sourcemaps, preview port 4173, and the Vitest `test` block.
+- `eslint.config.js`: TS/TSX (browser globals), `scripts/**/*.js` and `*.config.js` (Node globals), `public/sw.js` (service-worker globals).
+
+## Runtime/Tooling Preferences
+
+- Use Node with npm. The repo does not pin a version (no `engines`, no `.nvmrc`). Vite 5, ESLint 9, Vitest 3, and jsdom 26 need Node 18.18 or later. These checks ran on Node 22.23 with npm 10.9.
+- Everything is ESM (`"type": "module"`). Node scripts must use `import`, not `require`.
+- Code navigation: trail tools (`trail_find_code`, `trail_trace_calls`) read `graft/`. trail misses JSX element uses, constants, and type-only imports, so grep `src/` before you delete a symbol. `.ignore` lets ripgrep search `graft/` cards, so scope greps to `src/`, `scripts/`, or `public/`.
+
+## Testing & QA
+
+- Vitest + jsdom regression tests cover the storage migration, `clearAllAppData`, `useLocalStorage` writes, URL key detection, `?lang`, question and evaluation parsing, the retry, AI error messages, provider requests, the registry validation, theme effect values, service-worker gating, session edits, the learning-technique rules, and the version manager. There is no CI (`.github/` holds only `FUNDING.yml`) and no coverage target.
+- Baseline checks (2026-11-05):
+
+|Check|Result|
+|---|---|
+|`npm run lint`|0 problems|
+|`npm run typecheck`|0 errors|
+|`npm test`|15 files, 139 tests pass|
+|`npm run build`|Passes. Warns that the `index` chunk is ~1.23 MB|
+
+- Verification loop: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, then `npm run dev` or `npm run preview`, and test the changed routes in a browser.
+- Browser smoke notes:
+  - The dev server and local previews unregister leftover service workers on load.
+  - `/study` needs a configured provider. Ollama (`http://localhost:11434/v1`) needs no key, but browser origins need `OLLAMA_ORIGINS`. Any OpenAI-compatible server with CORS works as the Ollama base URL, so a small local mock of `POST /v1/chat/completions` can drive the full study flow. A mock can tell the calls apart: question generation sends a `system` message, evaluation is a single `user` message that contains `"score"`, and the elaborative question is any other single `user` message. To seed a key, open `/?provider=openai&apikey=sk-…&model=gpt-4o-mini`.
+  - The language setting is stored as an object, not a string. Use `?lang=pt-BR` to switch language in a test.
+  - `/session/:id` needs a session in `studorama-sessions`.
+  - Version values in `localStorage` are JSON strings: set `studorama-app-version` to `"\"2.6.2\""` to simulate an upgrade.

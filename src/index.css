@@ -32,9 +32,9 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
   
-  --effect-blur: backdrop-blur-md;
+  --effect-blur: blur(8px);
   --effect-glow: 0 0 20px rgb(234 88 12 / 0.3);
-  --effect-animation: transition-all duration-200 ease-in-out;
+  --effect-animation: all 200ms ease-in-out;
 }
 
 /* Enhanced responsive design and accessibility */
@@ -151,7 +151,7 @@
   
   .theme-input:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-primary)20;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12.5%, transparent);
   }
   
   .theme-surface {
@@ -276,21 +276,15 @@
   
   .btn-ghost:hover {
     color: var(--color-primary);
-    background: var(--color-primary)10;
+    background: color-mix(in srgb, var(--color-primary) 6.25%, transparent);
   }
   
   /* Loading states */
   .loading-overlay {
     @apply absolute inset-0 flex items-center justify-center;
     @apply z-10;
-    background: var(--color-background)75;
+    background: color-mix(in srgb, var(--color-background) 46%, transparent);
     backdrop-filter: var(--effect-blur);
-  }
-  
-  .loading-spinner {
-    @apply w-6 h-6 border-2 rounded-full animate-spin;
-    border-color: var(--color-textMuted);
-    border-top-color: var(--color-primary);
   }
   
   /* Enhanced card styles */
@@ -321,7 +315,7 @@
   
   .nav-link-active {
     @apply nav-link shadow-sm;
-    background: var(--color-primary)20;
+    background: color-mix(in srgb, var(--color-primary) 12.5%, transparent);
     color: var(--color-primary);
   }
   
@@ -332,22 +326,22 @@
   
   .nav-link-inactive:hover {
     color: var(--color-primary);
-    background: var(--color-primary)10;
+    background: color-mix(in srgb, var(--color-primary) 6.25%, transparent);
   }
   
   /* Mathematical expression styling */
   .math-expression {
     @apply inline-block px-2 py-1 rounded;
     @apply font-serif text-base font-medium border;
-    background: var(--color-info)10;
+    background: color-mix(in srgb, var(--color-info) 6.25%, transparent);
     color: var(--color-info);
-    border-color: var(--color-info)30;
+    border-color: color-mix(in srgb, var(--color-info) 18.75%, transparent);
   }
   
   .math-block {
     @apply block my-4 p-4 rounded-lg text-center;
-    background: var(--color-info)10;
-    border: 1px solid var(--color-info)30;
+    background: color-mix(in srgb, var(--color-info) 6.25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-info) 18.75%, transparent);
   }
   
   .math-block .math-content {
@@ -560,12 +554,12 @@
 
 /* Enhanced selection styling */
 ::selection {
-  background-color: var(--color-primary)30;
+  background-color: color-mix(in srgb, var(--color-primary) 18.75%, transparent);
   color: var(--color-text);
 }
 
 ::-moz-selection {
-  background-color: var(--color-primary)30;
+  background-color: color-mix(in srgb, var(--color-primary) 18.75%, transparent);
   color: var(--color-text);
 }
 
@@ -771,7 +765,7 @@ textarea:focus {
   border-color: var(--color-primary);
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-  box-shadow: 0 0 0 3px var(--color-primary)20;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12.5%, transparent);
 }
 
 input::placeholder,

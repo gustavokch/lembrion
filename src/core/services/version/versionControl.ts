@@ -1,4 +1,7 @@
 import { PRESERVED_STORAGE_KEYS, APP_VERSION, STORAGE_KEYS } from '../../config/constants';
+import { runWhenIdle } from '../../utils/idle';
+import { getCurrentLanguage } from '../i18n/languageDetector';
+import { getTranslations } from '../i18n/translations';
 import * as localStorage from '../storage/localStorage';
 
 /**
@@ -31,29 +34,21 @@ export function isFreshInstallation(): boolean {
 }
 
 /**
- * Clear all localStorage data except preserved keys (optimized for performance)
+ * Remove every Studorama key that is not in PRESERVED_STORAGE_KEYS. Runs
+ * synchronously so it cannot delete keys written after the migration started.
  */
 export function clearStorageExceptPreserved(): void {
-  const allKeys = localStorage.getAllKeys();
-  
-  // Use requestIdleCallback to avoid blocking the main thread
-  requestIdleCallback(() => {
-    // Remove all keys except preserved ones
-    allKeys.forEach(key => {
-      if (!PRESERVED_STORAGE_KEYS.includes(key)) {
-        localStorage.removeItem(key);
-      }
-    });
+  const removable = localStorage
+    .getAllKeys()
+    .filter(key => key.startsWith(localStorage.APP_KEY_PREFIX) && !PRESERVED_STORAGE_KEYS.includes(key));
 
-    // Clear localStorage cache to free memory
-    localStorage.clearCache();
+  removable.forEach(key => localStorage.removeItem(key));
 
-    console.log(`Cleared ${allKeys.length - PRESERVED_STORAGE_KEYS.length} localStorage items due to version change`);
-  });
+  console.log(`Cleared ${removable.length} localStorage items due to version change`);
 }
 
 /**
- * Handle version migration with performance optimizations
+ * Handle version migration.
  * Returns true if migration was performed, false otherwise
  */
 export function handleVersionMigration(): boolean {
@@ -69,15 +64,10 @@ export function handleVersionMigration(): boolean {
   // Version changed - perform migration
   if (isVersionChanged()) {
     console.log(`Version change detected: ${storedVersion} → ${APP_VERSION}`);
-    
-    // Clear storage except preserved keys (async to avoid blocking)
     clearStorageExceptPreserved();
-    
-    // Update stored version
     setStoredVersion(APP_VERSION);
-    
-    // Show migration notification (async)
-    requestIdleCallback(() => {
+
+    runWhenIdle(() => {
       showMigrationNotification(storedVersion!, APP_VERSION);
     });
     
@@ -93,22 +83,10 @@ export function handleVersionMigration(): boolean {
  */
 function showMigrationNotification(oldVersion: string, newVersion: string): void {
   try {
-    // Try to get translations
-    let title = 'Studorama Updated!';
-    let versionText = `Updated from v${oldVersion} to v${newVersion}`;
-    let dataText = 'Your data has been refreshed for the new version. Your API key has been preserved.';
-    
-    // Try to detect language from localStorage
-    try {
-      const languageSettings = localStorage.getItem<{ language: string }>(STORAGE_KEYS.LANGUAGE, { language: 'en-US' });
-      if (languageSettings.language === 'pt-BR') {
-        title = 'Studorama Atualizado!';
-        versionText = `Atualizado da v${oldVersion} para v${newVersion}`;
-        dataText = 'Seus dados foram atualizados para a nova versão. Sua chave da API foi preservada.';
-      }
-    } catch (e) {
-      // Ignore language detection errors
-    }
+    const t = getTranslations(getCurrentLanguage());
+    const title = t.appUpdated;
+    const versionText = t.versionUpdated.replace('{oldVersion}', oldVersion).replace('{newVersion}', newVersion);
+    const dataText = t.dataRefreshed;
     
     // Create notification element
     const notification = document.createElement('div');
@@ -230,14 +208,4 @@ export function getVersionInfo() {
     isFreshInstallation: isFreshInstallation(),
     preservedKeys: PRESERVED_STORAGE_KEYS,
   };
-}
-
-/**
- * Force a version migration (useful for testing)
- */
-export function forceMigration(): void {
-  console.log('Forcing version migration...');
-  clearStorageExceptPreserved();
-  setStoredVersion(APP_VERSION);
-  showMigrationNotification('0.0.0', APP_VERSION);
 }

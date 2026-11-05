@@ -233,21 +233,10 @@ export default {
   },
   plugins: [
     // Add any additional plugins here
-    function({ addUtilities, addComponents, theme }) {
-      // Custom utilities for responsive design
+    function({ addUtilities }) {
+      // Custom utilities (safe-area, focus-ring, touch-target and
+      // container-responsive live in src/index.css)
       addUtilities({
-        '.safe-top': {
-          'padding-top': 'env(safe-area-inset-top)',
-        },
-        '.safe-bottom': {
-          'padding-bottom': 'env(safe-area-inset-bottom)',
-        },
-        '.safe-left': {
-          'padding-left': 'env(safe-area-inset-left)',
-        },
-        '.safe-right': {
-          'padding-right': 'env(safe-area-inset-right)',
-        },
         '.touch-manipulation': {
           'touch-action': 'manipulation',
         },
@@ -263,40 +252,6 @@ export default {
         },
         '.text-pretty': {
           'text-wrap': 'pretty',
-        },
-      });
-
-      // Custom components for common patterns
-      addComponents({
-        '.container-responsive': {
-          width: '100%',
-          maxWidth: theme('maxWidth.7xl'),
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          paddingLeft: theme('spacing.3'),
-          paddingRight: theme('spacing.3'),
-          '@screen sm': {
-            paddingLeft: theme('spacing.4'),
-            paddingRight: theme('spacing.4'),
-          },
-          '@screen md': {
-            paddingLeft: theme('spacing.6'),
-            paddingRight: theme('spacing.6'),
-          },
-          '@screen lg': {
-            paddingLeft: theme('spacing.8'),
-            paddingRight: theme('spacing.8'),
-          },
-        },
-        '.focus-ring': {
-          '&:focus': {
-            outline: 'none',
-            'box-shadow': `0 0 0 2px ${theme('colors.orange.500')}`,
-          },
-        },
-        '.touch-target': {
-          minHeight: '44px',
-          minWidth: '44px',
         },
       });
     },

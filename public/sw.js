@@ -104,13 +104,6 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-// Simplified message handling
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
-
 // Minimal error handling
 self.addEventListener('error', (event) => {
   console.error('Service Worker: Error occurred', event.error);

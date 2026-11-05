@@ -1,5 +1,13 @@
-import { Language } from '../../types';
-import { SUPPORTED_LANGUAGES, DEFAULTS } from '../../config/constants';
+import { Language, LanguageSettings } from '../../types';
+import { SUPPORTED_LANGUAGES, DEFAULTS, STORAGE_KEYS } from '../../config/constants';
+import * as storage from '../storage/localStorage';
+
+/**
+ * Check whether a value is one of the supported language codes
+ */
+export function isSupportedLanguage(value: unknown): value is Language {
+  return typeof value === 'string' && SUPPORTED_LANGUAGES.includes(value);
+}
 
 /**
  * Detect the browser's language and return the closest supported language
@@ -17,8 +25,8 @@ export function detectBrowserLanguage(): Language {
     }
     
     // Check if the browser language is directly supported
-    if (SUPPORTED_LANGUAGES.includes(browserLang as Language)) {
-      return browserLang as Language;
+    if (isSupportedLanguage(browserLang)) {
+      return browserLang;
     }
     
     // Check for language prefix match (e.g., 'pt-PT' should match 'pt-BR')
@@ -35,6 +43,41 @@ export function detectBrowserLanguage(): Language {
   } catch (error) {
     console.error('Error detecting browser language:', error);
     return defaultLanguage;
+  }
+}
+
+/**
+ * The active language: the stored language setting (the one useLanguage writes),
+ * or the browser language when none is stored. Usable outside React.
+ */
+export function getCurrentLanguage(): Language {
+  const settings = storage.getItem<Partial<LanguageSettings> | null>(STORAGE_KEYS.LANGUAGE, null);
+  return settings && isSupportedLanguage(settings.language) ? settings.language : detectBrowserLanguage();
+}
+
+/**
+ * Apply a `?lang=<code>` URL parameter: a supported code becomes the persisted
+ * language setting and the parameter is removed from the address bar (other
+ * parameters stay). Unsupported values are ignored. Call before the first render.
+ * Returns the applied language, or null.
+ */
+export function applyLanguageFromUrl(): Language | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const url = new URL(window.location.href);
+    const lang = url.searchParams.get('lang');
+    if (!isSupportedLanguage(lang)) return null;
+
+    const settings: LanguageSettings = { language: lang };
+    storage.setItem(STORAGE_KEYS.LANGUAGE, settings);
+
+    url.searchParams.delete('lang');
+    window.history.replaceState(window.history.state, document.title, url.toString());
+    return lang;
+  } catch (error) {
+    console.error('Error applying language from URL:', error);
+    return null;
   }
 }
 
@@ -58,40 +101,4 @@ export function formatDate(date: string, language: Language): string {
     console.error('Error formatting date:', error);
     return date;
   }
-}
-
-/**
- * Get a random placeholder for subject modifiers based on language
- */
-export function getRandomModifierPlaceholder(language: Language): string {
-  // Random modifier placeholders by language
-  const MODIFIER_PLACEHOLDERS: Record<Language, string[]> = {
-    'en-US': [
-      'Introduction to Computer Science by David J. Malan',
-      'Chapter 3: Data Structures',
-      'MIT OpenCourseWare 6.006',
-      'Algorithms by Robert Sedgewick',
-      'Section 2.1: Elementary Sorts',
-      'Khan Academy: Linear Algebra',
-      'Calculus: Early Transcendentals by James Stewart',
-      'Physics for Scientists and Engineers by Serway',
-      'Organic Chemistry by Paula Bruice',
-      'Microeconomics by Paul Krugman'
-    ],
-    'pt-BR': [
-      'Introdução à Ciência da Computação por David J. Malan',
-      'Capítulo 3: Estruturas de Dados',
-      'MIT OpenCourseWare 6.006',
-      'Algoritmos por Robert Sedgewick',
-      'Seção 2.1: Ordenações Elementares',
-      'Khan Academy: Álgebra Linear',
-      'Cálculo: Transcendentais Iniciais por James Stewart',
-      'Física para Cientistas e Engenheiros por Serway',
-      'Química Orgânica por Paula Bruice',
-      'Microeconomia por Paul Krugman'
-    ]
-  };
-
-  const placeholders = MODIFIER_PLACEHOLDERS[language] || MODIFIER_PLACEHOLDERS['en-US'];
-  return placeholders[Math.floor(Math.random() * placeholders.length)];
 }

@@ -1,15 +1,17 @@
 import { AlertCircle, ArrowLeft, BookOpen, Calendar, CheckSquare, Edit, Eye, Filter, Info, Play, Search, SortAsc, SortDesc, Square, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { STORAGE_KEYS } from '../../core/config/constants';
 import { formatDate } from '../../core/services';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useTheme } from '../../hooks/useTheme';
-import { LearningSettings, StudySession } from '../../types';
+import { StudySession } from '../../types';
 import SessionEditModal from '../SessionEditModal';
+import { applySessionEditById, SessionEditUpdates } from './sessionEdits';
 
 export default function SessionHistory() {
-  const [sessions, setSessions] = useLocalStorage<StudySession[]>('studorama-sessions', []);
+  const [sessions, setSessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
   const { t, language } = useLanguage();
   const { themeConfig } = useTheme();
   const [editingSession, setEditingSession] = useState<StudySession | null>(null);
@@ -44,45 +46,8 @@ export default function SessionHistory() {
     setEditingSession(session);
   };
 
-  const handleSaveSession = (sessionId: string, updates: any) => {
-    setSessions(prevSessions => 
-      prevSessions.map(session => {
-        if (session.id === sessionId) {
-          const updatedSession = { ...session, ...updates };
-          
-          // Add history tracking for changes
-          const now = new Date().toISOString();
-          
-          // Track subject changes
-          if (updates.contexts !== session.contexts) {
-            const contextHistory = session.contextsHistory || [];
-            contextHistory.push({
-              id: Date.now().toString(),
-              newContexts: updates.contexts,
-              previousContexts: session.contexts,
-              changedAt: now,
-              reason: 'Manual edit from history'
-            });
-            updatedSession.contextsHistory = contextHistory;
-          }
-          
-          // Track learning settings changes
-          if (updates.learningSettings && JSON.stringify(updates.learningSettings) !== JSON.stringify(session.learningSettings)) {
-            const learningSettingsHistory = session.learningSettingsHistory || [];
-            learningSettingsHistory.push({
-              id: Date.now().toString(),
-              previousSettings: session.learningSettings as LearningSettings,
-              newSettings: updates.learningSettings,
-              changedAt: now
-            });
-            updatedSession.learningSettingsHistory = learningSettingsHistory;
-          }
-          
-          return updatedSession;
-        }
-        return session;
-      })
-    );
+  const handleSaveSession = (sessionId: string, updates: SessionEditUpdates) => {
+    setSessions(prevSessions => applySessionEditById(prevSessions, sessionId, updates));
     setEditingSession(null);
   };
 

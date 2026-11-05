@@ -2,18 +2,18 @@
  * Anthropic Claude Provider Implementation
  */
 
-import { AIRequest, AIResponse, AIError } from '../../../types/ai.types';
+import { AIRequest, AIResponse } from '../../../types/ai.types';
+import { createAIError, createHTTPError, toAIError } from '../errors';
 
 export class AnthropicProvider {
   private baseUrl = 'https://api.anthropic.com/v1';
 
   async generateCompletion(request: AIRequest): Promise<AIResponse> {
     if (!request.apiKey) {
-      throw this.createError('API key is required for Anthropic', 'MISSING_API_KEY');
+      throw createAIError('anthropic', 'API key is required for Anthropic', 'MISSING_API_KEY');
     }
 
     try {
-      // Convert messages to Anthropic format
       const { system, messages } = this.convertMessagesToAnthropicFormat(request.messages);
       
       const response = await fetch(`${request.baseUrl || this.baseUrl}/messages`, {
@@ -22,30 +22,27 @@ export class AnthropicProvider {
           'Content-Type': 'application/json',
           'x-api-key': request.apiKey,
           'anthropic-version': '2023-06-01',
+          // Required for CORS: the browser calls the API directly with the user's key
+          'anthropic-dangerous-direct-browser-access': 'true',
           ...request.customHeaders,
         },
         body: JSON.stringify({
           model: request.model,
-          max_tokens: request.maxTokens || 800,
-          temperature: request.temperature || 0.7,
-          system,
+          max_tokens: request.maxTokens ?? 800,
+          temperature: request.temperature ?? 0.7,
+          ...(system ? { system } : {}),
           messages,
         }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw this.createError(
-          `Anthropic API error: ${response.statusText}. ${errorData.error?.message || ''}`,
-          errorData.error?.type || 'API_ERROR',
-          response.status
-        );
+        throw await createHTTPError('anthropic', 'Anthropic', response);
       }
 
       const data = await response.json();
       
       if (!data.content || !data.content[0] || !data.content[0].text) {
-        throw this.createError('Invalid response format from Anthropic', 'INVALID_RESPONSE');
+        throw createAIError('anthropic', 'Invalid response format from Anthropic', 'INVALID_RESPONSE');
       }
 
       return {
@@ -59,26 +56,21 @@ export class AnthropicProvider {
         finishReason: data.stop_reason,
       };
     } catch (error) {
-      if (error instanceof Error && error.name === 'AIError') {
-        throw error;
-      }
-      
-      throw this.createError(
-        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        'NETWORK_ERROR',
-        undefined,
-        true
-      );
+      throw toAIError(error, 'anthropic');
     }
   }
 
+  /**
+   * System messages go to the top-level `system` field. The Messages API rejects an empty
+   * `messages` array, so a system-only request is sent as a single user message.
+   */
   private convertMessagesToAnthropicFormat(messages: AIRequest['messages']) {
-    let system = '';
-    const anthropicMessages = [];
+    const systemParts: string[] = [];
+    const anthropicMessages: { role: 'user' | 'assistant'; content: string }[] = [];
     
     for (const message of messages) {
       if (message.role === 'system') {
-        system += message.content + '\n';
+        systemParts.push(message.content);
       } else {
         anthropicMessages.push({
           role: message.role,
@@ -86,22 +78,12 @@ export class AnthropicProvider {
         });
       }
     }
-    
-    return { system: system.trim(), messages: anthropicMessages };
-  }
 
-  private createError(
-    message: string, 
-    code?: string, 
-    statusCode?: number, 
-    retryable = false
-  ): AIError {
-    const error = new Error(message) as AIError;
-    error.name = 'AIError';
-    error.provider = 'anthropic';
-    error.code = code;
-    error.statusCode = statusCode;
-    error.retryable = retryable;
-    return error;
+    const system = systemParts.join('\n').trim();
+    if (anthropicMessages.length === 0) {
+      return { system: '', messages: [{ role: 'user' as const, content: system }] };
+    }
+    
+    return { system, messages: anthropicMessages };
   }
 }
