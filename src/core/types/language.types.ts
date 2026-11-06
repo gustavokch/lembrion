@@ -105,9 +105,23 @@ export interface Translations {
   // Configuration Fields
   baseUrl: string;
   baseUrlPlaceholder: string;
+  /** Placeholder: {path} */
+  baseUrlHint: string;
   model: string;
   modelInputHelp: string;
+  modelInputHelpServer: string;
   suggestedModels: string;
+  effort: string;
+  effortHint: string;
+  effortHintServer: string;
+  effortServerDefault: string;
+  effortNone: string;
+  effortMinimal: string;
+  effortLow: string;
+  effortMedium: string;
+  effortHigh: string;
+  effortExtraHigh: string;
+  effortMax: string;
   
   // Data Management
   manageYourData: string;
@@ -153,7 +167,8 @@ export interface Translations {
   aiErrorProvider: string;
   aiErrorInvalidResponse: string;
   aiErrorNetwork: string;
-  aiErrorOllamaConnection: string;
+  aiErrorEndpointConnection: string;
+  aiErrorRefused: string;
   aiErrorTimeout: string;
   aiErrorUnknown: string;
 
@@ -278,42 +293,43 @@ export interface Translations {
   providerDescriptionGemini: string;
   providerDescriptionAnthropic: string;
   providerDescriptionDeepseek: string;
-  providerDescriptionOllama: string;
+  providerNameCustomMessages: string;
+  providerNameCustomResponses: string;
+  providerDescriptionCustomMessages: string;
+  providerDescriptionCustomResponses: string;
   setupInstructionsOpenai: string[];
   setupInstructionsGemini: string[];
   setupInstructionsAnthropic: string[];
   setupInstructionsDeepseek: string[];
-  setupInstructionsOllama: string[];
+  setupInstructionsCustomMessages: string[];
+  setupInstructionsCustomResponses: string[];
   apiKeyLabel: string;
   apiKeyLabelOpenai: string;
   apiKeyLabelGemini: string;
   apiKeyLabelAnthropic: string;
   apiKeyLabelDeepseek: string;
-  costTierFree: string;
+  apiKeyLabelOptional: string;
   costTierLow: string;
   costTierMedium: string;
   costTierHigh: string;
   /** Placeholder: {provider} */
   apiKeyRequiredFor: string;
   modelRequired: string;
+  baseUrlRequired: string;
   invalidBaseUrlFormat: string;
-  modelDescriptionGpt4o: string;
-  modelDescriptionGpt4oMini: string;
-  modelDescriptionGpt4Turbo: string;
-  modelDescriptionGpt4: string;
-  modelDescriptionGpt35Turbo: string;
-  modelDescriptionGemini15Pro: string;
-  modelDescriptionGemini15Flash: string;
-  modelDescriptionGeminiPro: string;
-  modelDescriptionClaude35Sonnet: string;
-  modelDescriptionClaude3Haiku: string;
-  modelDescriptionClaude3Opus: string;
-  modelDescriptionDeepseekChat: string;
-  modelDescriptionDeepseekCoder: string;
-  modelDescriptionLlama318b: string;
-  modelDescriptionLlama3170b: string;
-  modelDescriptionMistral7b: string;
-  modelDescriptionCodellama13b: string;
+  modelDescriptionGpt6Luna: string;
+  modelDescriptionGpt61Terra: string;
+  modelDescriptionGpt61Sol: string;
+  modelDescriptionGpt6Astra: string;
+  modelDescriptionGemini35FlashLite: string;
+  modelDescriptionGemini38Flash: string;
+  modelDescriptionGemini4Argon: string;
+  modelDescriptionClaudeHaiku55: string;
+  modelDescriptionClaudeSonnet55: string;
+  modelDescriptionClaudeOpus55: string;
+  modelDescriptionClaudeFable51: string;
+  modelDescriptionDeepseekFlash: string;
+  modelDescriptionDeepseekV4Pro: string;
 
   // Dashboard
   dashboardProgress: string;
@@ -459,7 +475,8 @@ export interface Translations {
   settingsProviderIncomplete: string;
   settingsAutoSave: string;
   settingsShowApiKey: string;
-  settingsOllamaSetupTitle: string;
+  settingsEndpointSetupTitle: string;
+  settingsEndpointGuide: string;
   /** Placeholder: {site} */
   settingsOpenSite: string;
   settingsStoredDataTitle: string;
@@ -477,7 +494,7 @@ export interface Translations {
   studyChange: string;
   studyTechniquesOn: string;
   /** Placeholder: {provider} */
-  studyProviderNeedsKey: string;
+  studyProviderNotReady: string;
   studyOpenSettings: string;
   /** Placeholders: {answered}, {correct} */
   studyProgressSummary: string;

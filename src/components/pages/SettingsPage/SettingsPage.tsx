@@ -1,11 +1,13 @@
-import { AlertCircle, AlertTriangle, Check, ExternalLink, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Check, ChevronDown, ExternalLink, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useRef, useState, type KeyboardEvent } from 'react';
+import { GITHUB_URL } from '../../../core/config/constants';
 import { clearAllAppData } from '../../../core/services/storage/localStorage';
 import { formatMessage } from '../../../core/services/i18n';
 import {
   getAllProviders,
   getLocalizedApiKeyLabel,
   getLocalizedCostTier,
+  getLocalizedEffortName,
   getLocalizedModelDescription,
   getLocalizedModelName,
   getLocalizedProviderDescription,
@@ -13,6 +15,7 @@ import {
   getLocalizedSetupInstructions,
   getModel,
   getProviderConfig,
+  resolveEffort,
   validateProviderConfig
 } from '../../../core/services/ai/providers/registry';
 import { Language } from '../../../core/types';
@@ -22,13 +25,14 @@ import { useLanguage, useMultiProviderSettings } from '../../../hooks';
 const TABS = ['providers', 'language', 'data'] as const;
 type SettingsTab = (typeof TABS)[number];
 
-/** Where each provider hands out keys (or, for Ollama, the installer). */
+/** Where each hosted provider hands out keys, and the README guide for user-run servers */
 const PROVIDER_SETUP_URLS: Record<AIProvider, string> = {
   openai: 'https://platform.openai.com/api-keys',
   gemini: 'https://aistudio.google.com/apikey',
-  anthropic: 'https://console.anthropic.com/settings/keys',
+  anthropic: 'https://platform.claude.com/settings/keys',
   deepseek: 'https://platform.deepseek.com/api_keys',
-  ollama: 'https://ollama.com/download',
+  'custom-messages': `${GITHUB_URL}#custom-endpoints`,
+  'custom-responses': `${GITHUB_URL}#custom-endpoints`,
 };
 
 /** Language names are shown in their own language. */
@@ -54,6 +58,7 @@ export default function SettingsPage() {
   const currentProviderName = getLocalizedProviderName(currentProvider, language);
   const selectedModel = getModel(currentProvider, currentProviderSettings.model);
   const setupUrl = PROVIDER_SETUP_URLS[currentProvider];
+  const currentEffort = resolveEffort(currentProvider, currentProviderSettings.effort);
 
   const validation = validateProviderConfig(currentProvider, currentProviderSettings, language);
 
@@ -211,49 +216,77 @@ export default function SettingsPage() {
               </div>
 
               <div className="panel-body space-y-7">
-                {currentProviderConfig.requiresApiKey && (
+                {currentProviderConfig.endpointPath && (
                   <div>
-                    <label htmlFor="provider-api-key" className="label">
-                      {getLocalizedApiKeyLabel(currentProvider, language)}
+                    <label htmlFor="provider-base-url" className="label">
+                      {t.baseUrl}
                     </label>
-                    <div className="flex gap-2">
-                      <input
-                        id="provider-api-key"
-                        type={showApiKey ? 'text' : 'password'}
-                        value={currentProviderSettings.apiKey}
-                        onChange={(e) => handleProviderSettingChange(
-                          currentProvider,
-                          'apiKey',
-                          e.target.value
-                        )}
-                        placeholder={currentProviderConfig.apiKeyPlaceholder}
-                        autoComplete="off"
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        spellCheck={false}
-                        aria-describedby="provider-api-key-hint"
-                        className="field min-w-0 font-mono"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowApiKey(prev => !prev)}
-                        aria-label={t.settingsShowApiKey}
-                        aria-pressed={showApiKey}
-                        className="btn btn-secondary btn-icon shrink-0"
-                      >
-                        {showApiKey ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
-                      </button>
-                    </div>
-                    <p id="provider-api-key-hint" className="hint">
-                      {t.apiKeyStored}
+                    <input
+                      id="provider-base-url"
+                      type="url"
+                      value={currentProviderSettings.baseUrl || ''}
+                      onChange={(e) => handleProviderSettingChange(
+                        currentProvider,
+                        'baseUrl',
+                        e.target.value.trim()
+                      )}
+                      placeholder={t.baseUrlPlaceholder}
+                      autoComplete="off"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      aria-required="true"
+                      aria-describedby="provider-base-url-hint"
+                      aria-invalid={validation.errors.some(error => error === t.baseUrlRequired || error === t.invalidBaseUrlFormat)}
+                      className="field font-mono"
+                    />
+                    <p id="provider-base-url-hint" className="hint">
+                      {formatMessage(t.baseUrlHint, { path: currentProviderConfig.endpointPath })}
                     </p>
                   </div>
                 )}
 
+                <div>
+                  <label htmlFor="provider-api-key" className="label">
+                    {getLocalizedApiKeyLabel(currentProvider, language)}
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      id="provider-api-key"
+                      type={showApiKey ? 'text' : 'password'}
+                      value={currentProviderSettings.apiKey}
+                      onChange={(e) => handleProviderSettingChange(
+                        currentProvider,
+                        'apiKey',
+                        e.target.value
+                      )}
+                      placeholder={currentProviderConfig.apiKeyPlaceholder}
+                      autoComplete="off"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      aria-describedby="provider-api-key-hint"
+                      className="field min-w-0 font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowApiKey(prev => !prev)}
+                      aria-label={t.settingsShowApiKey}
+                      aria-pressed={showApiKey}
+                      className="btn btn-secondary btn-icon shrink-0"
+                    >
+                      {showApiKey ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                    </button>
+                  </div>
+                  <p id="provider-api-key-hint" className="hint">
+                    {t.apiKeyStored}
+                  </p>
+                </div>
+
                 {/* Setup steps: an inset beside the fields they explain */}
                 <div className="rounded border border-line bg-sunken px-4 pb-2 pt-3">
                   <h3 className="caps-label">
-                    {currentProviderConfig.requiresApiKey ? t.howToGetKey : t.settingsOllamaSetupTitle}
+                    {currentProviderConfig.endpointPath ? t.settingsEndpointSetupTitle : t.howToGetKey}
                   </h3>
                   <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-ink-soft marker:text-ink-muted">
                     {getLocalizedSetupInstructions(currentProvider, language).map((instruction, index) => (
@@ -266,7 +299,9 @@ export default function SettingsPage() {
                     rel="noopener noreferrer"
                     className="mt-1 inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-accent-ink underline hover:decoration-2"
                   >
-                    {formatMessage(t.settingsOpenSite, { site: new URL(setupUrl).host })}
+                    {currentProviderConfig.endpointPath
+                      ? t.settingsEndpointGuide
+                      : formatMessage(t.settingsOpenSite, { site: new URL(setupUrl).host })}
                     <ExternalLink className="h-4 w-4" aria-hidden="true" />
                   </a>
                 </div>
@@ -300,7 +335,7 @@ export default function SettingsPage() {
                     ))}
                   </datalist>
                   <p id="provider-model-help" className="hint">
-                    {t.modelInputHelp}
+                    {currentProviderConfig.models.length > 0 ? t.modelInputHelp : t.modelInputHelpServer}
                   </p>
 
                   {/* Registry models as tappable suggestions (datalist support on mobile is unreliable) */}
@@ -346,30 +381,35 @@ export default function SettingsPage() {
                   )}
                 </div>
 
-                {currentProvider === 'ollama' && (
-                  <div>
-                    <label htmlFor="provider-base-url" className="label">
-                      {t.baseUrl}
-                    </label>
-                    <input
-                      id="provider-base-url"
-                      type="url"
-                      value={currentProviderSettings.baseUrl || ''}
-                      onChange={(e) => handleProviderSettingChange(
-                        currentProvider,
-                        'baseUrl',
-                        e.target.value
-                      )}
-                      placeholder={t.baseUrlPlaceholder}
-                      autoComplete="off"
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                      spellCheck={false}
-                      aria-invalid={validation.errors.includes(t.invalidBaseUrlFormat)}
-                      className="field font-mono"
+                <div>
+                  <label htmlFor="provider-effort" className="label">
+                    {t.effort}
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="provider-effort"
+                      value={currentEffort}
+                      onChange={(e) => handleProviderSettingChange(currentProvider, 'effort', e.target.value)}
+                      aria-describedby="provider-effort-hint"
+                      className="field appearance-none pr-10"
+                    >
+                      {currentProviderConfig.efforts.map((level) => (
+                        <option key={level} value={level}>
+                          {level === currentProviderConfig.defaultEffort
+                            ? `${getLocalizedEffortName(level, language)} (${t.recommended})`
+                            : getLocalizedEffortName(level, language)}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      aria-hidden="true"
+                      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted"
                     />
                   </div>
-                )}
+                  <p id="provider-effort-hint" className="hint">
+                    {currentProviderConfig.endpointPath ? t.effortHintServer : t.effortHint}
+                  </p>
+                </div>
 
                 {!validation.valid && (
                   <div className="notice notice-error">

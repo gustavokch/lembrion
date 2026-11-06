@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { STORAGE_KEYS } from "../../../core/config/constants";
 import { aiService, getAIErrorMessage } from "../../../core/services/ai";
 import { debugLog } from "../../../core/services/ai/debug";
-import { getProviderConfig } from "../../../core/services/ai/providers/registry";
+import { getLocalizedProviderName, validateProviderConfig } from "../../../core/services/ai/providers/registry";
 import { formatMessage } from "../../../core/services/i18n";
 import { createId } from "../../../core/utils/id";
 import { useLanguage, useLocalStorage, useMultiProviderSettings } from "../../../hooks";
@@ -65,10 +65,10 @@ export default function StudyPage() {
 
   // Get current provider settings
   const currentProviderSettings = multiProviderSettings.providers[multiProviderSettings.currentProvider];
-  const currentProviderConfig = getProviderConfig(multiProviderSettings.currentProvider);
+  const currentProviderName = getLocalizedProviderName(multiProviderSettings.currentProvider, language);
 
-  // Check if provider is configured
-  const isProviderConfigured = currentProviderConfig.requiresApiKey ? !!currentProviderSettings.apiKey : true;
+  // A key, a model, and for a user-run server its base URL
+  const isProviderConfigured = validateProviderConfig(multiProviderSettings.currentProvider, currentProviderSettings, language).valid;
 
   // Toggle fullscreen mode for focused studying
   const toggleFullscreen = () => {
@@ -191,13 +191,7 @@ export default function StudyPage() {
             difficulty: requestedDifficulty,
             focusContext,
           },
-          {
-            provider: multiProviderSettings.currentProvider,
-            apiKey: currentProviderSettings.apiKey,
-            model: currentProviderSettings.model,
-            baseUrl: currentProviderSettings.baseUrl,
-            customHeaders: currentProviderSettings.customHeaders,
-          }
+          { provider: multiProviderSettings.currentProvider, ...currentProviderSettings }
         );
 
         question = {
@@ -326,13 +320,7 @@ export default function StudyPage() {
             type: "dissertative",
             language,
           },
-          {
-            provider: multiProviderSettings.currentProvider,
-            apiKey: currentProviderSettings.apiKey,
-            model: currentProviderSettings.model,
-            baseUrl: currentProviderSettings.baseUrl,
-            customHeaders: currentProviderSettings.customHeaders,
-          }
+          { provider: multiProviderSettings.currentProvider, ...currentProviderSettings }
         );
 
         isCorrect = evaluation.isCorrect;
@@ -380,12 +368,9 @@ export default function StudyPage() {
 
       if (!isCorrect && settings.elaborativeInterrogation) {
         try {
-          const elaborativeQ = await aiService.generateElaborativeQuestion(currentSession.contexts, currentQuestion.question, language as any, {
+          const elaborativeQ = await aiService.generateElaborativeQuestion(currentSession.contexts, currentQuestion.question, language, {
             provider: multiProviderSettings.currentProvider,
-            apiKey: currentProviderSettings.apiKey,
-            model: currentProviderSettings.model,
-            baseUrl: currentProviderSettings.baseUrl,
-            customHeaders: currentProviderSettings.customHeaders,
+            ...currentProviderSettings,
           });
           setElaborativeQuestion(elaborativeQ);
         } catch (error) {
@@ -433,13 +418,7 @@ export default function StudyPage() {
 
       const explanationFeedback = await aiService.evaluateExplanation(
         { question: currentQuestion.question, correctAnswer: correctAnswer ?? "", explanation, language },
-        {
-          provider: multiProviderSettings.currentProvider,
-          apiKey: currentProviderSettings.apiKey,
-          model: currentProviderSettings.model,
-          baseUrl: currentProviderSettings.baseUrl,
-          customHeaders: currentProviderSettings.customHeaders,
-        }
+        { provider: multiProviderSettings.currentProvider, ...currentProviderSettings }
       );
 
       // Save the explanation with its feedback at once, so leaving the page keeps both
@@ -713,7 +692,7 @@ export default function StudyPage() {
                 <dt>{t.aiProvider}</dt>
                 <dd className="min-w-0">
                   <span className="break-words">
-                    {currentProviderConfig.name} · {currentProviderSettings.model}
+                    {currentProviderName} · {currentProviderSettings.model}
                   </span>{" "}
                   <Link to="/settings" className="font-semibold text-accent-ink underline">
                     {t.studyChange}
@@ -747,7 +726,7 @@ export default function StudyPage() {
                 {!isGenerating && contexts.length === 0 && <p className="hint">{t.aiErrorMissingContext}</p>}
                 {!isGenerating && contexts.length > 0 && !isProviderConfigured && (
                   <p className="hint">
-                    {formatMessage(t.studyProviderNeedsKey, { provider: currentProviderConfig.name })}{" "}
+                    {formatMessage(t.studyProviderNotReady, { provider: currentProviderName })}{" "}
                     <Link to="/settings" className="font-semibold text-accent-ink underline">
                       {t.studyOpenSettings}
                     </Link>
@@ -858,7 +837,7 @@ export default function StudyPage() {
           </div>
           <div className="order-2 flex shrink-0 items-center gap-2 sm:order-3">
             <span className="mr-2 hidden max-w-[16rem] truncate text-ink-muted xl:inline" title={t.aiProvider}>
-              {currentProviderConfig.name} · {currentProviderSettings.model}
+              {currentProviderName} · {currentProviderSettings.model}
             </span>
             <button type="button" onClick={toggleFullscreen} aria-pressed={isFullscreen} aria-label={isFullscreen ? t.studyExitFullscreen : t.studyEnterFullscreen} title={isFullscreen ? t.studyExitFullscreen : t.studyEnterFullscreen} className="btn btn-ghost btn-icon hidden sm:inline-flex">
               {isFullscreen ? <Minimize aria-hidden="true" /> : <Maximize aria-hidden="true" />}

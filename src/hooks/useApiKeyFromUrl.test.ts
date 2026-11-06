@@ -19,6 +19,7 @@ describe('detectProviderFromApiKey', () => {
     expect(detectProviderFromApiKey(ANTHROPIC_KEY)).toBe('anthropic');
     expect(detectProviderFromApiKey(OPENAI_KEY)).toBe('openai');
     expect(detectProviderFromApiKey('AIzaSyabcdefghijklmnopqrstuvwxyz012345')).toBe('gemini');
+    expect(detectProviderFromApiKey('AQ.Ab8RN6Kabcdefghijklmnopqrstuvwxyz012345')).toBe('gemini');
   });
 });
 
