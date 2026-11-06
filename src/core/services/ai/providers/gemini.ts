@@ -1,11 +1,20 @@
 /**
- * Google Gemini Provider Implementation
+ * Google Gemini client (generateContent)
  */
 
 import { AIRequest, AIResponse } from '../../../types/ai.types';
 import { createAIError, createHTTPError, toAIError } from '../errors';
+import { splitSystem } from './common';
 
-export class GeminiProvider {
+/** Finish reasons for an answer that a safety filter stopped */
+const BLOCKED_FINISH_REASONS = ['SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLIST', 'SPII'];
+
+interface Part {
+  text?: unknown;
+  thought?: unknown;
+}
+
+export class GeminiClient {
   private baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
 
   async generateCompletion(request: AIRequest): Promise<AIResponse> {
@@ -14,8 +23,9 @@ export class GeminiProvider {
     }
 
     try {
-      const contents = this.convertMessagesToGeminiFormat(request.messages);
-      
+      const { system, turns } = splitSystem(request.messages);
+
+      // Google's CORS preflight rejects unrecognized headers (such as api-revision): add none here
       const response = await fetch(
         `${request.baseUrl || this.baseUrl}/models/${request.model}:generateContent`,
         {
@@ -26,31 +36,17 @@ export class GeminiProvider {
             ...request.customHeaders,
           },
           body: JSON.stringify({
-            contents,
+            ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
+            contents: turns.map(turn => ({
+              role: turn.role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: turn.content }],
+            })),
             generationConfig: {
-              temperature: request.temperature ?? 0.7,
-              maxOutputTokens: request.maxTokens ?? 800,
-              topP: 0.8,
-              topK: 40,
+              // Thinking tokens count against this limit
+              maxOutputTokens: request.maxTokens,
+              ...(request.effort === 'default' ? {} : { thinkingConfig: { thinkingLevel: request.effort.toUpperCase() } }),
             },
-            safetySettings: [
-              {
-                category: 'HARM_CATEGORY_HARASSMENT',
-                threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-              },
-              {
-                category: 'HARM_CATEGORY_HATE_SPEECH',
-                threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-              },
-              {
-                category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-                threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-              },
-              {
-                category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-                threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-              }
-            ],
+            store: false,
           }),
         }
       );
@@ -60,59 +56,41 @@ export class GeminiProvider {
       }
 
       const data = await response.json();
-      
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        throw createAIError('gemini', 'Invalid response format from Gemini', 'INVALID_RESPONSE');
+      const candidate = Array.isArray(data?.candidates) ? data.candidates[0] : undefined;
+
+      if (!candidate) {
+        if (data?.promptFeedback?.blockReason) {
+          throw createAIError('gemini', `Gemini blocked the prompt: ${data.promptFeedback.blockReason}`, 'REFUSED');
+        }
+        throw createAIError('gemini', 'Invalid response format from Gemini', 'INVALID_RESPONSE', undefined, true);
       }
 
-      const candidate = data.candidates[0];
-      const content = candidate.content.parts?.[0]?.text || '';
+      const parts: Part[] = Array.isArray(candidate.content?.parts) ? candidate.content.parts : [];
+      const content = parts
+        .flatMap(part => (typeof part.text === 'string' && part.thought !== true ? [part.text] : []))
+        .join('');
+
+      if (!content.trim() && BLOCKED_FINISH_REASONS.includes(candidate.finishReason)) {
+        throw createAIError('gemini', `Gemini stopped the answer: ${candidate.finishReason}`, 'REFUSED');
+      }
+      if (!content.trim()) {
+        throw createAIError('gemini', `No text in the Gemini response (${candidate.finishReason})`, 'INVALID_RESPONSE', undefined, true);
+      }
 
       return {
         content,
-        usage: data.usageMetadata ? {
-          promptTokens: data.usageMetadata.promptTokenCount,
-          completionTokens: data.usageMetadata.candidatesTokenCount,
-          totalTokens: data.usageMetadata.totalTokenCount,
-        } : undefined,
+        usage: data.usageMetadata
+          ? {
+              promptTokens: data.usageMetadata.promptTokenCount ?? 0,
+              completionTokens: (data.usageMetadata.candidatesTokenCount ?? 0) + (data.usageMetadata.thoughtsTokenCount ?? 0),
+              totalTokens: data.usageMetadata.totalTokenCount ?? 0,
+            }
+          : undefined,
         model: request.model,
         finishReason: candidate.finishReason,
       };
     } catch (error) {
       throw toAIError(error, 'gemini');
     }
-  }
-
-  /**
-   * System text is prepended to the first user turn (older models such as gemini-pro reject
-   * `systemInstruction`). Without a leading user turn, the system text becomes one.
-   */
-  private convertMessagesToGeminiFormat(messages: AIRequest['messages']) {
-    const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
-    const systemParts: string[] = [];
-    
-    for (const message of messages) {
-      if (message.role === 'system') {
-        systemParts.push(message.content);
-      } else {
-        contents.push({
-          role: message.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: message.content }],
-        });
-      }
-    }
-
-    const systemInstruction = systemParts.join('\n').trim();
-    if (!systemInstruction) {
-      return contents;
-    }
-
-    if (contents.length > 0 && contents[0].role === 'user') {
-      contents[0].parts[0].text = systemInstruction + '\n\n' + contents[0].parts[0].text;
-    } else {
-      contents.unshift({ role: 'user', parts: [{ text: systemInstruction }] });
-    }
-    
-    return contents;
   }
 }

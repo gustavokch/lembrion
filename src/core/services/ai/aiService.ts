@@ -5,6 +5,7 @@
 import { Language } from '../../types';
 import {
   AIError,
+  AIMessage,
   AIProvider,
   AIProviderSettings,
   AIRequest,
@@ -22,12 +23,11 @@ import {
   getPromptTemplate,
   replacePromptVariables
 } from './prompts/promptRegistry';
-import { AnthropicProvider } from './providers/anthropic';
-import { DeepSeekProvider } from './providers/deepseek';
-import { GeminiProvider } from './providers/gemini';
-import { OllamaProvider } from './providers/ollama';
-import { OpenAIProvider } from './providers/openai';
-import { getProviderConfig, validateProviderConfig } from './providers/registry';
+import { DeepSeekClient } from './providers/deepseek';
+import { GeminiClient } from './providers/gemini';
+import { MessagesClient } from './providers/messages';
+import { getMaxOutputTokens, resolveEffort, validateProviderConfig } from './providers/registry';
+import { ResponsesClient } from './providers/responses';
 import { ParsedQuestion, parseEvaluationResponse, parseQuestionResponse } from './questionParser';
 
 /** Minimum dissertative score (0-100) graded as correct */
@@ -48,11 +48,31 @@ function isRetriedOnce(error: AIError): boolean {
  */
 export class AIService {
   private readonly providers: Record<AIProvider, CompletionProvider> = {
-    openai: new OpenAIProvider(),
-    gemini: new GeminiProvider(),
-    anthropic: new AnthropicProvider(),
-    deepseek: new DeepSeekProvider(),
-    ollama: new OllamaProvider(),
+    openai: new ResponsesClient({
+      provider: 'openai',
+      name: 'OpenAI',
+      hostedBaseUrl: 'https://api.openai.com/v1',
+    }),
+    anthropic: new MessagesClient({
+      provider: 'anthropic',
+      name: 'Anthropic',
+      hostedBaseUrl: 'https://api.anthropic.com/v1',
+      keyHeader: 'x-api-key',
+      // Anthropic rejects browser requests without the second header
+      headers: { 'anthropic-version': '2026-10-21', 'anthropic-dangerous-direct-browser-access': 'true' },
+    }),
+    gemini: new GeminiClient(),
+    deepseek: new DeepSeekClient(),
+    // User-run servers get the API core only: Anthropic headers fail CORS preflights (Ollama, OpenRouter)
+    'custom-messages': new MessagesClient({
+      provider: 'custom-messages',
+      name: 'Messages API server',
+      keyHeader: 'bearer',
+    }),
+    'custom-responses': new ResponsesClient({
+      provider: 'custom-responses',
+      name: 'Responses API server',
+    }),
   };
 
   /**
@@ -81,9 +101,6 @@ export class AIService {
         throw this.invalidConfigError(settings.provider, validation.errors);
       }
 
-      // Get provider configuration
-      const providerConfig = getProviderConfig(settings.provider);
-
       // The prompt template id matches the question type
       const promptTemplate = getPromptTemplate(request.type, request.language as Language);
       
@@ -110,19 +127,10 @@ export class AIService {
 
       debugLog('AI generation prompts:', { system: prompt, user: userPrompt });
 
-      const aiRequest: AIRequest = {
-        provider: settings.provider,
-        model: settings.model,
-        messages: [
-          { role: 'system', content: prompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: providerConfig.temperature[request.type],
-        maxTokens: providerConfig.maxTokens[request.type],
-        apiKey: settings.apiKey,
-        baseUrl: settings.baseUrl,
-        customHeaders: settings.customHeaders,
-      };
+      const aiRequest = this.buildRequest(settings, [
+        { role: 'system', content: prompt },
+        { role: 'user', content: userPrompt }
+      ]);
 
       // A malformed reply or a provider 5xx is worth one more generation; the parse and code checks run per attempt
       const { response, parsedQuestion } = await this.withSingleRetry(async () => {
@@ -177,9 +185,6 @@ export class AIService {
         throw this.invalidConfigError(settings.provider, validation.errors);
       }
 
-      // Get provider configuration
-      const providerConfig = getProviderConfig(settings.provider);
-      
       // Get and prepare evaluation prompt
       const language = request.language as Language;
       const promptTemplate = getPromptTemplate('evaluation', language);
@@ -199,18 +204,7 @@ export class AIService {
       });
 
       // The template holds both the instructions and the answer to grade, so it is the user turn
-      const aiRequest: AIRequest = {
-        provider: settings.provider,
-        model: settings.model,
-        messages: [
-          { role: 'user', content: prompt }
-        ],
-        temperature: providerConfig.temperature.evaluation,
-        maxTokens: providerConfig.maxTokens.evaluation,
-        apiKey: settings.apiKey,
-        baseUrl: settings.baseUrl,
-        customHeaders: settings.customHeaders,
-      };
+      const aiRequest = this.buildRequest(settings, [{ role: 'user', content: prompt }]);
 
       // A reply without a usable verdict block or a provider 5xx is worth one more evaluation
       const { response, verdict } = await this.withSingleRetry(async () => {
@@ -255,7 +249,6 @@ export class AIService {
         throw this.invalidConfigError(settings.provider, validation.errors);
       }
 
-      const providerConfig = getProviderConfig(settings.provider);
       const prompt = replacePromptVariables(getPromptTemplate('explanationFeedback', request.language as Language), {
         question: request.question,
         correctAnswer: request.correctAnswer,
@@ -263,18 +256,7 @@ export class AIService {
       });
 
       // Like evaluation: the template holds both the instructions and the text to review
-      const aiRequest: AIRequest = {
-        provider: settings.provider,
-        model: settings.model,
-        messages: [
-          { role: 'user', content: prompt }
-        ],
-        temperature: providerConfig.temperature.evaluation,
-        maxTokens: providerConfig.maxTokens.evaluation,
-        apiKey: settings.apiKey,
-        baseUrl: settings.baseUrl,
-        customHeaders: settings.customHeaders,
-      };
+      const aiRequest = this.buildRequest(settings, [{ role: 'user', content: prompt }]);
 
       // An empty reply or a provider 5xx is worth one more request
       return await this.withSingleRetry(async () => {
@@ -311,24 +293,31 @@ export class AIService {
         question: originalQuestion,
       });
 
-      const aiRequest: AIRequest = {
-        provider: settings.provider,
-        model: settings.model,
-        messages: [
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        maxTokens: 300,
-        apiKey: settings.apiKey,
-        baseUrl: settings.baseUrl,
-        customHeaders: settings.customHeaders,
-      };
+      const aiRequest = this.buildRequest(settings, [{ role: 'user', content: prompt }]);
 
       const response = await this.withSingleRetry(() => this.generateCompletion(aiRequest));
       return response.content;
     } catch (error) {
       throw toAIError(error, settings.provider);
     }
+  }
+
+  /**
+   * A request for `messages` with the provider's connection settings, the effort level it
+   * offers, and an output limit with room for that much reasoning
+   */
+  private buildRequest(settings: AIProviderSettings, messages: AIMessage[]): AIRequest {
+    const effort = resolveEffort(settings.provider, settings.effort);
+    return {
+      provider: settings.provider,
+      model: settings.model,
+      messages,
+      maxTokens: getMaxOutputTokens(settings.provider, effort),
+      effort,
+      apiKey: settings.apiKey,
+      baseUrl: settings.baseUrl,
+      customHeaders: settings.customHeaders,
+    };
   }
 
   /**

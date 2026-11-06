@@ -5,7 +5,7 @@ import { handleVersionMigration } from './versionControl';
 
 const settings = {
   currentProvider: 'anthropic',
-  providers: { anthropic: { apiKey: 'sk-ant-secret', model: 'claude-3-haiku-20240307' } },
+  providers: { anthropic: { apiKey: 'sk-ant-secret', model: 'claude-haiku-5-5' } },
 };
 const sessions = [{ id: '1', subject: 'Biology', status: 'completed' }];
 

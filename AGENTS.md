@@ -25,12 +25,35 @@ Lembrion is a client-only React SPA for AI-generated study sessions: multiple-ch
 
 **AI layer** (`src/core/services/ai/`)
 - `aiService.ts` exports the singleton `aiService` with `generateQuestion`, `evaluateAnswer`, `generateElaborativeQuestion`, and `evaluateExplanation` (feedback on a self-explanation, markdown, no score). Providers are held in a `Record<AIProvider, …>`, so `tsc` reports a missing one.
-- Each method follows the same pipeline: `validateProviderConfig` → `getProviderConfig` (`providers/registry.ts`) → prompt from `prompts/promptRegistry.ts` (`getPromptTemplate` + `replacePromptVariables`, per-language content, en-US fallback) → provider `generateCompletion(AIRequest): Promise<AIResponse>`. Question generation sends the template as a `system` message plus a `user` prompt; evaluation, elaborative, and explanation-feedback requests send one `user` message. Anthropic and Gemini map `system` text to their own fields.
-- Providers in `providers/*.ts` use plain `fetch`. The code uses no SDKs and no streaming. Anthropic requests send `anthropic-dangerous-direct-browser-access: true`.
+- Each method follows the same pipeline: `validateProviderConfig` → `getProviderConfig` (`providers/registry.ts`) → prompt from `prompts/promptRegistry.ts` (`getPromptTemplate` + `replacePromptVariables`, per-language content, en-US fallback) → provider `generateCompletion(AIRequest): Promise<AIResponse>`. Question generation sends the template as a `system` message plus a `user` prompt; evaluation, elaborative, and explanation-feedback requests send one `user` message. The Messages client sends `system` text as `system`, the Responses client as `instructions`, and Gemini as `systemInstruction`; DeepSeek sends the messages unchanged.
+- Clients in `providers/*.ts` use plain `fetch`. The code uses no SDKs and no streaming.
+  - `MessagesClient` (`messages.ts`, Anthropic Messages API) serves `anthropic` and `custom-messages`. For `anthropic`: version `2026-10-21` and `anthropic-dangerous-direct-browser-access: true`.
+  - `ResponsesClient` (`responses.ts`, OpenAI Responses API, always `store: false`) serves `openai` and `custom-responses`.
+  - `GeminiClient` (`generateContent`, `store: false`) and `DeepSeekClient` (Chat Completions) serve one provider each.
+  - The options in the `AIService` constructor hold each provider's extra headers.
+  - No request sends `temperature`: current hosted models reject or ignore it.
+  - Each client reads the answer by block or item type, because thinking and reasoning come first.
+  - A refusal throws `REFUSED`; an empty answer throws a retryable `INVALID_RESPONSE`.
+- Effort (`EffortLevel`, `ai.types.ts`) is a per-provider setting (`ProviderSettings.effort`, a select in Settings).
+  - Each `AI_PROVIDERS` entry lists the levels it offers (`efforts`) and its `defaultEffort`: OpenAI none to max, default low; Gemini minimal to high, default low; Anthropic low to max, default low; DeepSeek none, low, high, max, default none; servers `default`, none, low, medium, high, default `default`.
+  - `AIService.buildRequest` resolves the stored level with `resolveEffort` (a missing or unoffered level becomes the default) and sets `maxTokens` with `getMaxOutputTokens`: hosted 8,000 up to low, 16,000 medium, 32,000 high, 64,000 xhigh and max (under Gemini's 65,536 output limit); servers always 16,000, because vLLM rejects a limit that does not fit the model's context. Reasoning tokens count against the limit.
+  - Wire mapping: Messages `none` → `thinking: {type: 'disabled'}`, other levels → `output_config.effort`; Responses → `reasoning.effort`; Gemini → `thinkingConfig.thinkingLevel` in upper case; DeepSeek `none` → `thinking: disabled`, other levels → `thinking: enabled` plus `reasoning_effort`. `default` sends nothing.
+  - Support varies by model (for example, `gpt-6-astra` rejects `none`, `gemini-3.8-flash` rejects `minimal`). Lembrion does not check the pair; the provider's 400 reaches the page as `aiErrorProvider` with the provider's text.
+- Server providers (`custom-messages`, `custom-responses`) have `endpointPath`.
+  - `validateProviderConfig` requires an http(s) base URL. `endpointUrl` (`common.ts`) also accepts a full endpoint URL.
+  - The key is optional. It is sent only as `Authorization: Bearer` (`apiKeyHeaders`), never as `x-api-key` and never with `anthropic-*` headers: Ollama's and OpenRouter's CORS preflights reject those.
+  - At the `default` level a request carries no reasoning setting, so the server's model default applies.
+  - `stripThinking` removes leading inline `<think>…</think>` text.
+  - A fetch `TypeError` from a server becomes `CONNECTION_ERROR`, not `NETWORK_ERROR`.
 - `questionParser.ts` (`parseQuestionResponse`) extracts the fenced ` ```json ` block (or a brace-matched object) and validates it: multiple choice needs exactly 4 non-empty options and an integer `correctAnswer` in range (a digit string is converted). Invalid output throws an `AIError` with code `INVALID_RESPONSE`, `retryable: true`.
 - Evaluation output is markdown feedback that ends with a ` ```json {"score": 0-100} ``` ` block. `parseEvaluationResponse` (`questionParser.ts`) reads the last such block, clamps the score, and removes the block from the feedback. `isCorrect` is `score >= PASS_SCORE` (70, `aiService.ts`). The evaluation prompt also gets the question's `evaluationCriteria`.
 - `withSingleRetry` retries a provider call once on `INVALID_RESPONSE` or on an `API_ERROR` with HTTP status >= 500. It never retries 429, other 4xx, network errors, or timeouts. All four methods use it.
-- `errors.ts`: `createAIError`, `createHTTPError` (code `API_ERROR`, the HTTP status, and the provider's error text in `detail`), `toAIError`, and `getAIErrorMessage(error, t)`, which returns localized text by code and status. `debug.ts`: `debugLog` prints only when `import.meta.env.DEV`; do not log prompts, model output, or keys with `console.*`.
+- `errors.ts`:
+  - `createAIError` builds an `AIError`.
+  - `createHTTPError` sets code `API_ERROR`, the HTTP status, and the provider's error text in `detail`, read from `error.message` or a plain-string `error`.
+  - `toAIError` wraps any other failure.
+  - `getAIErrorMessage(error, t)` returns localized text by code and status; `REFUSED` and `CONNECTION_ERROR` have their own messages.
+- `debug.ts`: `debugLog` prints only when `import.meta.env.DEV`; do not log prompts, model output, or keys with `console.*`.
 
 **Study session flow**
 1. The settings come from `STORAGE_KEYS.MULTI_PROVIDER_SETTINGS` (`studorama-multi-provider-settings`), type `MultiProviderSettings` (`src/core/types/ai.types.ts`): `{ currentProvider, providers: Record<AIProvider, { apiKey, model, baseUrl?, customHeaders? }> }`. The one default object is `DEFAULT_MULTI_PROVIDER_SETTINGS` and `normalizeMultiProviderSettings` drops unknown providers and fills missing ones (`src/core/config/providerSettings.ts`). `SettingsPage` writes them, or URL params do (`?provider=&apikey=&model=&baseUrl=`, via `useApiKeyFromUrl.ts`, removed from the URL with `history.replaceState`).
@@ -99,17 +122,20 @@ A bare `npx tsc --noEmit` checks nothing (`tsconfig.json` has `"files": []`). Us
 - **Theming**: the stored preference is `dark` (the default), `system`, `light` or `contrast`. `resolveThemePreference` maps a missing or non-string value and the retired `midnight` and `neon` to `dark`, and any other string to `light`. `useTheme()` (called by `Layout` and `ThemeSelector`) resolves `system` from `prefers-color-scheme` and calls `applyTheme(id)`, which writes `themeConfig.colors` to `--color-*` on `<html>`, sets `data-theme` and `color-scheme`, removes `data-boot`, and updates `<meta name="theme-color">`. Every instance listens for browser scheme changes and reads the stored preference at event time, so a stale instance cannot override an explicit choice. `tailwind.config.js` maps the semantic classes to those variables, so they take no `/opacity` modifier; tints use `color-mix(in srgb, var(--color-success) 12%, var(--color-surface))` in CSS. For the first paint, `src/index.css` repeats the light tokens in `:root` and the dark grey and violet tokens in `html[data-boot='dark']`. The inline boot script in `index.html` sets `data-boot='dark'` for the values that `resolveThemePreference` maps to `dark`, and for `system` when the browser prefers dark, to avoid a light flash. The dark greys are neutral (no hue). Color tokens are 6-digit hex. `themeRegistry.test.ts` enforces WCAG AA contrast for every theme: run it after changing a colour.
 - **Adding an AI provider**:
   1. Add the id to `AI_PROVIDER_IDS` in `ai.types.ts` and a default entry to `DEFAULT_MULTI_PROVIDER_SETTINGS`.
-  2. Create a `providers/<id>.ts` class with `generateCompletion` that throws through `createAIError` / `toAIError`.
-  3. Register the class in the `AIService` constructor `Record`.
-  4. Add a `<ID>_MODELS` array (suggestions only) and an `AI_PROVIDERS` entry in `registry.ts`. Because the type is `Record<AIProvider, …>`, `tsc` reports a missing entry.
-  5. Add the provider's text keys to `Translations` and the `getLocalized*` switch cases that read them.
+  2. If the provider speaks the Messages or Responses API, add a `MessagesClient` or `ResponsesClient` with its options. Otherwise create a `providers/<id>.ts` client with `generateCompletion` that throws through `createAIError` / `toAIError`.
+  3. Register the client in the `AIService` `providers` `Record`.
+  4. Add a `<ID>_MODELS` array (suggestions only) and an `AI_PROVIDERS` entry in `registry.ts` with `name: (t) => …`, `efforts`, `defaultEffort`, and, for a user-run server, `endpointPath`. Map `EffortLevel` to the provider's own field in its client. Because the type is `Record<AIProvider, …>`, `tsc` reports a missing entry.
+  5. Add the provider's text keys to `Translations` and the `getLocalized*` switch cases that read them, and a setup URL in `PROVIDER_SETUP_URLS` (`SettingsPage.tsx`).
   6. Add key detection in `detectProviderFromApiKey` (`useApiKeyFromUrl.ts`) if the key prefix is unique.
 
   The Settings UI shows the new provider through `getAllProviders()`. Model ids are free-form: `validateProviderConfig` accepts any non-empty id, and the registry models are suggestions in a `<datalist>`.
 
 **Traps**
-- URL key detection: `sk-ant-` → Anthropic, `sk-` → OpenAI, `AIza` → Gemini. DeepSeek keys also start with `sk-`, so they need an explicit `provider=deepseek`. An unknown `provider=` value stores nothing and shows an error notice.
-- The Gemini provider sends the API key in the `x-goog-api-key` header. Google's CORS preflight allows that header from browser origins.
+- URL key detection: `sk-ant-` → Anthropic, `sk-` → OpenAI, `AQ.` or `AIza` → Gemini. DeepSeek keys also start with `sk-`, so they need an explicit `provider=deepseek`. An unknown `provider=` value stores nothing and shows an error notice.
+- The Gemini client sends the API key in the `x-goog-api-key` header. Google's CORS preflight allows only `Content-Type` and that header, so add no other header.
+- OpenAI answers an invalid key with a 401 that has no CORS header, so the browser reports a network error (`aiErrorNetwork` mentions the key). vLLM does the same for a server key.
+- An Anthropic key must be scoped to a workspace; an unscoped key needs an `anthropic-workspace-id` header that Lembrion does not send.
+- Ollama and llama.cpp report a Responses reply as `completed` even when the output limit cut it off; the parser rejects the truncated reply and the service retries once.
 - Learning techniques: `LearningSettings` has 5 toggles. The thresholds are in `learningTechniques.ts`: a review comes 3 questions after a miss or a low-confidence correct answer, at most 2 reviews per question in a session; the level goes up after 3 correct answers in a row at that level and down after 2 misses. Review copies keep their original difficulty, so they do not count toward a streak at another level. Old stored sessions can hold extra toggle keys; `normalizeLearningSettings` drops them.
 - A model that returns other than 4 options, an evaluation without the score block, or an empty explanation feedback is rejected (`INVALID_RESPONSE`). The service retries once, then the page shows a localized error.
 - Code blocks use `PrismLight` with a fixed language list in `MarkdownRenderer.tsx` (aliases such as `js`, `py`, `sh`, `c#`, `c++` map to it). A language that is not registered renders as plain text; register it there to highlight it. Code colours come from CSS variables, so they follow the theme.
@@ -139,20 +165,24 @@ A bare `npx tsc --noEmit` checks nothing (`tsconfig.json` has `"files": []`). Us
 
 ## Testing & QA
 
-- Vitest + jsdom regression tests cover the storage migration, `clearAllAppData`, `useLocalStorage` writes, URL key detection, `?lang`, question and evaluation parsing, the retry rule, AI error messages, explanation feedback, provider requests, the registry validation, theme contrast, stored theme preferences (the dark default and retired ids) and the System preference following the browser, markdown math conversion, the removal of a leading "Explanation:" label, call numbers, date-stamp text, service-worker gating, session edits, `formatMessage`, the learning-technique and score rules, the review schedule, and the version manager. There is no CI (`.github/` holds only `FUNDING.yml`) and no coverage target.
-- Baseline checks (2026-11-06, after the redesign):
+- Vitest + jsdom regression tests cover the storage migration, `clearAllAppData`, `useLocalStorage` writes, URL key detection, `?lang`, question and evaluation parsing, the retry rule, AI error messages, explanation feedback, the provider clients (text after thinking and reasoning, refusals, the headers sent to user-run servers, endpoint URLs), grading through every provider, the registry validation, theme contrast, stored theme preferences (the dark default and retired ids) and the System preference following the browser, markdown math conversion, the removal of a leading "Explanation:" label, call numbers, date-stamp text, service-worker gating, session edits, `formatMessage`, the learning-technique and score rules, the review schedule, and the version manager. There is no CI (`.github/` holds only `FUNDING.yml`) and no coverage target.
+- Baseline checks (2026-11-06, after the provider update):
 
 |Check|Result|
 |---|---|
 |`npm run lint`|0 problems|
 |`npm run typecheck`|0 errors|
-|`npm test`|22 files, 205 tests pass|
+|`npm test`|22 files, 248 tests pass|
 |`npm run build`|Passes with no chunk warning. The largest chunk is `explanationText-*.js` (~277 kB). It is the chunk that `StudyPage` and `SessionDetails` share. Rollup names it after `explanationText.ts`, but most of it is `MarkdownRenderer` (react-markdown, PrismLight) and `markdownMath.ts`. Libre Franklin and Archivo Narrow font files ship as separate assets|
 
 - Verification loop: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, then `npm run dev` or `npm run preview`, and test the changed routes in a browser.
 - Browser smoke notes:
   - The dev server and local previews unregister leftover service workers on load.
-  - `/study` needs a configured provider. Ollama (`http://localhost:11434/v1`) needs no key, but browser origins need `OLLAMA_ORIGINS`. Any OpenAI-compatible server with CORS works as the Ollama base URL, so a small local mock of `POST /v1/chat/completions` can drive the full study flow. A mock can tell the calls apart: question generation sends a `system` message; evaluation is a single `user` message that contains `"score"`; explanation feedback is a single `user` message from the `explanationFeedback` template ("supportive tutor"); anything else is the elaborative question. Return HTTP 500 once to test the retry. To seed a key, open `/?provider=openai&apikey=sk-…&model=gpt-4o-mini`.
+  - `/study` needs a configured provider. The two server providers take any base URL and no key, so a small local mock of `POST /v1/messages` or `POST /v1/responses` can drive the full study flow.
+    - **CORS:** answer the dev origin's preflight. A preflight that allows only `Authorization, Content-Type` also checks that no extra header is sent.
+    - **Telling calls apart:** question generation carries `system` (Messages) or `instructions` (Responses), and the dissertative template mentions `sampleAnswer`. Evaluation is a single user message that contains `"score"`. Explanation feedback comes from the `explanationFeedback` template ("supportive tutor"). Anything else is the elaborative question.
+    - **Retry:** return HTTP 500 once to test it.
+    - **Hosted key:** to seed one, open `/?provider=openai&apikey=sk-…&model=gpt-6-luna`.
   - To test the review queue without waiting, set `nextReview` of scheduled questions in `studorama-sessions` to a past time and reload the Dashboard.
   - The language setting is stored as an object, not a string. Use `?lang=pt-BR` to switch language in a test.
   - `/session/:id` needs a session in `studorama-sessions`.

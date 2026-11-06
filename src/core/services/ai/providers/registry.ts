@@ -2,281 +2,126 @@
  * AI Provider Registry with multi-provider support and internationalization
  */
 
-import { AIModel, AIProvider, AIProviderConfig } from '../../../types/ai.types';
+import { AIModel, AIProvider, AIProviderConfig, EffortLevel } from '../../../types/ai.types';
 import { Language } from '../../../types';
 import { formatMessage } from '../../i18n/formatMessage';
 import { getTranslations } from '../../i18n/translations';
 
 /**
- * OpenAI Provider Configuration
+ * Output limit of a hosted request at each effort level. Reasoning tokens count against it,
+ * so it grows with effort; the largest stays under Gemini's 65,536-token output limit.
  */
+const HOSTED_MAX_OUTPUT_TOKENS: Record<Exclude<EffortLevel, 'default'>, number> = {
+  none: 8000,
+  minimal: 8000,
+  low: 8000,
+  medium: 16000,
+  high: 32000,
+  xhigh: 64000,
+  max: 64000,
+};
+
+/**
+ * Output limit for user-run servers at every level, for models that think at length before
+ * answering. It stays fixed because the server's context window is unknown, and vLLM rejects
+ * a limit that does not fit in it.
+ */
+const SERVER_MAX_OUTPUT_TOKENS = 16000;
+
+/** Server levels: the server's own default, thinking off, or the three levels most servers map */
+const SERVER_EFFORTS: readonly EffortLevel[] = ['default', 'none', 'low', 'medium', 'high'];
+
 const OPENAI_MODELS: AIModel[] = [
   {
-    id: 'gpt-4o',
-    name: 'GPT-4o',
-    description: (t) => t.modelDescriptionGpt4o,
-    contextWindow: 128000,
-    costTier: 'high',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+    id: 'gpt-6-luna',
+    name: 'GPT-6 Luna',
+    description: (t) => t.modelDescriptionGpt6Luna,
+    costTier: 'low',
     recommended: true,
   },
   {
-    id: 'gpt-4o-mini',
-    name: 'GPT-4o Mini',
-    description: (t) => t.modelDescriptionGpt4oMini,
-    contextWindow: 128000,
+    id: 'gpt-6.1-terra',
+    name: 'GPT-6.1 Terra',
+    description: (t) => t.modelDescriptionGpt61Terra,
     costTier: 'medium',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
   },
   {
-    id: 'gpt-4-turbo',
-    name: 'GPT-4 Turbo',
-    description: (t) => t.modelDescriptionGpt4Turbo,
-    contextWindow: 128000,
+    id: 'gpt-6.1-sol',
+    name: 'GPT-6.1 Sol',
+    description: (t) => t.modelDescriptionGpt61Sol,
+    costTier: 'medium',
+  },
+  {
+    id: 'gpt-6-astra',
+    name: 'GPT-6 Astra',
+    description: (t) => t.modelDescriptionGpt6Astra,
     costTier: 'high',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
-  },
-  {
-    id: 'gpt-4',
-    name: 'GPT-4',
-    description: (t) => t.modelDescriptionGpt4,
-    contextWindow: 8192,
-    costTier: 'high',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
-  },
-  {
-    id: 'gpt-3.5-turbo',
-    name: 'GPT-3.5 Turbo',
-    description: (t) => t.modelDescriptionGpt35Turbo,
-    contextWindow: 16385,
-    costTier: 'low',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: false,
-      codeGeneration: true,
-    },
   },
 ];
 
-/**
- * Google Gemini Provider Configuration
- */
 const GEMINI_MODELS: AIModel[] = [
   {
-    id: 'gemini-1.5-pro',
-    name: 'Gemini 1.5 Pro',
-    description: (t) => t.modelDescriptionGemini15Pro,
-    contextWindow: 2000000,
-    costTier: 'medium',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+    id: 'gemini-3.5-flash-lite',
+    name: 'Gemini 3.5 Flash-Lite',
+    description: (t) => t.modelDescriptionGemini35FlashLite,
+    costTier: 'low',
     recommended: true,
   },
   {
-    id: 'gemini-1.5-flash',
-    name: 'Gemini 1.5 Flash',
-    description: (t) => t.modelDescriptionGemini15Flash,
-    contextWindow: 1000000,
-    costTier: 'low',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+    id: 'gemini-3.8-flash',
+    name: 'Gemini 3.8 Flash',
+    description: (t) => t.modelDescriptionGemini38Flash,
+    costTier: 'medium',
   },
   {
-    id: 'gemini-pro',
-    name: 'Gemini Pro',
-    description: (t) => t.modelDescriptionGeminiPro,
-    contextWindow: 32768,
-    costTier: 'medium',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+    id: 'gemini-4-argon',
+    name: 'Gemini 4 Argon',
+    description: (t) => t.modelDescriptionGemini4Argon,
+    costTier: 'high',
   },
 ];
 
-/**
- * Anthropic Claude Provider Configuration
- */
 const ANTHROPIC_MODELS: AIModel[] = [
   {
-    id: 'claude-3-5-sonnet-20241022',
-    name: 'Claude 3.5 Sonnet',
-    description: (t) => t.modelDescriptionClaude35Sonnet,
-    contextWindow: 200000,
-    costTier: 'high',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+    id: 'claude-haiku-5-5',
+    name: 'Claude Haiku 5.5',
+    description: (t) => t.modelDescriptionClaudeHaiku55,
+    costTier: 'low',
     recommended: true,
   },
   {
-    id: 'claude-3-haiku-20240307',
-    name: 'Claude 3 Haiku',
-    description: (t) => t.modelDescriptionClaude3Haiku,
-    contextWindow: 200000,
-    costTier: 'low',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+    id: 'claude-sonnet-5-5',
+    name: 'Claude Sonnet 5.5',
+    description: (t) => t.modelDescriptionClaudeSonnet55,
+    costTier: 'medium',
   },
   {
-    id: 'claude-3-opus-20240229',
-    name: 'Claude 3 Opus',
-    description: (t) => t.modelDescriptionClaude3Opus,
-    contextWindow: 200000,
+    id: 'claude-opus-5-5',
+    name: 'Claude Opus 5.5',
+    description: (t) => t.modelDescriptionClaudeOpus55,
     costTier: 'high',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+  },
+  {
+    id: 'claude-fable-5-1',
+    name: 'Claude Fable 5.1',
+    description: (t) => t.modelDescriptionClaudeFable51,
+    costTier: 'high',
   },
 ];
 
-/**
- * DeepSeek Provider Configuration
- */
 const DEEPSEEK_MODELS: AIModel[] = [
   {
-    id: 'deepseek-chat',
-    name: 'DeepSeek Chat',
-    description: (t) => t.modelDescriptionDeepseekChat,
-    contextWindow: 32768,
+    id: 'deepseek-flash',
+    name: 'DeepSeek Flash',
+    description: (t) => t.modelDescriptionDeepseekFlash,
     costTier: 'low',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
     recommended: true,
   },
   {
-    id: 'deepseek-coder',
-    name: 'DeepSeek Coder',
-    description: (t) => t.modelDescriptionDeepseekCoder,
-    contextWindow: 16384,
-    costTier: 'low',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
-  },
-];
-
-/**
- * Ollama Provider Configuration
- */
-const OLLAMA_MODELS: AIModel[] = [
-  {
-    id: 'llama3.1:8b',
-    name: 'Llama 3.1 8B',
-    description: (t) => t.modelDescriptionLlama318b,
-    contextWindow: 128000,
-    costTier: 'free',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
-    recommended: true,
-  },
-  {
-    id: 'llama3.1:70b',
-    name: 'Llama 3.1 70B',
-    description: (t) => t.modelDescriptionLlama3170b,
-    contextWindow: 128000,
-    costTier: 'free',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
-  },
-  {
-    id: 'mistral:7b',
-    name: 'Mistral 7B',
-    description: (t) => t.modelDescriptionMistral7b,
-    contextWindow: 32768,
-    costTier: 'free',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: true,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
-  },
-  {
-    id: 'codellama:13b',
-    name: 'Code Llama 13B',
-    description: (t) => t.modelDescriptionCodellama13b,
-    contextWindow: 16384,
-    costTier: 'free',
-    capabilities: {
-      multipleChoice: true,
-      dissertative: false,
-      evaluation: true,
-      reasoning: true,
-      codeGeneration: true,
-    },
+    id: 'deepseek-v4-pro',
+    name: 'DeepSeek V4 Pro',
+    description: (t) => t.modelDescriptionDeepseekV4Pro,
+    costTier: 'medium',
   },
 ];
 
@@ -286,101 +131,70 @@ const OLLAMA_MODELS: AIModel[] = [
 export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
   openai: {
     id: 'openai',
-    name: 'OpenAI',
+    name: () => 'OpenAI',
     requiresApiKey: true,
     apiKeyPlaceholder: 'sk-...',
     models: OPENAI_MODELS,
-    defaultModel: 'gpt-4o-mini',
-    maxTokens: {
-      multipleChoice: 800,
-      dissertative: 1200,
-      evaluation: 600,
-    },
-    temperature: {
-      multipleChoice: 0.7,
-      dissertative: 0.8,
-      evaluation: 0.6,
-    },
+    defaultModel: 'gpt-6-luna',
+    efforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+    defaultEffort: 'low',
   },
 
   gemini: {
     id: 'gemini',
-    name: 'Google Gemini',
+    name: () => 'Google Gemini',
     requiresApiKey: true,
-    apiKeyPlaceholder: 'AIza...',
+    apiKeyPlaceholder: 'AQ.... / AIza...',
     models: GEMINI_MODELS,
-    defaultModel: 'gemini-1.5-flash',
-    baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
-    maxTokens: {
-      multipleChoice: 800,
-      dissertative: 1200,
-      evaluation: 600,
-    },
-    temperature: {
-      multipleChoice: 0.7,
-      dissertative: 0.8,
-      evaluation: 0.6,
-    },
+    defaultModel: 'gemini-3.5-flash-lite',
+    efforts: ['minimal', 'low', 'medium', 'high'],
+    defaultEffort: 'low',
   },
 
   anthropic: {
     id: 'anthropic',
-    name: 'Anthropic Claude',
+    name: () => 'Anthropic Claude',
     requiresApiKey: true,
     apiKeyPlaceholder: 'sk-ant-...',
     models: ANTHROPIC_MODELS,
-    defaultModel: 'claude-3-haiku-20240307',
-    baseUrl: 'https://api.anthropic.com/v1',
-    maxTokens: {
-      multipleChoice: 800,
-      dissertative: 1200,
-      evaluation: 600,
-    },
-    temperature: {
-      multipleChoice: 0.7,
-      dissertative: 0.8,
-      evaluation: 0.6,
-    },
+    defaultModel: 'claude-haiku-5-5',
+    efforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    defaultEffort: 'low',
   },
 
   deepseek: {
     id: 'deepseek',
-    name: 'DeepSeek',
+    name: () => 'DeepSeek',
     requiresApiKey: true,
     apiKeyPlaceholder: 'sk-...',
     models: DEEPSEEK_MODELS,
-    defaultModel: 'deepseek-chat',
-    baseUrl: 'https://api.deepseek.com/v1',
-    maxTokens: {
-      multipleChoice: 800,
-      dissertative: 1200,
-      evaluation: 600,
-    },
-    temperature: {
-      multipleChoice: 0.7,
-      dissertative: 0.8,
-      evaluation: 0.6,
-    },
+    defaultModel: 'deepseek-flash',
+    efforts: ['none', 'low', 'high', 'max'],
+    defaultEffort: 'none',
   },
 
-  ollama: {
-    id: 'ollama',
-    name: 'Ollama',
+  'custom-messages': {
+    id: 'custom-messages',
+    name: (t) => t.providerNameCustomMessages,
     requiresApiKey: false,
     apiKeyPlaceholder: '',
-    models: OLLAMA_MODELS,
-    defaultModel: 'llama3.1:8b',
-    baseUrl: 'http://localhost:11434/v1',
-    maxTokens: {
-      multipleChoice: 800,
-      dissertative: 1200,
-      evaluation: 600,
-    },
-    temperature: {
-      multipleChoice: 0.7,
-      dissertative: 0.8,
-      evaluation: 0.6,
-    },
+    models: [],
+    defaultModel: '',
+    endpointPath: '/messages',
+    efforts: SERVER_EFFORTS,
+    defaultEffort: 'default',
+  },
+
+  'custom-responses': {
+    id: 'custom-responses',
+    name: (t) => t.providerNameCustomResponses,
+    requiresApiKey: false,
+    apiKeyPlaceholder: '',
+    models: [],
+    defaultModel: '',
+    endpointPath: '/responses',
+    efforts: SERVER_EFFORTS,
+    defaultEffort: 'default',
   },
 };
 
@@ -403,6 +217,23 @@ export function getAllProviders(): AIProviderConfig[] {
 }
 
 /**
+ * The stored level if the provider offers it, otherwise the provider's default: stored
+ * settings may hold no level, or one written for an older list.
+ */
+export function resolveEffort(providerId: AIProvider, effort: unknown): EffortLevel {
+  const { efforts, defaultEffort } = getProviderConfig(providerId);
+  return efforts.find(level => level === effort) ?? defaultEffort;
+}
+
+/** Output limit for one request at `effort`; reasoning tokens count against it */
+export function getMaxOutputTokens(providerId: AIProvider, effort: EffortLevel): number {
+  if (getProviderConfig(providerId).endpointPath || effort === 'default') {
+    return SERVER_MAX_OUTPUT_TOKENS;
+  }
+  return HOSTED_MAX_OUTPUT_TOKENS[effort];
+}
+
+/**
  * Get model by provider and model ID
  */
 export function getModel(providerId: AIProvider, modelId: string): AIModel | undefined {
@@ -411,10 +242,10 @@ export function getModel(providerId: AIProvider, modelId: string): AIModel | und
 }
 
 /**
- * Get localized provider name (brand names are the same in every language)
+ * Get localized provider name
  */
-export function getLocalizedProviderName(providerId: AIProvider, _language: Language): string {
-  return getProviderConfig(providerId).name;
+export function getLocalizedProviderName(providerId: AIProvider, language: Language): string {
+  return getProviderConfig(providerId).name(getTranslations(language));
 }
 
 /**
@@ -431,8 +262,10 @@ export function getLocalizedProviderDescription(providerId: AIProvider, language
       return t.providerDescriptionAnthropic;
     case 'deepseek':
       return t.providerDescriptionDeepseek;
-    case 'ollama':
-      return t.providerDescriptionOllama;
+    case 'custom-messages':
+      return t.providerDescriptionCustomMessages;
+    case 'custom-responses':
+      return t.providerDescriptionCustomResponses;
   }
 }
 
@@ -473,8 +306,10 @@ export function getLocalizedSetupInstructions(providerId: AIProvider, language: 
       return t.setupInstructionsAnthropic;
     case 'deepseek':
       return t.setupInstructionsDeepseek;
-    case 'ollama':
-      return t.setupInstructionsOllama;
+    case 'custom-messages':
+      return t.setupInstructionsCustomMessages;
+    case 'custom-responses':
+      return t.setupInstructionsCustomResponses;
   }
 }
 
@@ -492,27 +327,58 @@ export function getLocalizedApiKeyLabel(providerId: AIProvider, language: Langua
       return t.apiKeyLabelAnthropic;
     case 'deepseek':
       return t.apiKeyLabelDeepseek;
-    default:
-      return t.apiKeyLabel;
+    case 'custom-messages':
+    case 'custom-responses':
+      return t.apiKeyLabelOptional;
   }
 }
 
 /**
  * Get localized cost tier
  */
-export function getLocalizedCostTier(costTier: string, language: Language): string {
+export function getLocalizedCostTier(costTier: AIModel['costTier'], language: Language): string {
   const t = getTranslations(language);
   switch (costTier) {
-    case 'free':
-      return t.costTierFree;
     case 'low':
       return t.costTierLow;
     case 'medium':
       return t.costTierMedium;
     case 'high':
       return t.costTierHigh;
-    default:
-      return costTier;
+  }
+}
+
+/**
+ * Get localized effort level name
+ */
+export function getLocalizedEffortName(effort: EffortLevel, language: Language): string {
+  const t = getTranslations(language);
+  switch (effort) {
+    case 'default':
+      return t.effortServerDefault;
+    case 'none':
+      return t.effortNone;
+    case 'minimal':
+      return t.effortMinimal;
+    case 'low':
+      return t.effortLow;
+    case 'medium':
+      return t.effortMedium;
+    case 'high':
+      return t.effortHigh;
+    case 'xhigh':
+      return t.effortExtraHigh;
+    case 'max':
+      return t.effortMax;
+  }
+}
+
+function isHttpUrl(value: string): boolean {
+  try {
+    const { protocol } = new URL(value);
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
   }
 }
 
@@ -527,6 +393,14 @@ export function validateProviderConfig(
   const provider = getProviderConfig(providerId);
   const t = getTranslations(language);
   const errors: string[] = [];
+
+  // A user-run server has no default address
+  const baseUrl = settings.baseUrl?.trim();
+  if (provider.endpointPath && !baseUrl) {
+    errors.push(t.baseUrlRequired);
+  } else if (baseUrl && !isHttpUrl(baseUrl)) {
+    errors.push(t.invalidBaseUrlFormat);
+  }
   
   // Check API key requirement
   if (provider.requiresApiKey && !settings.apiKey) {
@@ -536,15 +410,6 @@ export function validateProviderConfig(
   // Any non-empty model id is accepted; the registry models are only suggestions
   if (!settings.model?.trim()) {
     errors.push(t.modelRequired);
-  }
-  
-  // Check base URL for local providers
-  if (providerId === 'ollama' && settings.baseUrl) {
-    try {
-      new URL(settings.baseUrl);
-    } catch {
-      errors.push(t.invalidBaseUrlFormat);
-    }
   }
   
   return { valid: errors.length === 0, errors };

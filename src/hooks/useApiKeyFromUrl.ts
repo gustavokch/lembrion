@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { DEFAULTS, STORAGE_KEYS } from '../core/config/constants';
 import { isAIProvider, normalizeMultiProviderSettings } from '../core/config/providerSettings';
-import { getProviderConfig, validateProviderConfig } from '../core/services/ai/providers/registry';
+import { getLocalizedProviderName, getProviderConfig, validateProviderConfig } from '../core/services/ai/providers/registry';
 import { formatMessage } from '../core/services/i18n/formatMessage';
 import { getCurrentLanguage } from '../core/services/i18n/languageDetector';
 import { showNotification } from '../core/services/notification';
 import * as localStorage from '../core/services/storage/localStorage';
-import { APISettings, Translations } from '../core/types';
+import { APISettings, Language, Translations } from '../core/types';
 import { AI_PROVIDER_IDS, AIProvider, MultiProviderSettings } from '../core/types/ai.types';
 import { useLanguage } from './useLanguage';
 import { useLocalStorage } from './useLocalStorage';
@@ -77,11 +77,12 @@ function cleanUrlParameters(): void {
 /**
  * Guess the provider from the API key prefix. DeepSeek keys also start with
  * `sk-` and cannot be told apart from OpenAI keys, so a plain `sk-` key maps to
- * OpenAI; DeepSeek links need `provider=deepseek`.
+ * OpenAI; DeepSeek links need `provider=deepseek`. AI Studio keys created since
+ * May 2026 start with `AQ.`; older ones with `AIza`.
  */
 export function detectProviderFromApiKey(apiKey: string): AIProvider {
   if (apiKey.startsWith('sk-ant-')) return 'anthropic';
-  if (apiKey.startsWith('AIza')) return 'gemini';
+  if (apiKey.startsWith('AIza') || apiKey.startsWith('AQ.')) return 'gemini';
   return 'openai';
 }
 
@@ -93,13 +94,14 @@ export function validateApiKeyFormat(apiKey: string, provider: AIProvider): bool
     case 'openai':
       return apiKey.startsWith('sk-') && apiKey.length > 20;
     case 'gemini':
-      return apiKey.startsWith('AIza') && apiKey.length > 20;
+      return (apiKey.startsWith('AIza') || apiKey.startsWith('AQ.')) && apiKey.length > 20;
     case 'anthropic':
       return apiKey.startsWith('sk-ant-') && apiKey.length > 20;
     case 'deepseek':
       return apiKey.startsWith('sk-') && apiKey.length > 20;
-    case 'ollama':
-      return true; // Ollama does not require an API key
+    case 'custom-messages':
+    case 'custom-responses':
+      return true; // Each server has its own key format
   }
 }
 
@@ -185,7 +187,7 @@ export function processApiKeyFromUrl(): void {
 export function useApiKeyFromUrl() {
   const [apiSettings] = useLocalStorage<APISettings>(STORAGE_KEYS.API_SETTINGS, LEGACY_API_SETTINGS_DEFAULT);
   const [multiProviderSettings] = useMultiProviderSettings();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     const successData = localStorage.getItem<ApiKeySuccessFlag | null>(STORAGE_KEYS.API_KEY_FROM_URL, null);
@@ -196,7 +198,7 @@ export function useApiKeyFromUrl() {
 
       // Small delay to ensure translations are loaded
       setTimeout(() => {
-        const providerName = successData.provider?.toUpperCase() || 'AI';
+        const providerName = getLocalizedProviderName(successData.provider, language);
         const modelInfo = successData.model ? ` ${t.usingModel} ${successData.model}` : '';
         const baseUrlInfo = successData.hasBaseUrl ? ' with custom base URL' : '';
         
@@ -220,12 +222,12 @@ export function useApiKeyFromUrl() {
         showNotification({
           type: 'error',
           title: t.apiKeyLinkFailed,
-          message: describeApiKeyError(errorData, t),
+          message: describeApiKeyError(errorData, t, language),
           duration: 8000,
         });
       }, 1000);
     }
-  }, [t]);
+  }, [t, language]);
 
   // Determine if we have a valid API key for the current provider
   const currentProvider = multiProviderSettings.currentProvider;
@@ -248,7 +250,7 @@ export function useApiKeyFromUrl() {
   };
 }
 
-function describeApiKeyError(error: ApiKeyErrorFlag, t: Translations): string {
+function describeApiKeyError(error: ApiKeyErrorFlag, t: Translations, language: Language): string {
   switch (error.reason) {
     case 'unknownProvider':
       return formatMessage(t.apiKeyUnknownProvider, {
@@ -256,9 +258,9 @@ function describeApiKeyError(error: ApiKeyErrorFlag, t: Translations): string {
         providers: AI_PROVIDER_IDS.join(', ')
       });
     case 'invalidFormat':
-      return `${error.provider.toUpperCase()}: ${t.invalidApiKeyFormat}`;
+      return `${getLocalizedProviderName(error.provider, language)}: ${t.invalidApiKeyFormat}`;
     case 'invalidConfig':
-      return `${error.provider.toUpperCase()}: ${error.errors.join(', ')}`;
+      return `${getLocalizedProviderName(error.provider, language)}: ${error.errors.join(', ')}`;
     default:
       // Flag written by an older version in another shape
       return t.invalidApiKeyDesc;

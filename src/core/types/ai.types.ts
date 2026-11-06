@@ -4,9 +4,17 @@
 
 import { Translations } from './language.types';
 
-export const AI_PROVIDER_IDS = ['openai', 'gemini', 'anthropic', 'deepseek', 'ollama'] as const;
+export const AI_PROVIDER_IDS = ['openai', 'gemini', 'anthropic', 'deepseek', 'custom-messages', 'custom-responses'] as const;
 
 export type AIProvider = typeof AI_PROVIDER_IDS[number];
+
+/**
+ * How much a model reasons before it answers, lowest first. 'default' sends no setting,
+ * so a user-run server applies its model's own default.
+ */
+export const EFFORT_LEVELS = ['default', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'] as const;
+
+export type EffortLevel = typeof EFFORT_LEVELS[number];
 
 /** Settings for one provider, persisted inside MultiProviderSettings. */
 export interface ProviderSettings {
@@ -14,6 +22,8 @@ export interface ProviderSettings {
   model: string;
   baseUrl?: string;
   customHeaders?: Record<string, string>;
+  /** Unset, or a level the provider does not offer: its default level (resolveEffort) */
+  effort?: EffortLevel;
 }
 
 /** Shape persisted under STORAGE_KEYS.MULTI_PROVIDER_SETTINGS. */
@@ -27,53 +37,37 @@ export interface AIModel {
   name: string;
   /** Description in the active language, read from its Translations */
   description: (t: Translations) => string;
-  contextWindow: number;
-  costTier: 'free' | 'low' | 'medium' | 'high';
-  capabilities: {
-    multipleChoice: boolean;
-    dissertative: boolean;
-    evaluation: boolean;
-    reasoning: boolean;
-    codeGeneration: boolean;
-  };
+  costTier: 'low' | 'medium' | 'high';
   recommended?: boolean;
 }
 
 export interface AIProviderConfig {
   id: AIProvider;
-  name: string;
+  /** Name in the active language; brand names ignore `t` */
+  name: (t: Translations) => string;
   requiresApiKey: boolean;
   apiKeyPlaceholder: string;
+  /** Suggestions only: any model id is accepted */
   models: AIModel[];
   defaultModel: string;
-  baseUrl?: string;
-  headers?: Record<string, string>;
-  maxTokens: {
-    multipleChoice: number;
-    dissertative: number;
-    evaluation: number;
-  };
-  temperature: {
-    multipleChoice: number;
-    dissertative: number;
-    evaluation: number;
-  };
+  /** For a user-run server: the path Lembrion appends to the base URL the user enters */
+  endpointPath?: '/messages' | '/responses';
+  /** Levels offered in Settings, lowest first. Support varies by model: a model rejects a level it lacks. */
+  efforts: readonly EffortLevel[];
+  /** The level used until the user picks one */
+  defaultEffort: EffortLevel;
 }
 
-export interface AIProviderSettings {
+export interface AIProviderSettings extends ProviderSettings {
   provider: AIProvider;
-  apiKey: string;
-  model: string;
-  baseUrl?: string;
-  customHeaders?: Record<string, string>;
 }
 
 export interface AIRequest {
   provider: AIProvider;
   model: string;
   messages: AIMessage[];
-  temperature?: number;
-  maxTokens?: number;
+  maxTokens: number;
+  effort: EffortLevel;
   apiKey?: string;
   baseUrl?: string;
   customHeaders?: Record<string, string>;

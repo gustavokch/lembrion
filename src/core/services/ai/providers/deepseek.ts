@@ -1,12 +1,19 @@
 /**
- * DeepSeek Provider Implementation
+ * DeepSeek client (Chat Completions)
  */
 
-import { AIRequest, AIResponse } from '../../../types/ai.types';
+import { AIRequest, AIResponse, EffortLevel } from '../../../types/ai.types';
 import { createAIError, createHTTPError, toAIError } from '../errors';
 
-export class DeepSeekProvider {
-  private baseUrl = 'https://api.deepseek.com/v1';
+/** DeepSeek thinks unless told not to; 'none' turns thinking off, other levels set its effort */
+function thinkingFields(effort: EffortLevel): Record<string, unknown> {
+  if (effort === 'default') return {};
+  if (effort === 'none') return { thinking: { type: 'disabled' } };
+  return { thinking: { type: 'enabled' }, reasoning_effort: effort };
+}
+
+export class DeepSeekClient {
+  private baseUrl = 'https://api.deepseek.com';
 
   async generateCompletion(request: AIRequest): Promise<AIResponse> {
     if (!request.apiKey) {
@@ -24,11 +31,8 @@ export class DeepSeekProvider {
         body: JSON.stringify({
           model: request.model,
           messages: request.messages,
-          temperature: request.temperature ?? 0.7,
-          max_tokens: request.maxTokens ?? 800,
-          top_p: 0.9,
-          frequency_penalty: 0.1,
-          presence_penalty: 0.1,
+          max_tokens: request.maxTokens,
+          ...thinkingFields(request.effort),
         }),
       });
 
@@ -37,20 +41,24 @@ export class DeepSeekProvider {
       }
 
       const data = await response.json();
-      
-      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-        throw createAIError('deepseek', 'Invalid response format from DeepSeek', 'INVALID_RESPONSE');
+      const choice = Array.isArray(data?.choices) ? data.choices[0] : undefined;
+
+      if (choice?.finish_reason === 'content_filter') {
+        throw createAIError('deepseek', 'DeepSeek filtered the answer', 'REFUSED');
+      }
+      if (typeof choice?.message?.content !== 'string' || !choice.message.content.trim()) {
+        throw createAIError('deepseek', `No text in the DeepSeek response (${choice?.finish_reason})`, 'INVALID_RESPONSE', undefined, true);
       }
 
       return {
-        content: data.choices[0].message.content,
+        content: choice.message.content,
         usage: data.usage ? {
           promptTokens: data.usage.prompt_tokens,
           completionTokens: data.usage.completion_tokens,
           totalTokens: data.usage.total_tokens,
         } : undefined,
         model: data.model,
-        finishReason: data.choices[0].finish_reason,
+        finishReason: choice.finish_reason,
       };
     } catch (error) {
       throw toAIError(error, 'deepseek');

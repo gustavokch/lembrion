@@ -3,11 +3,12 @@ import { AI_PROVIDER_IDS, AIProvider, MultiProviderSettings, ProviderSettings } 
 export const DEFAULT_MULTI_PROVIDER_SETTINGS: MultiProviderSettings = {
   currentProvider: 'openai',
   providers: {
-    openai: { apiKey: '', model: 'gpt-4o-mini' },
-    gemini: { apiKey: '', model: 'gemini-1.5-flash' },
-    anthropic: { apiKey: '', model: 'claude-3-haiku-20240307' },
-    deepseek: { apiKey: '', model: 'deepseek-chat' },
-    ollama: { apiKey: '', model: 'llama3.1:8b', baseUrl: 'http://localhost:11434/v1' },
+    openai: { apiKey: '', model: 'gpt-6-luna' },
+    gemini: { apiKey: '', model: 'gemini-3.5-flash-lite' },
+    anthropic: { apiKey: '', model: 'claude-haiku-5-5' },
+    deepseek: { apiKey: '', model: 'deepseek-flash' },
+    'custom-messages': { apiKey: '', model: '', baseUrl: '' },
+    'custom-responses': { apiKey: '', model: '', baseUrl: '' },
   },
 };
 

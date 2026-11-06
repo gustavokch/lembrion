@@ -28,6 +28,7 @@ export function createAIError(
 /**
  * Build the AIError for a non-2xx provider response. The provider's own error message
  * from the body becomes `detail`, which the UI shows untranslated after a localized lead.
+ * Hosted APIs send `{ error: { message } }`; some self-hosted servers send `{ error: "…" }`.
  */
 export async function createHTTPError(
   provider: AIProvider,
@@ -35,7 +36,7 @@ export async function createHTTPError(
   response: Response
 ): Promise<AIError> {
   const body = await response.json().catch(() => ({}));
-  const bodyMessage: unknown = body?.error?.message;
+  const bodyMessage: unknown = typeof body?.error === 'string' ? body.error : body?.error?.message;
   const detail = typeof bodyMessage === 'string' && bodyMessage.trim() ? bodyMessage.trim() : undefined;
   return createAIError(
     provider,
@@ -90,7 +91,9 @@ function localizedLead(error: AIError, t: Translations): string {
     case 'NETWORK_ERROR':
       return t.aiErrorNetwork;
     case 'CONNECTION_ERROR':
-      return t.aiErrorOllamaConnection;
+      return t.aiErrorEndpointConnection;
+    case 'REFUSED':
+      return t.aiErrorRefused;
     case 'TIMEOUT':
       return t.aiErrorTimeout;
     case 'API_ERROR':

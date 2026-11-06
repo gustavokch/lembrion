@@ -1,15 +1,26 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AIError, AIProvider, AIProviderSettings, QuestionGenerationRequest } from '../../types/ai.types';
+import { AI_PROVIDER_IDS, AIError, AIProvider, AIProviderSettings, QuestionGenerationRequest } from '../../types/ai.types';
 import { AIService, PASS_SCORE } from './aiService';
 
 type FetchCall = { url: string; init: RequestInit };
 
+const responsesBody = (text: string) => ({
+  status: 'completed',
+  output: [
+    { type: 'reasoning', summary: [] },
+    { type: 'message', role: 'assistant', content: [{ type: 'output_text', text }] },
+  ],
+  model: 'm',
+});
+const messagesBody = (text: string) => ({ content: [{ type: 'thinking', thinking: '' }, { type: 'text', text }], model: 'm', stop_reason: 'end_turn' });
+
 const completionBodies: Record<AIProvider, (text: string) => unknown> = {
-  openai: text => ({ choices: [{ message: { content: text }, finish_reason: 'stop' }], model: 'm' }),
+  openai: responsesBody,
   deepseek: text => ({ choices: [{ message: { content: text }, finish_reason: 'stop' }], model: 'm' }),
-  ollama: text => ({ choices: [{ message: { content: text }, finish_reason: 'stop' }], model: 'm' }),
-  anthropic: text => ({ content: [{ type: 'text', text }], model: 'm', stop_reason: 'end_turn' }),
+  anthropic: messagesBody,
   gemini: text => ({ candidates: [{ content: { parts: [{ text }] }, finishReason: 'STOP' }] }),
+  'custom-messages': messagesBody,
+  'custom-responses': responsesBody,
 };
 
 /**
@@ -27,7 +38,8 @@ function stubProvider(provider: AIProvider, ...texts: string[]): FetchCall[] {
 }
 
 function settingsFor(provider: AIProvider): AIProviderSettings {
-  return { provider, apiKey: 'test-key', model: 'custom-model-id' };
+  const baseUrl = provider.startsWith('custom-') ? 'http://localhost:11434/v1' : undefined;
+  return { provider, apiKey: 'test-key', model: 'custom-model-id', baseUrl };
 }
 
 function body(call: FetchCall) {
@@ -139,13 +151,26 @@ describe('generateQuestion response validation', () => {
   });
 });
 
+describe('effort level', () => {
+  it('sends the chosen level, with more output room for more reasoning', async () => {
+    const calls = stubProvider('openai', fenced(validMultipleChoice));
+    const request: QuestionGenerationRequest = { contexts: ['Arithmetic'], type: 'multipleChoice', language: 'en-US' };
+    await service.generateQuestion(request, { ...settingsFor('openai'), effort: 'low' });
+    await service.generateQuestion(request, { ...settingsFor('openai'), effort: 'high' });
+
+    expect(body(calls[0]).reasoning).toEqual({ effort: 'low' });
+    expect(body(calls[1]).reasoning).toEqual({ effort: 'high' });
+    expect(body(calls[1]).max_output_tokens).toBeGreaterThan(body(calls[0]).max_output_tokens);
+  });
+});
+
 describe('prompts sent to the provider', () => {
   const unfilledPlaceholder = /\{[A-Za-z]+\}/;
 
   it.each(['en-US', 'pt-BR'])('fills every placeholder in the %s question prompts', async language => {
     for (const type of ['multipleChoice', 'dissertative'] as const) {
-      const calls = stubProvider('openai', fenced(validMultipleChoice));
-      await service.generateQuestion({ contexts: ['Biology'], type, language }, settingsFor('openai')).catch(() => undefined);
+      const calls = stubProvider('deepseek', fenced(validMultipleChoice));
+      await service.generateQuestion({ contexts: ['Biology'], type, language }, settingsFor('deepseek')).catch(() => undefined);
       const messages: { content: string }[] = body(calls[0]).messages;
       for (const message of messages) {
         expect(message.content).not.toMatch(unfilledPlaceholder);
@@ -177,12 +202,12 @@ describe('prompts sent to the provider', () => {
   });
 
   it('sends the evaluation and elaborative prompts as user messages', async () => {
-    const calls = stubProvider('openai', graded('Fine.', 80));
+    const calls = stubProvider('deepseek', graded('Fine.', 80));
     await service.evaluateAnswer(
       { question: 'Why is the sky blue?', userAnswer: 'Scattering', type: 'dissertative', language: 'en-US' },
-      settingsFor('openai')
+      settingsFor('deepseek')
     );
-    await service.generateElaborativeQuestion(['Optics'], 'Why is the sky blue?', 'en-US', settingsFor('openai'));
+    await service.generateElaborativeQuestion(['Optics'], 'Why is the sky blue?', 'en-US', settingsFor('deepseek'));
     for (const call of calls) {
       const userMessages = body(call).messages.filter((m: { role: string }) => m.role === 'user');
       expect(userMessages.length).toBeGreaterThan(0);
@@ -191,11 +216,11 @@ describe('prompts sent to the provider', () => {
   });
 
   it('inserts the student answer verbatim into the evaluation prompt', async () => {
-    const calls = stubProvider('openai', graded('Good answer.', 90));
+    const calls = stubProvider('deepseek', graded('Good answer.', 90));
     const userAnswer = 'Use s/(a)/$1$&/ and keep {type} as typed';
     await service.evaluateAnswer(
       { question: 'Explain sed.', userAnswer, type: 'dissertative', language: 'en-US' },
-      settingsFor('openai')
+      settingsFor('deepseek')
     );
     const sentText = body(calls[0]).messages.map((m: { content: string }) => m.content).join('\n');
     expect(sentText).toContain(userAnswer);
@@ -209,41 +234,50 @@ describe('prompts sent to the provider', () => {
     );
     const headers = calls[0].init.headers as Record<string, string>;
     expect(headers['anthropic-dangerous-direct-browser-access']).toBe('true');
-    expect(headers['anthropic-version']).toBe('2023-06-01');
+    expect(headers['anthropic-version']).toBe('2026-10-21');
   });
 
   it('asks for the focus context in the user prompt in both languages', async () => {
-    const english = stubProvider('openai', fenced(validMultipleChoice));
+    const english = stubProvider('deepseek', fenced(validMultipleChoice));
     await service.generateQuestion(
       { contexts: ['Algebra', 'Geometry'], type: 'multipleChoice', language: 'en-US', focusContext: 'Geometry' },
-      settingsFor('openai')
+      settingsFor('deepseek')
     );
     expect(body(english[0]).messages[1].content).toContain('Focus this question on: Geometry. The other contexts only define scope.');
 
-    const portuguese = stubProvider('openai', fenced(validMultipleChoice));
+    const portuguese = stubProvider('deepseek', fenced(validMultipleChoice));
     await service.generateQuestion(
       { contexts: ['Álgebra', 'Geometria'], type: 'multipleChoice', language: 'pt-BR', focusContext: 'Geometria' },
-      settingsFor('openai')
+      settingsFor('deepseek')
     );
     expect(body(portuguese[0]).messages[1].content).toContain('Foque esta questão em: Geometria.');
   });
 
   it('leaves the focus sentence out without a focus context', async () => {
-    const calls = stubProvider('openai', fenced(validMultipleChoice));
-    await service.generateQuestion({ contexts: ['Algebra', 'Geometry'], type: 'multipleChoice', language: 'en-US' }, settingsFor('openai'));
+    const calls = stubProvider('deepseek', fenced(validMultipleChoice));
+    await service.generateQuestion({ contexts: ['Algebra', 'Geometry'], type: 'multipleChoice', language: 'en-US' }, settingsFor('deepseek'));
     expect(body(calls[0]).messages[1].content).not.toContain('Focus this question on');
   });
 
   it.each(['en-US', 'pt-BR'])('sends the evaluation criteria and the verdict rule in %s', async language => {
-    const calls = stubProvider('openai', graded('Ok.', 70));
+    const calls = stubProvider('deepseek', graded('Ok.', 70));
     await service.evaluateAnswer(
       { question: 'Explain recursion.', userAnswer: 'It calls itself', type: 'dissertative', language, evaluationCriteria: ['Defines a base case'] },
-      settingsFor('openai')
+      settingsFor('deepseek')
     );
     const prompt: string = body(calls[0]).messages[0].content;
     expect(prompt).toContain('1. Defines a base case');
     expect(prompt).toContain('```json\n{"score":');
     expect(prompt).not.toMatch(/\{[A-Za-z]+\}/);
+  });
+
+  it.each(AI_PROVIDER_IDS)('grades a dissertative answer through %s', async provider => {
+    stubProvider(provider, graded('Covers the mechanism.', 85));
+    const evaluation = await service.evaluateAnswer(
+      { question: 'Why is the sky blue?', userAnswer: 'Rayleigh scattering', type: 'dissertative', language: 'en-US' },
+      settingsFor(provider)
+    );
+    expect(evaluation).toMatchObject({ score: 85, isCorrect: true, feedback: 'Covers the mechanism.' });
   });
 });
 
@@ -401,7 +435,7 @@ describe('explanation feedback', () => {
   function explain(language: string) {
     return service.evaluateExplanation(
       { question: 'Why is the sky blue?', correctAnswer: 'Rayleigh scattering', explanation: 'Air scatters blue light {type} $& more', language },
-      settingsFor('openai')
+      settingsFor('deepseek')
     );
   }
 
@@ -409,7 +443,7 @@ describe('explanation feedback', () => {
     ['en-US', 'Correct answer: Rayleigh scattering', 'under 120 words', 'Write in English'],
     ['pt-BR', 'Resposta correta: Rayleigh scattering', 'menos de 120 palavras', 'Escreva em português do Brasil'],
   ])('sends the %s feedback prompt as one user message and returns the Markdown', async (language, answerLine, lengthRule, languageRule) => {
-    const calls = stubProvider('openai', `\n${markdown}\n`);
+    const calls = stubProvider('deepseek', `\n${markdown}\n`);
     const feedback = await explain(language);
 
     expect(feedback).toBe(markdown);
@@ -425,13 +459,13 @@ describe('explanation feedback', () => {
   });
 
   it('retries once on an empty reply', async () => {
-    const calls = stubProvider('openai', '   ', markdown);
+    const calls = stubProvider('deepseek', '   ', markdown);
     expect(await explain('en-US')).toBe(markdown);
     expect(calls).toHaveLength(2);
   });
 
   it('throws INVALID_RESPONSE after two empty replies', async () => {
-    const calls = stubProvider('openai', '', '  ');
+    const calls = stubProvider('deepseek', '', '  ');
     const error = await rejection(explain('en-US'));
     expect(error.code).toBe('INVALID_RESPONSE');
     expect(calls).toHaveLength(2);

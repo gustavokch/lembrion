@@ -1,8 +1,6 @@
 import { ExternalLink, Github } from 'lucide-react';
-import { PATREON_URL } from '../../core/config/constants';
+import { GITHUB_URL, PATREON_URL } from '../../core/config/constants';
 import { useLanguage } from '../../hooks/useLanguage';
-
-const GITHUB_URL = 'https://github.com/gustavokch/lembrion';
 
 export default function PricingPage() {
   const { t } = useLanguage();

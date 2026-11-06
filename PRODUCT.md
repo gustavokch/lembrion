@@ -20,7 +20,7 @@ Lembrion turns study topics into AI-generated question sessions (multiple choice
 
 ## Positioning
 
-- No backend and no account. The browser calls the AI provider directly with the user's own key (OpenAI, Gemini, Anthropic, DeepSeek, or a local Ollama server).
+- No backend and no account. The browser calls the AI provider directly with the user's own key (OpenAI, Gemini, Anthropic, DeepSeek, or the user's own server through the Anthropic Messages API or the OpenAI Responses API).
 - The learning techniques change the session itself (review copies, Leitner review queue, difficulty steps, "why" follow-ups, explanation feedback); they are not labels.
 
 ## Operating Context

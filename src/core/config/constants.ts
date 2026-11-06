@@ -21,12 +21,14 @@ export const STORAGE_KEYS = {
 // the Dashboard and Support pages hide every Patreon button.
 export const PATREON_URL: string = '';
 
+export const GITHUB_URL = 'https://github.com/gustavokch/lembrion';
+
 // Default values
 export const DEFAULTS = {
   LANGUAGE: 'en-US',
   THEME: 'dark',
   PRELOAD_QUESTIONS: 3,
-  MODEL: 'gpt-4o-mini',
+  MODEL: 'gpt-6-luna',
   SESSION_TIMER: 30, // minutes
   QUESTION_TIMER: 60 // seconds
 };

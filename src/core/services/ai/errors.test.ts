@@ -38,6 +38,16 @@ describe('getAIErrorMessage', () => {
     expect(getAIErrorMessage(error, enUS)).toBe(enUS.aiErrorProvider);
   });
 
+  it('appends a plain-string error body from a self-hosted server', async () => {
+    const error = await createHTTPError('custom-responses', 'Server', httpResponse(404, { error: 'model "qwen9" not found' }));
+    expect(getAIErrorMessage(error, enUS)).toBe(`${enUS.aiErrorProvider} (model "qwen9" not found)`);
+  });
+
+  it('names the server, not the internet connection, when a user-run server is unreachable', () => {
+    const error = createAIError('custom-messages', 'Cannot reach the server', 'CONNECTION_ERROR');
+    expect(getAIErrorMessage(error, ptBR)).toBe(ptBR.aiErrorEndpointConnection);
+  });
+
   it('falls back to a localized generic message for unknown errors', () => {
     expect(getAIErrorMessage(new Error('Something internal'), ptBR)).toBe(ptBR.aiErrorUnknown);
     expect(getAIErrorMessage(toAIError('weird', 'openai'), ptBR)).toBe(ptBR.aiErrorUnknown);
