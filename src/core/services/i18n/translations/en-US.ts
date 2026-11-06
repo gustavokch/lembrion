@@ -119,7 +119,7 @@ export const enUS: Translations = {
   effortMax: 'Max',
   
   // Data Management
-  manageYourData: 'Lembrion keeps everything in this browser\'s local storage: your study sessions, provider settings and API keys, language, and theme. There is no Lembrion server; questions go only to the AI provider you choose.',
+  manageYourData: 'lembrion keeps everything in this browser\'s local storage: your study sessions, provider settings and API keys, language, and theme. There is no lembrion server; questions go only to the AI provider you choose.',
   deleteAllData: 'Delete all data',
   deleteAllDataConfirm: 'Delete all sessions, settings, API keys, and preferences from this browser? This cannot be undone.',
   deleteAllDataDesc: 'Permanently removes your study sessions, provider settings, API keys, and preferences from this browser.',
@@ -128,9 +128,9 @@ export const enUS: Translations = {
   cancel: 'Cancel',
   
   // Pricing
-  supportLembrion: 'Support Lembrion',
-  supportLembrionDesc: 'Lembrion is free and open source, with no account and no subscription.',
-  freeForeverDesc: 'AI requests are billed by your provider to the API key you add in Settings, at that provider\'s prices. A model on your own server has no per-request fee. Lembrion adds no fee.',
+  supportLembrion: 'Support lembrion',
+  supportLembrionDesc: 'lembrion is free and open source, with no account and no subscription.',
+  freeForeverDesc: 'AI requests are billed by your provider to the API key you add in Settings, at that provider\'s prices. A model on your own server has no per-request fee. lembrion adds no fee.',
   dataStaysInBrowser: 'Sessions and keys are stored in your browser',
   noTrackingOrAnalytics: 'No tracking or analytics',
   
@@ -149,7 +149,7 @@ export const enUS: Translations = {
   storageWriteFailedDesc: 'Browser storage is full or unavailable, so recent changes will be lost when you reload. Delete old sessions in Settings to free space.',
   
   // Version Control
-  appUpdated: 'Lembrion updated',
+  appUpdated: 'lembrion updated',
   versionUpdated: 'Updated from v{oldVersion} to v{newVersion}.',
   dataRefreshed: 'Your API keys and provider settings, study sessions, language and theme were kept. Other cached data was cleared.',
   
@@ -160,7 +160,7 @@ export const enUS: Translations = {
   aiErrorInvalidApiKey: 'The AI provider rejected your API key. Check it in Settings.',
   aiErrorRateLimited: 'The AI provider is limiting requests or your quota is used up. Wait a moment and try again.',
   aiErrorProvider: 'The AI provider returned an error.',
-  aiErrorInvalidResponse: 'The AI returned an answer Lembrion could not use. Try again.',
+  aiErrorInvalidResponse: 'The AI returned an answer lembrion could not use. Try again.',
   aiErrorNetwork: 'Could not reach the AI provider. Check your internet connection and your API key.',
   aiErrorEndpointConnection: 'Cannot reach the server at the base URL. Check that it is running, that the URL and API key are right, and that its CORS settings allow this site.',
   aiErrorRefused: 'The AI declined this request. Rephrase the topic or instructions and try again.',
@@ -406,7 +406,7 @@ export const enUS: Translations = {
   sessionStatusCompleted: 'Completed',
   dashboardProviderNotReady: 'No AI provider is set up yet. Sessions need one to generate questions.',
   dashboardOpenSettings: 'Open settings',
-  dashboardSupportLine: 'Lembrion is free and open source.',
+  dashboardSupportLine: 'lembrion is free and open source.',
 
   // History, session details, and the session edit dialog
   historySessionCountOne: '{count} session',

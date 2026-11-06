@@ -179,7 +179,7 @@ export class DeployManager {
 }
 
 const USAGE = `
-🚀 Lembrion Deploy Manager
+🚀 lembrion Deploy Manager
 
 Usage:
   node scripts/deploy.js deploy [type]

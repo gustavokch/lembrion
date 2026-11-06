@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Version Manager for Lembrion
+ * Version Manager for lembrion
  *
  * Bumps the version in package.json, public/sw.js (CACHE_NAME) and index.html
  * (JSON-LD "softwareVersion"). Every new file content is computed and checked
@@ -177,7 +177,7 @@ export class VersionManager {
 }
 
 const USAGE = `
-📦 Lembrion Version Manager
+📦 lembrion Version Manager
 
 Usage:
   node scripts/version-manager.js <command>

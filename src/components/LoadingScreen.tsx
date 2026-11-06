@@ -1,4 +1,5 @@
 import { useLanguage } from '../hooks';
+import BrandMark from './ui/BrandMark';
 
 interface LoadingScreenProps {
   /** Draw the wordmark bar too; off inside `Layout`, which already shows the wordmark. */
@@ -17,7 +18,12 @@ export default function LoadingScreen({ bar = true }: LoadingScreenProps) {
 
   return (
     <div className="min-h-screen bg-ground">
-      <div className="wordmark flex h-14 items-center border-b border-line px-6 text-xl text-ink">Lembrion</div>
+      <div className="flex h-14 items-center border-b border-line px-6">
+        <span className="wordmark text-xl text-ink">
+          <BrandMark className="wordmark-mark" />
+          lembrion
+        </span>
+      </div>
       <div className="loading-rule bg-transparent" role="progressbar" aria-label={t.loadingExperience} />
     </div>
   );

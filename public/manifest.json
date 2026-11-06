@@ -1,6 +1,6 @@
 {
-  "name": "Lembrion - AI Study Sessions",
-  "short_name": "Lembrion",
+  "name": "lembrion - AI Study Sessions",
+  "short_name": "lembrion",
   "description": "AI study sessions built on learning science. Free, no account required.",
   "start_url": "/",
   "display": "standalone",
@@ -84,14 +84,14 @@
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Lembrion dashboard on a phone"
+      "label": "lembrion dashboard on a phone"
     },
     {
       "src": "/screenshot-desktop.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Lembrion dashboard on a desktop"
+      "label": "lembrion dashboard on a desktop"
     }
   ],
   "related_applications": [],
