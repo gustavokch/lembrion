@@ -8,8 +8,8 @@ export const ptBR: Translations = {
   settings: 'Configurações',
   
   // Dashboard
-  welcomeTitle: 'Bem-vindo ao Studorama',
-  welcomeSubtitle: 'Sessões de estudo com IA para aprimorar seu aprendizado',
+  welcomeTitle: 'Bem-vindo ao Lembrion',
+  welcomeSubtitle: 'Sessões de estudo com IA baseadas na ciência da aprendizagem',
   usingModel: 'Usando modelo:',
   totalSessions: 'Total de Sessões',
   completed: 'Concluídas',
@@ -93,7 +93,7 @@ export const ptBR: Translations = {
   
   // Settings
   settingsTitle: 'Configurações',
-  configurePreferences: 'Configure suas preferências do Studorama e técnicas de aprendizado',
+  configurePreferences: 'Configure suas preferências do Lembrion e técnicas de aprendizado',
   apiKeyStored: 'Sua chave da API é armazenada no armazenamento local deste navegador e é enviada apenas ao provedor de IA selecionado em cada requisição.',
   spacedRepetition: 'Repetição Espaçada',
   interleaving: 'Intercalação',
@@ -103,7 +103,7 @@ export const ptBR: Translations = {
   language: 'Idioma',
   selectLanguage: 'Selecione seu idioma preferido',
   openSourceProject: 'Projeto de Código Aberto',
-  openSourceDescription: 'O Studorama é completamente de código aberto e está disponível no GitHub. Você pode visualizar o código, contribuir com melhorias, relatar problemas ou fazer fork do projeto para seu próprio uso.',
+  openSourceDescription: 'O Lembrion é completamente de código aberto e está disponível no GitHub. Você pode visualizar o código, contribuir com melhorias, relatar problemas ou fazer fork do projeto para seu próprio uso.',
   viewOnGitHub: 'Ver no GitHub',
   ready: 'Pronto',
   requiresApiKey: 'Requer Chave da API',
@@ -128,25 +128,25 @@ export const ptBR: Translations = {
   suggestedModels: 'Modelos sugeridos',
   
   // Data Management
-  manageYourData: 'Gerencie seus dados do Studorama e privacidade',
+  manageYourData: 'Gerencie seus dados do Lembrion e privacidade',
   deleteAllData: 'Excluir Todos os Dados',
-  deleteAllDataConfirm: 'Tem certeza de que deseja excluir TODOS os seus dados do Studorama? Isso inclui sessões, configurações, chaves da API e preferências.',
+  deleteAllDataConfirm: 'Tem certeza de que deseja excluir TODOS os seus dados do Lembrion? Isso inclui sessões, configurações, chaves da API e preferências.',
   deleteAllDataDesc: 'Excluir permanentemente todas as suas sessões de estudo, configurações, chaves da API e preferências',
   
   // Language Switch Modal
   cancel: 'Cancelar',
   
   // Pricing
-  supportStudorama: 'Apoie o Studorama',
-  supportStudoramaDesc: 'O Studorama é completamente gratuito para usar e sempre será. Seu apoio nos ajuda a manter e melhorar a plataforma para todos.',
+  supportLembrion: 'Apoie o Lembrion',
+  supportLembrionDesc: 'O Lembrion é completamente gratuito para usar e sempre será. Seu apoio nos ajuda a manter e melhorar a plataforma para todos.',
   freeForever: 'App gratuito • Use sua própria chave de IA',
   freeForeverDesc: 'Todos os recursos são gratuitos e nenhuma conta é necessária. As chamadas de IA são cobradas pelo seu próprio provedor, ou não custam nada com um modelo local do Ollama. Os apoios mantêm o app gratuito.',
   noAccountRequired: 'Nenhuma Conta Necessária!',
   startLearningImmediately: 'Comece a aprender imediatamente',
-  noAccountRequiredDesc: 'O Studorama funciona completamente sem criar uma conta. Suas sessões de estudo são salvas localmente no seu navegador. Todos os recursos com IA, repetição espaçada e técnicas de aprendizado estão disponíveis instantaneamente.',
-  whySponsorStudorama: 'Por que Apoiar o Studorama?',
+  noAccountRequiredDesc: 'O Lembrion funciona completamente sem criar uma conta. Suas sessões de estudo são salvas localmente no seu navegador. Todos os recursos com IA, repetição espaçada e técnicas de aprendizado estão disponíveis instantaneamente.',
+  whySponsorLembrion: 'Por que Apoiar o Lembrion?',
   keepItFree: 'Manter Gratuito',
-  keepItFreeDesc: 'Nos ajude a manter o Studorama como uma plataforma completamente gratuita e sem necessidade de conta para todos os estudantes do mundo.',
+  keepItFreeDesc: 'Nos ajude a manter o Lembrion como uma plataforma completamente gratuita e sem necessidade de conta para todos os estudantes do mundo.',
   fundDevelopment: 'Financiar Desenvolvimento',
   fundDevelopmentDesc: 'Apoie o desenvolvimento contínuo de novos recursos e melhorias para aprimorar o aprendizado.',
   serverCosts: 'Custos do Servidor',
@@ -158,7 +158,7 @@ export const ptBR: Translations = {
   noTrackingOrAnalytics: 'Sem rastreamento ou análises',
   completeAnonymity: 'Anonimato completo',
   transparencyTrust: 'Transparência e Confiança',
-  transparencyTrustDesc: 'Seu apoio vai diretamente para: custos de hospedagem, tempo de desenvolvimento e manutenção da plataforma. O uso de IA é cobrado pelo provedor escolhido na chave da API que você configurar. Acreditamos em manter a educação acessível para todos, independentemente de sua situação financeira ou disposição para criar contas. O Studorama sempre permanecerá gratuito e sem necessidade de conta.',
+  transparencyTrustDesc: 'Seu apoio vai diretamente para: custos de hospedagem, tempo de desenvolvimento e manutenção da plataforma. O uso de IA é cobrado pelo provedor escolhido na chave da API que você configurar. Acreditamos em manter a educação acessível para todos, independentemente de sua situação financeira ou disposição para criar contas. O Lembrion sempre permanecerá gratuito e sem necessidade de conta.',
   
   // Theme Support
   theme: 'Tema',
@@ -176,7 +176,7 @@ export const ptBR: Translations = {
   storageWriteFailedDesc: 'O armazenamento do navegador está cheio ou indisponível, então as alterações recentes serão perdidas ao recarregar. Exclua sessões antigas nas Configurações para liberar espaço.',
   
   // Version Control
-  appUpdated: 'Studorama Atualizado!',
+  appUpdated: 'Lembrion Atualizado!',
   versionUpdated: 'Atualizado da v{oldVersion} para v{newVersion}',
   dataRefreshed: 'Suas chaves de API e configurações de provedores, sessões de estudo, idioma e tema foram mantidos. Outros dados em cache foram apagados.',
   
@@ -187,7 +187,7 @@ export const ptBR: Translations = {
   aiErrorInvalidApiKey: 'O provedor de IA recusou sua chave de API. Verifique-a nas Configurações.',
   aiErrorRateLimited: 'O provedor de IA está limitando as requisições ou sua cota acabou. Aguarde um momento e tente novamente.',
   aiErrorProvider: 'O provedor de IA retornou um erro.',
-  aiErrorInvalidResponse: 'A IA retornou uma resposta que o Studorama não conseguiu usar. Tente novamente.',
+  aiErrorInvalidResponse: 'A IA retornou uma resposta que o Lembrion não conseguiu usar. Tente novamente.',
   aiErrorNetwork: 'Não foi possível acessar o provedor de IA. Verifique sua conexão com a internet.',
   aiErrorOllamaConnection: 'Não foi possível conectar ao Ollama. Verifique se o Ollama está em execução e acessível.',
   aiErrorTimeout: 'O provedor de IA demorou demais para responder. Tente novamente.',
@@ -224,7 +224,7 @@ export const ptBR: Translations = {
   dismissTip: 'Fechar dica',
   startNow: 'Começar agora',
   viewHistoryLink: 'Ver histórico',
-  supportStudoramaShortDesc: 'Ajude-nos a manter esta plataforma gratuita e sem necessidade de conta para todos. Seu apoio faz toda a diferença!',
+  supportLembrionShortDesc: 'Ajude-nos a manter esta plataforma gratuita e sem necessidade de conta para todos. Seu apoio faz toda a diferença!',
   otherOptions: 'Outras Opções',
   viewAll: 'Ver todos',
   continueSessionLink: 'Continuar sessão',
@@ -326,12 +326,12 @@ export const ptBR: Translations = {
 
   // Pricing extras
   openSourceOnGitHub: 'Código Aberto no GitHub',
-  openSourceOnGitHubDesc: 'Studorama é completamente open source! Explore o código, contribua com melhorias, reporte bugs ou faça um fork para seu próprio uso.',
+  openSourceOnGitHubDesc: 'Lembrion é completamente open source! Explore o código, contribua com melhorias, reporte bugs ou faça um fork para seu próprio uso.',
   stars: 'Estrelas',
   forks: 'Forks',
   contributors: 'Contribuidores',
   supportOnPatreon: 'Apoie no Patreon',
-  supportOnPatreonDesc: 'Junte-se à nossa comunidade no Patreon e ajude a manter o Studorama gratuito para todos. Escolha o nível de apoio que funciona para você!',
+  supportOnPatreonDesc: 'Junte-se à nossa comunidade no Patreon e ajude a manter o Lembrion gratuito para todos. Escolha o nível de apoio que funciona para você!',
   supportOnPatreonButton: 'Apoiar no Patreon',
 
   // Settings extras

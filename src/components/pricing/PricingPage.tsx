@@ -11,7 +11,7 @@ export default function PricingPage() {
   };
 
   const handleGitHubVisit = () => {
-    window.open('https://github.com/gustavokch/studorama', '_blank', 'noopener,noreferrer');
+    window.open('https://github.com/gustavokch/lembrion', '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -33,11 +33,11 @@ export default function PricingPage() {
           </div>
           
           <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 px-2 leading-tight" style={{ color: themeConfig.colors.text }}>
-            {t.supportStudorama}
+            {t.supportLembrion}
           </h1>
           
           <p className="text-lg sm:text-xl lg:text-2xl max-w-3xl mx-auto mb-6 sm:mb-8 px-4 leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-            {t.supportStudoramaDesc}
+            {t.supportLembrionDesc}
           </p>
           
           {/* Free Forever Badge */}
@@ -178,7 +178,7 @@ export default function PricingPage() {
             </div>
             
             <p className="text-xs sm:text-sm mt-4 sm:mt-6" style={{ color: themeConfig.colors.textMuted }}>
-              github.com/gustavokch/studorama
+              github.com/gustavokch/lembrion
             </p>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function PricingPage() {
           }}
         >
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 px-2" style={{ color: themeConfig.colors.text }}>
-            {t.whySponsorStudorama}
+            {t.whySponsorLembrion}
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">

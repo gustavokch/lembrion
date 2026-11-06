@@ -1,14 +1,16 @@
-# Studorama 🎓
+# Lembrion 🎓
 
-**AI-generated study sessions in your browser, using the AI provider you choose**
+**AI study sessions built on learning science, using the AI provider you choose**
 
-Studorama turns a list of study topics into a quiz session. An AI model writes multiple-choice or open-ended questions, evaluates your written answers, and keeps a history of every session. The approach is inspired by *Make It Stick: The Science of Successful Learning*.
+Lembrion turns a list of study topics into a quiz session. An AI model writes multiple-choice or open-ended questions, evaluates your written answers, and keeps a history of every session. The approach is inspired by *Make It Stick: The Science of Successful Learning*.
 
-Studorama is a client-only web app: there is no backend and no account. Your browser calls the AI provider directly with your own API key.
+Lembrion is a client-only web app: there is no backend and no account. Your browser calls the AI provider directly with your own API key.
 
-🌐 **Live at: [studorama.vercel.app](https://studorama.vercel.app)**
+Lembrion is based on [Studorama](https://github.com/oluiscabral/studorama) by oluiscabral (MIT).
 
-![Studorama Banner](https://github.com/user-attachments/assets/9c74ca79-9f32-467d-a264-9641d405da02)
+🌐 **Live at: [lembrion.vercel.app](https://lembrion.vercel.app)**
+
+![Lembrion Banner](https://github.com/user-attachments/assets/9c74ca79-9f32-467d-a264-9641d405da02)
 
 ## ✨ Features
 
@@ -54,23 +56,23 @@ Each session stores five toggles. They are on by default and can be changed when
 
 ## 🔒 Privacy and costs
 
-- **Stored in your browser**: API keys, provider settings, preferences, and study sessions live in `localStorage`. Studorama has no server, no account system, and no analytics.
+- **Stored in your browser**: API keys, provider settings, preferences, and study sessions live in `localStorage`. Lembrion has no server, no account system, and no analytics.
 - **Sent to your AI provider**: to generate and evaluate questions, your browser sends your study topics, instructions, answers, and API key to the provider you selected. The provider processes them under its own terms. With a local Ollama server, requests stay on your machine.
 - **API keys in URLs**: you can pre-configure a provider with URL parameters (see below). A key in a URL can end up in browser history, bookmarks, or shared links, so treat such links as secrets. The app removes the parameters from the address bar after reading them.
-- **Costs**: Studorama is free and open source. Cloud providers bill API usage to your key. Ollama has no API cost.
-- **Delete everything**: Settings → Data removes all Studorama data from the browser.
+- **Costs**: Lembrion is free and open source. Cloud providers bill API usage to your key. Ollama has no API cost.
+- **Delete everything**: Settings → Data removes all Lembrion data from the browser.
 
 ## 🌟 Getting started
 
 ### Use the hosted app
-1. Open [studorama.vercel.app](https://studorama.vercel.app).
+1. Open [lembrion.vercel.app](https://lembrion.vercel.app).
 2. In **Settings**, pick a provider, paste your API key (not needed for Ollama), and enter or pick a model id.
 3. Choose your language.
 4. Go to **Study**, enter one or more topics, choose the question type, and start.
 
 ### Configure a provider from the URL
 ```
-https://studorama.vercel.app/?provider=openai&apikey=sk-...&model=gpt-4o-mini
+https://lembrion.vercel.app/?provider=openai&apikey=sk-...&model=gpt-4o-mini
 ```
 Supported parameters: `provider`, `apikey` (or `api_key`, `key`), `model`, `baseUrl` (or `base_url`). Without `provider`, the app guesses it from the key format (`sk-ant-` → Anthropic, `sk-` → OpenAI, `AIza` → Gemini). DeepSeek keys also start with `sk-`, so pass `provider=deepseek` for them.
 
@@ -85,10 +87,10 @@ Supported parameters: `provider`, `apikey` (or `api_key`, `key`), `model`, `base
 # Install Ollama (see https://ollama.com for other platforms)
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Allow the Studorama origin to call the local server, then start it
-OLLAMA_ORIGINS="https://studorama.vercel.app" ollama serve
+# Allow the Lembrion origin to call the local server, then start it
+OLLAMA_ORIGINS="https://lembrion.vercel.app" ollama serve
 
-# Pull a model, then enter its id (e.g. llama3.1:8b) in Studorama's settings
+# Pull a model, then enter its id (e.g. llama3.1:8b) in Lembrion's settings
 ollama pull llama3.1:8b
 ```
 Browsers block cross-origin requests to Ollama unless `OLLAMA_ORIGINS` includes the page's origin (use `http://localhost:5173` for the dev server).
@@ -98,8 +100,8 @@ Browsers block cross-origin requests to Ollama unless `OLLAMA_ORIGINS` includes 
 Requires Node.js 18.18 or later and npm.
 
 ```bash
-git clone https://github.com/gustavokch/studorama.git
-cd studorama
+git clone https://github.com/gustavokch/lembrion.git
+cd lembrion
 npm install
 
 npm run dev         # Vite dev server on http://localhost:5173
@@ -149,5 +151,5 @@ MIT. See [LICENSE](LICENSE).
 
 ## 📞 Support
 
-- **Issues**: [github.com/gustavokch/studorama/issues](https://github.com/gustavokch/studorama/issues)
+- **Issues**: [github.com/gustavokch/lembrion/issues](https://github.com/gustavokch/lembrion/issues)
 - **Sponsor**: the in-app **Support Us** page links to sponsorship options.

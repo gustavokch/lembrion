@@ -16,7 +16,7 @@ export default function LoadingScreen() {
         
         {/* Loading Text */}
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          Studorama
+          Lembrion
         </h1>
         <p className="text-gray-600 mb-6">
           {t.loadingExperience}

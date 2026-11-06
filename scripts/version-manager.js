@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Version Manager for Studorama
+ * Version Manager for Lembrion
  *
  * Bumps the version in package.json, public/sw.js (CACHE_NAME) and index.html
  * (JSON-LD "softwareVersion"). Every new file content is computed and checked
@@ -21,7 +21,7 @@ export const VERSION_FILES = ['package.json', 'public/sw.js', 'index.html'];
 
 const SEMVER_PATTERN = '(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)';
 const SEMVER = new RegExp(`^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$`);
-const CACHE_NAME_RE = new RegExp(`const CACHE_NAME = 'studorama-v${SEMVER_PATTERN}';`, 'g');
+const CACHE_NAME_RE = new RegExp(`const CACHE_NAME = 'lembrion-v${SEMVER_PATTERN}';`, 'g');
 const SOFTWARE_VERSION_RE = new RegExp(`"softwareVersion": "${SEMVER_PATTERN}"`, 'g');
 
 function countMatches(content, regex) {
@@ -97,7 +97,7 @@ export class VersionManager {
     const cacheNameCount = countMatches(swContent, CACHE_NAME_RE);
     if (cacheNameCount !== 1) {
       throw new Error(
-        `public/sw.js: expected exactly one "const CACHE_NAME = 'studorama-v<semver>';", found ${cacheNameCount}`
+        `public/sw.js: expected exactly one "const CACHE_NAME = 'lembrion-v<semver>';", found ${cacheNameCount}`
       );
     }
 
@@ -118,7 +118,7 @@ export class VersionManager {
       newVersion,
       files: [
         { path: this.packageJsonPath, content: packageJsonContent },
-        { path: this.swPath, content: swContent.replace(CACHE_NAME_RE, `const CACHE_NAME = 'studorama-v${newVersion}';`) },
+        { path: this.swPath, content: swContent.replace(CACHE_NAME_RE, `const CACHE_NAME = 'lembrion-v${newVersion}';`) },
         { path: this.indexHtmlPath, content: indexHtmlContent.replace(SOFTWARE_VERSION_RE, `"softwareVersion": "${newVersion}"`) }
       ]
     };
@@ -177,7 +177,7 @@ export class VersionManager {
 }
 
 const USAGE = `
-📦 Studorama Version Manager
+📦 Lembrion Version Manager
 
 Usage:
   node scripts/version-manager.js <command>

@@ -35,7 +35,7 @@ export function isFreshInstallation(): boolean {
 }
 
 /**
- * Remove every Studorama key that is not in PRESERVED_STORAGE_KEYS. Runs
+ * Remove every app key (prefix `studorama-`) that is not in PRESERVED_STORAGE_KEYS. Runs
  * synchronously so it cannot delete keys written after the migration started.
  */
 export function clearStorageExceptPreserved(): void {

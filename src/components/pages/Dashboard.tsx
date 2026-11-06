@@ -428,14 +428,14 @@ export default function Dashboard() {
                   className="text-lg sm:text-xl font-bold mb-2 sm:mb-3" 
                   style={{ color: themeConfig.colors.text }}
                 >
-                  {t.supportStudorama}
+                  {t.supportLembrion}
                 </h2>
                 
                 <p 
                   className="mb-4 sm:mb-5 text-sm sm:text-base leading-relaxed max-w-2xl" 
                   style={{ color: themeConfig.colors.textSecondary }}
                 >
-                  {t.supportStudoramaShortDesc}
+                  {t.supportLembrionShortDesc}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">

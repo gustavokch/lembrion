@@ -8,8 +8,8 @@ export const enUS: Translations = {
   settings: 'Settings',
   
   // Dashboard
-  welcomeTitle: 'Welcome to Studorama',
-  welcomeSubtitle: 'AI-powered study sessions to enhance your learning',
+  welcomeTitle: 'Welcome to Lembrion',
+  welcomeSubtitle: 'AI study sessions built on learning science',
   usingModel: 'Using model:',
   totalSessions: 'Total Sessions',
   completed: 'Completed',
@@ -93,7 +93,7 @@ export const enUS: Translations = {
   
   // Settings
   settingsTitle: 'Settings',
-  configurePreferences: 'Configure your Studorama preferences and learning techniques',
+  configurePreferences: 'Configure your Lembrion preferences and learning techniques',
   apiKeyStored: 'Your API key is stored in this browser\'s local storage and is sent only to the selected AI provider with each request.',
   spacedRepetition: 'Spaced Repetition',
   interleaving: 'Interleaving',
@@ -103,7 +103,7 @@ export const enUS: Translations = {
   language: 'Language',
   selectLanguage: 'Select your preferred language',
   openSourceProject: 'Open Source Project',
-  openSourceDescription: 'Studorama is completely open source and available on GitHub. You can view the code, contribute improvements, report issues, or fork the project for your own use.',
+  openSourceDescription: 'Lembrion is completely open source and available on GitHub. You can view the code, contribute improvements, report issues, or fork the project for your own use.',
   viewOnGitHub: 'View on GitHub',
   ready: 'Ready',
   requiresApiKey: 'Requires API Key',
@@ -128,25 +128,25 @@ export const enUS: Translations = {
   suggestedModels: 'Suggested models',
   
   // Data Management
-  manageYourData: 'Manage your Studorama data and privacy',
+  manageYourData: 'Manage your Lembrion data and privacy',
   deleteAllData: 'Delete All Data',
-  deleteAllDataConfirm: 'Are you sure you want to delete ALL your Studorama data? This includes sessions, settings, API keys, and preferences.',
+  deleteAllDataConfirm: 'Are you sure you want to delete ALL your Lembrion data? This includes sessions, settings, API keys, and preferences.',
   deleteAllDataDesc: 'Permanently delete all your study sessions, settings, API keys, and preferences',
   
   // Language Switch Modal
   cancel: 'Cancel',
   
   // Pricing
-  supportStudorama: 'Support Studorama',
-  supportStudoramaDesc: 'Studorama is completely free to use and always will be. Your sponsorship helps us maintain and improve the platform for everyone.',
+  supportLembrion: 'Support Lembrion',
+  supportLembrionDesc: 'Lembrion is completely free to use and always will be. Your sponsorship helps us maintain and improve the platform for everyone.',
   freeForever: 'Free app • Bring your own AI key',
   freeForeverDesc: 'Every feature is free and no account is required. AI requests are billed by your own provider, or cost nothing with a local Ollama model. Sponsorships keep the app free.',
   noAccountRequired: 'No Account Required!',
   startLearningImmediately: 'Start learning immediately',
-  noAccountRequiredDesc: 'Studorama works completely without creating an account. Your study sessions are saved locally in your browser. All AI-powered features, spaced repetition, and learning techniques are available instantly.',
-  whySponsorStudorama: 'Why Sponsor Studorama?',
+  noAccountRequiredDesc: 'Lembrion works completely without creating an account. Your study sessions are saved locally in your browser. All AI-powered features, spaced repetition, and learning techniques are available instantly.',
+  whySponsorLembrion: 'Why Sponsor Lembrion?',
   keepItFree: 'Keep It Free',
-  keepItFreeDesc: 'Help us maintain Studorama as a completely free, accountless platform for all learners worldwide.',
+  keepItFreeDesc: 'Help us maintain Lembrion as a completely free, accountless platform for all learners worldwide.',
   fundDevelopment: 'Fund Development',
   fundDevelopmentDesc: 'Support ongoing development of new features and improvements to enhance learning.',
   serverCosts: 'Server Costs',
@@ -158,7 +158,7 @@ export const enUS: Translations = {
   noTrackingOrAnalytics: 'No tracking or analytics',
   completeAnonymity: 'Complete anonymity',
   transparencyTrust: 'Transparency & Trust',
-  transparencyTrustDesc: 'Your sponsorship goes directly to: hosting costs, development time, and platform maintenance. AI usage is billed by the provider you choose to the API key you configure. We believe in keeping education accessible to everyone, regardless of their financial situation or willingness to create accounts. Studorama will always remain free and accountless.',
+  transparencyTrustDesc: 'Your sponsorship goes directly to: hosting costs, development time, and platform maintenance. AI usage is billed by the provider you choose to the API key you configure. We believe in keeping education accessible to everyone, regardless of their financial situation or willingness to create accounts. Lembrion will always remain free and accountless.',
   
   // Theme Support
   theme: 'Theme',
@@ -176,7 +176,7 @@ export const enUS: Translations = {
   storageWriteFailedDesc: 'Browser storage is full or unavailable, so recent changes will be lost when you reload. Delete old sessions in Settings to free space.',
   
   // Version Control
-  appUpdated: 'Studorama Updated!',
+  appUpdated: 'Lembrion Updated!',
   versionUpdated: 'Updated from v{oldVersion} to v{newVersion}',
   dataRefreshed: 'Your API keys and provider settings, study sessions, language and theme were kept. Other cached data was cleared.',
   
@@ -187,7 +187,7 @@ export const enUS: Translations = {
   aiErrorInvalidApiKey: 'The AI provider rejected your API key. Check it in Settings.',
   aiErrorRateLimited: 'The AI provider is limiting requests or your quota is used up. Wait a moment and try again.',
   aiErrorProvider: 'The AI provider returned an error.',
-  aiErrorInvalidResponse: 'The AI returned an answer Studorama could not use. Try again.',
+  aiErrorInvalidResponse: 'The AI returned an answer Lembrion could not use. Try again.',
   aiErrorNetwork: 'Could not reach the AI provider. Check your internet connection.',
   aiErrorOllamaConnection: 'Cannot connect to Ollama. Make sure Ollama is running and accessible.',
   aiErrorTimeout: 'The AI provider took too long to answer. Try again.',
@@ -224,7 +224,7 @@ export const enUS: Translations = {
   dismissTip: 'Dismiss tip',
   startNow: 'Start now',
   viewHistoryLink: 'View history',
-  supportStudoramaShortDesc: 'Help us keep this platform free and accountless for everyone. Your support makes all the difference!',
+  supportLembrionShortDesc: 'Help us keep this platform free and accountless for everyone. Your support makes all the difference!',
   otherOptions: 'Other Options',
   viewAll: 'View all',
   continueSessionLink: 'Continue session',
@@ -326,12 +326,12 @@ export const enUS: Translations = {
 
   // Pricing extras
   openSourceOnGitHub: 'Open Source on GitHub',
-  openSourceOnGitHubDesc: 'Studorama is completely open source! Explore the code, contribute improvements, report bugs, or fork it for your own use.',
+  openSourceOnGitHubDesc: 'Lembrion is completely open source! Explore the code, contribute improvements, report bugs, or fork it for your own use.',
   stars: 'Stars',
   forks: 'Forks',
   contributors: 'Contributors',
   supportOnPatreon: 'Support on Patreon',
-  supportOnPatreonDesc: 'Join our community on Patreon and help keep Studorama free for everyone. Choose the support level that works for you!',
+  supportOnPatreonDesc: 'Join our community on Patreon and help keep Lembrion free for everyone. Choose the support level that works for you!',
   supportOnPatreonButton: 'Support on Patreon',
 
   // Settings extras

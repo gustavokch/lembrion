@@ -71,14 +71,14 @@ export default function Layout({ children }: LayoutProps) {
             <Link 
               to="/" 
               className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity focus-ring rounded-lg p-1"
-              aria-label="Studorama home"
+              aria-label="Lembrion home"
             >
               <Logo size="sm" />
               <span 
                 className="text-lg sm:text-xl font-bold bg-clip-text text-transparent"
                 style={{ backgroundImage: themeConfig.gradients.primary }}
               >
-                Studorama
+                Lembrion
               </span>
             </Link>
             

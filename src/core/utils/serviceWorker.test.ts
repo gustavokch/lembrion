@@ -29,7 +29,7 @@ describe('setupServiceWorker', () => {
   it('registers /sw.js after load in a production build on a real host', async () => {
     const { container } = installServiceWorkerMock();
 
-    setupServiceWorker(true, 'studorama.vercel.app');
+    setupServiceWorker(true, 'lembrion.vercel.app');
     expect(container.register).not.toHaveBeenCalled();
 
     await fireLoadAndIdle();
@@ -40,7 +40,7 @@ describe('setupServiceWorker', () => {
   it('does not register in development and unregisters leftover workers', async () => {
     const { container, unregister } = installServiceWorkerMock();
 
-    setupServiceWorker(false, 'studorama.vercel.app');
+    setupServiceWorker(false, 'lembrion.vercel.app');
     await fireLoadAndIdle();
 
     expect(container.register).not.toHaveBeenCalled();

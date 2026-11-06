@@ -6,7 +6,7 @@ import path from 'path';
 import { VersionManager, VERSION_FILES, main } from './version-manager.js';
 
 const PACKAGE_JSON = JSON.stringify({ name: 'fixture', version: '2.6.3', scripts: { dev: 'vite' } }, null, 2) + '\n';
-const SW_JS = "// sw\nconst CACHE_NAME = 'studorama-v2.6.3';\nself.addEventListener('install', () => caches.open(CACHE_NAME));\n";
+const SW_JS = "// sw\nconst CACHE_NAME = 'lembrion-v2.6.3';\nself.addEventListener('install', () => caches.open(CACHE_NAME));\n";
 const INDEX_HTML = [
   '<script type="application/ld+json">',
   '{ "@type": "WebApplication", "softwareVersion": "2.6.3" }',
@@ -43,7 +43,7 @@ function snapshot() {
 const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
 
 beforeEach(() => {
-  root = fs.mkdtempSync(path.join(os.tmpdir(), 'studorama-vm-'));
+  root = fs.mkdtempSync(path.join(os.tmpdir(), 'lembrion-vm-'));
   vi.spyOn(console, 'log').mockImplementation(() => {});
   vi.spyOn(console, 'error').mockImplementation(() => {});
 });
@@ -59,7 +59,7 @@ describe('VersionManager.bump', () => {
     expect(main(['patch'], root)).toBe(0);
 
     expect(read('package.json')).toBe(PACKAGE_JSON.replace('"2.6.3"', '"2.6.4"'));
-    expect(read('public/sw.js')).toBe(SW_JS.replace('studorama-v2.6.3', 'studorama-v2.6.4'));
+    expect(read('public/sw.js')).toBe(SW_JS.replace('lembrion-v2.6.3', 'lembrion-v2.6.4'));
     expect(read('index.html')).toBe(INDEX_HTML.split('"2.6.3"').join('"2.6.4"'));
     expect(Object.keys(snapshot())).toEqual([...VERSION_FILES].sort());
   });

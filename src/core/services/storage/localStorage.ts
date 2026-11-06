@@ -2,7 +2,7 @@
  * localStorage service with error handling and type safety
  */
 
-/** Every Studorama key starts with this prefix (see STORAGE_KEYS). */
+/** Every app key starts with this prefix (see STORAGE_KEYS). */
 export const APP_KEY_PREFIX = 'studorama-';
 
 /**
@@ -90,7 +90,7 @@ export function removeItem(key: string): boolean {
 }
 
 /**
- * Remove every Studorama key (prefix `studorama-`) from localStorage.
+ * Remove every app key (prefix `studorama-`) from localStorage.
  * Keys of other apps on the same origin are left alone.
  */
 export function clearAllAppData(): void {

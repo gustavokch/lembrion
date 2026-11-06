@@ -5,7 +5,7 @@
 // Current application version, injected from package.json by vite.config.ts `define`
 export const APP_VERSION: string = __APP_VERSION__;
 
-// Local storage keys
+// Local storage keys. They keep the app's former name (Studorama) because renaming them would orphan existing users' data.
 export const STORAGE_KEYS = {
   API_SETTINGS: 'studorama-api-settings',
   MULTI_PROVIDER_SETTINGS: 'studorama-multi-provider-settings',

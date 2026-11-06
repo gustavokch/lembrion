@@ -179,7 +179,7 @@ export class DeployManager {
 }
 
 const USAGE = `
-🚀 Studorama Deploy Manager
+🚀 Lembrion Deploy Manager
 
 Usage:
   node scripts/deploy.js deploy [type]

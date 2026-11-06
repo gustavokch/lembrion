@@ -1,7 +1,7 @@
 {
-  "name": "Studorama - AI-Powered Study Sessions",
-  "short_name": "Studorama",
-  "description": "Free AI-powered study sessions with proven learning techniques. No account required.",
+  "name": "Lembrion - AI Study Sessions",
+  "short_name": "Lembrion",
+  "description": "AI study sessions built on learning science. Free, no account required.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -84,14 +84,14 @@
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Studorama dashboard on a phone"
+      "label": "Lembrion dashboard on a phone"
     },
     {
       "src": "/screenshot-desktop.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Studorama dashboard on a desktop"
+      "label": "Lembrion dashboard on a desktop"
     }
   ],
   "related_applications": [],

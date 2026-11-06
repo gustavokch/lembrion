@@ -141,14 +141,14 @@ export interface Translations {
   cancel: string;
   
   // Pricing
-  supportStudorama: string;
-  supportStudoramaDesc: string;
+  supportLembrion: string;
+  supportLembrionDesc: string;
   freeForever: string;
   freeForeverDesc: string;
   noAccountRequired: string;
   startLearningImmediately: string;
   noAccountRequiredDesc: string;
-  whySponsorStudorama: string;
+  whySponsorLembrion: string;
   keepItFree: string;
   keepItFreeDesc: string;
   fundDevelopment: string;
@@ -230,7 +230,7 @@ export interface Translations {
   dismissTip: string;
   startNow: string;
   viewHistoryLink: string;
-  supportStudoramaShortDesc: string;
+  supportLembrionShortDesc: string;
   otherOptions: string;
   viewAll: string;
   continueSessionLink: string;
