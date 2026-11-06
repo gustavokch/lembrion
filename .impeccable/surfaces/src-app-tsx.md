@@ -5,13 +5,13 @@ primary_target: "src/App.tsx"
 related_targets: ["src/components/layout/Layout.tsx","src/components/pages/Dashboard.tsx","src/components/pages/StudyPage/StudyPage.tsx","src/components/pages/SessionHistory.tsx","src/components/SessionDetails.tsx","src/components/pages/SettingsPage/SettingsPage.tsx","src/components/pricing/PricingPage.tsx"]
 ---
 
-# Lembrion app shell and pages
+# lembrion app shell and pages
 
 Scope: every route (Dashboard, Study setup and question loop, History, Session details, Settings, Support). Mode: Operate.
 
 Audience and task: university students and self-directed adults; desk sessions of 20-60 minutes and short phone sessions. Fast path to the next question; progress overview first on the Dashboard; the question loop keeps the options, the user's pick, the correct answer and the explanation visible after grading.
 
-Constraints: no skeuomorphism (user-stated). No gradients, glow, icon tiles, marketing tone, or rounded bubbly cards (user-named "toyish" traits); panels at most 6px radius. Must not resemble Metropolis (teal bar, orange) or the user's Signal Box proxy (ink plate bar, enamel grey, amber). Dark is the default theme, with a neutral untinted grey ground; Light, System and High contrast stay selectable. en-US and pt-BR. Sessions are open-ended; review sessions know their queue.
+Constraints: no skeuomorphism (user-stated). No gradients, glow, icon tiles, marketing tone, or rounded bubbly cards (user-named "toyish" traits); panels at most 6px radius. The one tile is the brand mark before the lowercase wordmark, which the user asked for (2026-11-06). Must not resemble Metropolis (teal bar, orange) or the user's Signal Box proxy (ink plate bar, enamel grey, amber). Dark is the default theme, with a neutral untinted grey ground; Light, System and High contrast stay selectable. en-US and pt-BR. Sessions are open-ended; review sessions know their queue.
 
 ## Direction contract
 

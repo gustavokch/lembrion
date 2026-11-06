@@ -1,16 +1,16 @@
-# Lembrion 🎓
+# lembrion 🎓
 
 **AI study sessions built on learning science, using the AI provider you choose**
 
-Lembrion turns a list of study topics into a quiz session. An AI model writes multiple-choice or open-ended questions, evaluates your written answers, and keeps a history of every session. The approach is inspired by *Make It Stick: The Science of Successful Learning*.
+lembrion turns a list of study topics into a quiz session. An AI model writes multiple-choice or open-ended questions, evaluates your written answers, and keeps a history of every session. The approach is inspired by *Make It Stick: The Science of Successful Learning*.
 
-Lembrion is a client-only web app: there is no backend and no account. Your browser calls the AI provider directly with your own API key.
+lembrion is a client-only web app: there is no backend and no account. Your browser calls the AI provider directly with your own API key.
 
-Lembrion is based on [Studorama](https://github.com/oluiscabral/studorama) by oluiscabral (MIT).
+lembrion is based on [Studorama](https://github.com/oluiscabral/studorama) by oluiscabral (MIT).
 
 🌐 **Live at: [lembrion.vercel.app](https://lembrion.vercel.app)**
 
-![Lembrion Banner](https://github.com/user-attachments/assets/9c74ca79-9f32-467d-a264-9641d405da02)
+![The lembrion dashboard: progress, an unfinished session, and the questions due for return](public/screenshot-desktop.png)
 
 ## ✨ Features
 
@@ -48,7 +48,7 @@ Each session stores five toggles. They are on by default and can be changed when
 
 - **Model ids are free-form**: Settings suggests current models for each hosted provider, but you can enter any model id the provider accepts.
 - Each provider keeps its own API key, model, reasoning effort, and (for the two server providers) base URL.
-- **Reasoning effort** is set per provider in Settings, from the levels that provider offers (for example Off, Low, Medium, High, Extra high and Max for OpenAI). The default is low, or off for DeepSeek: quiz questions and grading need little reasoning. Higher levels are slower and cost more, and Lembrion raises the output limit with the level (up to 64,000 tokens), because reasoning tokens count against it. Not every model accepts every level; a model that rejects one returns an error that names it.
+- **Reasoning effort** is set per provider in Settings, from the levels that provider offers (for example Off, Low, Medium, High, Extra high and Max for OpenAI). The default is low, or off for DeepSeek: quiz questions and grading need little reasoning. Higher levels are slower and cost more, and lembrion raises the output limit with the level (up to 64,000 tokens), because reasoning tokens count against it. Not every model accepts every level; a model that rejects one returns an error that names it.
 
 ### 🎨 Interface
 - English and Portuguese (Brazil). Prompts are written per language, so questions come back in the selected language.
@@ -58,11 +58,11 @@ Each session stores five toggles. They are on by default and can be changed when
 
 ## 🔒 Privacy and costs
 
-- **Stored in your browser**: API keys, provider settings, preferences, and study sessions live in `localStorage`. Lembrion has no server, no account system, and no analytics.
+- **Stored in your browser**: API keys, provider settings, preferences, and study sessions live in `localStorage`. lembrion has no server, no account system, and no analytics.
 - **Sent to your AI provider**: to generate and evaluate questions, your browser sends your study topics, instructions, answers, and API key to the provider you selected. The provider processes them under its own terms. With a model server on your own machine, requests stay there.
 - **API keys in URLs**: you can pre-configure a provider with URL parameters (see below). A key in a URL can end up in browser history, bookmarks, or shared links, so treat such links as secrets. The app removes the parameters from the address bar after reading them.
-- **Costs**: Lembrion is free and open source. Cloud providers bill API usage to your key. A model on your own server has no per-request fee.
-- **Delete everything**: Settings → Data removes all Lembrion data from the browser.
+- **Costs**: lembrion is free and open source. Cloud providers bill API usage to your key. A model on your own server has no per-request fee.
+- **Delete everything**: Settings → Data removes all lembrion data from the browser.
 
 ## 🌟 Getting started
 
@@ -81,11 +81,11 @@ Supported parameters: `provider`, `apikey` (or `api_key`, `key`), `model`, `base
 ### Get an API key
 - **OpenAI**: platform.openai.com → API keys
 - **Google Gemini**: aistudio.google.com → API keys. Keys created since May 2026 start with `AQ.`; an older `AIza` key must be restricted to the Gemini API in AI Studio.
-- **Anthropic**: platform.claude.com → Settings → API keys. Scope the key to a workspace; an unscoped key needs a workspace header that Lembrion does not send.
+- **Anthropic**: platform.claude.com → Settings → API keys. Scope the key to a workspace; an unscoped key needs a workspace header that lembrion does not send.
 - **DeepSeek**: platform.deepseek.com → API keys (the account needs a prepaid balance)
 
 ### Custom endpoints
-Two providers connect Lembrion to a server, gateway, or proxy that you choose:
+Two providers connect lembrion to a server, gateway, or proxy that you choose:
 
 | Provider | Request |
 |----------|---------|
@@ -93,7 +93,7 @@ Two providers connect Lembrion to a server, gateway, or proxy that you choose:
 | **Responses API server** | `POST {base URL}/responses`, OpenAI Responses API format |
 
 - The base URL usually ends in `/v1`. A full endpoint URL (ending in `/messages` or `/responses`) also works.
-- An API key, if you enter one, is sent as `Authorization: Bearer <key>`. Lembrion sends no `x-api-key` or `anthropic-*` header, because Ollama's and OpenRouter's CORS checks reject them.
+- An API key, if you enter one, is sent as `Authorization: Bearer <key>`. lembrion sends no `x-api-key` or `anthropic-*` header, because Ollama's and OpenRouter's CORS checks reject them.
 - Requests are stateless (`store: false` on the Responses API) and carry no temperature. At the default effort, **Server default**, they carry no reasoning setting either, so the server's model defaults apply. Off sends `thinking: {"type": "disabled"}` (Messages) or `reasoning: {"effort": "none"}` (Responses); Low, Medium and High send `output_config.effort` or `reasoning.effort`. The output limit is 16,000 tokens at every level, which leaves room for models that think before answering. Reasoning that a server returns inline as `<think>…</think>` is removed from the answer.
 - The browser calls the server directly, so the server must allow the page's origin (`https://lembrion.vercel.app`, or `http://localhost:5173` for the dev server).
 
