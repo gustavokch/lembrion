@@ -1,5 +1,6 @@
 import { PRESERVED_STORAGE_KEYS, APP_VERSION, STORAGE_KEYS } from '../../config/constants';
 import { runWhenIdle } from '../../utils/idle';
+import { formatMessage } from '../i18n/formatMessage';
 import { getCurrentLanguage } from '../i18n/languageDetector';
 import { getTranslations } from '../i18n/translations';
 import * as localStorage from '../storage/localStorage';
@@ -85,7 +86,7 @@ function showMigrationNotification(oldVersion: string, newVersion: string): void
   try {
     const t = getTranslations(getCurrentLanguage());
     const title = t.appUpdated;
-    const versionText = t.versionUpdated.replace('{oldVersion}', oldVersion).replace('{newVersion}', newVersion);
+    const versionText = formatMessage(t.versionUpdated, { oldVersion, newVersion });
     const dataText = t.dataRefreshed;
     
     // Create notification element

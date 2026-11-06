@@ -1,11 +1,95 @@
-import 'highlight.js/styles/github.css';
 import { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import c from 'react-syntax-highlighter/dist/esm/languages/prism/c';
+import cpp from 'react-syntax-highlighter/dist/esm/languages/prism/cpp';
+import csharp from 'react-syntax-highlighter/dist/esm/languages/prism/csharp';
+import css from 'react-syntax-highlighter/dist/esm/languages/prism/css';
+import go from 'react-syntax-highlighter/dist/esm/languages/prism/go';
+import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+import kotlin from 'react-syntax-highlighter/dist/esm/languages/prism/kotlin';
+import markup from 'react-syntax-highlighter/dist/esm/languages/prism/markup';
+import php from 'react-syntax-highlighter/dist/esm/languages/prism/php';
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
+import ruby from 'react-syntax-highlighter/dist/esm/languages/prism/ruby';
+import rust from 'react-syntax-highlighter/dist/esm/languages/prism/rust';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import swift from 'react-syntax-highlighter/dist/esm/languages/prism/swift';
+import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx';
+import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
+import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 import { materialDark, materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import rehypeHighlight from 'rehype-highlight';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
+
+const REGISTERED_LANGUAGES = {
+  bash,
+  c,
+  cpp,
+  csharp,
+  css,
+  go,
+  java,
+  javascript,
+  json,
+  jsx,
+  kotlin,
+  markup,
+  php,
+  python,
+  ruby,
+  rust,
+  sql,
+  swift,
+  tsx,
+  typescript,
+  yaml,
+};
+
+type RegisteredLanguage = keyof typeof REGISTERED_LANGUAGES;
+
+(Object.keys(REGISTERED_LANGUAGES) as RegisteredLanguage[]).forEach((name) => {
+  SyntaxHighlighter.registerLanguage(name, REGISTERED_LANGUAGES[name]);
+});
+
+const LANGUAGE_ALIASES: Record<string, RegisteredLanguage> = {
+  js: 'javascript',
+  mjs: 'javascript',
+  cjs: 'javascript',
+  ts: 'typescript',
+  py: 'python',
+  sh: 'bash',
+  shell: 'bash',
+  zsh: 'bash',
+  html: 'markup',
+  xml: 'markup',
+  svg: 'markup',
+  'c#': 'csharp',
+  cs: 'csharp',
+  'c++': 'cpp',
+  yml: 'yaml',
+  kt: 'kotlin',
+  rb: 'ruby',
+  golang: 'go',
+};
+
+/**
+ * Map a fenced-code language tag to a registered Prism language, or 'text'
+ * so unregistered languages render as a plain block.
+ */
+function resolveLanguage(tag: string): RegisteredLanguage | 'text' {
+  const normalized = tag.toLowerCase();
+  if (Object.prototype.hasOwnProperty.call(REGISTERED_LANGUAGES, normalized)) {
+    return normalized as RegisteredLanguage;
+  }
+  return Object.prototype.hasOwnProperty.call(LANGUAGE_ALIASES, normalized)
+    ? LANGUAGE_ALIASES[normalized]
+    : 'text';
+}
 
 interface MarkdownRendererProps {
   content: string;
@@ -246,14 +330,13 @@ export default function MarkdownRenderer({
     <div className={`markdown-renderer ${className}`}>      
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkBreaks]}
-        rehypePlugins={[rehypeHighlight]}
         components={{
           code({ node: _node, inline, className, children, ...props }) {
             // CRITICAL FIX: Extract text from React elements properly
             const codeText = extractTextFromReactElement(children).replace(/\n$/, '');
 
-            const match = /language-(\w+)/.exec(className || '');
-            const lang = match?.[1] ?? '';
+            const match = /language-(\S+)/.exec(className || '');
+            const language = resolveLanguage(match?.[1] ?? '');
 
             // CRITICAL FIX: Don't process programming code as mathematical expressions
             if (containsProgrammingCode(codeText)) {
@@ -273,7 +356,7 @@ export default function MarkdownRenderer({
               return (
                 <div className="relative my-4">
                   <SyntaxHighlighter
-                    language={lang || 'text'}
+                    language={language}
                     //@ts-ignore
                     style={darkMode ? materialDark : materialLight}
                     showLineNumbers={true}

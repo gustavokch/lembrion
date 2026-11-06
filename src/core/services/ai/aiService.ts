@@ -4,18 +4,21 @@
 
 import { Language } from '../../types';
 import {
+  AIError,
   AIProvider,
   AIProviderSettings,
   AIRequest,
   AIResponse,
   AnswerEvaluation,
   AnswerEvaluationRequest,
+  ExplanationFeedbackRequest,
   GeneratedQuestion,
   QuestionGenerationRequest
 } from '../../types/ai.types';
 import { debugLog } from './debug';
 import { createAIError, isAIError, toAIError } from './errors';
 import {
+  getPromptFragment,
   getPromptTemplate,
   replacePromptVariables
 } from './prompts/promptRegistry';
@@ -32,6 +35,12 @@ export const PASS_SCORE = 70;
 
 interface CompletionProvider {
   generateCompletion(request: AIRequest): Promise<AIResponse>;
+}
+
+/** Failures worth exactly one more attempt: a malformed reply or a provider server error */
+function isRetriedOnce(error: AIError): boolean {
+  if (error.code === 'INVALID_RESPONSE') return true;
+  return error.code === 'API_ERROR' && error.statusCode !== undefined && error.statusCode >= 500;
 }
 
 /**
@@ -115,8 +124,8 @@ export class AIService {
         customHeaders: settings.customHeaders,
       };
 
-      // A malformed reply is worth one more generation; the parse and code checks run per attempt
-      const { response, parsedQuestion } = await this.withInvalidResponseRetry(async () => {
+      // A malformed reply or a provider 5xx is worth one more generation; the parse and code checks run per attempt
+      const { response, parsedQuestion } = await this.withSingleRetry(async () => {
         const response = await this.generateCompletion(aiRequest);
 
         debugLog('AI raw response:', response.content);
@@ -172,14 +181,14 @@ export class AIService {
       const providerConfig = getProviderConfig(settings.provider);
       
       // Get and prepare evaluation prompt
-      const promptTemplate = getPromptTemplate('evaluation', request.language as Language);
-      const isPortuguese = request.language === 'pt-BR';
+      const language = request.language as Language;
+      const promptTemplate = getPromptTemplate('evaluation', language);
       const correctAnswerText = request.correctAnswer 
         ? `Correct Answer: ${request.correctAnswer}`
         : '';
       const criteria = request.evaluationCriteria?.length
         ? request.evaluationCriteria.map((criterion, i) => `${i+1}. ${criterion}`).join('\n')
-        : isPortuguese ? 'Nenhum critério específico.' : 'No specific criteria.';
+        : getPromptFragment('noCriteria', language);
 
       const prompt = replacePromptVariables(promptTemplate, {
         question: request.question,
@@ -203,8 +212,8 @@ export class AIService {
         customHeaders: settings.customHeaders,
       };
 
-      // A reply without a usable verdict block is worth one more evaluation
-      const { response, verdict } = await this.withInvalidResponseRetry(async () => {
+      // A reply without a usable verdict block or a provider 5xx is worth one more evaluation
+      const { response, verdict } = await this.withSingleRetry(async () => {
         const response = await this.generateCompletion(aiRequest);
         return { response, verdict: parseEvaluationResponse(response.content, settings.provider) };
       });
@@ -222,6 +231,59 @@ export class AIService {
       };
 
       return evaluation;
+    } catch (error) {
+      throw toAIError(error, settings.provider);
+    }
+  }
+
+  /**
+   * Markdown feedback on a learner's self-explanation: what is right and what is missing.
+   * It carries no score and does not change the answer's grade.
+   */
+  async evaluateExplanation(
+    request: ExplanationFeedbackRequest,
+    settings: AIProviderSettings
+  ): Promise<string> {
+    try {
+      const validation = validateProviderConfig(settings.provider, {
+        apiKey: settings.apiKey,
+        model: settings.model,
+        baseUrl: settings.baseUrl,
+      });
+
+      if (!validation.valid) {
+        throw this.invalidConfigError(settings.provider, validation.errors);
+      }
+
+      const providerConfig = getProviderConfig(settings.provider);
+      const prompt = replacePromptVariables(getPromptTemplate('explanationFeedback', request.language as Language), {
+        question: request.question,
+        correctAnswer: request.correctAnswer,
+        explanation: request.explanation,
+      });
+
+      // Like evaluation: the template holds both the instructions and the text to review
+      const aiRequest: AIRequest = {
+        provider: settings.provider,
+        model: settings.model,
+        messages: [
+          { role: 'user', content: prompt }
+        ],
+        temperature: providerConfig.temperature.evaluation,
+        maxTokens: providerConfig.maxTokens.evaluation,
+        apiKey: settings.apiKey,
+        baseUrl: settings.baseUrl,
+        customHeaders: settings.customHeaders,
+      };
+
+      // An empty reply or a provider 5xx is worth one more request
+      return await this.withSingleRetry(async () => {
+        const feedback = ((await this.generateCompletion(aiRequest)).content || '').trim();
+        if (!feedback) {
+          throw createAIError(settings.provider, 'Empty explanation feedback', 'INVALID_RESPONSE', undefined, true);
+        }
+        return feedback;
+      });
     } catch (error) {
       throw toAIError(error, settings.provider);
     }
@@ -262,7 +324,7 @@ export class AIService {
         customHeaders: settings.customHeaders,
       };
 
-      const response = await this.generateCompletion(aiRequest);
+      const response = await this.withSingleRetry(() => this.generateCompletion(aiRequest));
       return response.content;
     } catch (error) {
       throw toAIError(error, settings.provider);
@@ -270,17 +332,17 @@ export class AIService {
   }
 
   /**
-   * Run `attempt` and, if it fails with an INVALID_RESPONSE AIError, run it once more.
-   * Every other failure is thrown at once.
+   * Run `attempt` and, if it fails with an INVALID_RESPONSE AIError or a provider HTTP 5xx,
+   * run it once more. Every other failure (4xx including 429, network, timeout) is thrown at once.
    */
-  private async withInvalidResponseRetry<T>(attempt: () => Promise<T>): Promise<T> {
+  private async withSingleRetry<T>(attempt: () => Promise<T>): Promise<T> {
     try {
       return await attempt();
     } catch (error) {
-      if (!isAIError(error) || error.code !== 'INVALID_RESPONSE') {
+      if (!isAIError(error) || !isRetriedOnce(error)) {
         throw error;
       }
-      debugLog('Invalid AI response, retrying once:', error.message);
+      debugLog('AI request failed, retrying once:', { code: error.code, statusCode: error.statusCode });
       return await attempt();
     }
   }
@@ -365,38 +427,32 @@ export class AIService {
    * Get enhanced user prompt with code requirements
    */
   private getEnhancedUserPrompt(request: QuestionGenerationRequest): string {
-    const isPortuguese = request.language === 'pt-BR';
-    const contextsString = request.contexts.join(', ');
+    const language = request.language as Language;
+    const variables = {
+      contexts: request.contexts.join(', '),
+      difficulty: request.difficulty || getPromptFragment('defaultDifficulty', language),
+      focusContext: request.focusContext || '',
+    };
     
     let basePrompt = '';
     
     switch (request.type) {
       case 'multipleChoice':
-        basePrompt = isPortuguese
-          ? `Crie uma questão de múltipla escolha baseada nos contextos de estudo: "${contextsString}". Torne-a desafiadora mas justa para o nível ${request.difficulty || 'médio'}. Gere questões que reflitam com precisão a matéria, nível de dificuldade e escopo definidos pelos contextos de estudo.`
-          : `Create a multiple choice question based on the study contexts: "${contextsString}". Make it challenging but fair for ${request.difficulty || 'medium'} level. Generate questions that accurately reflect the subject matter, difficulty level, and scope defined by the study contexts.`;
+        basePrompt = replacePromptVariables(getPromptFragment('multipleChoiceRequest', language), variables);
         break;
       
       case 'dissertative':
-        basePrompt = isPortuguese
-          ? `Crie uma questão dissertativa baseada nos contextos de estudo: "${contextsString}". Torne-a instigante e que exija análise detalhada para o nível ${request.difficulty || 'médio'}. Gere questões que reflitam com precisão a matéria, nível de dificuldade e escopo definidos pelos contextos de estudo.`
-          : `Create a dissertative question based on the study contexts: "${contextsString}". Make it thought-provoking and require detailed analysis for ${request.difficulty || 'medium'} level. Generate questions that accurately reflect the subject matter, difficulty level, and scope defined by the study contexts.`;
+        basePrompt = replacePromptVariables(getPromptFragment('dissertativeRequest', language), variables);
         break;
     }
 
     if (request.focusContext) {
-      basePrompt += isPortuguese
-        ? ` Foque esta questão em: ${request.focusContext}. Os outros contextos apenas definem o escopo.`
-        : ` Focus this question on: ${request.focusContext}. The other contexts only define scope.`;
+      basePrompt += replacePromptVariables(getPromptFragment('focusContext', language), variables);
     }
     
     // Add code-specific requirements if this appears to be a programming context
     if (this.isCodeContext(request.contexts)) {
-      const codeRequirement = isPortuguese
-        ? `\n\nIMPORTANTE: Se sua questão mencionar código, algoritmos ou programação, você DEVE incluir o código real completo na questão usando blocos de código markdown (${"```"}linguagem). Nunca pergunte sobre "o seguinte código" sem mostrar o código real. EXEMPLO OBRIGATÓRIO: Se você perguntar "Qual será a saída do seguinte código Python?", você DEVE incluir o código real como: \`\`\`python\nfor i in range(3):\n    print(i * 2)\n\`\`\``
-        : `\n\nIMPORTANT: If your question mentions code, algorithms, or programming, you MUST include the complete actual code in the question using markdown code blocks (${"```"}language). Never ask about "the following code" without showing the actual code. MANDATORY EXAMPLE: If you ask "What will be the output of the following Python code?", you MUST include the actual code like: \`\`\`python\nfor i in range(3):\n    print(i * 2)\n\`\`\``;
-      
-      basePrompt += codeRequirement;
+      basePrompt += getPromptFragment('codeRequirement', language);
     }
     
     return basePrompt;

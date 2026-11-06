@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { DEFAULTS, STORAGE_KEYS } from '../core/config/constants';
 import { isAIProvider, normalizeMultiProviderSettings } from '../core/config/providerSettings';
 import { getProviderConfig, validateProviderConfig } from '../core/services/ai/providers/registry';
+import { formatMessage } from '../core/services/i18n/formatMessage';
 import { getCurrentLanguage } from '../core/services/i18n/languageDetector';
 import { showNotification } from '../core/services/notification';
 import * as localStorage from '../core/services/storage/localStorage';
@@ -250,9 +251,10 @@ export function useApiKeyFromUrl() {
 function describeApiKeyError(error: ApiKeyErrorFlag, t: Translations): string {
   switch (error.reason) {
     case 'unknownProvider':
-      return t.apiKeyUnknownProvider
-        .replace('{provider}', error.provider)
-        .replace('{providers}', AI_PROVIDER_IDS.join(', '));
+      return formatMessage(t.apiKeyUnknownProvider, {
+        provider: error.provider,
+        providers: AI_PROVIDER_IDS.join(', ')
+      });
     case 'invalidFormat':
       return `${error.provider.toUpperCase()}: ${t.invalidApiKeyFormat}`;
     case 'invalidConfig':

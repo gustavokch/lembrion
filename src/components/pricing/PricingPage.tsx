@@ -3,7 +3,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useTheme } from '../../hooks/useTheme';
 
 export default function PricingPage() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { themeConfig } = useTheme();
 
   const handlePatreonSupport = () => {
@@ -143,14 +143,11 @@ export default function PricingPage() {
             </div>
             
             <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6" style={{ color: themeConfig.colors.text }}>
-              {language === 'pt-BR' ? 'Código Aberto no GitHub' : 'Open Source on GitHub'}
+              {t.openSourceOnGitHub}
             </h2>
             
             <p className="text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto" style={{ color: themeConfig.colors.textSecondary }}>
-              {language === 'pt-BR' 
-                ? 'Studorama é completamente open source! Explore o código, contribua com melhorias, reporte bugs ou faça um fork para seu próprio uso.'
-                : 'Studorama is completely open source! Explore the code, contribute improvements, report bugs, or fork it for your own use.'
-              }
+              {t.openSourceOnGitHubDesc}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
@@ -167,15 +164,15 @@ export default function PricingPage() {
               <div className="flex items-center space-x-4 text-sm sm:text-base" style={{ color: themeConfig.colors.textMuted }}>
                 <div className="flex items-center space-x-1">
                   <Star className="w-4 h-4" />
-                  <span>{language === 'pt-BR' ? 'Estrelas' : 'Stars'}</span>
+                  <span>{t.stars}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Code className="w-4 h-4" />
-                  <span>{language === 'pt-BR' ? 'Forks' : 'Forks'}</span>
+                  <span>{t.forks}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Users className="w-4 h-4" />
-                  <span>{language === 'pt-BR' ? 'Contribuidores' : 'Contributors'}</span>
+                  <span>{t.contributors}</span>
                 </div>
               </div>
             </div>
@@ -200,14 +197,11 @@ export default function PricingPage() {
             </div>
             
             <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
-              {language === 'pt-BR' ? 'Apoie no Patreon' : 'Support on Patreon'}
+              {t.supportOnPatreon}
             </h2>
             
             <p className="text-white/90 mb-6 sm:mb-8 text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
-              {language === 'pt-BR' 
-                ? 'Junte-se à nossa comunidade no Patreon e ajude a manter o Studorama gratuito para todos. Escolha o nível de apoio que funciona para você!'
-                : 'Join our community on Patreon and help keep Studorama free for everyone. Choose the support level that works for you!'
-              }
+              {t.supportOnPatreonDesc}
             </p>
             
             <button
@@ -217,7 +211,7 @@ export default function PricingPage() {
             >
               <Heart className="w-5 h-5 sm:w-6 sm:h-6 mr-3 animate-pulse" />
               <span>
-                {language === 'pt-BR' ? 'Apoiar no Patreon' : 'Support on Patreon'}
+                {t.supportOnPatreonButton}
               </span>
               <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 ml-3" />
             </button>

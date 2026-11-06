@@ -51,6 +51,7 @@ export interface Translations {
   generatingQuestion: string;
   question: string;
   confidenceQuestion: string;
+  confidence: string;
   notConfident: string;
   veryConfident: string;
   excellent: string;
@@ -75,7 +76,6 @@ export interface Translations {
   startFirstSession: string;
   questionsAnswered: string;
   date: string;
-  accuracy: string;
   continue: string;
   viewDetails: string;
   correctAnswers: string;
@@ -206,4 +206,223 @@ export interface Translations {
   delete: string;
   edit: string;
   save: string;
+  saved: string;
+  add: string;
+  all: string;
+  clear: string;
+  required: string;
+  added: string;
+  removed: string;
+  data: string;
+  supportUs: string;
+  /** Placeholder: {count} */
+  questionCountOne: string;
+  /** Placeholder: {count} */
+  questionCountOther: string;
+
+  // Loading Screen
+  loadingExperience: string;
+  loadingOptimizing: string;
+
+  // Dashboard extras
+  dataTipTitle: string;
+  dataTipDesc: string;
+  dismissTip: string;
+  startNow: string;
+  viewHistoryLink: string;
+  supportStudoramaShortDesc: string;
+  otherOptions: string;
+  viewAll: string;
+  continueSessionLink: string;
+  noRecentSessions: string;
+  startLearningJourney: string;
+  startLearningJourneyDesc: string;
+
+  // Session History extras
+  noSessionsYetDesc: string;
+  historyTip: string;
+  searchSessions: string;
+  /** Placeholder: {count} */
+  selectedCountOne: string;
+  /** Placeholder: {count} */
+  selectedCountOther: string;
+  selectAll: string;
+  deleteSelected: string;
+  noSessionsFound: string;
+  adjustFilters: string;
+  confirmDeletion: string;
+  /** Placeholder: {count} */
+  deleteSessionsConfirmOne: string;
+  /** Placeholder: {count} */
+  deleteSessionsConfirmOther: string;
+  searchResults: string;
+  noResultsFound: string;
+
+  // Session Details extras
+  noAnswerProvided: string;
+
+  // Study Page extras
+  configureProviderFirst: string;
+  correctFeedback: string;
+  incorrectFeedback: string;
+  studyContexts: string;
+  studyContextsHelp: string;
+  studyContextPlaceholder: string;
+  specialInstructions: string;
+  specialInstructionsHelp: string;
+  studyInstructionPlaceholder: string;
+  configurationSummary: string;
+  contextsLabel: string;
+  instructionsLabel: string;
+  dissertativeAnswerPlaceholder: string;
+
+  // Review queue and explanation feedback
+  reviewCardTitle: string;
+  /** Placeholder: {count} */
+  reviewDueCountOne: string;
+  /** Placeholder: {count} */
+  reviewDueCountOther: string;
+  /** Placeholder: {date} */
+  reviewNextDue: string;
+  startReview: string;
+  reviewCompleteTitle: string;
+  reviewCompleteDesc: string;
+  reviewSessionLabel: string;
+  getFeedback: string;
+  gettingFeedback: string;
+  explanationFeedbackTitle: string;
+
+  // Session Edit Modal
+  editSession: string;
+  customizeSession: string;
+  unsavedChanges: string;
+  unsavedChangesConfirm: string;
+  editTabBasic: string;
+  editTabBasicDesc: string;
+  editTabLearning: string;
+  editTabLearningDesc: string;
+  editTabAdvanced: string;
+  editTabAdvancedDesc: string;
+  editTabHistoryDesc: string;
+  editContextPlaceholder: string;
+  addContext: string;
+  /** Placeholder: {count} */
+  contextCountOne: string;
+  /** Placeholder: {count} */
+  contextCountOther: string;
+  atLeastOneContextRequired: string;
+  specialInstructionsOptional: string;
+  editInstructionPlaceholder: string;
+  addInstruction: string;
+  /** Placeholder: {count} */
+  instructionCountOne: string;
+  /** Placeholder: {count} */
+  instructionCountOther: string;
+  learningScienceBased: string;
+  scientificResearchTitle: string;
+  scientificResearchDesc: string;
+  visualizationOptions: string;
+  enableLatex: string;
+  enableLatexDesc: string;
+  enableCodeVisualization: string;
+  enableCodeVisualizationDesc: string;
+  sessionInformation: string;
+  createdLabel: string;
+  statusLabel: string;
+  questionsLabel: string;
+  scoreLabel: string;
+  contextsHistory: string;
+  contextsChange: string;
+  previousLabel: string;
+  newLabel: string;
+  instructionsHistory: string;
+  learningTechniquesHistory: string;
+  learningTechniquesUpdated: string;
+  noChangesYet: string;
+  noChangesYetDesc: string;
+
+  // Pricing extras
+  openSourceOnGitHub: string;
+  openSourceOnGitHubDesc: string;
+  stars: string;
+  forks: string;
+  contributors: string;
+  supportOnPatreon: string;
+  supportOnPatreonDesc: string;
+  supportOnPatreonButton: string;
+
+  // Settings extras
+  languageTip: string;
+  languageTipDesc: string;
+
+  // Theme Selector
+  selectThemeAria: string;
+  closeThemeSelector: string;
+  themesOptimized: string;
+  themeNameLight: string;
+  themeNameDark: string;
+  themeNameFocus: string;
+  themeNameMidnight: string;
+  themeNameForest: string;
+  themeNameOcean: string;
+  themeNameSunset: string;
+  themeNameNeon: string;
+  themeNameMinimal: string;
+  themeNameWarm: string;
+  themeDescriptionLight: string;
+  themeDescriptionDark: string;
+  themeDescriptionFocus: string;
+  themeDescriptionMidnight: string;
+  themeDescriptionForest: string;
+  themeDescriptionOcean: string;
+  themeDescriptionSunset: string;
+  themeDescriptionNeon: string;
+  themeDescriptionMinimal: string;
+  themeDescriptionWarm: string;
+  themeCategoryStandard: string;
+  themeCategoryFocus: string;
+  themeCategoryEnergy: string;
+  themeCategoryCalm: string;
+
+  // AI Provider Registry
+  providerDescriptionOpenai: string;
+  providerDescriptionGemini: string;
+  providerDescriptionAnthropic: string;
+  providerDescriptionDeepseek: string;
+  providerDescriptionOllama: string;
+  setupInstructionsOpenai: string[];
+  setupInstructionsGemini: string[];
+  setupInstructionsAnthropic: string[];
+  setupInstructionsDeepseek: string[];
+  setupInstructionsOllama: string[];
+  apiKeyLabel: string;
+  apiKeyLabelOpenai: string;
+  apiKeyLabelGemini: string;
+  apiKeyLabelAnthropic: string;
+  apiKeyLabelDeepseek: string;
+  costTierFree: string;
+  costTierLow: string;
+  costTierMedium: string;
+  costTierHigh: string;
+  /** Placeholder: {provider} */
+  apiKeyRequiredFor: string;
+  modelRequired: string;
+  invalidBaseUrlFormat: string;
+  modelDescriptionGpt4o: string;
+  modelDescriptionGpt4oMini: string;
+  modelDescriptionGpt4Turbo: string;
+  modelDescriptionGpt4: string;
+  modelDescriptionGpt35Turbo: string;
+  modelDescriptionGemini15Pro: string;
+  modelDescriptionGemini15Flash: string;
+  modelDescriptionGeminiPro: string;
+  modelDescriptionClaude35Sonnet: string;
+  modelDescriptionClaude3Haiku: string;
+  modelDescriptionClaude3Opus: string;
+  modelDescriptionDeepseekChat: string;
+  modelDescriptionDeepseekCoder: string;
+  modelDescriptionLlama318b: string;
+  modelDescriptionLlama3170b: string;
+  modelDescriptionMistral7b: string;
+  modelDescriptionCodellama13b: string;
 }

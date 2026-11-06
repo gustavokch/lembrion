@@ -4,6 +4,8 @@
 
 import { AIModel, AIProvider, AIProviderConfig } from '../../../types/ai.types';
 import { Language } from '../../../types';
+import { formatMessage } from '../../i18n/formatMessage';
+import { getTranslations } from '../../i18n/translations';
 
 /**
  * OpenAI Provider Configuration
@@ -12,7 +14,7 @@ const OPENAI_MODELS: AIModel[] = [
   {
     id: 'gpt-4o',
     name: 'GPT-4o',
-    description: 'Latest and most capable model with multimodal capabilities',
+    description: (t) => t.modelDescriptionGpt4o,
     contextWindow: 128000,
     costTier: 'high',
     capabilities: {
@@ -27,7 +29,7 @@ const OPENAI_MODELS: AIModel[] = [
   {
     id: 'gpt-4o-mini',
     name: 'GPT-4o Mini',
-    description: 'Faster and more cost-effective version of GPT-4o',
+    description: (t) => t.modelDescriptionGpt4oMini,
     contextWindow: 128000,
     costTier: 'medium',
     capabilities: {
@@ -41,7 +43,7 @@ const OPENAI_MODELS: AIModel[] = [
   {
     id: 'gpt-4-turbo',
     name: 'GPT-4 Turbo',
-    description: 'High performance model with large context window',
+    description: (t) => t.modelDescriptionGpt4Turbo,
     contextWindow: 128000,
     costTier: 'high',
     capabilities: {
@@ -55,7 +57,7 @@ const OPENAI_MODELS: AIModel[] = [
   {
     id: 'gpt-4',
     name: 'GPT-4',
-    description: 'Previous generation flagship model',
+    description: (t) => t.modelDescriptionGpt4,
     contextWindow: 8192,
     costTier: 'high',
     capabilities: {
@@ -69,7 +71,7 @@ const OPENAI_MODELS: AIModel[] = [
   {
     id: 'gpt-3.5-turbo',
     name: 'GPT-3.5 Turbo',
-    description: 'Fast and economical model',
+    description: (t) => t.modelDescriptionGpt35Turbo,
     contextWindow: 16385,
     costTier: 'low',
     capabilities: {
@@ -89,7 +91,7 @@ const GEMINI_MODELS: AIModel[] = [
   {
     id: 'gemini-1.5-pro',
     name: 'Gemini 1.5 Pro',
-    description: 'Most capable Gemini model with large context window',
+    description: (t) => t.modelDescriptionGemini15Pro,
     contextWindow: 2000000,
     costTier: 'medium',
     capabilities: {
@@ -104,7 +106,7 @@ const GEMINI_MODELS: AIModel[] = [
   {
     id: 'gemini-1.5-flash',
     name: 'Gemini 1.5 Flash',
-    description: 'Fast and efficient model for quick responses',
+    description: (t) => t.modelDescriptionGemini15Flash,
     contextWindow: 1000000,
     costTier: 'low',
     capabilities: {
@@ -118,7 +120,7 @@ const GEMINI_MODELS: AIModel[] = [
   {
     id: 'gemini-pro',
     name: 'Gemini Pro',
-    description: 'Balanced performance and cost',
+    description: (t) => t.modelDescriptionGeminiPro,
     contextWindow: 32768,
     costTier: 'medium',
     capabilities: {
@@ -138,7 +140,7 @@ const ANTHROPIC_MODELS: AIModel[] = [
   {
     id: 'claude-3-5-sonnet-20241022',
     name: 'Claude 3.5 Sonnet',
-    description: 'Most capable Claude model with excellent reasoning',
+    description: (t) => t.modelDescriptionClaude35Sonnet,
     contextWindow: 200000,
     costTier: 'high',
     capabilities: {
@@ -153,7 +155,7 @@ const ANTHROPIC_MODELS: AIModel[] = [
   {
     id: 'claude-3-haiku-20240307',
     name: 'Claude 3 Haiku',
-    description: 'Fast and cost-effective model',
+    description: (t) => t.modelDescriptionClaude3Haiku,
     contextWindow: 200000,
     costTier: 'low',
     capabilities: {
@@ -167,7 +169,7 @@ const ANTHROPIC_MODELS: AIModel[] = [
   {
     id: 'claude-3-opus-20240229',
     name: 'Claude 3 Opus',
-    description: 'Most powerful Claude model for complex tasks',
+    description: (t) => t.modelDescriptionClaude3Opus,
     contextWindow: 200000,
     costTier: 'high',
     capabilities: {
@@ -187,7 +189,7 @@ const DEEPSEEK_MODELS: AIModel[] = [
   {
     id: 'deepseek-chat',
     name: 'DeepSeek Chat',
-    description: 'General purpose conversational model',
+    description: (t) => t.modelDescriptionDeepseekChat,
     contextWindow: 32768,
     costTier: 'low',
     capabilities: {
@@ -202,7 +204,7 @@ const DEEPSEEK_MODELS: AIModel[] = [
   {
     id: 'deepseek-coder',
     name: 'DeepSeek Coder',
-    description: 'Specialized model for coding tasks',
+    description: (t) => t.modelDescriptionDeepseekCoder,
     contextWindow: 16384,
     costTier: 'low',
     capabilities: {
@@ -222,7 +224,7 @@ const OLLAMA_MODELS: AIModel[] = [
   {
     id: 'llama3.1:8b',
     name: 'Llama 3.1 8B',
-    description: 'Efficient local model for general tasks',
+    description: (t) => t.modelDescriptionLlama318b,
     contextWindow: 128000,
     costTier: 'free',
     capabilities: {
@@ -237,7 +239,7 @@ const OLLAMA_MODELS: AIModel[] = [
   {
     id: 'llama3.1:70b',
     name: 'Llama 3.1 70B',
-    description: 'Large local model with excellent performance',
+    description: (t) => t.modelDescriptionLlama3170b,
     contextWindow: 128000,
     costTier: 'free',
     capabilities: {
@@ -251,7 +253,7 @@ const OLLAMA_MODELS: AIModel[] = [
   {
     id: 'mistral:7b',
     name: 'Mistral 7B',
-    description: 'Fast and efficient local model',
+    description: (t) => t.modelDescriptionMistral7b,
     contextWindow: 32768,
     costTier: 'free',
     capabilities: {
@@ -265,7 +267,7 @@ const OLLAMA_MODELS: AIModel[] = [
   {
     id: 'codellama:13b',
     name: 'Code Llama 13B',
-    description: 'Specialized local model for coding tasks',
+    description: (t) => t.modelDescriptionCodellama13b,
     contextWindow: 16384,
     costTier: 'free',
     capabilities: {
@@ -285,17 +287,8 @@ export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
   openai: {
     id: 'openai',
     name: 'OpenAI',
-    description: 'Industry-leading AI models including GPT-4 and GPT-3.5',
     requiresApiKey: true,
-    apiKeyLabel: 'OpenAI API Key',
     apiKeyPlaceholder: 'sk-...',
-    setupInstructions: [
-      'Visit platform.openai.com',
-      'Sign in or create an account',
-      'Navigate to API Keys section',
-      'Create a new secret key',
-      'Copy and paste the key here'
-    ],
     models: OPENAI_MODELS,
     defaultModel: 'gpt-4o-mini',
     maxTokens: {
@@ -313,17 +306,8 @@ export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
   gemini: {
     id: 'gemini',
     name: 'Google Gemini',
-    description: 'Google\'s advanced AI models with large context windows',
     requiresApiKey: true,
-    apiKeyLabel: 'Gemini API Key',
     apiKeyPlaceholder: 'AIza...',
-    setupInstructions: [
-      'Visit aistudio.google.com',
-      'Sign in with Google account',
-      'Navigate to API Keys',
-      'Create a new API key',
-      'Copy and paste the key here'
-    ],
     models: GEMINI_MODELS,
     defaultModel: 'gemini-1.5-flash',
     baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
@@ -342,17 +326,8 @@ export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
   anthropic: {
     id: 'anthropic',
     name: 'Anthropic Claude',
-    description: 'Claude models known for safety and reasoning capabilities',
     requiresApiKey: true,
-    apiKeyLabel: 'Anthropic API Key',
     apiKeyPlaceholder: 'sk-ant-...',
-    setupInstructions: [
-      'Visit console.anthropic.com',
-      'Sign in or create an account',
-      'Navigate to API Keys',
-      'Create a new API key',
-      'Copy and paste the key here'
-    ],
     models: ANTHROPIC_MODELS,
     defaultModel: 'claude-3-haiku-20240307',
     baseUrl: 'https://api.anthropic.com/v1',
@@ -371,17 +346,8 @@ export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
   deepseek: {
     id: 'deepseek',
     name: 'DeepSeek',
-    description: 'Cost-effective AI models with strong performance',
     requiresApiKey: true,
-    apiKeyLabel: 'DeepSeek API Key',
     apiKeyPlaceholder: 'sk-...',
-    setupInstructions: [
-      'Visit platform.deepseek.com',
-      'Sign in or create an account',
-      'Navigate to API Keys',
-      'Create a new API key',
-      'Copy and paste the key here'
-    ],
     models: DEEPSEEK_MODELS,
     defaultModel: 'deepseek-chat',
     baseUrl: 'https://api.deepseek.com/v1',
@@ -400,16 +366,8 @@ export const AI_PROVIDERS: Record<AIProvider, AIProviderConfig> = {
   ollama: {
     id: 'ollama',
     name: 'Ollama',
-    description: 'Run AI models locally on your machine',
     requiresApiKey: false,
-    apiKeyLabel: '',
     apiKeyPlaceholder: '',
-    setupInstructions: [
-      'Install Ollama from ollama.ai',
-      'Run "ollama serve" to start the server',
-      'Pull a model with "ollama pull llama3.1:8b"',
-      'Configure the base URL if different from default'
-    ],
     models: OLLAMA_MODELS,
     defaultModel: 'llama3.1:8b',
     baseUrl: 'http://localhost:11434/v1',
@@ -463,30 +421,18 @@ export function getLocalizedProviderName(providerId: AIProvider, _language: Lang
  * Get localized provider description
  */
 export function getLocalizedProviderDescription(providerId: AIProvider, language: Language): string {
+  const t = getTranslations(language);
   switch (providerId) {
     case 'openai':
-      return language === 'pt-BR' 
-        ? 'Modelos de IA líderes da indústria incluindo GPT-4 e GPT-3.5'
-        : 'Industry-leading AI models including GPT-4 and GPT-3.5';
+      return t.providerDescriptionOpenai;
     case 'gemini':
-      return language === 'pt-BR'
-        ? 'Modelos avançados de IA do Google com grandes janelas de contexto'
-        : 'Google\'s advanced AI models with large context windows';
+      return t.providerDescriptionGemini;
     case 'anthropic':
-      return language === 'pt-BR'
-        ? 'Modelos Claude conhecidos por segurança e capacidades de raciocínio'
-        : 'Claude models known for safety and reasoning capabilities';
+      return t.providerDescriptionAnthropic;
     case 'deepseek':
-      return language === 'pt-BR'
-        ? 'Modelos de IA econômicos com forte desempenho'
-        : 'Cost-effective AI models with strong performance';
+      return t.providerDescriptionDeepseek;
     case 'ollama':
-      return language === 'pt-BR'
-        ? 'Execute modelos de IA localmente em sua máquina'
-        : 'Run AI models locally on your machine';
-    default:
-      // @ts-ignore
-      return AI_PROVIDERS[providerId].description;
+      return t.providerDescriptionOllama;
   }
 }
 
@@ -510,158 +456,61 @@ export function getLocalizedModelDescription(
   language: Language
 ): string {
   const model = getModel(providerId, modelId);
-  if (!model) return '';
-  
-  // For now, we'll provide Portuguese translations for key model descriptions
-  if (language === 'pt-BR') {
-    switch (modelId) {
-      case 'gpt-4o':
-        return 'Modelo mais recente e capaz com capacidades multimodais';
-      case 'gpt-4o-mini':
-        return 'Versão mais rápida e econômica do GPT-4o';
-      case 'gpt-4-turbo':
-        return 'Modelo de alta performance com grande janela de contexto';
-      case 'gpt-4':
-        return 'Modelo principal da geração anterior';
-      case 'gpt-3.5-turbo':
-        return 'Modelo rápido e econômico';
-      case 'gemini-1.5-pro':
-        return 'Modelo Gemini mais capaz com grande janela de contexto';
-      case 'gemini-1.5-flash':
-        return 'Modelo rápido e eficiente para respostas rápidas';
-      case 'gemini-pro':
-        return 'Performance e custo equilibrados';
-      case 'claude-3-5-sonnet-20241022':
-        return 'Modelo Claude mais capaz com excelente raciocínio';
-      case 'claude-3-haiku-20240307':
-        return 'Modelo rápido e econômico';
-      case 'claude-3-opus-20240229':
-        return 'Modelo Claude mais poderoso para tarefas complexas';
-      case 'deepseek-chat':
-        return 'Modelo conversacional de propósito geral';
-      case 'deepseek-coder':
-        return 'Modelo especializado para tarefas de programação';
-      case 'llama3.1:8b':
-        return 'Modelo local eficiente para tarefas gerais';
-      case 'llama3.1:70b':
-        return 'Modelo local grande com excelente performance';
-      case 'mistral:7b':
-        return 'Modelo local rápido e eficiente';
-      case 'codellama:13b':
-        return 'Modelo local especializado para tarefas de programação';
-      default:
-        return model.description;
-    }
-  }
-  
-  return model.description;
+  return model ? model.description(getTranslations(language)) : '';
 }
 
 /**
  * Get localized setup instructions
  */
 export function getLocalizedSetupInstructions(providerId: AIProvider, language: Language): string[] {
-  const provider = getProviderConfig(providerId);
-  
-  if (language === 'pt-BR') {
-    switch (providerId) {
-      case 'openai':
-        return [
-          'Visite platform.openai.com',
-          'Faça login ou crie uma conta',
-          'Navegue até a seção de Chaves da API',
-          'Crie uma nova chave secreta',
-          'Copie e cole a chave aqui'
-        ];
-      case 'gemini':
-        return [
-          'Visite aistudio.google.com',
-          'Faça login com conta Google',
-          'Navegue até Chaves da API',
-          'Crie uma nova chave da API',
-          'Copie e cole a chave aqui'
-        ];
-      case 'anthropic':
-        return [
-          'Visite console.anthropic.com',
-          'Faça login ou crie uma conta',
-          'Navegue até Chaves da API',
-          'Crie uma nova chave da API',
-          'Copie e cole a chave aqui'
-        ];
-      case 'deepseek':
-        return [
-          'Visite platform.deepseek.com',
-          'Faça login ou crie uma conta',
-          'Navegue até Chaves da API',
-          'Crie uma nova chave da API',
-          'Copie e cole a chave aqui'
-        ];
-      case 'ollama':
-        return [
-          'Instale o Ollama de ollama.ai',
-          'Execute "ollama serve" para iniciar o servidor',
-          'Baixe um modelo com "ollama pull llama3.1:8b"',
-          'Configure a URL base se diferente do padrão'
-        ];
-      default:
-        return provider.setupInstructions;
-    }
+  const t = getTranslations(language);
+  switch (providerId) {
+    case 'openai':
+      return t.setupInstructionsOpenai;
+    case 'gemini':
+      return t.setupInstructionsGemini;
+    case 'anthropic':
+      return t.setupInstructionsAnthropic;
+    case 'deepseek':
+      return t.setupInstructionsDeepseek;
+    case 'ollama':
+      return t.setupInstructionsOllama;
   }
-  
-  return provider.setupInstructions;
 }
 
 /**
  * Get localized API key label
  */
 export function getLocalizedApiKeyLabel(providerId: AIProvider, language: Language): string {
-  if (language === 'pt-BR') {
-    switch (providerId) {
-      case 'openai':
-        return 'Chave da API OpenAI';
-      case 'gemini':
-        return 'Chave da API Gemini';
-      case 'anthropic':
-        return 'Chave da API Anthropic';
-      case 'deepseek':
-        return 'Chave da API DeepSeek';
-      default:
-        return 'Chave da API';
-    }
+  const t = getTranslations(language);
+  switch (providerId) {
+    case 'openai':
+      return t.apiKeyLabelOpenai;
+    case 'gemini':
+      return t.apiKeyLabelGemini;
+    case 'anthropic':
+      return t.apiKeyLabelAnthropic;
+    case 'deepseek':
+      return t.apiKeyLabelDeepseek;
+    default:
+      return t.apiKeyLabel;
   }
-  
-  return AI_PROVIDERS[providerId].apiKeyLabel || 'API Key';
 }
 
 /**
  * Get localized cost tier
  */
 export function getLocalizedCostTier(costTier: string, language: Language): string {
-  if (language === 'pt-BR') {
-    switch (costTier) {
-      case 'free':
-        return 'Gratuito';
-      case 'low':
-        return 'Baixo Custo';
-      case 'medium':
-        return 'Custo Médio';
-      case 'high':
-        return 'Alto Custo';
-      default:
-        return costTier;
-    }
-  }
-  
+  const t = getTranslations(language);
   switch (costTier) {
     case 'free':
-      return 'Free';
+      return t.costTierFree;
     case 'low':
-      return 'Low Cost';
+      return t.costTierLow;
     case 'medium':
-      return 'Medium Cost';
+      return t.costTierMedium;
     case 'high':
-      return 'High Cost';
+      return t.costTierHigh;
     default:
       return costTier;
   }
@@ -676,22 +525,17 @@ export function validateProviderConfig(
   language: Language = 'en-US'
 ): { valid: boolean; errors: string[] } {
   const provider = getProviderConfig(providerId);
+  const t = getTranslations(language);
   const errors: string[] = [];
   
   // Check API key requirement
   if (provider.requiresApiKey && !settings.apiKey) {
-    const errorMsg = language === 'pt-BR' 
-      ? `Chave da API é obrigatória para ${getLocalizedProviderName(providerId, language)}`
-      : `API key is required for ${provider.name}`;
-    errors.push(errorMsg);
+    errors.push(formatMessage(t.apiKeyRequiredFor, { provider: getLocalizedProviderName(providerId, language) }));
   }
   
   // Any non-empty model id is accepted; the registry models are only suggestions
   if (!settings.model?.trim()) {
-    const errorMsg = language === 'pt-BR'
-      ? 'Modelo é obrigatório'
-      : 'Model is required';
-    errors.push(errorMsg);
+    errors.push(t.modelRequired);
   }
   
   // Check base URL for local providers
@@ -699,10 +543,7 @@ export function validateProviderConfig(
     try {
       new URL(settings.baseUrl);
     } catch {
-      const errorMsg = language === 'pt-BR'
-        ? 'Formato de URL base inválido'
-        : 'Invalid base URL format';
-      errors.push(errorMsg);
+      errors.push(t.invalidBaseUrlFormat);
     }
   }
   

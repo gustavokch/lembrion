@@ -6,7 +6,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { StudySession } from '../types';
 import MarkdownRenderer from './MarkdownRenderer';
 import { formatDate } from '../core/services';
-import { difficultyLabels } from './pages/StudyPage/learningTechniques';
+import { answeredCount, difficultyLabels, isAnswered, sessionScore } from './pages/StudyPage/learningTechniques';
 
 export default function SessionDetails() {
   const { id } = useParams<{ id: string }>();
@@ -38,9 +38,8 @@ export default function SessionDetails() {
     );
   }
 
-  const correctAnswers = session.questions.filter(q => q.isCorrect).length;
-  const totalQuestions = session.questions.length;
-  const accuracy = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+  const answeredQuestions = answeredCount(session.questions);
+  const score = sessionScore(session.questions);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 px-4 sm:px-6 lg:px-8">
@@ -75,7 +74,7 @@ export default function SessionDetails() {
       </div>
 
       {/* Session Overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between">
             <div className="min-w-0">
@@ -92,7 +91,7 @@ export default function SessionDetails() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">{t.questions}</p>
-              <p className="text-lg font-semibold text-gray-900">{totalQuestions}</p>
+              <p className="text-lg font-semibold text-gray-900">{answeredQuestions}</p>
             </div>
             <BookOpen className="w-6 sm:w-8 h-6 sm:h-8 text-blue-600 flex-shrink-0" />
           </div>
@@ -101,18 +100,8 @@ export default function SessionDetails() {
         <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">{t.accuracy}</p>
-              <p className="text-lg font-semibold text-gray-900">{accuracy}%</p>
-            </div>
-            <Target className="w-6 sm:w-8 h-6 sm:h-8 text-green-600 flex-shrink-0" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
               <p className="text-sm font-medium text-gray-600">{t.score}</p>
-              <p className="text-lg font-semibold text-gray-900">{session.score}%</p>
+              <p className="text-lg font-semibold text-gray-900">{score}%</p>
             </div>
             <TrendingUp className="w-6 sm:w-8 h-6 sm:h-8 text-purple-600 flex-shrink-0" />
           </div>
@@ -188,7 +177,7 @@ export default function SessionDetails() {
                       <div className="bg-gray-50 rounded-lg p-4">
                         <h4 className="text-sm font-medium text-gray-700 mb-2">{t.yourAnswer}:</h4>
                         <div className="text-gray-900 break-words">
-                          <MarkdownRenderer content={question.userAnswer?.toString() || (language === 'pt-BR' ? 'Nenhuma resposta fornecida' : 'No answer provided')} />
+                          <MarkdownRenderer content={question.userAnswer?.toString() || t.noAnswerProvided} />
                         </div>
                       </div>
                       {question.correctAnswerText && (
@@ -247,6 +236,14 @@ export default function SessionDetails() {
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
                       <h4 className="text-sm font-medium text-gray-700 mb-2">{t.selfExplanation}</h4>
                       <p className="text-sm text-gray-900 whitespace-pre-wrap break-words">{question.selfExplanation}</p>
+                      {question.selfExplanationFeedback && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <h5 className="text-xs font-medium text-gray-700 mb-1">{t.explanationFeedbackTitle}</h5>
+                          <div className="text-sm text-gray-900 break-words">
+                            <MarkdownRenderer content={question.selfExplanationFeedback} />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -272,6 +269,12 @@ export default function SessionDetails() {
                         <Repeat className="w-3 h-3 mr-1 flex-shrink-0" />
                         {t.reviewQuestion}
                       </span>
+                    )}
+                    {isAnswered(question) && question.confidence !== undefined && (
+                      <div className="flex items-center">
+                        <Target className="w-4 h-4 mr-1 flex-shrink-0" />
+                        {t.confidence} {question.confidence}/5
+                      </div>
                     )}
                     {question.type === 'dissertative' && question.score !== undefined && (
                       <div className="flex items-center font-medium text-gray-700">

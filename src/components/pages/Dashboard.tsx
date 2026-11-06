@@ -1,14 +1,18 @@
-import { Award, BookOpen, Calendar, CheckSquare, ChevronRight, ExternalLink, Heart, History, Info, Star, Zap } from 'lucide-react';
+import { Award, BookOpen, Calendar, CheckSquare, ChevronRight, ExternalLink, Heart, History, Info, Play, Repeat, Star, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { STORAGE_KEYS } from '../../core/config/constants';
-import { formatDate } from '../../core/services/i18n';
+import { formatDate, formatMessage } from '../../core/services/i18n';
+import { createId } from '../../core/utils/id';
 import { useLanguage, useLocalStorage, useTheme } from '../../hooks';
 import { StudySession } from '../../types';
 import Logo from '../ui/Logo';
+import { answeredCount, sessionScore } from './StudyPage/learningTechniques';
+import { createReviewSession, dueReviews, findOpenReviewSession, nextDueDate } from './StudyPage/reviewSchedule';
 
 export default function Dashboard() {
-  const [sessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
+  const [sessions, setSessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
+  const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { themeConfig } = useTheme();
   const [showWelcomeTip, setShowWelcomeTip] = useState(true);
@@ -18,11 +22,29 @@ export default function Dashboard() {
   const totalSessions = sessions.length;
   const activeSessions = sessions.filter((s) => s.status === 'active').length;
   const completedSessions = sessions.filter(s => s.status === 'completed').length;
-  const averageScore = completedSessions > 0 
-    ? sessions.filter(s => s.status === 'completed').reduce((acc, s) => acc + s.score, 0) / completedSessions 
+  const averageScore = completedSessions > 0
+    ? sessions.filter(s => s.status === 'completed').reduce((acc, s) => acc + sessionScore(s.questions), 0) / completedSessions
     : 0;
 
   const recentSessions = sessions.slice(-3).reverse();
+
+  // Review queue: hidden when nothing is scheduled; with nothing due, the next due date shows instead
+  const dueReviewCount = dueReviews(sessions, new Date(), Infinity).length;
+  const nextReviewDate = nextDueDate(sessions);
+
+  // An unfinished review session is resumed; otherwise a new one is stored and StudyPage resumes it
+  const startReview = () => {
+    const now = new Date();
+    const openReview = findOpenReviewSession(sessions, now);
+    if (openReview) {
+      navigate('/study', { state: { sessionId: openReview.id } });
+      return;
+    }
+    const reviewSession = createReviewSession(sessions, now, createId);
+    if (!reviewSession) return;
+    setSessions((prev) => [...prev, reviewSession]);
+    navigate('/study', { state: { sessionId: reviewSession.id } });
+  };
   
   // Detect device type
   useEffect(() => {
@@ -132,22 +154,19 @@ export default function Dashboard() {
               <div className="flex-1">
                 <div className="flex items-start justify-between">
                   <h3 className="font-semibold text-sm sm:text-base mb-1" style={{ color: themeConfig.colors.info }}>
-                    {language === 'pt-BR' ? 'Seus dados, seu provedor' : 'Your data, your provider'}
+                    {t.dataTipTitle}
                   </h3>
                   <button 
                     onClick={dismissWelcomeTip} 
                     className="p-1 rounded-full"
                     style={{ color: themeConfig.colors.info }}
-                    aria-label={language === 'pt-BR' ? 'Fechar dica' : 'Dismiss tip'}
+                    aria-label={t.dismissTip}
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
                 <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                  {language === 'pt-BR' 
-                    ? 'Sessões e chaves da API ficam no seu navegador. As questões vão apenas ao provedor de IA que você escolher. Sem conta, sem rastreamento.'
-                    : 'Sessions and API keys are stored in your browser. Questions go only to the AI provider you choose. No account, no tracking.'
-                  }
+                  {t.dataTipDesc}
                 </p>
               </div>
             </div>
@@ -254,10 +273,10 @@ export default function Dashboard() {
               </div>
               <div className="flex-1">
                 <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                  {language === 'pt-BR' ? 'Questões' : 'Questions'}
+                  {t.questions}
                 </p>
                 <p className="text-xl sm:text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                  {sessions.reduce((acc, s) => acc + s.questions.length, 0)}
+                  {sessions.reduce((acc, s) => acc + answeredCount(s.questions), 0)}
                 </p>
               </div>
             </div>
@@ -288,7 +307,7 @@ export default function Dashboard() {
                 <h3 className="text-white/90 text-lg sm:text-xl font-bold mb-2 leading-tight">{t.startNewSession}</h3>
                 <p className="text-white/90 text-sm sm:text-base leading-relaxed">{t.beginNewSession}</p>
                 <div className="mt-4 flex items-center text-white/80 text-sm font-medium">
-                  <span>{language === 'pt-BR' ? 'Começar agora' : 'Start now'}</span>
+                  <span>{t.startNow}</span>
                   <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
@@ -322,12 +341,55 @@ export default function Dashboard() {
                   className="mt-4 flex items-center text-sm font-medium group-hover:translate-x-1 transition-transform"
                   style={{ color: themeConfig.colors.primary }}
                 >
-                  <span>{language === 'pt-BR' ? 'Ver histórico' : 'View history'}</span>
+                  <span>{t.viewHistoryLink}</span>
                   <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
           </Link>
+
+          {nextReviewDate && (
+            <div
+              className="md:col-span-2 rounded-xl sm:rounded-2xl p-5 sm:p-6 border shadow-sm"
+              style={{
+                backgroundColor: themeConfig.colors.surface,
+                borderColor: themeConfig.colors.border,
+              }}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex items-start space-x-4 flex-1 min-w-0">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center shadow-inner flex-shrink-0"
+                    style={{ backgroundColor: themeConfig.colors.warning + '20' }}
+                  >
+                    <Repeat className="w-6 h-6" style={{ color: themeConfig.colors.warning }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2 leading-tight" style={{ color: themeConfig.colors.text }}>
+                      {t.reviewCardTitle}
+                    </h3>
+                    <p className="text-sm sm:text-base leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
+                      {dueReviewCount > 0
+                        ? formatMessage(dueReviewCount === 1 ? t.reviewDueCountOne : t.reviewDueCountOther, { count: dueReviewCount })
+                        : formatMessage(t.reviewNextDue, { date: formatDate(nextReviewDate, language) })}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={startReview}
+                  disabled={dueReviewCount === 0}
+                  className="px-5 py-3 rounded-xl font-semibold text-sm sm:text-base shadow-lg transition-all duration-200 hover:shadow-xl flex items-center justify-center flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-md"
+                  style={{
+                    background: themeConfig.gradients.primary,
+                    color: '#ffffff',
+                  }}
+                >
+                  <Play className="w-5 h-5 mr-2 flex-shrink-0" />
+                  <span>{t.startReview}</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -366,17 +428,14 @@ export default function Dashboard() {
                   className="text-lg sm:text-xl font-bold mb-2 sm:mb-3" 
                   style={{ color: themeConfig.colors.text }}
                 >
-                  {language === 'pt-BR' ? 'Apoie o Studorama' : 'Support Studorama'}
+                  {t.supportStudorama}
                 </h2>
                 
                 <p 
                   className="mb-4 sm:mb-5 text-sm sm:text-base leading-relaxed max-w-2xl" 
                   style={{ color: themeConfig.colors.textSecondary }}
                 >
-                  {language === 'pt-BR' 
-                    ? 'Ajude-nos a manter esta plataforma gratuita e sem necessidade de conta para todos. Seu apoio faz toda a diferença!'
-                    : 'Help us keep this platform free and accountless for everyone. Your support makes all the difference!'
-                  }
+                  {t.supportStudoramaShortDesc}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -403,7 +462,7 @@ export default function Dashboard() {
                     }}
                   >
                     <Heart className="w-5 h-5 mr-2 flex-shrink-0" style={{ color: themeConfig.colors.primary }} />
-                    <span>{language === 'pt-BR' ? 'Outras Opções' : 'Other Options'}</span>
+                    <span>{t.otherOptions}</span>
                     <ChevronRight className="w-4 h-4 ml-2 flex-shrink-0" />
                   </Link>
                 </div>
@@ -440,7 +499,7 @@ export default function Dashboard() {
                 className="text-xs sm:text-sm font-medium flex items-center"
                 style={{ color: themeConfig.colors.primary }}
               >
-                <span>{language === 'pt-BR' ? 'Ver todos' : 'View all'}</span>
+                <span>{t.viewAll}</span>
                 <ChevronRight className="w-4 h-4 ml-0.5" />
               </Link>
             </div>
@@ -486,11 +545,21 @@ export default function Dashboard() {
                             <div className="flex items-center">
                               <BookOpen className="w-3 h-3 mr-1" style={{ color: themeConfig.colors.textMuted }} />
                               <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                                {session.questions.length} {session.questions.length === 1 ? 
-                                  (language === 'pt-BR' ? 'questão' : 'question') : 
-                                  (language === 'pt-BR' ? 'questões' : 'questions')}
+                                {formatMessage(
+                                  answeredCount(session.questions) === 1 ? t.questionCountOne : t.questionCountOther,
+                                  { count: answeredCount(session.questions) }
+                                )}
                               </span>
                             </div>
+                            {session.kind === 'review' && (
+                              <span
+                                className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full"
+                                style={{ backgroundColor: themeConfig.colors.warning + '20', color: themeConfig.colors.warning }}
+                              >
+                                <Repeat className="w-3 h-3 mr-1" />
+                                {t.reviewSessionLabel}
+                              </span>
+                            )}
                           </div>
                         </div>
                         
@@ -513,7 +582,7 @@ export default function Dashboard() {
                               {t.correctAnswers}
                             </span>
                             <span style={{ color: themeConfig.colors.textSecondary }}>
-                              {Math.round((session.questions.filter(q => q.isCorrect).length / session.questions.length) * 100)}%
+                              {sessionScore(session.questions)}%
                             </span>
                           </div>
                           <div 
@@ -523,11 +592,11 @@ export default function Dashboard() {
                             <div
                               className="h-full rounded-full transition-all duration-500"
                               style={{
-                                width: `${(session.questions.filter(q => q.isCorrect).length / session.questions.length) * 100}%`,
+                                width: `${sessionScore(session.questions)}%`,
                                 background: themeConfig.gradients.primary,
                               }}
                               role="progressbar"
-                              aria-valuenow={(session.questions.filter(q => q.isCorrect).length / session.questions.length) * 100}
+                              aria-valuenow={sessionScore(session.questions)}
                               aria-valuemin={0}
                               aria-valuemax={100}
                             ></div>
@@ -540,7 +609,7 @@ export default function Dashboard() {
                           className="mt-3 inline-flex items-center text-xs font-medium"
                           style={{ color: themeConfig.colors.primary }}
                         >
-                          {language === 'pt-BR' ? 'Continuar sessão' : 'Continue session'}
+                          {t.continueSessionLink}
                           <ChevronRight className="w-3 h-3 ml-0.5" />
                         </div>
                       )}
@@ -555,7 +624,7 @@ export default function Dashboard() {
                   style={{ color: themeConfig.colors.textMuted }}
                 >
                   <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p>{language === 'pt-BR' ? 'Nenhuma sessão recente' : 'No recent sessions'}</p>
+                  <p>{t.noRecentSessions}</p>
                 </div>
               )}
             </div>
@@ -584,17 +653,14 @@ export default function Dashboard() {
               className="text-lg sm:text-xl font-bold mb-2"
               style={{ color: themeConfig.colors.text }}
             >
-              {language === 'pt-BR' ? 'Comece sua jornada de aprendizado' : 'Start your learning journey'}
+              {t.startLearningJourney}
             </h3>
             
             <p 
               className="mb-6 text-sm sm:text-base"
               style={{ color: themeConfig.colors.textSecondary }}
             >
-              {language === 'pt-BR' 
-                ? 'Crie sua primeira sessão de estudo para começar a aprender com a ajuda da IA.'
-                : 'Create your first study session to start learning with AI assistance.'
-              }
+              {t.startLearningJourneyDesc}
             </p>
             
             <Link
@@ -606,7 +672,7 @@ export default function Dashboard() {
               }}
             >
               <BookOpen className="w-5 h-5 mr-2" />
-              {language === 'pt-BR' ? 'Iniciar Primeira Sessão' : 'Start First Session'}
+              {t.startFirstSession}
             </Link>
           </div>
         </section>

@@ -69,10 +69,40 @@ export function nextFocusContext(questions: Question[], contexts: string[]): str
   return lastIndex === -1 ? contexts[0] : contexts[(lastIndex + 1) % contexts.length];
 }
 
+/** Correct answers with a confidence at or below this (on the 1-5 scale) are reviewed like misses. */
+export const LOW_CONFIDENCE_MAX = 2;
+
+/** A question counts as answered once it has a correct/incorrect verdict. */
+export function isAnswered(question: Question): boolean {
+  return typeof question.isCorrect === 'boolean';
+}
+
+/** Number of answered questions, review copies included. */
+export function answeredCount(questions: Question[]): number {
+  return questions.filter(isAnswered).length;
+}
+
+/**
+ * Session score in percent: correct answers over answered questions, rounded.
+ * Review copies count as answers; unanswered questions are ignored; 0 when nothing is answered.
+ */
+export function sessionScore(questions: Question[]): number {
+  const answered = answeredCount(questions);
+  if (answered === 0) return 0;
+  const correct = questions.filter(q => q.isCorrect === true).length;
+  return Math.round((correct / answered) * 100);
+}
+
+/** Answered wrong, or correctly with a confidence at most `LOW_CONFIDENCE_MAX`. */
+export function needsReview(question: Question): boolean {
+  if (question.isCorrect === false) return true;
+  return question.isCorrect === true && question.confidence !== undefined && question.confidence <= LOW_CONFIDENCE_MAX;
+}
+
 /**
  * The oldest original question whose latest attempt (the original or its last review
- * copy) was answered wrong, with at least `gap` questions after that attempt and fewer
- * than `maxReviews` review copies.
+ * copy) was answered wrong, or correctly with confidence at most `LOW_CONFIDENCE_MAX`,
+ * with at least `gap` questions after that attempt and fewer than `maxReviews` review copies.
  */
 export function findDueReview(questions: Question[], gap = 3, maxReviews = 2): Question | undefined {
   return questions.find(original => {
@@ -89,7 +119,7 @@ export function findDueReview(questions: Question[], gap = 3, maxReviews = 2): Q
 
     return (
       copies < maxReviews &&
-      questions[latestIndex].isCorrect === false &&
+      needsReview(questions[latestIndex]) &&
       questions.length - 1 - latestIndex >= gap
     );
   });

@@ -3,9 +3,11 @@ import { Difficulty, Question } from '../../../types';
 import {
   createReviewCopy,
   findDueReview,
+  LOW_CONFIDENCE_MAX,
   nextDifficulty,
   nextFocusContext,
   normalizeLearningSettings,
+  sessionScore,
 } from './learningTechniques';
 
 let nextId = 0;
@@ -132,6 +134,44 @@ describe('findDueReview', () => {
     const first = answered(false);
     const second = answered(false);
     expect(findDueReview([first, second, answered(true), answered(true), answered(true)])).toBe(first);
+  });
+
+  it('reviews a correct answer given with low confidence at the gap', () => {
+    const unsure = answered(true, 'medium', { confidence: LOW_CONFIDENCE_MAX });
+    expect(findDueReview([unsure, answered(true), answered(true)])).toBeUndefined();
+    expect(findDueReview([unsure, answered(true), answered(true), answered(true)])).toBe(unsure);
+  });
+
+  it('does not review a correct answer given with confidence 3', () => {
+    const fairlySure = answered(true, 'medium', { confidence: 3 });
+    expect(findDueReview([fairlySure, answered(true), answered(true), answered(true)])).toBeUndefined();
+  });
+
+  it('stops reviewing low-confidence correct answers at the cap', () => {
+    const unsure = answered(true, 'medium', { confidence: 1 });
+    const firstCopy = answered(true, 'medium', { reviewOf: unsure.id, reviewCount: 1, confidence: 2 });
+    const afterFirst = [unsure, answered(true), answered(true), answered(true), firstCopy, answered(true), answered(true), answered(true)];
+    expect(findDueReview(afterFirst)).toBe(unsure);
+
+    const secondCopy = answered(true, 'medium', { reviewOf: unsure.id, reviewCount: 2, confidence: 1 });
+    expect(findDueReview([...afterFirst, secondCopy, answered(true), answered(true), answered(true)])).toBeUndefined();
+  });
+});
+
+describe('sessionScore', () => {
+  it('is 0 when nothing is answered', () => {
+    expect(sessionScore([])).toBe(0);
+    expect(sessionScore([q()])).toBe(0);
+  });
+
+  it('excludes unanswered questions', () => {
+    expect(sessionScore([answered(true), answered(false), q()])).toBe(50);
+  });
+
+  it('counts review copies as answers', () => {
+    const missed = answered(false);
+    const copy = answered(true, 'medium', { reviewOf: missed.id, reviewCount: 1 });
+    expect(sessionScore([missed, answered(true), copy])).toBe(67);
   });
 });
 

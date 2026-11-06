@@ -67,7 +67,7 @@ export default function ThemeSelector({ className = '', showLabel = true }: Them
           color: themeConfig.colors.text,
           '--tw-ring-color': themeConfig.colors.primary,
         }}
-        aria-label={language === 'pt-BR' ? 'Selecionar tema' : 'Select theme'}
+        aria-label={t.selectThemeAria}
       >
         <Palette className="w-4 h-4" style={{ color: themeConfig.colors.textSecondary }} />
         {showLabel && (
@@ -117,7 +117,7 @@ export default function ThemeSelector({ className = '', showLabel = true }: Them
                   onClick={() => setIsOpen(false)}
                   variant="ghost"
                   size="sm"
-                  aria-label={language === 'pt-BR' ? 'Fechar seletor de tema' : 'Close theme selector'}
+                  aria-label={t.closeThemeSelector}
                 />
               </div>
               
@@ -135,7 +135,7 @@ export default function ThemeSelector({ className = '', showLabel = true }: Them
                     color: selectedCategory === 'all' ? '#ffffff' : themeConfig.colors.textSecondary,
                   }}
                 >
-                  {language === 'pt-BR' ? 'Todos' : 'All'}
+                  {t.all}
                 </button>
                 {categories.map((category) => {
                   const Icon = categoryIcons[category];
@@ -229,10 +229,7 @@ export default function ThemeSelector({ className = '', showLabel = true }: Them
               }}
             >
               <p className="text-xs text-center" style={{ color: themeConfig.colors.textMuted }}>
-                {language === 'pt-BR' 
-                  ? 'Temas otimizados para diferentes estilos de aprendizado'
-                  : 'Themes optimized for different learning styles'
-                }
+                {t.themesOptimized}
               </p>
             </div>
           </div>

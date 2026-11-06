@@ -1,8 +1,10 @@
+import { getTranslations } from '../core/services/i18n';
 import { useLanguage } from '../hooks';
 import Logo from './ui/Logo';
 
 export default function LoadingScreen() {
   const { language } = useLanguage();
+  const t = getTranslations(language);
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center">
@@ -17,9 +19,7 @@ export default function LoadingScreen() {
           Studorama
         </h1>
         <p className="text-gray-600 mb-6">
-          {language === 'pt-BR' 
-            ? 'Carregando sua experiência de aprendizado...' 
-            : 'Loading your learning experience...'}
+          {t.loadingExperience}
         </p>
         
         {/* Loading Spinner */}
@@ -29,9 +29,7 @@ export default function LoadingScreen() {
         
         {/* Performance Tip */}
         <div className="mt-8 text-xs text-gray-500 max-w-sm mx-auto">
-          {language === 'pt-BR' 
-            ? 'Otimizando dados para melhor performance...' 
-            : 'Optimizing data for better performance...'}
+          {t.loadingOptimizing}
         </div>
       </div>
     </div>

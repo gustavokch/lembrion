@@ -283,7 +283,7 @@ describe('error retryability', () => {
   });
 });
 
-describe('invalid response retry', () => {
+describe('single retry', () => {
   const request: QuestionGenerationRequest = { contexts: ['Arithmetic'], type: 'multipleChoice', language: 'en-US' };
 
   it('returns the question when the second reply is valid', async () => {
@@ -300,16 +300,53 @@ describe('invalid response retry', () => {
     expect(calls).toHaveLength(2);
   });
 
-  it('does not retry a provider HTTP error', async () => {
-    const fetchMock = vi.fn(async () => ({
-      ok: false,
-      status: 500,
-      statusText: 'Internal Server Error',
-      json: async () => ({ error: { message: 'boom' } }),
-    }));
+  /** Stub fetch to answer with the given HTTP statuses in order (repeating the last); 200 carries a valid question */
+  function stubStatuses(...statuses: number[]) {
+    let call = 0;
+    const fetchMock = vi.fn(async () => {
+      call += 1;
+      const status = statuses[Math.min(call, statuses.length) - 1];
+      return status === 200
+        ? { ok: true, status, statusText: 'OK', json: async () => completionBodies.openai(fenced(validMultipleChoice)) }
+        : { ok: false, status, statusText: 'Error', json: async () => ({ error: { message: 'boom' } }) };
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    return fetchMock;
+  }
+
+  it('returns the question when a provider 500 is followed by success', async () => {
+    const fetchMock = stubStatuses(500, 200);
+    const question = await service.generateQuestion(request, settingsFor('openai'));
+    expect(question.question).toBe('What is 2 + 2?');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('throws API_ERROR after exactly two provider 503s', async () => {
+    const fetchMock = stubStatuses(503);
+    const error = await rejection(service.generateQuestion(request, settingsFor('openai')));
+    expect(error.code).toBe('API_ERROR');
+    expect(error.statusCode).toBe(503);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('retries a provider 5xx when generating an elaborative question', async () => {
+    const fetchMock = stubStatuses(502, 200);
+    await service.generateElaborativeQuestion(['Arithmetic'], 'What is 2 + 2?', 'en-US', settingsFor('openai'));
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([429, 400, 401])('does not retry a provider %i', async status => {
+    const fetchMock = stubStatuses(status);
+    const error = await rejection(service.generateQuestion(request, settingsFor('openai')));
+    expect(error.statusCode).toBe(status);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not retry a network failure', async () => {
+    const fetchMock = vi.fn(async () => { throw new TypeError('Failed to fetch'); });
     vi.stubGlobal('fetch', fetchMock);
     const error = await rejection(service.generateQuestion(request, settingsFor('openai')));
-    expect(error.statusCode).toBe(500);
+    expect(error.code).toBe('NETWORK_ERROR');
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
@@ -353,6 +390,49 @@ describe('dissertative grading', () => {
   it('throws INVALID_RESPONSE after two replies without a verdict', async () => {
     const calls = stubProvider('openai', 'Great answer.', 'Still no verdict.');
     const error = await rejection(evaluate());
+    expect(error.code).toBe('INVALID_RESPONSE');
+    expect(calls).toHaveLength(2);
+  });
+});
+
+describe('explanation feedback', () => {
+  const markdown = '**What is right:** you named Rayleigh scattering.\n\n**What is missing:** why shorter wavelengths scatter more.';
+
+  function explain(language: string) {
+    return service.evaluateExplanation(
+      { question: 'Why is the sky blue?', correctAnswer: 'Rayleigh scattering', explanation: 'Air scatters blue light {type} $& more', language },
+      settingsFor('openai')
+    );
+  }
+
+  it.each([
+    ['en-US', 'Correct answer: Rayleigh scattering', 'under 120 words', 'Write in English'],
+    ['pt-BR', 'Resposta correta: Rayleigh scattering', 'menos de 120 palavras', 'Escreva em português do Brasil'],
+  ])('sends the %s feedback prompt as one user message and returns the Markdown', async (language, answerLine, lengthRule, languageRule) => {
+    const calls = stubProvider('openai', `\n${markdown}\n`);
+    const feedback = await explain(language);
+
+    expect(feedback).toBe(markdown);
+    expect(calls).toHaveLength(1);
+    const messages: { role: string; content: string }[] = body(calls[0]).messages;
+    expect(messages).toHaveLength(1);
+    expect(messages[0].role).toBe('user');
+    expect(messages[0].content).toContain('Why is the sky blue?');
+    expect(messages[0].content).toContain(answerLine);
+    expect(messages[0].content).toContain('Air scatters blue light {type} $& more');
+    expect(messages[0].content).toContain(lengthRule);
+    expect(messages[0].content).toContain(languageRule);
+  });
+
+  it('retries once on an empty reply', async () => {
+    const calls = stubProvider('openai', '   ', markdown);
+    expect(await explain('en-US')).toBe(markdown);
+    expect(calls).toHaveLength(2);
+  });
+
+  it('throws INVALID_RESPONSE after two empty replies', async () => {
+    const calls = stubProvider('openai', '', '  ');
+    const error = await rejection(explain('en-US'));
     expect(error.code).toBe('INVALID_RESPONSE');
     expect(calls).toHaveLength(2);
   });

@@ -14,6 +14,12 @@ declare module 'react' {
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+/** One due question picked for a review session: the original question and the session that holds it. */
+export interface ReviewRef {
+  sessionId: string;
+  questionId: string;
+}
+
 export interface StudySession {
   id: string;
   contexts: string[]; // List of study contexts (minimum 1)
@@ -26,6 +32,8 @@ export interface StudySession {
   questionType?: 'multipleChoice' | 'dissertative' | 'mixed';
   learningSettings?: LearningSettings;
   difficulty?: Difficulty; // Current level; missing means 'medium'
+  kind?: 'review'; // Review session across sessions; missing means a normal session
+  reviewQueue?: ReviewRef[]; // Review sessions only: due questions not shown yet, oldest due first
   currentQuestionIndex?: number; // Track which question the user was on
   enableLatex?: boolean; // LaTeX visualization option
   enableCodeVisualization?: boolean; // Code visualization option
@@ -90,6 +98,9 @@ export interface Question {
   difficulty?: Difficulty; // The level requested, not the model's echo
   context?: string; // Interleaving focus context
   reviewOf?: string; // Id of the missed question this repeats
+  sourceSessionId?: string; // Review-session copies: the session that holds the original question
+  reviewBox?: number; // Review queue (originals only): Leitner box 1-5 while scheduled; 6 = retired
+  nextReview?: string; // Review queue: ISO time the question is due; unset when retired or never scheduled
   reviewCount?: number; // 1 for the first review copy, 2 for the second
   evaluationCriteria?: string[];
   score?: number; // 0-100, dissertative only
@@ -97,6 +108,7 @@ export interface Question {
   elaborativeQuestion?: string;
   elaborativeAnswer?: string;
   selfExplanation?: string;
+  selfExplanationFeedback?: string; // AI feedback on `selfExplanation`, Markdown
   
   // Question timing
   timeSpent?: number; // in ms

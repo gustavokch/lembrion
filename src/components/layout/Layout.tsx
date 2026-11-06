@@ -12,7 +12,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { themeConfig } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
   ];
 
   const supportItems = [
-    { path: '/pricing', icon: Heart, label: language === 'pt-BR' ? 'Apoie-nos' : 'Support Us' },
+    { path: '/pricing', icon: Heart, label: t.supportUs },
   ];
 
   const isActive = (path: string) => {

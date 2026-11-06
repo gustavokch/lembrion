@@ -2,6 +2,8 @@
  * Core AI types for multi-provider support
  */
 
+import { Translations } from './language.types';
+
 export const AI_PROVIDER_IDS = ['openai', 'gemini', 'anthropic', 'deepseek', 'ollama'] as const;
 
 export type AIProvider = typeof AI_PROVIDER_IDS[number];
@@ -23,7 +25,8 @@ export interface MultiProviderSettings {
 export interface AIModel {
   id: string;
   name: string;
-  description: string;
+  /** Description in the active language, read from its Translations */
+  description: (t: Translations) => string;
   contextWindow: number;
   costTier: 'free' | 'low' | 'medium' | 'high';
   capabilities: {
@@ -39,11 +42,8 @@ export interface AIModel {
 export interface AIProviderConfig {
   id: AIProvider;
   name: string;
-  description: string;
   requiresApiKey: boolean;
-  apiKeyLabel: string;
   apiKeyPlaceholder: string;
-  setupInstructions: string[];
   models: AIModel[];
   defaultModel: string;
   baseUrl?: string;
@@ -145,6 +145,14 @@ export interface AnswerEvaluation {
     tokensUsed?: number;
     evaluationTime?: number;
   };
+}
+
+/** A learner's self-explanation of why `correctAnswer` answers `question` */
+export interface ExplanationFeedbackRequest {
+  question: string;
+  correctAnswer: string;
+  explanation: string;
+  language: string;
 }
 
 export interface AIError extends Error {

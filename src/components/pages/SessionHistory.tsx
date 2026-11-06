@@ -1,14 +1,15 @@
-import { AlertCircle, ArrowLeft, BookOpen, Calendar, CheckSquare, Edit, Eye, Filter, Info, Play, Search, SortAsc, SortDesc, Square, Trash2, X } from 'lucide-react';
+import { AlertCircle, ArrowLeft, BookOpen, Calendar, CheckSquare, Edit, Eye, Filter, Info, Play, Repeat, Search, SortAsc, SortDesc, Square, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { STORAGE_KEYS } from '../../core/config/constants';
-import { formatDate } from '../../core/services';
+import { formatDate, formatMessage } from '../../core/services';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useTheme } from '../../hooks/useTheme';
 import { StudySession } from '../../types';
 import SessionEditModal from '../SessionEditModal';
 import { applySessionEditById, SessionEditUpdates } from './sessionEdits';
+import { answeredCount, sessionScore } from './StudyPage/learningTechniques';
 
 export default function SessionHistory() {
   const [sessions, setSessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
@@ -136,9 +137,7 @@ export default function SessionHistory() {
               {t.noSessionsYet}
             </h2>
             <p className="text-base mb-8 leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-              {language === 'pt-BR' 
-                ? 'Inicie sua primeira sessão de estudo para ver seu progresso aqui.' 
-                : 'Start your first study session to see your progress here.'}
+              {t.noSessionsYetDesc}
             </p>
             <Link
               to="/study"
@@ -273,7 +272,7 @@ export default function SessionHistory() {
               <Info className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
               <div className="flex-1">
                 <p className="text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                  {language === "pt-BR" ? "Dica: Toque em uma sessão para ver detalhes ou use os botões de ação para continuar, editar ou visualizar." : "Tip: Tap on a session to see details or use the action buttons to continue, edit, or view."}
+                  {t.historyTip}
                 </p>
               </div>
               <button onClick={dismissInfoTip} className="p-1 rounded-full" style={{ color: themeConfig.colors.info }}>
@@ -291,7 +290,7 @@ export default function SessionHistory() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={language === "pt-BR" ? "Buscar sessões..." : "Search sessions..."}
+              placeholder={t.searchSessions}
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
               className="w-full pr-4 py-3 rounded-full border-2 focus:border-2 outline-none transition-all duration-200"
@@ -323,7 +322,7 @@ export default function SessionHistory() {
                     color: filterStatus === status ? "#ffffff" : themeConfig.colors.textSecondary,
                   }}
                 >
-                  {status === "all" ? (language === "pt-BR" ? "Todos" : "All") : status === "completed" ? t.completed : t.inProgress}
+                  {status === "all" ? t.all : status === "completed" ? t.completed : t.inProgress}
                 </button>
               ))}
             </div>
@@ -341,7 +340,7 @@ export default function SessionHistory() {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="font-medium" style={{ color: themeConfig.colors.text }}>
-                {selectedSessions.length} {language === "pt-BR" ? "selecionado" + (selectedSessions.length !== 1 ? "s" : "") : "selected"}
+                {formatMessage(selectedSessions.length === 1 ? t.selectedCountOne : t.selectedCountOther, { count: selectedSessions.length })}
               </span>
               <div className="flex space-x-2">
                 <button
@@ -352,7 +351,7 @@ export default function SessionHistory() {
                     color: themeConfig.colors.primary,
                   }}
                 >
-                  {language === "pt-BR" ? "Selecionar todos" : "Select all"}
+                  {t.selectAll}
                 </button>
                 <button
                   onClick={deselectAllSessions}
@@ -362,7 +361,7 @@ export default function SessionHistory() {
                     color: themeConfig.colors.textSecondary,
                   }}
                 >
-                  {language === "pt-BR" ? "Limpar" : "Clear"}
+                  {t.clear}
                 </button>
               </div>
             </div>
@@ -376,7 +375,7 @@ export default function SessionHistory() {
               }}
             >
               <Trash2 className="w-4 h-4 inline-block mr-2" />
-              {language === "pt-BR" ? "Excluir selecionados" : "Delete selected"}
+              {t.deleteSelected}
             </button>
           </div>
         )}
@@ -411,7 +410,7 @@ export default function SessionHistory() {
                 {t.averageScore}
               </p>
               <p className="text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                {sessions.filter((s) => s.status === "completed").length > 0 ? Math.round(sessions.filter((s) => s.status === "completed").reduce((acc, s) => acc + s.score, 0) / sessions.filter((s) => s.status === "completed").length) : 0}%
+                {sessions.filter((s) => s.status === "completed").length > 0 ? Math.round(sessions.filter((s) => s.status === "completed").reduce((acc, s) => acc + sessionScore(s.questions), 0) / sessions.filter((s) => s.status === "completed").length) : 0}%
               </p>
             </div>
             <div>
@@ -419,7 +418,7 @@ export default function SessionHistory() {
                 {t.questionsAnswered}
               </p>
               <p className="text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                {sessions.reduce((acc, s) => acc + s.questions.length, 0)}
+                {sessions.reduce((acc, s) => acc + answeredCount(s.questions), 0)}
               </p>
             </div>
           </div>
@@ -437,10 +436,10 @@ export default function SessionHistory() {
             >
               <Search className="w-8 h-8 mx-auto mb-3 opacity-50 animate-pulse" style={{ color: themeConfig.colors.textMuted }} />
               <p className="text-base" style={{ color: themeConfig.colors.textSecondary }}>
-                {language === "pt-BR" ? "Nenhuma sessão encontrada" : "No sessions found"}
+                {t.noSessionsFound}
               </p>
               <p className="text-sm mt-1" style={{ color: themeConfig.colors.textMuted }}>
-                {language === "pt-BR" ? "Tente ajustar seus filtros ou termos de busca" : "Try adjusting your filters or search terms"}
+                {t.adjustFilters}
               </p>
             </div>
           ) : (
@@ -483,9 +482,18 @@ export default function SessionHistory() {
                             <div className="flex items-center">
                               <BookOpen className="w-3 h-3 mr-1" style={{ color: themeConfig.colors.textMuted }} />
                               <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                                {session.questions.length} {session.questions.length === 1 ? (language === "pt-BR" ? "questão" : "question") : language === "pt-BR" ? "questões" : "questions"}
+                                {formatMessage(answeredCount(session.questions) === 1 ? t.questionCountOne : t.questionCountOther, { count: answeredCount(session.questions) })}
                               </span>
                             </div>
+                            {session.kind === "review" && (
+                              <span
+                                className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full"
+                                style={{ backgroundColor: themeConfig.colors.warning + "20", color: themeConfig.colors.warning }}
+                              >
+                                <Repeat className="w-3 h-3 mr-1" />
+                                {t.reviewSessionLabel}
+                              </span>
+                            )}
                           </div>
                         </div>
                         <div className={`px-2 py-1 rounded-full text-xs font-medium ml-2 flex-shrink-0 ${session.status === "completed" ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"}`}>{session.status === "completed" ? t.completed : t.inProgress}</div>
@@ -495,13 +503,13 @@ export default function SessionHistory() {
                         <div className="mt-3 sm:mt-4">
                           <div className="flex items-center justify-between text-xs mb-1">
                             <span style={{ color: themeConfig.colors.textSecondary }}>{t.score}</span>
-                            <span style={{ color: themeConfig.colors.textSecondary }}>{session.score}%</span>
+                            <span style={{ color: themeConfig.colors.textSecondary }}>{sessionScore(session.questions)}%</span>
                           </div>
                           <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: themeConfig.colors.border }}>
                             <div
                               className="h-full rounded-full"
                               style={{
-                                width: `${session.score}%`,
+                                width: `${sessionScore(session.questions)}%`,
                                 background: themeConfig.gradients.primary,
                               }}
                             />
@@ -553,11 +561,11 @@ export default function SessionHistory() {
                     <AlertCircle className="w-5 h-5" style={{ color: themeConfig.colors.error }} />
                   </div>
                   <h3 className="text-lg font-bold" style={{ color: themeConfig.colors.text }}>
-                    {language === "pt-BR" ? "Confirmar exclusão" : "Confirm deletion"}
+                    {t.confirmDeletion}
                   </h3>
                 </div>
                 <p className="mb-6" style={{ color: themeConfig.colors.textSecondary }}>
-                  {language === "pt-BR" ? `Tem certeza que deseja excluir ${selectedSessions.length} ${selectedSessions.length === 1 ? "sessão" : "sessões"}? Esta ação não pode ser desfeita.` : `Are you sure you want to delete ${selectedSessions.length} ${selectedSessions.length === 1 ? "session" : "sessions"}? This action cannot be undone.`}
+                  {formatMessage(selectedSessions.length === 1 ? t.deleteSessionsConfirmOne : t.deleteSessionsConfirmOther, { count: selectedSessions.length })}
                 </p>
                 <div className="flex space-x-3">
                   <button
@@ -604,7 +612,7 @@ export default function SessionHistory() {
           >
             <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: themeConfig.colors.border }}>
               <h3 className="font-semibold" style={{ color: themeConfig.colors.text }}>
-                {language === "pt-BR" ? "Resultados da Busca" : "Search Results"}
+                {t.searchResults}
               </h3>
             </div>
             <div className="max-h-[60vh] overflow-y-auto p-2">
@@ -621,7 +629,7 @@ export default function SessionHistory() {
                 ))
               ) : (
                 <div className="p-4 text-center" style={{ color: themeConfig.colors.textSecondary }}>
-                  {language === "pt-BR" ? "Nenhum resultado encontrado" : "No results found"}
+                  {t.noResultsFound}
                 </div>
               )}
             </div>

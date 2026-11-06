@@ -1,4 +1,5 @@
-import { Theme, ThemeCategory, ThemeConfig } from '../../types';
+import { Language, Theme, ThemeCategory, ThemeConfig } from '../../types';
+import { getTranslations } from '../i18n/translations';
 
 /**
  * Theme registry containing all available themes
@@ -6,8 +7,6 @@ import { Theme, ThemeCategory, ThemeConfig } from '../../types';
 export const themes: Record<Theme, ThemeConfig> = {
   light: {
     id: 'light',
-    name: 'Light',
-    description: 'Clean and bright for daytime studying',
     category: 'standard',
     colors: {
       primary: '#ea580c',
@@ -48,8 +47,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   dark: {
     id: 'dark',
-    name: 'Dark',
-    description: 'Easy on the eyes for night studying',
     category: 'standard',
     colors: {
       primary: '#f97316',
@@ -90,8 +87,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   focus: {
     id: 'focus',
-    name: 'Focus Mode',
-    description: 'Minimal distractions for deep concentration',
     category: 'focus',
     colors: {
       primary: '#6366f1',
@@ -132,8 +127,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   midnight: {
     id: 'midnight',
-    name: 'Midnight',
-    description: 'Deep blue theme for late-night study sessions',
     category: 'calm',
     colors: {
       primary: '#3b82f6',
@@ -174,8 +167,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   forest: {
     id: 'forest',
-    name: 'Forest',
-    description: 'Natural green theme for calm and focused learning',
     category: 'calm',
     colors: {
       primary: '#059669',
@@ -216,8 +207,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   ocean: {
     id: 'ocean',
-    name: 'Ocean',
-    description: 'Calming blue theme inspired by the ocean',
     category: 'calm',
     colors: {
       primary: '#0891b2',
@@ -258,8 +247,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   sunset: {
     id: 'sunset',
-    name: 'Sunset',
-    description: 'Warm orange and pink theme for energizing study sessions',
     category: 'energy',
     colors: {
       primary: '#f97316',
@@ -300,8 +287,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   neon: {
     id: 'neon',
-    name: 'Neon',
-    description: 'High-energy cyberpunk theme for intense study sessions',
     category: 'energy',
     colors: {
       primary: '#a855f7',
@@ -342,8 +327,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   minimal: {
     id: 'minimal',
-    name: 'Minimal',
-    description: 'Ultra-clean design for distraction-free learning',
     category: 'focus',
     colors: {
       primary: '#000000',
@@ -384,8 +367,6 @@ export const themes: Record<Theme, ThemeConfig> = {
 
   warm: {
     id: 'warm',
-    name: 'Warm',
-    description: 'Cozy and comfortable theme for relaxed studying',
     category: 'calm',
     colors: {
       primary: '#dc2626',
@@ -449,68 +430,50 @@ export function getThemesByCategory(category: ThemeCategory): ThemeConfig[] {
 /**
  * Get localized theme name
  */
-export function getLocalizedThemeName(themeId: Theme, language: string): string {
-  if (language === 'pt-BR') {
-    switch (themeId) {
-      case 'light': return 'Claro';
-      case 'dark': return 'Escuro';
-      case 'focus': return 'Modo Foco';
-      case 'midnight': return 'Meia-noite';
-      case 'forest': return 'Floresta';
-      case 'ocean': return 'Oceano';
-      case 'sunset': return 'Pôr do Sol';
-      case 'neon': return 'Neon';
-      case 'minimal': return 'Minimalista';
-      case 'warm': return 'Quente';
-      // @ts-ignore
-      default: return themes[themeId]?.name || 'Tema';
-    }
+export function getLocalizedThemeName(themeId: Theme, language: Language): string {
+  const t = getTranslations(language);
+  switch (themeId) {
+    case 'light': return t.themeNameLight;
+    case 'dark': return t.themeNameDark;
+    case 'focus': return t.themeNameFocus;
+    case 'midnight': return t.themeNameMidnight;
+    case 'forest': return t.themeNameForest;
+    case 'ocean': return t.themeNameOcean;
+    case 'sunset': return t.themeNameSunset;
+    case 'neon': return t.themeNameNeon;
+    case 'minimal': return t.themeNameMinimal;
+    case 'warm': return t.themeNameWarm;
   }
-  return themes[themeId]?.name || 'Theme';
 }
 
 /**
  * Get localized theme description
  */
-export function getLocalizedThemeDescription(themeId: Theme, language: string): string {
-  if (language === 'pt-BR') {
-    switch (themeId) {
-      case 'light': return 'Limpo e brilhante para estudar durante o dia';
-      case 'dark': return 'Suave para os olhos para estudar à noite';
-      case 'focus': return 'Distrações mínimas para concentração profunda';
-      case 'midnight': return 'Tema azul profundo para sessões de estudo noturnas';
-      case 'forest': return 'Tema verde natural para aprendizado calmo e focado';
-      case 'ocean': return 'Tema azul calmante inspirado no oceano';
-      case 'sunset': return 'Tema laranja e rosa quente para sessões de estudo energizantes';
-      case 'neon': return 'Tema cyberpunk de alta energia para sessões de estudo intensas';
-      case 'minimal': return 'Design ultra-limpo para aprendizado sem distrações';
-      case 'warm': return 'Tema aconchegante e confortável para estudar relaxado';
-      // @ts-ignore
-      default: return themes[themeId]?.description || '';
-    }
+export function getLocalizedThemeDescription(themeId: Theme, language: Language): string {
+  const t = getTranslations(language);
+  switch (themeId) {
+    case 'light': return t.themeDescriptionLight;
+    case 'dark': return t.themeDescriptionDark;
+    case 'focus': return t.themeDescriptionFocus;
+    case 'midnight': return t.themeDescriptionMidnight;
+    case 'forest': return t.themeDescriptionForest;
+    case 'ocean': return t.themeDescriptionOcean;
+    case 'sunset': return t.themeDescriptionSunset;
+    case 'neon': return t.themeDescriptionNeon;
+    case 'minimal': return t.themeDescriptionMinimal;
+    case 'warm': return t.themeDescriptionWarm;
   }
-  return themes[themeId]?.description || '';
 }
 
 /**
  * Get localized category name
  */
-export function getLocalizedCategoryName(category: ThemeCategory, language: string): string {
-  if (language === 'pt-BR') {
-    switch (category) {
-      case 'standard': return 'Padrão';
-      case 'focus': return 'Foco';
-      case 'energy': return 'Energia';
-      case 'calm': return 'Calmo';
-      default: return category;
-    }
-  }
-  
+export function getLocalizedCategoryName(category: ThemeCategory, language: Language): string {
+  const t = getTranslations(language);
   switch (category) {
-    case 'standard': return 'Standard';
-    case 'focus': return 'Focus';
-    case 'energy': return 'Energy';
-    case 'calm': return 'Calm';
-    default: return category;
+    case 'standard': return t.themeCategoryStandard;
+    case 'focus': return t.themeCategoryFocus;
+    case 'energy': return t.themeCategoryEnergy;
+    case 'calm': return t.themeCategoryCalm;
   }
 }

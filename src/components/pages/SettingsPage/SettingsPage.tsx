@@ -218,7 +218,7 @@ export default function SettingsPage() {
           {[
             { id: 'providers', label: t.aiProvider, icon: Brain },
             { id: 'language', label: t.language, icon: Globe },
-            { id: 'data', label: language === 'pt-BR' ? 'Dados' : 'Data', icon: Trash2 },
+            { id: 'data', label: t.data, icon: Trash2 },
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -643,13 +643,10 @@ export default function SettingsPage() {
                   <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
                   <div>
                     <p className="text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: themeConfig.colors.info }}>
-                      {language === 'pt-BR' ? 'Dica de Idioma' : 'Language Tip'}
+                      {t.languageTip}
                     </p>
                     <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                      {language === 'pt-BR' 
-                        ? 'Ao mudar o idioma, a página será recarregada e você será redirecionado para a página inicial. Suas configurações serão preservadas.'
-                        : 'When changing language, the page will refresh and you will be redirected to the home page. Your settings will be preserved.'
-                      }
+                      {t.languageTipDesc}
                     </p>
                   </div>
                 </div>

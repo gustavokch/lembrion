@@ -1,10 +1,11 @@
 import { AlertTriangle, BookOpen, Brain, Check, ChevronRight, Clock, Eye, History, Info, Plus, Save, Settings, Target, Trash2, TrendingUp, X, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { formatMessage } from '../core/services/i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { useTheme } from '../hooks/useTheme';
 import { Difficulty, LearningSettings, StudySession } from '../types';
 import { SessionEditUpdates } from './pages/sessionEdits';
-import { DIFFICULTIES, difficultyLabels, normalizeLearningSettings } from './pages/StudyPage/learningTechniques';
+import { answeredCount, DIFFICULTIES, difficultyLabels, normalizeLearningSettings, sessionScore } from './pages/StudyPage/learningTechniques';
 import IconButton from './ui/IconButton';
 
 interface SessionEditModalProps {
@@ -162,11 +163,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
 
   const handleCancel = () => {
     if (hasChanges) {
-      const confirmMessage = language === 'pt-BR' 
-        ? 'Você tem alterações não salvas. Deseja realmente sair sem salvar?'
-        : 'You have unsaved changes. Are you sure you want to exit without saving?';
-      
-      if (window.confirm(confirmMessage)) {
+      if (window.confirm(t.unsavedChangesConfirm)) {
         onClose();
       }
     } else {
@@ -175,33 +172,33 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString(language === 'pt-BR' ? 'pt-BR' : 'en-US');
+    return new Date(dateString).toLocaleString(language);
   };
 
   const tabs = [
     { 
       id: 'basic', 
-      label: language === 'pt-BR' ? 'Básico' : 'Basic', 
+      label: t.editTabBasic, 
       icon: BookOpen,
-      description: language === 'pt-BR' ? 'Contextos e instruções' : 'Contexts and instructions'
+      description: t.editTabBasicDesc
     },
     { 
       id: 'learning', 
-      label: language === 'pt-BR' ? 'Técnicas' : 'Learning', 
+      label: t.editTabLearning, 
       icon: Brain,
-      description: language === 'pt-BR' ? 'Técnicas de aprendizado' : 'Learning techniques'
+      description: t.editTabLearningDesc
     },
     { 
       id: 'advanced', 
-      label: language === 'pt-BR' ? 'Avançado' : 'Advanced', 
+      label: t.editTabAdvanced, 
       icon: Settings,
-      description: language === 'pt-BR' ? 'Configurações avançadas' : 'Advanced settings'
+      description: t.editTabAdvancedDesc
     },
     { 
       id: 'history', 
-      label: language === 'pt-BR' ? 'Histórico' : 'History', 
+      label: t.history, 
       icon: History,
-      description: language === 'pt-BR' ? 'Histórico de alterações' : 'Change history'
+      description: t.editTabHistoryDesc
     },
   ];
 
@@ -280,10 +277,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               </div>
               <div>
                 <h2 className="text-lg sm:text-xl font-bold leading-tight" style={{ color: themeConfig.colors.text }}>
-                  {language === 'pt-BR' ? 'Editar Sessão' : 'Edit Session'}
+                  {t.editSession}
                 </h2>
                 <p className="text-xs sm:text-sm mt-0.5" style={{ color: themeConfig.colors.textSecondary }}>
-                  {language === 'pt-BR' ? 'Personalize sua sessão de estudo' : 'Customize your study session'}
+                  {t.customizeSession}
                 </p>
               </div>
             </div>
@@ -334,9 +331,9 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               <div className="space-y-3">
                 <label className="flex items-center space-x-2 text-sm sm:text-base font-semibold" style={{ color: themeConfig.colors.text }}>
                   <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.primary }} />
-                  <span>{language === 'pt-BR' ? 'Contextos de Estudo' : 'Study Contexts'}</span>
+                  <span>{t.studyContexts}</span>
                   <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: themeConfig.colors.error + '20', color: themeConfig.colors.error }}>
-                    {language === 'pt-BR' ? 'Obrigatório' : 'Required'}
+                    {t.required}
                   </span>
                 </label>
                 
@@ -346,7 +343,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                     type="text"
                     value={newContext}
                     onChange={(e) => setNewContext(e.target.value)}
-                    placeholder={language === 'pt-BR' ? 'ex: JavaScript, História Mundial, Biologia...' : 'e.g., JavaScript, World History, Biology...'}
+                    placeholder={t.editContextPlaceholder}
                     className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 border-2 rounded-xl focus:border-2 outline-none transition-all duration-200 text-sm"
                     style={{
                       backgroundColor: themeConfig.colors.background,
@@ -364,10 +361,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                       backgroundColor: themeConfig.colors.primary,
                       color: '#ffffff'
                     }}
-                    title={language === 'pt-BR' ? 'Adicionar Contexto' : 'Add Context'}
+                    title={t.addContext}
                   >
                     <Plus className="w-4 h-4 sm:mr-1" />
-                    <span className="hidden sm:inline">{language === 'pt-BR' ? 'Adicionar' : 'Add'}</span>
+                    <span className="hidden sm:inline">{t.add}</span>
                   </button>
                 </div>
                 
@@ -375,7 +372,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                 {contexts.length > 0 && (
                   <div className="space-y-2 sm:space-y-3">
                     <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.textSecondary }}>
-                      {contexts.length} {language === 'pt-BR' ? 'contexto' + (contexts.length !== 1 ? 's' : '') : 'context' + (contexts.length !== 1 ? 's' : '')}
+                      {formatMessage(contexts.length === 1 ? t.contextCountOne : t.contextCountOther, { count: contexts.length })}
                     </p>
                     {contexts.map((context, index) => (
                       <div 
@@ -415,7 +412,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                   >
                     <AlertTriangle className="w-6 h-6 mx-auto mb-2" style={{ color: themeConfig.colors.error }} />
                     <p className="text-sm font-medium" style={{ color: themeConfig.colors.error }}>
-                      {language === 'pt-BR' ? 'Pelo menos um contexto é obrigatório' : 'At least one context is required'}
+                      {t.atLeastOneContextRequired}
                     </p>
                   </div>
                 )}
@@ -425,7 +422,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               <div className="space-y-3 sm:space-y-4">
                 <label className="flex items-center space-x-2 text-sm sm:text-base font-semibold" style={{ color: themeConfig.colors.text }}>
                   <Info className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.info }} />
-                  <span>{language === 'pt-BR' ? 'Instruções Especiais (Opcional)' : 'Special Instructions (Optional)'}</span>
+                  <span>{t.specialInstructionsOptional}</span>
                 </label>
                 
                 {/* Add Instruction Input */}
@@ -434,7 +431,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                     type="text"
                     value={newInstruction}
                     onChange={(e) => setNewInstruction(e.target.value)}
-                    placeholder={language === 'pt-BR' ? 'ex: Foque em conceitos práticos, inclua exemplos...' : 'e.g., Focus on practical concepts, include examples...'}
+                    placeholder={t.editInstructionPlaceholder}
                     className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 border-2 rounded-xl focus:border-2 outline-none transition-all duration-200 text-sm"
                     style={{
                       backgroundColor: themeConfig.colors.background,
@@ -452,10 +449,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                       backgroundColor: themeConfig.colors.info,
                       color: '#ffffff'
                     }}
-                    title={language === 'pt-BR' ? 'Adicionar Instrução' : 'Add Instruction'}
+                    title={t.addInstruction}
                   >
                     <Plus className="w-4 h-4 sm:mr-1" />
-                    <span className="hidden sm:inline">{language === 'pt-BR' ? 'Adicionar' : 'Add'}</span>
+                    <span className="hidden sm:inline">{t.add}</span>
                   </button>
                 </div>
                 
@@ -463,7 +460,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                 {instructions.length > 0 && (
                   <div className="space-y-2 sm:space-y-3">
                     <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.textSecondary }}>
-                      {instructions.length} {language === 'pt-BR' ? 'instrução' + (instructions.length !== 1 ? 'ões' : '') : 'instruction' + (instructions.length !== 1 ? 's' : '')}
+                      {formatMessage(instructions.length === 1 ? t.instructionCountOne : t.instructionCountOther, { count: instructions.length })}
                     </p>
                     {instructions.map((instruction, index) => (
                       <div 
@@ -582,10 +579,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                   {t.learningTechniques}
                 </h3>
                 <p className="text-xs sm:text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                  {language === 'pt-BR' 
-                    ? 'Baseado na ciência do aprendizado eficaz'
-                    : 'Based on the science of effective learning'
-                  }
+                  {t.learningScienceBased}
                 </p>
               </div>
               
@@ -651,13 +645,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                   <Info className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
                   <div>
                     <h4 className="font-semibold text-sm mb-1 sm:mb-2" style={{ color: themeConfig.colors.info }}>
-                      {language === 'pt-BR' ? 'Baseado em Pesquisa Científica' : 'Based on Scientific Research'}
+                      {t.scientificResearchTitle}
                     </h4>
                     <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                      {language === 'pt-BR' 
-                        ? 'Essas técnicas são baseadas no livro "Make It Stick" e podem melhorar a retenção de memória em até 200%.'
-                        : 'These techniques are based on "Make It Stick" research and can improve memory retention by up to 200%.'
-                      }
+                      {t.scientificResearchDesc}
                     </p>
                   </div>
                 </div>
@@ -671,7 +662,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               <div className="space-y-4">
                 <h3 className="text-base sm:text-lg font-bold flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
                   <Eye className="w-5 h-5" style={{ color: themeConfig.colors.primary }} />
-                  <span>{language === 'pt-BR' ? 'Opções de Visualização' : 'Visualization Options'}</span>
+                  <span>{t.visualizationOptions}</span>
                 </h3>
                 
                 <div className="space-y-3">
@@ -693,13 +684,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                     />
                     <div>
                       <span className="font-medium" style={{ color: themeConfig.colors.text }}>
-                        {language === 'pt-BR' ? 'Habilitar LaTeX/Matemática' : 'Enable LaTeX/Math'}
+                        {t.enableLatex}
                       </span>
                       <p className="text-sm mt-1" style={{ color: themeConfig.colors.textSecondary }}>
-                        {language === 'pt-BR' 
-                          ? 'Renderizar expressões matemáticas e fórmulas LaTeX'
-                          : 'Render mathematical expressions and LaTeX formulas'
-                        }
+                        {t.enableLatexDesc}
                       </p>
                     </div>
                   </label>
@@ -722,13 +710,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                     />
                     <div>
                       <span className="font-medium" style={{ color: themeConfig.colors.text }}>
-                        {language === 'pt-BR' ? 'Habilitar Visualização de Código' : 'Enable Code Visualization'}
+                        {t.enableCodeVisualization}
                       </span>
                       <p className="text-sm mt-1" style={{ color: themeConfig.colors.textSecondary }}>
-                        {language === 'pt-BR' 
-                          ? 'Destacar sintaxe de código e melhorar a legibilidade'
-                          : 'Highlight code syntax and improve readability'
-                        }
+                        {t.enableCodeVisualizationDesc}
                       </p>
                     </div>
                   </label>
@@ -747,14 +732,14 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                   <Info className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
                   <div>
                     <h4 className="font-semibold text-sm mb-2" style={{ color: themeConfig.colors.info }}>
-                      {language === 'pt-BR' ? 'Informações da Sessão' : 'Session Information'}
+                      {t.sessionInformation}
                     </h4>
                     <div className="space-y-1 text-xs" style={{ color: themeConfig.colors.info }}>
-                      <p><strong>{language === 'pt-BR' ? 'Criada em:' : 'Created:'}</strong> {formatDate(session.createdAt)}</p>
-                      <p><strong>{language === 'pt-BR' ? 'Status:' : 'Status:'}</strong> {session.status === 'completed' ? t.completed : t.inProgress}</p>
-                      <p><strong>{language === 'pt-BR' ? 'Questões:' : 'Questions:'}</strong> {session.questions.length}</p>
+                      <p><strong>{t.createdLabel}</strong> {formatDate(session.createdAt)}</p>
+                      <p><strong>{t.statusLabel}</strong> {session.status === 'completed' ? t.completed : t.inProgress}</p>
+                      <p><strong>{t.questionsLabel}</strong> {answeredCount(session.questions)}</p>
                       {session.status === 'completed' && (
-                        <p><strong>{language === 'pt-BR' ? 'Pontuação:' : 'Score:'}</strong> {session.score}%</p>
+                        <p><strong>{t.scoreLabel}</strong> {sessionScore(session.questions)}%</p>
                       )}
                     </div>
                   </div>
@@ -770,7 +755,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                 <div>
                   <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
                     <BookOpen className="w-5 h-5" style={{ color: themeConfig.colors.primary }} />
-                    <span>{language === 'pt-BR' ? 'Histórico de Contextos' : 'Contexts History'}</span>
+                    <span>{t.contextsHistory}</span>
                   </h3>
                   <div className="space-y-2 sm:space-y-3">
                     {session.contextsHistory.map((entry) => (
@@ -785,12 +770,12 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                         <div className="flex items-center space-x-2 mb-2">
                           <ChevronRight className="w-4 h-4" style={{ color: themeConfig.colors.primary }} />
                           <span className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.text }}>
-                            {language === 'pt-BR' ? 'Alteração de Contextos' : 'Contexts Change'}
+                            {t.contextsChange}
                           </span>
                         </div>
                         <div className="text-xs sm:text-sm break-words mb-2" style={{ color: themeConfig.colors.text }}>
                           <div className="mb-1">
-                            <span className="font-medium">{language === 'pt-BR' ? 'Anterior:' : 'Previous:'}</span>
+                            <span className="font-medium">{t.previousLabel}</span>
                             <div className="ml-2">
                               {entry.previousContexts.map((ctx, i) => (
                                 <span key={i} className="inline-block px-2 py-1 rounded-lg mr-1 mb-1" style={{ backgroundColor: themeConfig.colors.textMuted + '20', color: themeConfig.colors.textMuted }}>
@@ -800,7 +785,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                             </div>
                           </div>
                           <div>
-                            <span className="font-medium">{language === 'pt-BR' ? 'Novo:' : 'New:'}</span>
+                            <span className="font-medium">{t.newLabel}</span>
                             <div className="ml-2">
                               {entry.newContexts.map((ctx, i) => (
                                 <span key={i} className="inline-block px-2 py-1 rounded-lg mr-1 mb-1" style={{ backgroundColor: themeConfig.colors.primary + '20', color: themeConfig.colors.primary }}>
@@ -824,7 +809,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                 <div>
                   <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
                     <Info className="w-5 h-5" style={{ color: themeConfig.colors.info }} />
-                    <span>{language === 'pt-BR' ? 'Histórico de Instruções' : 'Instructions History'}</span>
+                    <span>{t.instructionsHistory}</span>
                   </h3>
                   <div className="space-y-2 sm:space-y-3">
                     {session.instructionHistory.map((entry) => (
@@ -845,7 +830,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                                 color: entry.action === 'added' ? themeConfig.colors.success : themeConfig.colors.error
                               }}
                             >
-                              {entry.action === 'added' ? (language === 'pt-BR' ? 'Adicionado' : 'Added') : (language === 'pt-BR' ? 'Removido' : 'Removed')}
+                              {entry.action === 'added' ? t.added : t.removed}
                             </span>
                           </div>
                           <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
@@ -866,7 +851,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                 <div>
                   <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
                     <Brain className="w-5 h-5" style={{ color: themeConfig.colors.accent }} />
-                    <span>{language === 'pt-BR' ? 'Histórico de Técnicas' : 'Learning Techniques History'}</span>
+                    <span>{t.learningTechniquesHistory}</span>
                   </h3>
                   <div className="space-y-2 sm:space-y-3">
                     {session.learningSettingsHistory.map((entry) => (
@@ -880,7 +865,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.text }}>
-                            {language === 'pt-BR' ? 'Técnicas de aprendizado atualizadas' : 'Learning techniques updated'}
+                            {t.learningTechniquesUpdated}
                           </span>
                           <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
                             {formatDate(entry.changedAt)}
@@ -902,13 +887,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                     <History className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: themeConfig.colors.textMuted }} />
                   </div>
                   <h4 className="text-base sm:text-lg font-semibold mb-2" style={{ color: themeConfig.colors.text }}>
-                    {language === 'pt-BR' ? 'Nenhuma Alteração Ainda' : 'No Changes Yet'}
+                    {t.noChangesYet}
                   </h4>
                   <p className="text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                    {language === 'pt-BR' 
-                      ? 'O histórico de alterações aparecerá aqui quando você fizer modificações na sessão.'
-                      : 'Change history will appear here when you make modifications to the session.'
-                    }
+                    {t.noChangesYetDesc}
                   </p>
                 </div>
               )}
@@ -934,7 +916,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               }}
             >
               <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.warning }}>
-                {language === 'pt-BR' ? 'Você tem alterações não salvas' : 'You have unsaved changes'}
+                {t.unsavedChanges}
               </p>
             </div>
           )}
@@ -949,7 +931,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               }}
             >
               <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.error }}>
-                {language === 'pt-BR' ? 'Pelo menos um contexto é obrigatório' : 'At least one context is required'}
+                {t.atLeastOneContextRequired}
               </p>
             </div>
           )}
@@ -976,7 +958,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               }}
             >
               <Save className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <span>{hasChanges ? t.save : (language === 'pt-BR' ? 'Salvo' : 'Saved')}</span>
+              <span>{hasChanges ? t.save : t.saved}</span>
             </button>
           </div>
         </div>

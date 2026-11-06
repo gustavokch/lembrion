@@ -14,8 +14,6 @@ export type ThemeCategory = 'standard' | 'focus' | 'energy' | 'calm';
 
 export interface ThemeConfig {
   id: Theme;
-  name: string;
-  description: string;
   category: ThemeCategory;
   colors: {
     primary: string;

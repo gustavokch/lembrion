@@ -6,7 +6,7 @@ import { Language } from '../../../types';
 
 export interface PromptTemplate {
   id: string;
-  type: 'multipleChoice' | 'dissertative' | 'evaluation' | 'elaborative';
+  type: 'multipleChoice' | 'dissertative' | 'evaluation' | 'elaborative' | 'explanationFeedback';
   content: Record<Language, string>;
   variables: string[];
   description: Record<Language, string>;
@@ -495,8 +495,98 @@ REQUISITOS:
 
 Gere uma única questão de acompanhamento que encoraje pensamento elaborativo sobre os conceitos envolvidos.`
     }
+  },
+
+  explanationFeedback: {
+    id: 'explanationFeedback',
+    type: 'explanationFeedback',
+    variables: ['question', 'correctAnswer', 'explanation'],
+    description: {
+      'en-US': 'Give feedback on a student self-explanation of the correct answer',
+      'pt-BR': 'Dar feedback sobre a auto-explicação do estudante para a resposta correta'
+    },
+    content: {
+      'en-US': `You are a supportive tutor. The student wrote, in their own words, why the correct answer to a question is right. Give feedback on that explanation.
+
+Question: {question}
+
+Correct answer: {correctAnswer}
+
+Student's explanation:
+{explanation}
+
+REQUIREMENTS:
+- Reply in Markdown, in under 120 words
+- First say what is right in the explanation
+- Then say what is missing or wrong, and how to fix it
+- Do not give a score, grade or verdict
+- Write in English`,
+      'pt-BR': `Você é um tutor encorajador. O estudante escreveu, com suas próprias palavras, por que a resposta correta de uma questão está certa. Dê feedback sobre essa explicação.
+
+Questão: {question}
+
+Resposta correta: {correctAnswer}
+
+Explicação do estudante:
+{explanation}
+
+REQUISITOS:
+- Responda em Markdown, com menos de 120 palavras
+- Primeiro diga o que está certo na explicação
+- Depois diga o que está faltando ou errado, e como corrigir
+- Não dê nota, pontuação nem veredito
+- Escreva em português do Brasil`
+    }
   }
 };
+
+export type PromptFragmentId =
+  | 'multipleChoiceRequest'
+  | 'dissertativeRequest'
+  | 'defaultDifficulty'
+  | 'focusContext'
+  | 'codeRequirement'
+  | 'noCriteria';
+
+/**
+ * Per-language pieces of the question-generation user turn and of the evaluation prompt.
+ * Fill their {placeholders} with replacePromptVariables.
+ */
+export const PROMPT_FRAGMENTS: Record<PromptFragmentId, Record<Language, string>> = {
+  multipleChoiceRequest: {
+    'en-US': 'Create a multiple choice question based on the study contexts: "{contexts}". Make it challenging but fair for {difficulty} level. Generate questions that accurately reflect the subject matter, difficulty level, and scope defined by the study contexts.',
+    'pt-BR': 'Crie uma questão de múltipla escolha baseada nos contextos de estudo: "{contexts}". Torne-a desafiadora mas justa para o nível {difficulty}. Gere questões que reflitam com precisão a matéria, nível de dificuldade e escopo definidos pelos contextos de estudo.'
+  },
+  dissertativeRequest: {
+    'en-US': 'Create a dissertative question based on the study contexts: "{contexts}". Make it thought-provoking and require detailed analysis for {difficulty} level. Generate questions that accurately reflect the subject matter, difficulty level, and scope defined by the study contexts.',
+    'pt-BR': 'Crie uma questão dissertativa baseada nos contextos de estudo: "{contexts}". Torne-a instigante e que exija análise detalhada para o nível {difficulty}. Gere questões que reflitam com precisão a matéria, nível de dificuldade e escopo definidos pelos contextos de estudo.'
+  },
+  /** Difficulty named in the request when none is set */
+  defaultDifficulty: {
+    'en-US': 'medium',
+    'pt-BR': 'médio'
+  },
+  focusContext: {
+    'en-US': ' Focus this question on: {focusContext}. The other contexts only define scope.',
+    'pt-BR': ' Foque esta questão em: {focusContext}. Os outros contextos apenas definem o escopo.'
+  },
+  codeRequirement: {
+    'en-US': `\n\nIMPORTANT: If your question mentions code, algorithms, or programming, you MUST include the complete actual code in the question using markdown code blocks (\`\`\`language). Never ask about "the following code" without showing the actual code. MANDATORY EXAMPLE: If you ask "What will be the output of the following Python code?", you MUST include the actual code like: \`\`\`python\nfor i in range(3):\n    print(i * 2)\n\`\`\``,
+    'pt-BR': `\n\nIMPORTANTE: Se sua questão mencionar código, algoritmos ou programação, você DEVE incluir o código real completo na questão usando blocos de código markdown (\`\`\`linguagem). Nunca pergunte sobre "o seguinte código" sem mostrar o código real. EXEMPLO OBRIGATÓRIO: Se você perguntar "Qual será a saída do seguinte código Python?", você DEVE incluir o código real como: \`\`\`python\nfor i in range(3):\n    print(i * 2)\n\`\`\``
+  },
+  /** Evaluation {criteria} when the question has none */
+  noCriteria: {
+    'en-US': 'No specific criteria.',
+    'pt-BR': 'Nenhum critério específico.'
+  }
+};
+
+/**
+ * Get a prompt fragment by ID and language
+ */
+export function getPromptFragment(id: PromptFragmentId, language: Language): string {
+  return PROMPT_FRAGMENTS[id][language] || PROMPT_FRAGMENTS[id]['en-US'];
+}
 
 /**
  * Get a prompt template by ID and language
