@@ -24,14 +24,14 @@ Lembrion is based on [Studorama](https://github.com/oluiscabral/studorama) by ol
 
 ### 🧠 Learning techniques
 Each session stores five toggles. They are on by default and can be changed when the session starts or later from the history page.
-- **Spaced repetition**: a missed question, or a correct one answered with confidence 2 or less, comes back with its options reshuffled after 3 new questions, up to 2 times. It also enters a review queue across sessions: the Dashboard's Review card starts a review session of up to 20 due questions, and each answer moves the question between Leitner boxes due after 1, 3, 7, 14 and 30 days (a confident correct answer moves it up, a miss sends it back to the first box, and passing the last box retires it).
+- **Spaced repetition**: a missed question, or a correct one answered with confidence 2 or less, comes back with its options reshuffled after 3 new questions, up to 2 times. It also enters a review queue across sessions: the Dashboard's "Due for return" slip lists the queued questions with their due dates and starts a review session of up to 20 due questions, and each answer moves the question between Leitner boxes due after 1, 3, 7, 14 and 30 days (a confident correct answer moves it up, a miss sends it back to the first box, and passing the last box retires it).
 - **Interleaving**: with 2 or more contexts, each new question focuses on the next context in turn.
 - **Elaborative interrogation**: a wrong answer triggers a follow-up "why" question; your answer is saved.
 - **Self-explanation**: after a correct answer (or any answer when elaborative interrogation is off), you explain in your own words why the correct answer is right; the text is saved. "Get feedback" asks the AI what your explanation gets right and what it misses; the feedback is saved with it and does not change your score.
 - **Desirable difficulties**: the difficulty goes up after 3 correct answers in a row at the current level and down after 2 misses in a row.
 
 ### 📊 History
-- Dashboard with session counts and recent sessions.
+- Dashboard with your progress (sessions, answered questions and accuracy, for the last 7 days and all time), unfinished sessions, the questions due for review, recent sessions, and how many questions each review box holds.
 - Session history with search and a status filter (active / completed).
 - Per-session detail view with every question, your answer, the feedback, the difficulty, the dissertative score, review copies, and your elaborative and self-explanation answers with the explanation feedback. Review sessions carry a "Review" label.
 - Edit a session's contexts, instructions, difficulty, and learning settings.
@@ -50,7 +50,7 @@ Each session stores five toggles. They are on by default and can be changed when
 
 ### 🎨 Interface
 - English and Portuguese (Brazil). Prompts are written per language, so questions come back in the selected language.
-- Three themes: light, dark, and high contrast. Every theme meets WCAG AA text contrast.
+- Dark (the default), light, and high-contrast themes, plus a System option that follows your device. Every theme meets WCAG AA text contrast.
 - Responsive layout for phones, tablets, and desktops.
 - Questions and feedback are rendered as Markdown with code highlighting; LaTeX-style math is converted to readable text.
 
@@ -117,7 +117,7 @@ The service worker registers only in production builds served from a non-localho
 ### Technology
 - React 18 + TypeScript, built with Vite 5
 - Tailwind CSS 3 with semantic colour tokens (CSS variables written by the theme hook)
-- Fira Sans and Fira Mono, self-hosted through Fontsource
+- Libre Franklin and Archivo Narrow, self-hosted through Fontsource
 - React Router 6
 - State in React hooks persisted to `localStorage` (no state library)
 - AI providers called with `fetch`; no SDKs, no streaming
@@ -138,7 +138,7 @@ npm run deploy           # release a patch: checks, bump, commit, tag, push
 3. Run `npm run typecheck`, `npm run lint`, and `npm run test`.
 4. Commit and open a pull request.
 
-Useful areas: new AI providers, translations, making the stored learning-technique toggles affect sessions, accessibility, and tests.
+Useful areas: new AI providers, translations, accessibility, and tests.
 
 ## 📄 License
 

@@ -1,34 +1,34 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-06T10:50:00+00:00",
+  "generatedAt": "2026-11-06T12:49:43+00:00",
   "title": "Design System: Lembrion",
   "extensions": {
     "colorMeta": {
       "shell": {
-        "role": "primary",
-        "displayName": "Title-bar Teal",
-        "canonical": "#23373b",
-        "theme": "light",
+        "role": "neutral",
+        "displayName": "Desk",
+        "canonical": "#0c0c0c",
+        "theme": "dark",
         "cssVar": "--color-shell",
-        "purpose": "Title bar and band ground; block title strips; inverse button label.",
+        "purpose": "Sidebar, top bar and phone menu ground; written to <meta name=\"theme-color\">.",
         "tonalRamp": [
-          "oklch(15% 0.011 211)",
-          "oklch(26% 0.019 211)",
-          "oklch(38% 0.024 211)",
-          "oklch(49% 0.026 211)",
-          "oklch(61% 0.026 211)",
-          "oklch(72% 0.024 211)",
-          "oklch(84% 0.019 211)",
-          "oklch(95% 0.011 211)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "shellInk": {
         "role": "neutral",
-        "displayName": "Title-bar White",
-        "canonical": "#ffffff",
-        "theme": "light",
+        "displayName": "Desk Ink",
+        "canonical": "#ececec",
+        "theme": "dark",
         "cssVar": "--color-shellInk",
-        "purpose": "Text on the title bar and bands; active route; band rules and inverse button fill.",
+        "purpose": "Wordmark and hovered navigation text; mixed 7% into transparent for the navigation hover fill.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -42,29 +42,29 @@
       },
       "shellMuted": {
         "role": "neutral",
-        "displayName": "Title-bar Mist",
-        "canonical": "#b9c6c8",
-        "theme": "light",
+        "displayName": "Desk Muted",
+        "canonical": "#a3a3a3",
+        "theme": "dark",
         "cssVar": "--color-shellMuted",
-        "purpose": "Idle route links and icons on the title bar; labels and hints on bands.",
+        "purpose": "Idle navigation labels and icons.",
         "tonalRamp": [
-          "oklch(15% 0.006 208)",
-          "oklch(26% 0.010 208)",
-          "oklch(38% 0.013 208)",
-          "oklch(49% 0.014 208)",
-          "oklch(61% 0.014 208)",
-          "oklch(72% 0.013 208)",
-          "oklch(84% 0.010 208)",
-          "oklch(95% 0.006 208)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "ground": {
         "role": "neutral",
-        "displayName": "Slide Ground",
-        "canonical": "#fafafa",
-        "theme": "light",
+        "displayName": "Reading Room",
+        "canonical": "#121212",
+        "theme": "dark",
         "cssVar": "--color-ground",
-        "purpose": "Page ground.",
+        "purpose": "Page ground, pinned phone action bars, fullscreen study frame.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -78,11 +78,11 @@
       },
       "surface": {
         "role": "neutral",
-        "displayName": "Surface White",
-        "canonical": "#ffffff",
-        "theme": "light",
+        "displayName": "Panel",
+        "canonical": "#181818",
+        "theme": "dark",
         "cssVar": "--color-surface",
-        "purpose": "Fields, choice groups and grid cells, menus, dialogs; base for every state tint.",
+        "purpose": "Panels, notes, fields, secondary and danger buttons, segmented frames, menus, dialogs, toasts; base for every state tint.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -96,11 +96,11 @@
       },
       "sunken": {
         "role": "neutral",
-        "displayName": "Pale Teal-Grey",
-        "canonical": "#eef1f1",
-        "theme": "light",
+        "displayName": "Inset",
+        "canonical": "#202020",
+        "theme": "dark",
         "cssVar": "--color-sunken",
-        "purpose": "Block bodies, notices, tags, code, hover fills.",
+        "purpose": "Note title strips, notices, tags, code, loan and extent tracks, hover fills, selected choices and options.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -114,137 +114,137 @@
       },
       "ink": {
         "role": "neutral",
-        "displayName": "Deck Ink",
-        "canonical": "#23373b",
-        "theme": "light",
+        "displayName": "Ink",
+        "canonical": "#ececec",
+        "theme": "dark",
         "cssVar": "--color-ink",
-        "purpose": "Body text, titles, section and table-header rules.",
+        "purpose": "Body text, titles and figures.",
         "tonalRamp": [
-          "oklch(15% 0.011 211)",
-          "oklch(26% 0.019 211)",
-          "oklch(38% 0.024 211)",
-          "oklch(49% 0.026 211)",
-          "oklch(61% 0.026 211)",
-          "oklch(72% 0.024 211)",
-          "oklch(84% 0.019 211)",
-          "oklch(95% 0.011 211)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "inkSoft": {
         "role": "neutral",
-        "displayName": "Soft Slate Ink",
-        "canonical": "#45585c",
-        "theme": "light",
+        "displayName": "Soft Ink",
+        "canonical": "#c8c8c8",
+        "theme": "dark",
         "cssVar": "--color-inkSoft",
-        "purpose": "Secondary text: ledes, table headers, facts labels, inactive tabs.",
+        "purpose": "Call numbers, session strip, ghost and segment labels, toast messages, blockquotes, field hover border.",
         "tonalRamp": [
-          "oklch(15% 0.010 212)",
-          "oklch(26% 0.017 212)",
-          "oklch(38% 0.022 212)",
-          "oklch(49% 0.024 212)",
-          "oklch(61% 0.024 212)",
-          "oklch(72% 0.022 212)",
-          "oklch(84% 0.017 212)",
-          "oklch(95% 0.010 212)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "inkMuted": {
         "role": "neutral",
-        "displayName": "Muted Slate Ink",
-        "canonical": "#5b6c70",
-        "theme": "light",
+        "displayName": "Muted Ink",
+        "canonical": "#a3a3a3",
+        "theme": "dark",
         "cssVar": "--color-inkMuted",
-        "purpose": "Hints, placeholders, list markers.",
+        "purpose": "Column heads, ledes and metadata, not-yet-due rows, hints, placeholders, option keys at rest.",
         "tonalRamp": [
-          "oklch(15% 0.009 214)",
-          "oklch(26% 0.015 214)",
-          "oklch(38% 0.019 214)",
-          "oklch(49% 0.021 214)",
-          "oklch(61% 0.021 214)",
-          "oklch(72% 0.019 214)",
-          "oklch(84% 0.015 214)",
-          "oklch(95% 0.009 214)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "line": {
         "role": "neutral",
         "displayName": "Hairline",
-        "canonical": "#dfe5e5",
-        "theme": "light",
+        "canonical": "#2a2a2a",
+        "theme": "dark",
         "cssVar": "--color-line",
-        "purpose": "Hairline separators and rule tracks.",
+        "purpose": "Panel borders, panel-head rules, row separators, tab baseline, progress and loading tracks, choice-grid gaps.",
         "tonalRamp": [
-          "oklch(15% 0.003 197)",
-          "oklch(26% 0.005 197)",
-          "oklch(38% 0.006 197)",
-          "oklch(49% 0.006 197)",
-          "oklch(61% 0.006 197)",
-          "oklch(72% 0.006 197)",
-          "oklch(84% 0.005 197)",
-          "oklch(95% 0.003 197)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "lineStrong": {
         "role": "neutral",
-        "displayName": "Control Slate",
-        "canonical": "#869699",
-        "theme": "light",
+        "displayName": "Control Edge",
+        "canonical": "#6b6b6b",
+        "theme": "dark",
         "cssVar": "--color-lineStrong",
-        "purpose": "Form-control borders (3:1 against surface).",
+        "purpose": "Borders of fields, choice groups, segmented controls, secondary and danger buttons; extent segments; scrollbar thumb.",
         "tonalRamp": [
-          "oklch(15% 0.008 210)",
-          "oklch(26% 0.013 210)",
-          "oklch(38% 0.017 210)",
-          "oklch(49% 0.019 210)",
-          "oklch(61% 0.019 210)",
-          "oklch(72% 0.017 210)",
-          "oklch(84% 0.013 210)",
-          "oklch(95% 0.008 210)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "primary": {
         "role": "primary",
-        "displayName": "Deck Teal",
-        "canonical": "#23373b",
-        "theme": "light",
+        "displayName": "Stamp Violet",
+        "canonical": "#5b43d6",
+        "theme": "dark",
         "cssVar": "--color-primary",
-        "purpose": "Primary button fill and selected segment.",
+        "purpose": "Primary buttons, the current navigation item, selected segments, accent-color of native controls.",
         "tonalRamp": [
-          "oklch(15% 0.011 211)",
-          "oklch(26% 0.019 211)",
-          "oklch(38% 0.024 211)",
-          "oklch(49% 0.026 211)",
-          "oklch(61% 0.026 211)",
-          "oklch(72% 0.024 211)",
-          "oklch(84% 0.019 211)",
-          "oklch(95% 0.011 211)"
+          "oklch(15% 0.084 283)",
+          "oklch(26% 0.146 283)",
+          "oklch(38% 0.184 283)",
+          "oklch(49% 0.200 283)",
+          "oklch(61% 0.200 283)",
+          "oklch(72% 0.184 283)",
+          "oklch(84% 0.146 283)",
+          "oklch(95% 0.084 283)"
         ]
       },
       "primaryHover": {
         "role": "primary",
-        "displayName": "Deck Teal Lifted",
-        "canonical": "#30494e",
-        "theme": "light",
+        "displayName": "Stamp Violet Hover",
+        "canonical": "#6a54e6",
+        "theme": "dark",
         "cssVar": "--color-primaryHover",
         "purpose": "Primary button hover.",
         "tonalRamp": [
-          "oklch(15% 0.013 211)",
-          "oklch(26% 0.022 211)",
-          "oklch(38% 0.028 211)",
-          "oklch(49% 0.031 211)",
-          "oklch(61% 0.031 211)",
-          "oklch(72% 0.028 211)",
-          "oklch(84% 0.022 211)",
-          "oklch(95% 0.013 211)"
+          "oklch(15% 0.084 284)",
+          "oklch(26% 0.146 284)",
+          "oklch(38% 0.184 284)",
+          "oklch(49% 0.200 284)",
+          "oklch(61% 0.200 284)",
+          "oklch(72% 0.184 284)",
+          "oklch(84% 0.146 284)",
+          "oklch(95% 0.084 284)"
         ]
       },
       "onPrimary": {
-        "role": "primary",
-        "displayName": "On-Teal White",
+        "role": "neutral",
+        "displayName": "On Violet",
         "canonical": "#ffffff",
-        "theme": "light",
+        "theme": "dark",
         "cssVar": "--color-onPrimary",
-        "purpose": "Text and icons on primary fills.",
+        "purpose": "Text and icons on Stamp Violet.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -257,606 +257,606 @@
         ]
       },
       "accent": {
-        "role": "secondary",
-        "displayName": "Metropolis Orange",
-        "canonical": "#eb811b",
-        "theme": "light",
+        "role": "primary",
+        "displayName": "Due Violet",
+        "canonical": "#9d8cff",
+        "theme": "dark",
         "cssVar": "--color-accent",
-        "purpose": "Progress and the current item only.",
+        "purpose": "Due-today loan share (45% into Inset for not yet due), current progress segment, loading rule, selected-tab underline, selected outline, info toast rule, caret, selection tint.",
         "tonalRamp": [
-          "oklch(15% 0.037 57)",
-          "oklch(26% 0.065 57)",
-          "oklch(38% 0.090 57)",
-          "oklch(49% 0.118 57)",
-          "oklch(61% 0.146 57)",
-          "oklch(72% 0.146 57)",
-          "oklch(84% 0.107 57)",
-          "oklch(95% 0.029 57)"
+          "oklch(15% 0.069 288)",
+          "oklch(26% 0.120 288)",
+          "oklch(38% 0.151 288)",
+          "oklch(49% 0.164 288)",
+          "oklch(61% 0.164 288)",
+          "oklch(72% 0.151 288)",
+          "oklch(84% 0.120 288)",
+          "oklch(95% 0.069 288)"
         ]
       },
       "accentInk": {
-        "role": "secondary",
-        "displayName": "Burnt Orange Ink",
-        "canonical": "#a8560a",
-        "theme": "light",
+        "role": "primary",
+        "displayName": "Due Violet Ink",
+        "canonical": "#9d8cff",
+        "theme": "dark",
         "cssVar": "--color-accentInk",
-        "purpose": "Accent as text on the ground.",
+        "purpose": "Due stamps, links, the Active status, due-today counts, pressed toggles; mixed 62% with Muted Ink for not-yet-due stamps.",
         "tonalRamp": [
-          "oklch(15% 0.038 54)",
-          "oklch(26% 0.066 54)",
-          "oklch(38% 0.093 54)",
-          "oklch(49% 0.122 54)",
-          "oklch(61% 0.130 54)",
-          "oklch(72% 0.117 54)",
-          "oklch(84% 0.092 54)",
-          "oklch(95% 0.028 54)"
+          "oklch(15% 0.069 288)",
+          "oklch(26% 0.120 288)",
+          "oklch(38% 0.151 288)",
+          "oklch(49% 0.164 288)",
+          "oklch(61% 0.164 288)",
+          "oklch(72% 0.151 288)",
+          "oklch(84% 0.120 288)",
+          "oklch(95% 0.069 288)"
         ]
       },
       "success": {
         "role": "tertiary",
-        "displayName": "Graded Green",
-        "canonical": "#14b03d",
-        "theme": "light",
+        "displayName": "Correct Green",
+        "canonical": "#3fbf74",
+        "theme": "dark",
         "cssVar": "--color-success",
-        "purpose": "Correct progress segments and success tints.",
+        "purpose": "Correct progress segments, correct option tint, success toasts.",
         "tonalRamp": [
-          "oklch(15% 0.046 146)",
-          "oklch(26% 0.081 146)",
-          "oklch(38% 0.115 146)",
-          "oklch(49% 0.150 146)",
-          "oklch(61% 0.184 146)",
-          "oklch(72% 0.175 146)",
-          "oklch(84% 0.137 146)",
-          "oklch(95% 0.080 146)"
+          "oklch(15% 0.066 154)",
+          "oklch(26% 0.114 154)",
+          "oklch(38% 0.144 154)",
+          "oklch(49% 0.156 154)",
+          "oklch(61% 0.156 154)",
+          "oklch(72% 0.144 154)",
+          "oklch(84% 0.114 154)",
+          "oklch(95% 0.066 154)"
         ]
       },
       "successInk": {
         "role": "tertiary",
-        "displayName": "Graded Green Ink",
-        "canonical": "#0d7a2a",
-        "theme": "light",
+        "displayName": "Correct Green Ink",
+        "canonical": "#6fd896",
+        "theme": "dark",
         "cssVar": "--color-successInk",
-        "purpose": "Success text and success block titles.",
+        "purpose": "Correct option key and note, success note titles, Correct tags, strings in code.",
         "tonalRamp": [
-          "oklch(15% 0.046 146)",
-          "oklch(26% 0.079 146)",
-          "oklch(38% 0.114 146)",
-          "oklch(49% 0.146 146)",
-          "oklch(61% 0.146 146)",
-          "oklch(72% 0.132 146)",
-          "oklch(84% 0.103 146)",
-          "oklch(95% 0.060 146)"
+          "oklch(15% 0.057 154)",
+          "oklch(26% 0.100 154)",
+          "oklch(38% 0.126 154)",
+          "oklch(49% 0.137 154)",
+          "oklch(61% 0.137 154)",
+          "oklch(72% 0.126 154)",
+          "oklch(84% 0.100 154)",
+          "oklch(95% 0.057 154)"
         ]
       },
       "error": {
-        "role": "tertiary",
-        "displayName": "Graded Red",
-        "canonical": "#d13a2e",
-        "theme": "light",
+        "role": "secondary",
+        "displayName": "Slip Red",
+        "canonical": "#ff6b5f",
+        "theme": "dark",
         "cssVar": "--color-error",
-        "purpose": "Wrong segments, error tints, invalid borders.",
+        "purpose": "Overdue loan share, wrong progress segments, wrong option tint, invalid field border, error toasts.",
         "tonalRamp": [
-          "oklch(15% 0.061 29)",
-          "oklch(26% 0.108 29)",
-          "oklch(38% 0.155 29)",
-          "oklch(49% 0.188 29)",
-          "oklch(61% 0.188 29)",
-          "oklch(72% 0.169 29)",
-          "oklch(84% 0.090 29)",
-          "oklch(95% 0.023 29)"
+          "oklch(15% 0.077 27)",
+          "oklch(26% 0.134 27)",
+          "oklch(38% 0.168 27)",
+          "oklch(49% 0.183 27)",
+          "oklch(61% 0.183 27)",
+          "oklch(72% 0.168 27)",
+          "oklch(84% 0.134 27)",
+          "oklch(95% 0.077 27)"
         ]
       },
       "errorInk": {
-        "role": "tertiary",
-        "displayName": "Graded Red Ink",
-        "canonical": "#b3261e",
-        "theme": "light",
+        "role": "secondary",
+        "displayName": "Slip Red Ink",
+        "canonical": "#ff6b5f",
+        "theme": "dark",
         "cssVar": "--color-errorInk",
-        "purpose": "Error text, danger buttons, error block titles.",
+        "purpose": "Due slip header rule and column heads, overdue stamps and counts, wrong-answer notes, error notes and notices, danger buttons.",
         "tonalRamp": [
-          "oklch(15% 0.063 29)",
-          "oklch(26% 0.108 29)",
-          "oklch(38% 0.155 29)",
-          "oklch(49% 0.176 29)",
-          "oklch(61% 0.176 29)",
-          "oklch(72% 0.159 29)",
-          "oklch(84% 0.090 29)",
-          "oklch(95% 0.025 29)"
+          "oklch(15% 0.077 27)",
+          "oklch(26% 0.134 27)",
+          "oklch(38% 0.168 27)",
+          "oklch(49% 0.183 27)",
+          "oklch(61% 0.183 27)",
+          "oklch(72% 0.168 27)",
+          "oklch(84% 0.134 27)",
+          "oklch(95% 0.077 27)"
         ]
       },
       "warning": {
         "role": "tertiary",
         "displayName": "Caution Amber",
         "canonical": "#e0a526",
-        "theme": "light",
+        "theme": "dark",
         "cssVar": "--color-warning",
-        "purpose": "Warning notice tint.",
+        "purpose": "Warning notice tint and border, warning toasts.",
         "tonalRamp": [
-          "oklch(15% 0.032 81)",
-          "oklch(26% 0.055 81)",
-          "oklch(38% 0.077 81)",
-          "oklch(49% 0.101 81)",
-          "oklch(61% 0.125 81)",
-          "oklch(72% 0.131 81)",
-          "oklch(84% 0.103 81)",
-          "oklch(95% 0.046 81)"
+          "oklch(15% 0.062 81)",
+          "oklch(26% 0.107 81)",
+          "oklch(38% 0.135 81)",
+          "oklch(49% 0.147 81)",
+          "oklch(61% 0.147 81)",
+          "oklch(72% 0.135 81)",
+          "oklch(84% 0.107 81)",
+          "oklch(95% 0.062 81)"
         ]
       },
       "warningInk": {
         "role": "tertiary",
         "displayName": "Caution Amber Ink",
-        "canonical": "#8a5a00",
-        "theme": "light",
+        "canonical": "#f0c060",
+        "theme": "dark",
         "cssVar": "--color-warningInk",
-        "purpose": "Warning text.",
+        "purpose": "Warning notice text, numbers in code.",
         "tonalRamp": [
-          "oklch(15% 0.032 73)",
-          "oklch(26% 0.055 73)",
-          "oklch(38% 0.080 73)",
-          "oklch(49% 0.105 73)",
-          "oklch(61% 0.107 73)",
-          "oklch(72% 0.096 73)",
-          "oklch(84% 0.075 73)",
-          "oklch(95% 0.038 73)"
+          "oklch(15% 0.053 83)",
+          "oklch(26% 0.092 83)",
+          "oklch(38% 0.116 83)",
+          "oklch(49% 0.126 83)",
+          "oklch(61% 0.126 83)",
+          "oklch(72% 0.116 83)",
+          "oklch(84% 0.092 83)",
+          "oklch(95% 0.053 83)"
         ]
       },
       "focus": {
         "role": "neutral",
         "displayName": "Focus Ring",
-        "canonical": "#23373b",
-        "theme": "light",
+        "canonical": "#9d8cff",
+        "theme": "dark",
         "cssVar": "--color-focus",
-        "purpose": "Focus ring on the ground.",
+        "purpose": "2px focus outline with 2px offset; focused field border and 1px ring.",
         "tonalRamp": [
-          "oklch(15% 0.011 211)",
-          "oklch(26% 0.019 211)",
-          "oklch(38% 0.024 211)",
-          "oklch(49% 0.026 211)",
-          "oklch(61% 0.026 211)",
-          "oklch(72% 0.024 211)",
-          "oklch(84% 0.019 211)",
-          "oklch(95% 0.011 211)"
+          "oklch(15% 0.069 288)",
+          "oklch(26% 0.120 288)",
+          "oklch(38% 0.151 288)",
+          "oklch(49% 0.164 288)",
+          "oklch(61% 0.164 288)",
+          "oklch(72% 0.151 288)",
+          "oklch(84% 0.120 288)",
+          "oklch(95% 0.069 288)"
         ]
       },
-      "dark-shell": {
-        "role": "primary",
-        "displayName": "Dark · Title-bar Teal",
-        "canonical": "#0f0f0f",
-        "theme": "dark",
-        "cssVar": "--color-shell",
-        "purpose": "Title bar and band ground; block title strips; inverse button label.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-shellInk": {
+      "light-shell": {
         "role": "neutral",
-        "displayName": "Dark · Title-bar White",
-        "canonical": "#f5f5f5",
-        "theme": "dark",
-        "cssVar": "--color-shellInk",
-        "purpose": "Text on the title bar and bands; active route; band rules and inverse button fill.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-shellMuted": {
-        "role": "neutral",
-        "displayName": "Dark · Title-bar Mist",
-        "canonical": "#a8a8a8",
-        "theme": "dark",
-        "cssVar": "--color-shellMuted",
-        "purpose": "Idle route links and icons on the title bar; labels and hints on bands.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-ground": {
-        "role": "neutral",
-        "displayName": "Dark · Slide Ground",
-        "canonical": "#161616",
-        "theme": "dark",
-        "cssVar": "--color-ground",
-        "purpose": "Page ground.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-surface": {
-        "role": "neutral",
-        "displayName": "Dark · Surface White",
-        "canonical": "#1e1e1e",
-        "theme": "dark",
-        "cssVar": "--color-surface",
-        "purpose": "Fields, choice groups and grid cells, menus, dialogs; base for every state tint.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-sunken": {
-        "role": "neutral",
-        "displayName": "Dark · Pale Teal-Grey",
-        "canonical": "#262626",
-        "theme": "dark",
-        "cssVar": "--color-sunken",
-        "purpose": "Block bodies, notices, tags, code, hover fills.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-ink": {
-        "role": "neutral",
-        "displayName": "Dark · Deck Ink",
-        "canonical": "#ededed",
-        "theme": "dark",
-        "cssVar": "--color-ink",
-        "purpose": "Body text, titles, section and table-header rules.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-inkSoft": {
-        "role": "neutral",
-        "displayName": "Dark · Soft Slate Ink",
-        "canonical": "#c9c9c9",
-        "theme": "dark",
-        "cssVar": "--color-inkSoft",
-        "purpose": "Secondary text: ledes, table headers, facts labels, inactive tabs.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-inkMuted": {
-        "role": "neutral",
-        "displayName": "Dark · Muted Slate Ink",
-        "canonical": "#a3a3a3",
-        "theme": "dark",
-        "cssVar": "--color-inkMuted",
-        "purpose": "Hints, placeholders, list markers.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-line": {
-        "role": "neutral",
-        "displayName": "Dark · Hairline",
-        "canonical": "#2e2e2e",
-        "theme": "dark",
-        "cssVar": "--color-line",
-        "purpose": "Hairline separators and rule tracks.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-lineStrong": {
-        "role": "neutral",
-        "displayName": "Dark · Control Slate",
-        "canonical": "#737373",
-        "theme": "dark",
-        "cssVar": "--color-lineStrong",
-        "purpose": "Form-control borders (3:1 against surface).",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-primary": {
-        "role": "primary",
-        "displayName": "Dark · Deck Teal",
-        "canonical": "#ededed",
-        "theme": "dark",
-        "cssVar": "--color-primary",
-        "purpose": "Primary button fill and selected segment.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-primaryHover": {
-        "role": "primary",
-        "displayName": "Dark · Deck Teal Lifted",
+        "displayName": "Light · Desk",
         "canonical": "#ffffff",
-        "theme": "dark",
+        "theme": "light",
+        "cssVar": "--color-shell",
+        "purpose": "Sidebar, top bar and phone menu ground; written to <meta name=\"theme-color\">.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-shellInk": {
+        "role": "neutral",
+        "displayName": "Light · Desk Ink",
+        "canonical": "#1c1f2a",
+        "theme": "light",
+        "cssVar": "--color-shellInk",
+        "purpose": "Wordmark and hovered navigation text; mixed 7% into transparent for the navigation hover fill.",
+        "tonalRamp": [
+          "oklch(15% 0.009 273)",
+          "oklch(26% 0.016 273)",
+          "oklch(38% 0.020 273)",
+          "oklch(49% 0.022 273)",
+          "oklch(61% 0.022 273)",
+          "oklch(72% 0.020 273)",
+          "oklch(84% 0.016 273)",
+          "oklch(95% 0.009 273)"
+        ]
+      },
+      "light-shellMuted": {
+        "role": "neutral",
+        "displayName": "Light · Desk Muted",
+        "canonical": "#5d6170",
+        "theme": "light",
+        "cssVar": "--color-shellMuted",
+        "purpose": "Idle navigation labels and icons.",
+        "tonalRamp": [
+          "oklch(15% 0.010 274)",
+          "oklch(26% 0.018 274)",
+          "oklch(38% 0.022 274)",
+          "oklch(49% 0.024 274)",
+          "oklch(61% 0.024 274)",
+          "oklch(72% 0.022 274)",
+          "oklch(84% 0.018 274)",
+          "oklch(95% 0.010 274)"
+        ]
+      },
+      "light-ground": {
+        "role": "neutral",
+        "displayName": "Light · Reading Room",
+        "canonical": "#f7f7f8",
+        "theme": "light",
+        "cssVar": "--color-ground",
+        "purpose": "Page ground, pinned phone action bars, fullscreen study frame.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-surface": {
+        "role": "neutral",
+        "displayName": "Light · Panel",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-surface",
+        "purpose": "Panels, notes, fields, secondary and danger buttons, segmented frames, menus, dialogs, toasts; base for every state tint.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-sunken": {
+        "role": "neutral",
+        "displayName": "Light · Inset",
+        "canonical": "#f1f1f4",
+        "theme": "light",
+        "cssVar": "--color-sunken",
+        "purpose": "Note title strips, notices, tags, code, loan and extent tracks, hover fills, selected choices and options.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-ink": {
+        "role": "neutral",
+        "displayName": "Light · Ink",
+        "canonical": "#1c1f2a",
+        "theme": "light",
+        "cssVar": "--color-ink",
+        "purpose": "Body text, titles and figures.",
+        "tonalRamp": [
+          "oklch(15% 0.009 273)",
+          "oklch(26% 0.016 273)",
+          "oklch(38% 0.020 273)",
+          "oklch(49% 0.022 273)",
+          "oklch(61% 0.022 273)",
+          "oklch(72% 0.020 273)",
+          "oklch(84% 0.016 273)",
+          "oklch(95% 0.009 273)"
+        ]
+      },
+      "light-inkSoft": {
+        "role": "neutral",
+        "displayName": "Light · Soft Ink",
+        "canonical": "#3d4150",
+        "theme": "light",
+        "cssVar": "--color-inkSoft",
+        "purpose": "Call numbers, session strip, ghost and segment labels, toast messages, blockquotes, field hover border.",
+        "tonalRamp": [
+          "oklch(15% 0.011 273)",
+          "oklch(26% 0.019 273)",
+          "oklch(38% 0.024 273)",
+          "oklch(49% 0.026 273)",
+          "oklch(61% 0.026 273)",
+          "oklch(72% 0.024 273)",
+          "oklch(84% 0.019 273)",
+          "oklch(95% 0.011 273)"
+        ]
+      },
+      "light-inkMuted": {
+        "role": "neutral",
+        "displayName": "Light · Muted Ink",
+        "canonical": "#5d6170",
+        "theme": "light",
+        "cssVar": "--color-inkMuted",
+        "purpose": "Column heads, ledes and metadata, not-yet-due rows, hints, placeholders, option keys at rest.",
+        "tonalRamp": [
+          "oklch(15% 0.010 274)",
+          "oklch(26% 0.018 274)",
+          "oklch(38% 0.022 274)",
+          "oklch(49% 0.024 274)",
+          "oklch(61% 0.024 274)",
+          "oklch(72% 0.022 274)",
+          "oklch(84% 0.018 274)",
+          "oklch(95% 0.010 274)"
+        ]
+      },
+      "light-line": {
+        "role": "neutral",
+        "displayName": "Light · Hairline",
+        "canonical": "#e3e3e8",
+        "theme": "light",
+        "cssVar": "--color-line",
+        "purpose": "Panel borders, panel-head rules, row separators, tab baseline, progress and loading tracks, choice-grid gaps.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0.005 286)",
+          "oklch(38% 0.006 286)",
+          "oklch(49% 0.007 286)",
+          "oklch(61% 0.007 286)",
+          "oklch(72% 0.006 286)",
+          "oklch(84% 0.005 286)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-lineStrong": {
+        "role": "neutral",
+        "displayName": "Light · Control Edge",
+        "canonical": "#8b8e9e",
+        "theme": "light",
+        "cssVar": "--color-lineStrong",
+        "purpose": "Borders of fields, choice groups, segmented controls, secondary and danger buttons; extent segments; scrollbar thumb.",
+        "tonalRamp": [
+          "oklch(15% 0.010 277)",
+          "oklch(26% 0.018 277)",
+          "oklch(38% 0.022 277)",
+          "oklch(49% 0.024 277)",
+          "oklch(61% 0.024 277)",
+          "oklch(72% 0.022 277)",
+          "oklch(84% 0.018 277)",
+          "oklch(95% 0.010 277)"
+        ]
+      },
+      "light-primary": {
+        "role": "primary",
+        "displayName": "Light · Stamp Violet",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-primary",
+        "purpose": "Primary buttons, the current navigation item, selected segments, accent-color of native controls.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
+        ]
+      },
+      "light-primaryHover": {
+        "role": "primary",
+        "displayName": "Light · Stamp Violet Hover",
+        "canonical": "#3e289c",
+        "theme": "light",
         "cssVar": "--color-primaryHover",
         "purpose": "Primary button hover.",
         "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
+          "oklch(15% 0.074 283)",
+          "oklch(26% 0.128 283)",
+          "oklch(38% 0.162 283)",
+          "oklch(49% 0.176 283)",
+          "oklch(61% 0.176 283)",
+          "oklch(72% 0.162 283)",
+          "oklch(84% 0.128 283)",
+          "oklch(95% 0.074 283)"
         ]
       },
-      "dark-onPrimary": {
-        "role": "primary",
-        "displayName": "Dark · On-Teal White",
-        "canonical": "#141414",
-        "theme": "dark",
-        "cssVar": "--color-onPrimary",
-        "purpose": "Text and icons on primary fills.",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(49% 0 0)",
-          "oklch(61% 0 0)",
-          "oklch(72% 0 0)",
-          "oklch(84% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "dark-accent": {
-        "role": "secondary",
-        "displayName": "Dark · Metropolis Orange",
-        "canonical": "#eb811b",
-        "theme": "dark",
-        "cssVar": "--color-accent",
-        "purpose": "Progress and the current item only.",
-        "tonalRamp": [
-          "oklch(15% 0.037 57)",
-          "oklch(26% 0.065 57)",
-          "oklch(38% 0.090 57)",
-          "oklch(49% 0.118 57)",
-          "oklch(61% 0.146 57)",
-          "oklch(72% 0.146 57)",
-          "oklch(84% 0.107 57)",
-          "oklch(95% 0.029 57)"
-        ]
-      },
-      "dark-accentInk": {
-        "role": "secondary",
-        "displayName": "Dark · Burnt Orange Ink",
-        "canonical": "#f39a45",
-        "theme": "dark",
-        "cssVar": "--color-accentInk",
-        "purpose": "Accent as text on the ground.",
-        "tonalRamp": [
-          "oklch(15% 0.035 61)",
-          "oklch(26% 0.061 61)",
-          "oklch(38% 0.087 61)",
-          "oklch(49% 0.113 61)",
-          "oklch(61% 0.139 61)",
-          "oklch(72% 0.129 61)",
-          "oklch(84% 0.101 61)",
-          "oklch(95% 0.031 61)"
-        ]
-      },
-      "dark-success": {
-        "role": "tertiary",
-        "displayName": "Dark · Graded Green",
-        "canonical": "#2fc25a",
-        "theme": "dark",
-        "cssVar": "--color-success",
-        "purpose": "Correct progress segments and success tints.",
-        "tonalRamp": [
-          "oklch(15% 0.043 148)",
-          "oklch(26% 0.076 148)",
-          "oklch(38% 0.108 148)",
-          "oklch(49% 0.140 148)",
-          "oklch(61% 0.172 148)",
-          "oklch(72% 0.168 148)",
-          "oklch(84% 0.132 148)",
-          "oklch(95% 0.077 148)"
-        ]
-      },
-      "dark-successInk": {
-        "role": "tertiary",
-        "displayName": "Dark · Graded Green Ink",
-        "canonical": "#5fd682",
-        "theme": "dark",
-        "cssVar": "--color-successInk",
-        "purpose": "Success text and success block titles.",
-        "tonalRamp": [
-          "oklch(15% 0.041 151)",
-          "oklch(26% 0.070 151)",
-          "oklch(38% 0.101 151)",
-          "oklch(49% 0.133 151)",
-          "oklch(61% 0.159 151)",
-          "oklch(72% 0.143 151)",
-          "oklch(84% 0.112 151)",
-          "oklch(95% 0.065 151)"
-        ]
-      },
-      "dark-error": {
-        "role": "tertiary",
-        "displayName": "Dark · Graded Red",
-        "canonical": "#e5574b",
-        "theme": "dark",
-        "cssVar": "--color-error",
-        "purpose": "Wrong segments, error tints, invalid borders.",
-        "tonalRamp": [
-          "oklch(15% 0.061 28)",
-          "oklch(26% 0.107 28)",
-          "oklch(38% 0.153 28)",
-          "oklch(49% 0.177 28)",
-          "oklch(61% 0.177 28)",
-          "oklch(72% 0.159 28)",
-          "oklch(84% 0.091 28)",
-          "oklch(95% 0.025 28)"
-        ]
-      },
-      "dark-errorInk": {
-        "role": "tertiary",
-        "displayName": "Dark · Graded Red Ink",
-        "canonical": "#ff8a80",
-        "theme": "dark",
-        "cssVar": "--color-errorInk",
-        "purpose": "Error text, danger buttons, error block titles.",
-        "tonalRamp": [
-          "oklch(15% 0.058 26)",
-          "oklch(26% 0.100 26)",
-          "oklch(38% 0.128 26)",
-          "oklch(49% 0.142 26)",
-          "oklch(61% 0.142 26)",
-          "oklch(72% 0.128 26)",
-          "oklch(84% 0.090 26)",
-          "oklch(95% 0.024 26)"
-        ]
-      },
-      "dark-warning": {
-        "role": "tertiary",
-        "displayName": "Dark · Caution Amber",
-        "canonical": "#e0a526",
-        "theme": "dark",
-        "cssVar": "--color-warning",
-        "purpose": "Warning notice tint.",
-        "tonalRamp": [
-          "oklch(15% 0.032 81)",
-          "oklch(26% 0.055 81)",
-          "oklch(38% 0.077 81)",
-          "oklch(49% 0.101 81)",
-          "oklch(61% 0.125 81)",
-          "oklch(72% 0.131 81)",
-          "oklch(84% 0.103 81)",
-          "oklch(95% 0.046 81)"
-        ]
-      },
-      "dark-warningInk": {
-        "role": "tertiary",
-        "displayName": "Dark · Caution Amber Ink",
-        "canonical": "#f0c060",
-        "theme": "dark",
-        "cssVar": "--color-warningInk",
-        "purpose": "Warning text.",
-        "tonalRamp": [
-          "oklch(15% 0.031 83)",
-          "oklch(26% 0.054 83)",
-          "oklch(38% 0.077 83)",
-          "oklch(49% 0.101 83)",
-          "oklch(61% 0.125 83)",
-          "oklch(72% 0.113 83)",
-          "oklch(84% 0.088 83)",
-          "oklch(95% 0.049 83)"
-        ]
-      },
-      "dark-focus": {
+      "light-onPrimary": {
         "role": "neutral",
-        "displayName": "Dark · Focus Ring",
-        "canonical": "#f39a45",
-        "theme": "dark",
-        "cssVar": "--color-focus",
-        "purpose": "Focus ring on the ground.",
+        "displayName": "Light · On Violet",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-onPrimary",
+        "purpose": "Text and icons on Stamp Violet.",
         "tonalRamp": [
-          "oklch(15% 0.035 61)",
-          "oklch(26% 0.061 61)",
-          "oklch(38% 0.087 61)",
-          "oklch(49% 0.113 61)",
-          "oklch(61% 0.139 61)",
-          "oklch(72% 0.129 61)",
-          "oklch(84% 0.101 61)",
-          "oklch(95% 0.031 61)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-accent": {
+        "role": "primary",
+        "displayName": "Light · Due Violet",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-accent",
+        "purpose": "Due-today loan share (45% into Inset for not yet due), current progress segment, loading rule, selected-tab underline, selected outline, info toast rule, caret, selection tint.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
+        ]
+      },
+      "light-accentInk": {
+        "role": "primary",
+        "displayName": "Light · Due Violet Ink",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-accentInk",
+        "purpose": "Due stamps, links, the Active status, due-today counts, pressed toggles; mixed 62% with Muted Ink for not-yet-due stamps.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
+        ]
+      },
+      "light-success": {
+        "role": "tertiary",
+        "displayName": "Light · Correct Green",
+        "canonical": "#1f8a4c",
+        "theme": "light",
+        "cssVar": "--color-success",
+        "purpose": "Correct progress segments, correct option tint, success toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.056 153)",
+          "oklch(26% 0.097 153)",
+          "oklch(38% 0.123 153)",
+          "oklch(49% 0.134 153)",
+          "oklch(61% 0.134 153)",
+          "oklch(72% 0.123 153)",
+          "oklch(84% 0.097 153)",
+          "oklch(95% 0.056 153)"
+        ]
+      },
+      "light-successInk": {
+        "role": "tertiary",
+        "displayName": "Light · Correct Green Ink",
+        "canonical": "#17703d",
+        "theme": "light",
+        "cssVar": "--color-successInk",
+        "purpose": "Correct option key and note, success note titles, Correct tags, strings in code.",
+        "tonalRamp": [
+          "oklch(15% 0.048 153)",
+          "oklch(26% 0.084 153)",
+          "oklch(38% 0.105 153)",
+          "oklch(49% 0.115 153)",
+          "oklch(61% 0.115 153)",
+          "oklch(72% 0.105 153)",
+          "oklch(84% 0.084 153)",
+          "oklch(95% 0.048 153)"
+        ]
+      },
+      "light-error": {
+        "role": "secondary",
+        "displayName": "Light · Slip Red",
+        "canonical": "#c8323a",
+        "theme": "light",
+        "cssVar": "--color-error",
+        "purpose": "Overdue loan share, wrong progress segments, wrong option tint, invalid field border, error toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.078 23)",
+          "oklch(26% 0.136 23)",
+          "oklch(38% 0.171 23)",
+          "oklch(49% 0.186 23)",
+          "oklch(61% 0.186 23)",
+          "oklch(72% 0.171 23)",
+          "oklch(84% 0.136 23)",
+          "oklch(95% 0.078 23)"
+        ]
+      },
+      "light-errorInk": {
+        "role": "secondary",
+        "displayName": "Light · Slip Red Ink",
+        "canonical": "#b8262f",
+        "theme": "light",
+        "cssVar": "--color-errorInk",
+        "purpose": "Due slip header rule and column heads, overdue stamps and counts, wrong-answer notes, error notes and notices, danger buttons.",
+        "tonalRamp": [
+          "oklch(15% 0.076 24)",
+          "oklch(26% 0.132 24)",
+          "oklch(38% 0.167 24)",
+          "oklch(49% 0.181 24)",
+          "oklch(61% 0.181 24)",
+          "oklch(72% 0.167 24)",
+          "oklch(84% 0.132 24)",
+          "oklch(95% 0.076 24)"
+        ]
+      },
+      "light-warning": {
+        "role": "tertiary",
+        "displayName": "Light · Caution Amber",
+        "canonical": "#c98a0b",
+        "theme": "light",
+        "cssVar": "--color-warning",
+        "purpose": "Warning notice tint and border, warning toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.059 76)",
+          "oklch(26% 0.103 76)",
+          "oklch(38% 0.129 76)",
+          "oklch(49% 0.141 76)",
+          "oklch(61% 0.141 76)",
+          "oklch(72% 0.129 76)",
+          "oklch(84% 0.103 76)",
+          "oklch(95% 0.059 76)"
+        ]
+      },
+      "light-warningInk": {
+        "role": "tertiary",
+        "displayName": "Light · Caution Amber Ink",
+        "canonical": "#8a5a00",
+        "theme": "light",
+        "cssVar": "--color-warningInk",
+        "purpose": "Warning notice text, numbers in code.",
+        "tonalRamp": [
+          "oklch(15% 0.045 73)",
+          "oklch(26% 0.079 73)",
+          "oklch(38% 0.099 73)",
+          "oklch(49% 0.108 73)",
+          "oklch(61% 0.108 73)",
+          "oklch(72% 0.099 73)",
+          "oklch(84% 0.079 73)",
+          "oklch(95% 0.045 73)"
+        ]
+      },
+      "light-focus": {
+        "role": "neutral",
+        "displayName": "Light · Focus Ring",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-focus",
+        "purpose": "2px focus outline with 2px offset; focused field border and 1px ring.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
         ]
       },
       "contrast-shell": {
-        "role": "primary",
-        "displayName": "Contrast · Title-bar Teal",
-        "canonical": "#0b1416",
+        "role": "neutral",
+        "displayName": "High contrast · Desk",
+        "canonical": "#ffffff",
         "theme": "contrast",
         "cssVar": "--color-shell",
-        "purpose": "Title bar and band ground; block title strips; inverse button label.",
+        "purpose": "Sidebar, top bar and phone menu ground; written to <meta name=\"theme-color\">.",
         "tonalRamp": [
-          "oklch(15% 0.006 213)",
-          "oklch(26% 0.010 213)",
-          "oklch(38% 0.012 213)",
-          "oklch(49% 0.014 213)",
-          "oklch(61% 0.014 213)",
-          "oklch(72% 0.012 213)",
-          "oklch(84% 0.010 213)",
-          "oklch(95% 0.006 213)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "contrast-shellInk": {
         "role": "neutral",
-        "displayName": "Contrast · Title-bar White",
-        "canonical": "#ffffff",
+        "displayName": "High contrast · Desk Ink",
+        "canonical": "#000000",
         "theme": "contrast",
         "cssVar": "--color-shellInk",
-        "purpose": "Text on the title bar and bands; active route; band rules and inverse button fill.",
+        "purpose": "Wordmark and hovered navigation text; mixed 7% into transparent for the navigation hover fill.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -870,29 +870,29 @@
       },
       "contrast-shellMuted": {
         "role": "neutral",
-        "displayName": "Contrast · Title-bar Mist",
-        "canonical": "#d5dee0",
+        "displayName": "High contrast · Desk Muted",
+        "canonical": "#2b2b33",
         "theme": "contrast",
         "cssVar": "--color-shellMuted",
-        "purpose": "Idle route links and icons on the title bar; labels and hints on bands.",
+        "purpose": "Idle navigation labels and icons.",
         "tonalRamp": [
-          "oklch(15% 0.004 213)",
-          "oklch(26% 0.007 213)",
-          "oklch(38% 0.009 213)",
-          "oklch(49% 0.010 213)",
-          "oklch(61% 0.010 213)",
-          "oklch(72% 0.009 213)",
-          "oklch(84% 0.007 213)",
-          "oklch(95% 0.004 213)"
+          "oklch(15% 0.006 285)",
+          "oklch(26% 0.011 285)",
+          "oklch(38% 0.013 285)",
+          "oklch(49% 0.014 285)",
+          "oklch(61% 0.014 285)",
+          "oklch(72% 0.013 285)",
+          "oklch(84% 0.011 285)",
+          "oklch(95% 0.006 285)"
         ]
       },
       "contrast-ground": {
         "role": "neutral",
-        "displayName": "Contrast · Slide Ground",
+        "displayName": "High contrast · Reading Room",
         "canonical": "#ffffff",
         "theme": "contrast",
         "cssVar": "--color-ground",
-        "purpose": "Page ground.",
+        "purpose": "Page ground, pinned phone action bars, fullscreen study frame.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -906,11 +906,11 @@
       },
       "contrast-surface": {
         "role": "neutral",
-        "displayName": "Contrast · Surface White",
+        "displayName": "High contrast · Panel",
         "canonical": "#ffffff",
         "theme": "contrast",
         "cssVar": "--color-surface",
-        "purpose": "Fields, choice groups and grid cells, menus, dialogs; base for every state tint.",
+        "purpose": "Panels, notes, fields, secondary and danger buttons, segmented frames, menus, dialogs, toasts; base for every state tint.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -924,11 +924,11 @@
       },
       "contrast-sunken": {
         "role": "neutral",
-        "displayName": "Contrast · Pale Teal-Grey",
-        "canonical": "#f0f2f2",
+        "displayName": "High contrast · Inset",
+        "canonical": "#f0f0f2",
         "theme": "contrast",
         "cssVar": "--color-sunken",
-        "purpose": "Block bodies, notices, tags, code, hover fills.",
+        "purpose": "Note title strips, notices, tags, code, loan and extent tracks, hover fills, selected choices and options.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -942,11 +942,11 @@
       },
       "contrast-ink": {
         "role": "neutral",
-        "displayName": "Contrast · Deck Ink",
+        "displayName": "High contrast · Ink",
         "canonical": "#000000",
         "theme": "contrast",
         "cssVar": "--color-ink",
-        "purpose": "Body text, titles, section and table-header rules.",
+        "purpose": "Body text, titles and figures.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -960,119 +960,119 @@
       },
       "contrast-inkSoft": {
         "role": "neutral",
-        "displayName": "Contrast · Soft Slate Ink",
-        "canonical": "#1d2a2c",
+        "displayName": "High contrast · Soft Ink",
+        "canonical": "#1f1f26",
         "theme": "contrast",
         "cssVar": "--color-inkSoft",
-        "purpose": "Secondary text: ledes, table headers, facts labels, inactive tabs.",
+        "purpose": "Call numbers, session strip, ghost and segment labels, toast messages, blockquotes, field hover border.",
         "tonalRamp": [
-          "oklch(15% 0.007 208)",
-          "oklch(26% 0.013 208)",
-          "oklch(38% 0.016 208)",
-          "oklch(49% 0.018 208)",
-          "oklch(61% 0.018 208)",
-          "oklch(72% 0.016 208)",
-          "oklch(84% 0.013 208)",
-          "oklch(95% 0.007 208)"
+          "oklch(15% 0.006 285)",
+          "oklch(26% 0.010 285)",
+          "oklch(38% 0.012 285)",
+          "oklch(49% 0.013 285)",
+          "oklch(61% 0.013 285)",
+          "oklch(72% 0.012 285)",
+          "oklch(84% 0.010 285)",
+          "oklch(95% 0.006 285)"
         ]
       },
       "contrast-inkMuted": {
         "role": "neutral",
-        "displayName": "Contrast · Muted Slate Ink",
-        "canonical": "#3b4a4d",
+        "displayName": "High contrast · Muted Ink",
+        "canonical": "#3a3a44",
         "theme": "contrast",
         "cssVar": "--color-inkMuted",
-        "purpose": "Hints, placeholders, list markers.",
+        "purpose": "Column heads, ledes and metadata, not-yet-due rows, hints, placeholders, option keys at rest.",
         "tonalRamp": [
-          "oklch(15% 0.008 211)",
-          "oklch(26% 0.014 211)",
-          "oklch(38% 0.018 211)",
-          "oklch(49% 0.019 211)",
-          "oklch(61% 0.019 211)",
-          "oklch(72% 0.018 211)",
-          "oklch(84% 0.014 211)",
-          "oklch(95% 0.008 211)"
+          "oklch(15% 0.007 285)",
+          "oklch(26% 0.013 285)",
+          "oklch(38% 0.016 285)",
+          "oklch(49% 0.017 285)",
+          "oklch(61% 0.017 285)",
+          "oklch(72% 0.016 285)",
+          "oklch(84% 0.013 285)",
+          "oklch(95% 0.007 285)"
         ]
       },
       "contrast-line": {
         "role": "neutral",
-        "displayName": "Contrast · Hairline",
-        "canonical": "#8a9a9c",
+        "displayName": "High contrast · Hairline",
+        "canonical": "#8a8a96",
         "theme": "contrast",
         "cssVar": "--color-line",
-        "purpose": "Hairline separators and rule tracks.",
+        "purpose": "Panel borders, panel-head rules, row separators, tab baseline, progress and loading tracks, choice-grid gaps.",
         "tonalRamp": [
-          "oklch(15% 0.008 206)",
-          "oklch(26% 0.013 206)",
-          "oklch(38% 0.016 206)",
-          "oklch(49% 0.018 206)",
-          "oklch(61% 0.018 206)",
-          "oklch(72% 0.016 206)",
-          "oklch(84% 0.013 206)",
-          "oklch(95% 0.008 206)"
+          "oklch(15% 0.007 286)",
+          "oklch(26% 0.013 286)",
+          "oklch(38% 0.016 286)",
+          "oklch(49% 0.018 286)",
+          "oklch(61% 0.018 286)",
+          "oklch(72% 0.016 286)",
+          "oklch(84% 0.013 286)",
+          "oklch(95% 0.007 286)"
         ]
       },
       "contrast-lineStrong": {
         "role": "neutral",
-        "displayName": "Contrast · Control Slate",
-        "canonical": "#4a5a5d",
+        "displayName": "High contrast · Control Edge",
+        "canonical": "#4a4a55",
         "theme": "contrast",
         "cssVar": "--color-lineStrong",
-        "purpose": "Form-control borders (3:1 against surface).",
+        "purpose": "Borders of fields, choice groups, segmented controls, secondary and danger buttons; extent segments; scrollbar thumb.",
         "tonalRamp": [
-          "oklch(15% 0.008 210)",
-          "oklch(26% 0.014 210)",
-          "oklch(38% 0.018 210)",
-          "oklch(49% 0.020 210)",
-          "oklch(61% 0.020 210)",
-          "oklch(72% 0.018 210)",
-          "oklch(84% 0.014 210)",
-          "oklch(95% 0.008 210)"
+          "oklch(15% 0.008 286)",
+          "oklch(26% 0.013 286)",
+          "oklch(38% 0.017 286)",
+          "oklch(49% 0.018 286)",
+          "oklch(61% 0.018 286)",
+          "oklch(72% 0.017 286)",
+          "oklch(84% 0.013 286)",
+          "oklch(95% 0.008 286)"
         ]
       },
       "contrast-primary": {
         "role": "primary",
-        "displayName": "Contrast · Deck Teal",
-        "canonical": "#0b1416",
+        "displayName": "High contrast · Stamp Violet",
+        "canonical": "#2a1690",
         "theme": "contrast",
         "cssVar": "--color-primary",
-        "purpose": "Primary button fill and selected segment.",
+        "purpose": "Primary buttons, the current navigation item, selected segments, accent-color of native controls.",
         "tonalRamp": [
-          "oklch(15% 0.006 213)",
-          "oklch(26% 0.010 213)",
-          "oklch(38% 0.012 213)",
-          "oklch(49% 0.014 213)",
-          "oklch(61% 0.014 213)",
-          "oklch(72% 0.012 213)",
-          "oklch(84% 0.010 213)",
-          "oklch(95% 0.006 213)"
+          "oklch(15% 0.076 277)",
+          "oklch(26% 0.133 277)",
+          "oklch(38% 0.167 277)",
+          "oklch(49% 0.182 277)",
+          "oklch(61% 0.182 277)",
+          "oklch(72% 0.167 277)",
+          "oklch(84% 0.133 277)",
+          "oklch(95% 0.076 277)"
         ]
       },
       "contrast-primaryHover": {
         "role": "primary",
-        "displayName": "Contrast · Deck Teal Lifted",
-        "canonical": "#25373b",
+        "displayName": "High contrast · Stamp Violet Hover",
+        "canonical": "#3a24a8",
         "theme": "contrast",
         "cssVar": "--color-primaryHover",
         "purpose": "Primary button hover.",
         "tonalRamp": [
-          "oklch(15% 0.010 213)",
-          "oklch(26% 0.017 213)",
-          "oklch(38% 0.022 213)",
-          "oklch(49% 0.024 213)",
-          "oklch(61% 0.024 213)",
-          "oklch(72% 0.022 213)",
-          "oklch(84% 0.017 213)",
-          "oklch(95% 0.010 213)"
+          "oklch(15% 0.082 280)",
+          "oklch(26% 0.142 280)",
+          "oklch(38% 0.179 280)",
+          "oklch(49% 0.195 280)",
+          "oklch(61% 0.195 280)",
+          "oklch(72% 0.179 280)",
+          "oklch(84% 0.142 280)",
+          "oklch(95% 0.082 280)"
         ]
       },
       "contrast-onPrimary": {
-        "role": "primary",
-        "displayName": "Contrast · On-Teal White",
+        "role": "neutral",
+        "displayName": "High contrast · On Violet",
         "canonical": "#ffffff",
         "theme": "contrast",
         "cssVar": "--color-onPrimary",
-        "purpose": "Text and icons on primary fills.",
+        "purpose": "Text and icons on Stamp Violet.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -1085,156 +1085,156 @@
         ]
       },
       "contrast-accent": {
-        "role": "secondary",
-        "displayName": "Contrast · Metropolis Orange",
-        "canonical": "#c25e00",
+        "role": "primary",
+        "displayName": "High contrast · Due Violet",
+        "canonical": "#2a1690",
         "theme": "contrast",
         "cssVar": "--color-accent",
-        "purpose": "Progress and the current item only.",
+        "purpose": "Due-today loan share (45% into Inset for not yet due), current progress segment, loading rule, selected-tab underline, selected outline, info toast rule, caret, selection tint.",
         "tonalRamp": [
-          "oklch(15% 0.040 52)",
-          "oklch(26% 0.068 52)",
-          "oklch(38% 0.096 52)",
-          "oklch(49% 0.127 52)",
-          "oklch(61% 0.151 52)",
-          "oklch(72% 0.136 52)",
-          "oklch(84% 0.102 52)",
-          "oklch(95% 0.028 52)"
+          "oklch(15% 0.076 277)",
+          "oklch(26% 0.133 277)",
+          "oklch(38% 0.167 277)",
+          "oklch(49% 0.182 277)",
+          "oklch(61% 0.182 277)",
+          "oklch(72% 0.167 277)",
+          "oklch(84% 0.133 277)",
+          "oklch(95% 0.076 277)"
         ]
       },
       "contrast-accentInk": {
-        "role": "secondary",
-        "displayName": "Contrast · Burnt Orange Ink",
-        "canonical": "#9a4a00",
+        "role": "primary",
+        "displayName": "High contrast · Due Violet Ink",
+        "canonical": "#2a1690",
         "theme": "contrast",
         "cssVar": "--color-accentInk",
-        "purpose": "Accent as text on the ground.",
+        "purpose": "Due stamps, links, the Active status, due-today counts, pressed toggles; mixed 62% with Muted Ink for not-yet-due stamps.",
         "tonalRamp": [
-          "oklch(15% 0.038 53)",
-          "oklch(26% 0.067 53)",
-          "oklch(38% 0.096 53)",
-          "oklch(49% 0.124 53)",
-          "oklch(61% 0.126 53)",
-          "oklch(72% 0.114 53)",
-          "oklch(84% 0.089 53)",
-          "oklch(95% 0.028 53)"
+          "oklch(15% 0.076 277)",
+          "oklch(26% 0.133 277)",
+          "oklch(38% 0.167 277)",
+          "oklch(49% 0.182 277)",
+          "oklch(61% 0.182 277)",
+          "oklch(72% 0.167 277)",
+          "oklch(84% 0.133 277)",
+          "oklch(95% 0.076 277)"
         ]
       },
       "contrast-success": {
         "role": "tertiary",
-        "displayName": "Contrast · Graded Green",
+        "displayName": "High contrast · Correct Green",
         "canonical": "#0a6b22",
         "theme": "contrast",
         "cssVar": "--color-success",
-        "purpose": "Correct progress segments and success tints.",
+        "purpose": "Correct progress segments, correct option tint, success toasts.",
         "tonalRamp": [
-          "oklch(15% 0.045 146)",
-          "oklch(26% 0.081 146)",
-          "oklch(38% 0.115 146)",
-          "oklch(49% 0.134 146)",
-          "oklch(61% 0.134 146)",
-          "oklch(72% 0.121 146)",
-          "oklch(84% 0.095 146)",
-          "oklch(95% 0.055 146)"
+          "oklch(15% 0.057 146)",
+          "oklch(26% 0.099 146)",
+          "oklch(38% 0.125 146)",
+          "oklch(49% 0.136 146)",
+          "oklch(61% 0.136 146)",
+          "oklch(72% 0.125 146)",
+          "oklch(84% 0.099 146)",
+          "oklch(95% 0.057 146)"
         ]
       },
       "contrast-successInk": {
         "role": "tertiary",
-        "displayName": "Contrast · Graded Green Ink",
+        "displayName": "High contrast · Correct Green Ink",
         "canonical": "#0a6b22",
         "theme": "contrast",
         "cssVar": "--color-successInk",
-        "purpose": "Success text and success block titles.",
+        "purpose": "Correct option key and note, success note titles, Correct tags, strings in code.",
         "tonalRamp": [
-          "oklch(15% 0.045 146)",
-          "oklch(26% 0.081 146)",
-          "oklch(38% 0.115 146)",
-          "oklch(49% 0.134 146)",
-          "oklch(61% 0.134 146)",
-          "oklch(72% 0.121 146)",
-          "oklch(84% 0.095 146)",
-          "oklch(95% 0.055 146)"
+          "oklch(15% 0.057 146)",
+          "oklch(26% 0.099 146)",
+          "oklch(38% 0.125 146)",
+          "oklch(49% 0.136 146)",
+          "oklch(61% 0.136 146)",
+          "oklch(72% 0.125 146)",
+          "oklch(84% 0.099 146)",
+          "oklch(95% 0.057 146)"
         ]
       },
       "contrast-error": {
-        "role": "tertiary",
-        "displayName": "Contrast · Graded Red",
+        "role": "secondary",
+        "displayName": "High contrast · Slip Red",
         "canonical": "#a3140b",
         "theme": "contrast",
         "cssVar": "--color-error",
-        "purpose": "Wrong segments, error tints, invalid borders.",
+        "purpose": "Overdue loan share, wrong progress segments, wrong option tint, invalid field border, error toasts.",
         "tonalRamp": [
-          "oklch(15% 0.062 30)",
-          "oklch(26% 0.107 30)",
-          "oklch(38% 0.153 30)",
-          "oklch(49% 0.174 30)",
-          "oklch(61% 0.174 30)",
-          "oklch(72% 0.157 30)",
-          "oklch(84% 0.091 30)",
-          "oklch(95% 0.024 30)"
+          "oklch(15% 0.074 30)",
+          "oklch(26% 0.129 30)",
+          "oklch(38% 0.162 30)",
+          "oklch(49% 0.176 30)",
+          "oklch(61% 0.176 30)",
+          "oklch(72% 0.162 30)",
+          "oklch(84% 0.129 30)",
+          "oklch(95% 0.074 30)"
         ]
       },
       "contrast-errorInk": {
-        "role": "tertiary",
-        "displayName": "Contrast · Graded Red Ink",
+        "role": "secondary",
+        "displayName": "High contrast · Slip Red Ink",
         "canonical": "#a3140b",
         "theme": "contrast",
         "cssVar": "--color-errorInk",
-        "purpose": "Error text, danger buttons, error block titles.",
+        "purpose": "Due slip header rule and column heads, overdue stamps and counts, wrong-answer notes, error notes and notices, danger buttons.",
         "tonalRamp": [
-          "oklch(15% 0.062 30)",
-          "oklch(26% 0.107 30)",
-          "oklch(38% 0.153 30)",
-          "oklch(49% 0.174 30)",
-          "oklch(61% 0.174 30)",
-          "oklch(72% 0.157 30)",
-          "oklch(84% 0.091 30)",
-          "oklch(95% 0.024 30)"
+          "oklch(15% 0.074 30)",
+          "oklch(26% 0.129 30)",
+          "oklch(38% 0.162 30)",
+          "oklch(49% 0.176 30)",
+          "oklch(61% 0.176 30)",
+          "oklch(72% 0.162 30)",
+          "oklch(84% 0.129 30)",
+          "oklch(95% 0.074 30)"
         ]
       },
       "contrast-warning": {
         "role": "tertiary",
-        "displayName": "Contrast · Caution Amber",
+        "displayName": "High contrast · Caution Amber",
         "canonical": "#9a6700",
         "theme": "contrast",
         "cssVar": "--color-warning",
-        "purpose": "Warning notice tint.",
+        "purpose": "Warning notice tint and border, warning toasts.",
         "tonalRamp": [
-          "oklch(15% 0.032 75)",
-          "oklch(26% 0.056 75)",
-          "oklch(38% 0.078 75)",
-          "oklch(49% 0.103 75)",
-          "oklch(61% 0.115 75)",
-          "oklch(72% 0.104 75)",
-          "oklch(84% 0.082 75)",
-          "oklch(95% 0.040 75)"
+          "oklch(15% 0.049 75)",
+          "oklch(26% 0.085 75)",
+          "oklch(38% 0.108 75)",
+          "oklch(49% 0.117 75)",
+          "oklch(61% 0.117 75)",
+          "oklch(72% 0.108 75)",
+          "oklch(84% 0.085 75)",
+          "oklch(95% 0.049 75)"
         ]
       },
       "contrast-warningInk": {
         "role": "tertiary",
-        "displayName": "Contrast · Caution Amber Ink",
+        "displayName": "High contrast · Caution Amber Ink",
         "canonical": "#6b4700",
         "theme": "contrast",
         "cssVar": "--color-warningInk",
-        "purpose": "Warning text.",
+        "purpose": "Warning notice text, numbers in code.",
         "tonalRamp": [
-          "oklch(15% 0.033 76)",
-          "oklch(26% 0.055 76)",
-          "oklch(38% 0.078 76)",
-          "oklch(49% 0.089 76)",
-          "oklch(61% 0.089 76)",
-          "oklch(72% 0.080 76)",
-          "oklch(84% 0.063 76)",
-          "oklch(95% 0.037 76)"
+          "oklch(15% 0.038 76)",
+          "oklch(26% 0.066 76)",
+          "oklch(38% 0.083 76)",
+          "oklch(49% 0.090 76)",
+          "oklch(61% 0.090 76)",
+          "oklch(72% 0.083 76)",
+          "oklch(84% 0.066 76)",
+          "oklch(95% 0.038 76)"
         ]
       },
       "contrast-focus": {
         "role": "neutral",
-        "displayName": "Contrast · Focus Ring",
+        "displayName": "High contrast · Focus Ring",
         "canonical": "#000000",
         "theme": "contrast",
         "cssVar": "--color-focus",
-        "purpose": "Focus ring on the ground.",
+        "purpose": "2px focus outline with 2px offset; focused field border and 1px ring.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -1248,97 +1248,122 @@
       }
     },
     "typographyMeta": {
+      "question": {
+        "displayName": "Display",
+        "purpose": "The question stem in the study loop; 1.5rem from 640px."
+      },
       "page-title": {
         "displayName": "Headline",
-        "purpose": "One page title per route; 1.5rem, stepping to 1.75rem from 640px. Visually hidden on the Dashboard, where the band opens the page."
+        "purpose": "One page title per route, beside its lede; 1.75rem from 640px. The topic line on Session details."
       },
-      "question": {
-        "displayName": "Display (question)",
-        "purpose": "The question stem in the study loop; 1.25rem, stepping to 1.5rem from 640px; from 1024px the left of two equal columns."
+      "slip-title": {
+        "displayName": "Slip title",
+        "purpose": "\"Due for return\", the loudest heading on the Dashboard."
       },
       "figure": {
         "displayName": "Figure",
-        "purpose": "Dashboard progress numbers in Fira Sans Light (300): 1.75rem, line-height 1, tabular, -0.01em."
-      },
-      "statement": {
-        "displayName": "Statement",
-        "purpose": "The next-action sentence in the Dashboard band and the empty-state line, in Fira Sans Light (300); 1.5rem, stepping to 1.75rem from 640px."
+        "purpose": "Progress numbers in Archivo Narrow (1.5rem below 640px), review-complete results, Session details facts at 1.375rem."
       },
       "wordmark": {
         "displayName": "Wordmark",
-        "purpose": "The \"Lembrion\" wordmark in the title bar and the boot bar."
+        "purpose": "The \"Lembrion\" wordmark in the sidebar; 1.25rem in the top bar."
       },
       "dialog-title": {
-        "displayName": "Title",
-        "purpose": "Dialog headers."
+        "displayName": "Dialog title",
+        "purpose": "Headings of the delete confirmation and the session edit dialog."
       },
-      "section-title": {
-        "displayName": "Section title",
-        "purpose": "Section headings, always over a 2px Deck Ink rule (Title-bar White rule and text on a band)."
-      },
-      "subhead": {
-        "displayName": "Subhead",
-        "purpose": "Block titles, option keys, small headings inside a section."
+      "panel-title": {
+        "displayName": "Panel title",
+        "purpose": "Panel heads and section titles."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Default text and fields."
+        "purpose": "Default text, fields and answer options, with kern and liga."
       },
       "reading": {
         "displayName": "Reading",
-        "purpose": "Titled-block bodies."
+        "purpose": "Note bodies and model output."
+      },
+      "compact": {
+        "displayName": "Compact",
+        "purpose": "Ledes, due slip rows, slip summary, notices."
       },
       "control": {
         "displayName": "Control",
         "purpose": "Button labels."
       },
-      "compact": {
-        "displayName": "Compact",
-        "purpose": "Title-bar links and notices."
+      "nav": {
+        "displayName": "Navigation",
+        "purpose": "Sidebar and phone-menu items."
       },
       "tab": {
         "displayName": "Tab",
-        "purpose": "Tab labels."
+        "purpose": "Settings tabs."
       },
       "small": {
         "displayName": "Small",
-        "purpose": "Tables, facts labels, hints, session strip, meta lines."
+        "purpose": "Tables, facts labels, hints, metadata, session strip, menus."
+      },
+      "small-medium": {
+        "displayName": "Small medium",
+        "purpose": "Segmented control labels and fact values."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Field labels, table headers, facts values, small buttons, segments."
+        "purpose": "Field labels, note titles, small buttons."
+      },
+      "caps-label": {
+        "displayName": "Printed label",
+        "purpose": "Uppercase column heads of tables and the slip, group labels, small list headings."
+      },
+      "call-number": {
+        "displayName": "Call number",
+        "purpose": "Uppercase spine-label codes such as CEL·2, in Archivo Narrow."
+      },
+      "stamp": {
+        "displayName": "Stamp",
+        "purpose": "Uppercase date stamps inside a 1.5px frame, in Archivo Narrow."
+      },
+      "option-key": {
+        "displayName": "Option key",
+        "purpose": "The A–D keys of answer options, in Archivo Narrow."
       },
       "tag": {
         "displayName": "Tag",
         "purpose": "Status tags."
       },
       "note": {
-        "displayName": "Note",
-        "purpose": "Option notes after grading (\"Your answer\", \"Correct answer\")."
+        "displayName": "Option note",
+        "purpose": "\"Correct answer\" and \"Your answer\" notes on graded options."
       },
       "toast-title": {
         "displayName": "Toast title",
-        "purpose": "Toast titles."
+        "purpose": "The title line of a toast."
       },
       "toast-message": {
         "displayName": "Toast message",
-        "purpose": "Toast messages, in Soft Slate Ink."
+        "purpose": "The message line of a toast."
       },
       "mono": {
         "displayName": "Mono",
-        "purpose": "Code blocks, inline code (0.9em), keys, model IDs, URLs, key hints."
+        "purpose": "Code blocks (inline code at 0.9em); keys, model IDs and URLs in Settings fields at 1rem."
       }
     },
     "shadows": [
       {
         "name": "overlay",
-        "value": "0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12)",
-        "purpose": "Theme menu, dialogs and toasts only (.menu, .overlay-shadow, .toast)."
+        "value": "0 12px 32px -8px rgb(0 0 0 / 0.35), 0 2px 6px rgb(0 0 0 / 0.14)",
+        "purpose": "Theme menu, delete confirmation, session edit dialog and toasts only (.menu, .overlay-shadow, .toast)."
       },
       {
-        "name": "active-underline",
-        "value": "inset 0 -3px 0 var(--color-accent)",
-        "purpose": "Current title-bar link and selected tab; transparent at rest. A line device, not elevation."
+        "name": "tab-underline",
+        "value": "inset 0 -2px 0 var(--color-accent)",
+        "purpose": "The selected tab; transparent at rest. A line device, not elevation."
+      },
+      {
+        "name": "selected-outline",
+        "value": "inset 0 0 0 1px var(--color-accent)",
+        "purpose": "A selected choice or answer option, over Inset."
       },
       {
         "name": "field-focus",
@@ -1346,26 +1371,36 @@
         "purpose": "Doubles a focused field border (with border-color: var(--color-focus))."
       },
       {
+        "name": "extent-separator",
+        "value": "inset 1px 0 0 var(--color-surface)",
+        "purpose": "The 1px Panel line between topic segments of an extent bar."
+      },
+      {
         "name": "scrim",
         "value": "rgb(0 0 0 / 0.4)",
-        "purpose": "Background behind dialogs (bg-black/40). A fill, listed here for completeness."
+        "purpose": "Background behind dialogs (bg-black/40). A fill, listed for completeness."
       }
     ],
     "motion": [
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "--ease-out: underline moves and both rule animations."
+        "purpose": "--ease-out: the tab underline, the stamp landing, the rule animations and toast entry."
       },
       {
         "name": "state-colour",
         "value": "120ms ease-out",
-        "purpose": "Background, border and text colour changes on buttons, fields, rows, segments, links (CSS ease-out keyword)."
+        "purpose": "Background, border and text colour changes on buttons, fields, rows, segments and navigation (CSS ease-out keyword)."
       },
       {
-        "name": "underline",
+        "name": "tab-underline",
         "value": "160ms cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Active underline (box-shadow) on title-bar links and tabs."
+        "purpose": "The selected tab underline (box-shadow)."
+      },
+      {
+        "name": "stamp-land",
+        "value": "260ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "The return stamp lands once after grading: opacity 0 and scale(1.12) to rest."
       },
       {
         "name": "rule-grow",
@@ -1405,6 +1440,10 @@
       {
         "name": "lg",
         "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
       }
     ]
   },
@@ -1413,204 +1452,212 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one next action on the ground: Next question, Submit answer, Continue session; Start session below 1024px.",
-      "html": "<button type=\"button\" class=\"ds-btn-primary\">Next question</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-primary, #23373b); border-color: var(--color-primary, #23373b); color: var(--color-onPrimary, #ffffff); } .ds-btn-primary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-primary:hover:not(:disabled) { background: var(--color-primaryHover, #30494e); border-color: var(--color-primaryHover, #30494e); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+      "description": "The one next step on a screen: Start review, Start session, Submit answer, Next question, Continue session.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\">Start review · 5 due</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-primary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-primary { background: var(--color-primary, #5b43d6); border-color: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-btn-primary:not(:disabled):hover { background: var(--color-primaryHover, #6a54e6); border-color: var(--color-primaryHover, #6a54e6); }"
     },
     {
       "name": "Secondary Button",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Every other action: Resume, End session, Add, Cancel, outbound links.",
-      "html": "<button type=\"button\" class=\"ds-btn-secondary\">Resume</button>",
-      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-surface, #ffffff); border-color: var(--color-lineStrong, #869699); color: var(--color-ink, #23373b); } .ds-btn-secondary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-secondary:hover:not(:disabled) { background: var(--color-sunken, #eef1f1); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }"
+      "description": "Every other action on the ground: the Dashboard's New session, Resume, Add, Cancel, End session.",
+      "html": "<button type=\"button\" class=\"ds-btn-secondary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>New session</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-secondary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-secondary { background: var(--color-surface, #181818); border-color: var(--color-lineStrong, #6b6b6b); color: var(--color-ink, #ececec); } .ds-btn-secondary:not(:disabled):hover { background: var(--color-sunken, #202020); }"
     },
     {
       "name": "Ghost Icon Button",
       "kind": "button",
       "refersTo": "button-ghost",
-      "description": "Icon actions: close, show key, fullscreen, copy code. 2.5rem square.",
+      "description": "Icon actions without a frame: close, show key, fullscreen, copy code. A 2.5rem square.",
       "html": "<button type=\"button\" class=\"ds-btn-ghost\" aria-label=\"Close\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></button>",
-      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; width: 2.5rem; padding: 0; background: transparent; color: var(--color-inkSoft, #45585c); } .ds-btn-ghost svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-ghost:hover:not(:disabled) { background: var(--color-sunken, #eef1f1); color: var(--color-ink, #23373b); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; }"
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-ghost svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-ghost { width: 2.5rem; padding: 0; background: transparent; color: var(--color-inkSoft, #c8c8c8); } .ds-btn-ghost:not(:disabled):hover { background: var(--color-sunken, #202020); color: var(--color-ink, #ececec); }"
     },
     {
       "name": "Danger Button",
       "kind": "button",
       "refersTo": "button-danger",
-      "description": "Destructive actions; red ink at rest, a 10% error tint on hover.",
-      "html": "<button type=\"button\" class=\"ds-btn-danger\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 6h18\"/><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"/><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/><line x1=\"10\" x2=\"10\" y1=\"11\" y2=\"17\"/><line x1=\"14\" x2=\"14\" y1=\"11\" y2=\"17\"/></svg>Delete selected</button>",
-      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-surface, #ffffff); border-color: var(--color-lineStrong, #869699); color: var(--color-errorInk, #b3261e); } .ds-btn-danger svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-error, #d13a2e) 10%, var(--color-surface, #ffffff)); border-color: var(--color-error, #d13a2e); } .ds-btn-danger:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }"
-    },
-    {
-      "name": "Inverse Buttons",
-      "kind": "button",
-      "refersTo": "button-inverse",
-      "description": "Buttons on a band: shell-ink fill for the next action, a 45% shell-ink outline for the rest.",
-      "html": "<div class=\"ds-inverse-row\"><button type=\"button\" class=\"ds-btn-inverse\">Start review</button><button type=\"button\" class=\"ds-btn-outline-inverse\">New session</button></div>",
-      "css": ".ds-inverse-row { display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 1.25rem; background: var(--color-shell, #23373b); } .ds-btn-inverse, .ds-btn-outline-inverse { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; text-decoration: none; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-inverse { background: var(--color-shellInk, #ffffff); border-color: var(--color-shellInk, #ffffff); color: var(--color-shell, #23373b); } .ds-btn-inverse:hover:not(:disabled) { background: color-mix(in srgb, var(--color-shellInk, #ffffff) 86%, var(--color-shell, #23373b)); } .ds-btn-outline-inverse { background: transparent; border-color: color-mix(in srgb, var(--color-shellInk, #ffffff) 45%, transparent); color: var(--color-shellInk, #ffffff); } .ds-btn-outline-inverse:hover:not(:disabled) { border-color: var(--color-shellInk, #ffffff); background: color-mix(in srgb, var(--color-shellInk, #ffffff) 10%, transparent); } .ds-btn-inverse:disabled, .ds-btn-outline-inverse:disabled { opacity: 0.5; cursor: not-allowed; } .ds-inverse-row button:focus-visible { outline: 2px solid var(--color-accent, #eb811b); outline-offset: 2px; }"
+      "description": "Destructive actions: delete sessions, delete all data. Red label at rest, a 10% error tint on hover.",
+      "html": "<button type=\"button\" class=\"ds-btn-danger\">Delete</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-danger:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-danger svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-danger { background: var(--color-surface, #181818); border-color: var(--color-lineStrong, #6b6b6b); color: var(--color-errorInk, #ff6b5f); } .ds-btn-danger:not(:disabled):hover { background: color-mix(in srgb, var(--color-error, #ff6b5f) 10%, var(--color-surface, #181818)); border-color: var(--color-error, #ff6b5f); }"
     },
     {
       "name": "Text Field",
       "kind": "input",
       "refersTo": "field",
-      "description": "Label above, hint below; mono for keys, model IDs and URLs; focus doubles the border.",
-      "html": "<div class=\"ds-field-wrap\"><label class=\"ds-label\" for=\"ds-model\">Model</label><input id=\"ds-model\" class=\"ds-field ds-field-mono\" type=\"text\" value=\"llama3.1:8b\" spellcheck=\"false\"><p class=\"ds-hint\">Type any model ID your provider supports, or pick a suggestion below.</p></div>",
-      "css": ".ds-field-wrap { font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; max-width: 28rem; } .ds-label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; color: var(--color-ink, #23373b); } .ds-field { display: block; width: 100%; box-sizing: border-box; padding: 0.5rem 0.75rem; border: 1px solid var(--color-lineStrong, #869699); border-radius: 0.25rem; background: var(--color-surface, #ffffff); color: var(--color-ink, #23373b); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; transition: border-color 120ms ease-out, box-shadow 120ms ease-out; } .ds-field-mono { font-family: \"Fira Mono\", ui-monospace, SFMono-Regular, Menlo, monospace; } .ds-field::placeholder { color: var(--color-inkMuted, #5b6c70); opacity: 1; } .ds-field:hover:not(:disabled) { border-color: var(--color-inkSoft, #45585c); } .ds-field:focus { outline: none; border-color: var(--color-focus, #23373b); box-shadow: 0 0 0 1px var(--color-focus, #23373b); } .ds-field[aria-invalid='true'] { border-color: var(--color-error, #d13a2e); } .ds-field:disabled { background: var(--color-sunken, #eef1f1); color: var(--color-inkMuted, #5b6c70); cursor: not-allowed; } .ds-hint { margin: 0.375rem 0 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-inkMuted, #5b6c70); }"
+      "description": "Bordered input with a label above and a hint below; focus doubles the border with a 1px ring.",
+      "html": "<div class=\"ds-field-wrap\"><label class=\"ds-field-label\" for=\"ds-topic\">Topics</label><input id=\"ds-topic\" class=\"ds-field\" type=\"text\" placeholder=\"e.g., SAT, AP Calculus...\"><p class=\"ds-field-hint\">Add one topic at a time, e.g. \"AP Biology\" or \"Chapter 3\". Press Enter to add.</p></div>",
+      "css": ".ds-field-wrap { max-width: 24rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-field-label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; color: var(--color-ink, #ececec); } .ds-field { display: block; width: 100%; box-sizing: border-box; padding: 0.5rem 0.75rem; border: 1px solid var(--color-lineStrong, #6b6b6b); border-radius: 0.25rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: inherit; font-size: 1rem; line-height: 1.5; transition: border-color 120ms ease-out, box-shadow 120ms ease-out; } .ds-field::placeholder { color: var(--color-inkMuted, #a3a3a3); opacity: 1; } .ds-field:hover { border-color: var(--color-inkSoft, #c8c8c8); } .ds-field:focus { outline: none; border-color: var(--color-focus, #9d8cff); box-shadow: 0 0 0 1px var(--color-focus, #9d8cff); } .ds-field-hint { margin: 0.375rem 0 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-inkMuted, #a3a3a3); }"
     },
     {
-      "name": "Choice Grid",
-      "kind": "custom",
-      "refersTo": "choice-grid",
-      "description": "Choice cells tiled in columns with 1px gaps in Control Slate mixed 55% into surface; question type takes 3 columns from 640px.",
-      "html": "<div class=\"ds-choice-grid\" role=\"radiogroup\" aria-label=\"Question type\"><label class=\"ds-choice\"><input type=\"radio\" name=\"ds-question-type\" checked><span class=\"ds-choice-text\"><span class=\"ds-choice-title\">Multiple choice</span><span class=\"ds-choice-desc\">Quick assessment questions</span></span></label><label class=\"ds-choice\"><input type=\"radio\" name=\"ds-question-type\"><span class=\"ds-choice-text\"><span class=\"ds-choice-title\">Dissertative</span><span class=\"ds-choice-desc\">Deep analysis questions</span></span></label><label class=\"ds-choice\"><input type=\"radio\" name=\"ds-question-type\"><span class=\"ds-choice-text\"><span class=\"ds-choice-title\">Mixed</span><span class=\"ds-choice-desc\">Both types, chosen at random</span></span></label></div>",
-      "css": ".ds-choice-grid { display: grid; gap: 1px; overflow: hidden; border: 1px solid var(--color-lineStrong, #869699); border-radius: 0.25rem; background: color-mix(in srgb, var(--color-lineStrong, #869699) 55%, var(--color-surface, #ffffff)); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; } .ds-choice { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--color-surface, #ffffff); cursor: pointer; text-align: left; transition: background-color 120ms ease-out; } .ds-choice:hover { background: var(--color-sunken, #eef1f1); } .ds-choice:has(input:checked) { background: color-mix(in srgb, var(--color-primary, #23373b) 8%, var(--color-surface, #ffffff)); } .ds-choice input { flex-shrink: 0; width: 1rem; height: 1rem; margin: 0.25rem 0 0; accent-color: var(--color-primary, #23373b); } .ds-choice input:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-choice-text { min-width: 0; } .ds-choice-title { display: block; font-weight: 500; color: var(--color-ink, #23373b); } .ds-choice-desc { display: block; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-inkSoft, #45585c); } @media (min-width: 640px) { .ds-choice-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }"
-    },
-    {
-      "name": "Title Bar",
+      "name": "Sidebar Navigation",
       "kind": "nav",
-      "refersTo": "title-bar",
-      "description": "The single dark teal bar: wordmark, routes with the orange current-route underline, theme control (the System preference by default).",
-      "html": "<header class=\"ds-bar\"><a class=\"ds-wordmark\" href=\"#\">Lembrion</a><nav class=\"ds-bar-nav\" aria-label=\"Main\"><a class=\"ds-bar-link is-active\" href=\"#\" aria-current=\"page\">Dashboard</a><a class=\"ds-bar-link\" href=\"#\">Study</a><a class=\"ds-bar-link\" href=\"#\">History</a><a class=\"ds-bar-link\" href=\"#\">Settings</a></nav><button type=\"button\" class=\"ds-bar-icon\" aria-label=\"Select theme\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"20\" height=\"14\" x=\"2\" y=\"3\" rx=\"2\"/><line x1=\"8\" x2=\"16\" y1=\"21\" y2=\"21\"/><line x1=\"12\" x2=\"12\" y1=\"17\" y2=\"21\"/></svg></button></header>",
-      "css": ".ds-bar { display: flex; align-items: center; gap: 2rem; height: 3.5rem; padding: 0 1.5rem; background: var(--color-shell, #23373b); color: var(--color-shellInk, #ffffff); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-wordmark { font-size: 1.125rem; line-height: 1.75rem; font-weight: 500; letter-spacing: 0.01em; color: var(--color-shellInk, #ffffff); text-decoration: none; } .ds-bar-nav { display: flex; align-self: stretch; gap: 1.75rem; } .ds-bar-link { display: flex; align-items: center; font-size: 0.9375rem; color: var(--color-shellMuted, #b9c6c8); text-decoration: none; box-shadow: inset 0 -3px 0 transparent; transition: color 120ms ease-out, box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-bar-link:hover { color: var(--color-shellInk, #ffffff); } .ds-bar-link.is-active { color: var(--color-shellInk, #ffffff); box-shadow: inset 0 -3px 0 var(--color-accent, #eb811b); } .ds-bar a:focus-visible, .ds-bar button:focus-visible { outline: 2px solid var(--color-accent, #eb811b); outline-offset: 2px; } .ds-bar-icon { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 0.25rem; background: transparent; color: var(--color-shellMuted, #b9c6c8); cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-bar-icon:hover, .ds-bar-icon[aria-expanded='true'] { color: var(--color-shellInk, #ffffff); background: rgb(255 255 255 / 0.08); }"
-    },
-    {
-      "name": "Band",
-      "kind": "custom",
-      "refersTo": "band",
-      "description": "The Metropolis standout frame: the title bar's ground carried below it for the Dashboard overview, with shell-ink rules, figures, a statement, inverse buttons and the review box strips.",
-      "html": "<section class=\"ds-band\" aria-label=\"Dashboard\"><div class=\"ds-band-grid\"><section class=\"ds-band-progress\"><h2 class=\"ds-band-title\">Progress</h2><table class=\"ds-band-table\"><thead><tr><th scope=\"col\"><span class=\"ds-sr\">Period</span></th><th scope=\"col\" class=\"ds-num\">Sessions</th><th scope=\"col\" class=\"ds-num\">Questions answered</th><th scope=\"col\" class=\"ds-num\">Accuracy</th></tr></thead><tbody><tr><th scope=\"row\">Last 7 days</th><td class=\"ds-num\"><span class=\"ds-figure\">4</span></td><td class=\"ds-num\"><span class=\"ds-figure\">23</span></td><td class=\"ds-num\"><span class=\"ds-figure\">74%</span></td></tr><tr><th scope=\"row\">All time</th><td class=\"ds-num\"><span class=\"ds-figure\">6</span></td><td class=\"ds-num\"><span class=\"ds-figure\">40</span></td><td class=\"ds-num\"><span class=\"ds-figure\">78%</span></td></tr></tbody></table></section><section class=\"ds-band-next\"><h2 class=\"ds-band-title\">Next</h2><ul class=\"ds-band-rows\"><li class=\"ds-band-due\"><p class=\"ds-statement\">3 questions due for review</p><button type=\"button\" class=\"ds-btn-inverse\">Start review</button></li><li class=\"ds-band-session\"><div><p class=\"ds-band-topic\">Photosynthesis · Calvin cycle</p><p class=\"ds-band-meta\">5 questions</p></div><button type=\"button\" class=\"ds-btn-outline-inverse ds-btn-sm\" aria-label=\"Resume Photosynthesis · Calvin cycle\">Resume</button></li><li class=\"ds-band-new\"><a class=\"ds-btn-outline-inverse\" href=\"#\">New session</a></li></ul></section><section class=\"ds-band-boxes\"><h2 class=\"ds-band-title\">Review boxes</h2><figure class=\"ds-boxes-figure\"><div class=\"ds-boxes\" aria-hidden=\"true\"><span class=\"ds-box-label\">Box 1 · 1 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"due\" style=\"left: 0%; width: 3.333%;\"></span></div><span class=\"ds-box-due\">2 due</span><span class=\"ds-box-count\">2</span><span class=\"ds-box-label\">Box 2 · 3 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"scheduled\" style=\"left: 3.333%; width: 6.667%;\"></span></div><span class=\"ds-box-due\"></span><span class=\"ds-box-count\">4</span><span class=\"ds-box-label\">Box 3 · 7 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"due\" style=\"left: 10%; width: 13.333%;\"></span></div><span class=\"ds-box-due\">1 due</span><span class=\"ds-box-count\">3</span><span class=\"ds-box-label\">Box 4 · 14 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"empty\" style=\"left: 23.333%; width: 23.333%;\"></span></div><span class=\"ds-box-due\"></span><span class=\"ds-box-count\">0</span><span class=\"ds-box-label\">Box 5 · 30 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"scheduled\" style=\"left: 46.667%; width: 53.333%;\"></span></div><span class=\"ds-box-due\"></span><span class=\"ds-box-count\">1</span></div><figcaption class=\"ds-boxes-caption\">3 due now · 0 retired</figcaption></figure></section></div></section>",
-      "css": ".ds-band { --ds-band-rule: color-mix(in srgb, var(--color-shellInk, #ffffff) 16%, transparent); --ds-band-accent: color-mix(in srgb, var(--color-accent, #eb811b) 75%, var(--color-shellInk, #ffffff)); padding: 1.5rem 1rem 2rem; border-top: 1px solid var(--ds-band-rule); background: var(--color-shell, #23373b); color: var(--color-shellInk, #ffffff); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; } .ds-band :focus-visible { outline: 2px solid var(--color-accent, #eb811b); outline-offset: 2px; } .ds-band-grid { display: grid; gap: 2.5rem; } .ds-band-progress, .ds-band-next, .ds-band-boxes { min-width: 0; } .ds-band-title { margin: 0; padding-bottom: 0.375rem; border-bottom: 2px solid var(--color-shellInk, #ffffff); font-size: 0.9375rem; line-height: 1.5; font-weight: 600; color: var(--color-shellInk, #ffffff); } .ds-band-table { width: 100%; margin-top: 0.25rem; border-collapse: collapse; font-size: 0.875rem; line-height: 1.25rem; } .ds-band-table thead th { padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-shellInk, #ffffff) 55%, transparent); text-align: left; font-weight: 500; color: var(--color-shellMuted, #b9c6c8); } .ds-band-table td, .ds-band-table tbody th { padding: 0.625rem 1rem 0.625rem 0; border-bottom: 1px solid var(--ds-band-rule); vertical-align: baseline; text-align: left; font-weight: 400; color: var(--color-shellInk, #ffffff); } .ds-band-table tbody th { white-space: nowrap; } .ds-band-table th:last-child, .ds-band-table td:last-child { padding-right: 0; } .ds-band-table .ds-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-figure { font-size: 1.75rem; font-weight: 300; line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; } .ds-statement { margin: 0; font-size: 1.5rem; font-weight: 300; line-height: 1.25; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; } .ds-band-rows { margin: 0; padding: 0; list-style: none; } .ds-band-rows > li + li { border-top: 1px solid var(--ds-band-rule); } .ds-band-due { padding: 1rem 0 1.25rem; } .ds-band-due .ds-btn-inverse { margin-top: 1rem; } .ds-band-session { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; } .ds-band-session > div { min-width: 0; flex: 1; } .ds-band-topic { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; } .ds-band-meta { margin: 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-shellMuted, #b9c6c8); font-variant-numeric: tabular-nums; } .ds-band-new { padding: 1rem 0; } .ds-btn-inverse, .ds-btn-outline-inverse { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; text-decoration: none; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-inverse { background: var(--color-shellInk, #ffffff); border-color: var(--color-shellInk, #ffffff); color: var(--color-shell, #23373b); } .ds-btn-inverse:hover:not(:disabled) { background: color-mix(in srgb, var(--color-shellInk, #ffffff) 86%, var(--color-shell, #23373b)); } .ds-btn-outline-inverse { background: transparent; border-color: color-mix(in srgb, var(--color-shellInk, #ffffff) 45%, transparent); color: var(--color-shellInk, #ffffff); } .ds-btn-outline-inverse:hover:not(:disabled) { border-color: var(--color-shellInk, #ffffff); background: color-mix(in srgb, var(--color-shellInk, #ffffff) 10%, transparent); } .ds-btn-inverse:disabled, .ds-btn-outline-inverse:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-sm { padding: 0.375rem 0.75rem; font-size: 0.875rem; line-height: 1.25rem; } .ds-boxes-figure { margin: 1rem 0 0; } .ds-boxes { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content 3ch; align-items: center; column-gap: 1rem; row-gap: 0.75rem; font-size: 0.875rem; line-height: 1.25rem; font-variant-numeric: tabular-nums; } .ds-box-label { white-space: nowrap; color: var(--color-shellMuted, #b9c6c8); } .ds-box-track { position: relative; height: 0.25rem; background: var(--ds-band-rule); } .ds-box-fill { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--color-shellMuted, #b9c6c8) 45%, transparent); } .ds-box-fill[data-state='scheduled'] { background: var(--color-shellInk, #ffffff); } .ds-box-fill[data-state='due'] { background: var(--color-accent, #eb811b); } .ds-box-due { white-space: nowrap; text-align: right; font-size: 0.75rem; line-height: 1rem; font-weight: 500; color: var(--ds-band-accent); } .ds-box-count { text-align: right; font-weight: 500; } .ds-boxes-caption { margin-top: 1rem; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-shellMuted, #b9c6c8); font-variant-numeric: tabular-nums; } .ds-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } @media (min-width: 640px) { .ds-band { padding: 2rem 1.5rem; } .ds-statement { font-size: 1.75rem; } } @media (min-width: 1024px) { .ds-band { padding: 2rem 2.5rem 2.5rem; } .ds-band-grid { grid-template-columns: minmax(0, 1fr) 22rem; grid-template-rows: auto 1fr; column-gap: 3rem; } .ds-band-progress { grid-column: 1; grid-row: 1; } .ds-band-next { grid-column: 2; grid-row: 1 / span 2; } .ds-band-boxes { grid-column: 1; grid-row: 2; } }"
+      "refersTo": "nav-item",
+      "description": "The shell from 1024px: the wordmark and the four routes on Desk; the current route is a filled violet label.",
+      "html": "<aside class=\"ds-sidebar\"><a class=\"ds-wordmark\" href=\"#\">Lembrion</a><nav class=\"ds-nav\" aria-label=\"Main\"><a class=\"ds-nav-item is-active\" href=\"#\" aria-current=\"page\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"7\" height=\"7\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"14\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"3\" y=\"14\" rx=\"1\"/></svg>Dashboard</a><a class=\"ds-nav-item\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/></svg>Study</a><a class=\"ds-nav-item\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M12 7v5l4 2\"/></svg>History</a><a class=\"ds-nav-item\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><line x1=\"21\" x2=\"14\" y1=\"4\" y2=\"4\"/><line x1=\"10\" x2=\"3\" y1=\"4\" y2=\"4\"/><line x1=\"21\" x2=\"12\" y1=\"12\" y2=\"12\"/><line x1=\"8\" x2=\"3\" y1=\"12\" y2=\"12\"/><line x1=\"21\" x2=\"16\" y1=\"20\" y2=\"20\"/><line x1=\"12\" x2=\"3\" y1=\"20\" y2=\"20\"/><line x1=\"14\" x2=\"14\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"10\" y2=\"14\"/><line x1=\"16\" x2=\"16\" y1=\"18\" y2=\"22\"/></svg>Settings</a></nav></aside>",
+      "css": ".ds-sidebar { display: flex; flex-direction: column; width: 14.5rem; padding: 1.5rem 0.75rem 1rem; background: var(--color-shell, #0c0c0c); border-right: 1px solid var(--color-line, #2a2a2a); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-wordmark { padding: 0 0.625rem; font-size: 1.375rem; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--color-shellInk, #ececec); text-decoration: none; } .ds-nav { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 2rem; } .ds-nav-item { display: flex; align-items: center; gap: 0.625rem; min-height: 2.5rem; padding: 0.5rem 0.625rem; box-sizing: border-box; border-radius: 0.25rem; font-size: 0.9375rem; font-weight: 500; color: var(--color-shellMuted, #a3a3a3); text-decoration: none; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-nav-item svg { width: 18px; height: 18px; flex-shrink: 0; stroke-width: 1.75; } .ds-nav-item:hover { color: var(--color-shellInk, #ececec); background: color-mix(in srgb, var(--color-shellInk, #ececec) 7%, transparent); } .ds-nav-item.is-active { background: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-nav-item:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; }"
     },
     {
       "name": "Status Tags",
       "kind": "chip",
       "refersTo": "tag",
-      "description": "Small 2px-cornered labels; tints for active (orange), correct and incorrect.",
-      "html": "<div class=\"ds-tags\"><span class=\"ds-tag\">Completed</span><span class=\"ds-tag ds-tag-accent\">Active</span><span class=\"ds-tag ds-tag-success\">Correct</span><span class=\"ds-tag ds-tag-error\">Incorrect</span></div>",
-      "css": ".ds-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-tag { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 0.125rem 0.375rem; border-radius: 0.125rem; font-size: 0.75rem; font-weight: 500; line-height: 1; background: var(--color-sunken, #eef1f1); color: var(--color-inkSoft, #45585c); } .ds-tag-accent { background: color-mix(in srgb, var(--color-accent, #eb811b) 16%, var(--color-surface, #ffffff)); color: var(--color-accentInk, #a8560a); } .ds-tag-success { background: color-mix(in srgb, var(--color-success, #14b03d) 14%, var(--color-surface, #ffffff)); color: var(--color-successInk, #0d7a2a); } .ds-tag-error { background: color-mix(in srgb, var(--color-error, #d13a2e) 12%, var(--color-surface, #ffffff)); color: var(--color-errorInk, #b3261e); }"
+      "description": "Small status labels on Inset; tinted accent, success and error variants with inked text.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag ds-tag-accent\">Active</span><span class=\"ds-tag ds-tag-success\">Correct</span><span class=\"ds-tag ds-tag-error\">Incorrect</span><span class=\"ds-tag\">Medium</span><span class=\"ds-tag\">Review</span></div>",
+      "css": ".ds-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-tag { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 0.125rem 0.375rem; border-radius: 0.125rem; font-size: 0.75rem; font-weight: 600; line-height: 1; background: var(--color-sunken, #202020); color: var(--color-inkSoft, #c8c8c8); } .ds-tag-accent { background: color-mix(in srgb, var(--color-accent, #9d8cff) 16%, var(--color-surface, #181818)); color: var(--color-accentInk, #9d8cff); } .ds-tag-success { background: color-mix(in srgb, var(--color-success, #3fbf74) 14%, var(--color-surface, #181818)); color: var(--color-successInk, #6fd896); } .ds-tag-error { background: color-mix(in srgb, var(--color-error, #ff6b5f) 13%, var(--color-surface, #181818)); color: var(--color-errorInk, #ff6b5f); }"
     },
     {
-      "name": "Titled Block",
+      "name": "Panel",
       "kind": "card",
-      "refersTo": "block",
-      "description": "Metropolis block: teal title strip over a pale teal-grey body; success and error variants for graded feedback.",
-      "html": "<div class=\"ds-blocks\"><section class=\"ds-block\"><h4 class=\"ds-block-title\">Explanation</h4><div class=\"ds-block-body\">A miss resets the interval: the card goes back to box 1 and is due again soon.</div></section><section class=\"ds-block ds-block-success\"><h4 class=\"ds-block-title\">Feedback</h4><div class=\"ds-block-body\">Correct: the electron transport chain is fed by NADH and FADH₂.</div></section></div>",
-      "css": ".ds-blocks { display: grid; gap: 1rem; max-width: 68ch; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-block { margin: 0; border-radius: 0.125rem; overflow: hidden; } .ds-block-title { margin: 0; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--color-shell, #23373b); color: var(--color-shellInk, #ffffff); font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; } .ds-block-body { padding: 0.875rem 1rem; background: var(--color-sunken, #eef1f1); color: var(--color-ink, #23373b); font-size: 0.9375rem; line-height: 1.625; } .ds-block-success .ds-block-title { background: var(--color-successInk, #0d7a2a); color: var(--color-surface, #ffffff); } .ds-block-success .ds-block-body { background: color-mix(in srgb, var(--color-success, #14b03d) 10%, var(--color-surface, #ffffff)); } .ds-block-error .ds-block-title { background: var(--color-errorInk, #b3261e); color: var(--color-surface, #ffffff); } .ds-block-error .ds-block-body { background: color-mix(in srgb, var(--color-error, #d13a2e) 9%, var(--color-surface, #ffffff)); }"
+      "refersTo": "panel",
+      "description": "The one container: 1px Hairline border, 6px corners, a head row over a hairline, no shadow. Here the study setup summary with its forming call number.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-panel-head\"><h2 class=\"ds-panel-title\">Session</h2><span class=\"ds-panel-callno\">CEL/LEA</span></div><div class=\"ds-panel-body\"><dl class=\"ds-facts\"><dt>Topics</dt><dd>2</dd><dt>Question type</dt><dd>Multiple choice</dd><dt>Difficulty</dt><dd>Medium</dd><dt>Techniques on</dt><dd>4 / 5</dd></dl></div></section>",
+      "css": ".ds-panel { max-width: 22rem; border: 1px solid var(--color-line, #2a2a2a); border-radius: 0.375rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; } .ds-panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1rem; padding: 0.625rem 1.25rem; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-panel-title { margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.5; } .ds-panel-callno { white-space: nowrap; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-inkSoft, #c8c8c8); } .ds-panel-body { padding: 1rem 1.25rem; } .ds-facts { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem 1rem; margin: 0; font-size: 0.875rem; line-height: 1.25rem; } .ds-facts dt { color: var(--color-inkMuted, #a3a3a3); } .ds-facts dd { margin: 0; text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "custom",
+      "refersTo": "segmented",
+      "description": "Single choice among a few values: difficulty, the History status filter, the 1–5 confidence scale. The selected segment fills violet.",
+      "html": "<div class=\"ds-segmented\" role=\"radiogroup\" aria-label=\"Difficulty\"><button type=\"button\" role=\"radio\" aria-checked=\"false\">Easy</button><button type=\"button\" role=\"radio\" aria-checked=\"true\">Medium</button><button type=\"button\" role=\"radio\" aria-checked=\"false\">Hard</button></div>",
+      "css": ".ds-segmented { display: inline-flex; padding: 0.125rem; border: 1px solid var(--color-lineStrong, #6b6b6b); border-radius: 0.25rem; background: var(--color-surface, #181818); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-segmented > button { min-height: 2.25rem; min-width: 5rem; padding: 0 0.875rem; border: 0; border-radius: 0.125rem; background: transparent; font-family: inherit; font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; color: var(--color-inkSoft, #c8c8c8); cursor: pointer; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-segmented > button:hover { color: var(--color-ink, #ececec); } .ds-segmented > button[aria-checked=\"true\"] { background: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-segmented > button:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Date Stamps",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "The signature mark: narrow caps in a 1.5px frame. Violet due, red overdue, faded not yet due, grey returned; the return stamp lands once after grading.",
+      "html": "<div class=\"ds-stamps\"><span class=\"ds-stamp ds-stamp-land\">06 NOV 2026</span><span class=\"ds-stamp ds-stamp-overdue\">Overdue · 04 NOV</span><span class=\"ds-stamp ds-stamp-later\">06 NOV · 01:22 PM</span><span class=\"ds-stamp ds-stamp-quiet\">Returned</span></div>",
+      "css": ".ds-stamps { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; } .ds-stamp { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 3px 0.5rem; border: 1.5px solid currentColor; border-radius: 0.125rem; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-accentInk, #9d8cff); } .ds-stamp-overdue { color: var(--color-errorInk, #ff6b5f); } .ds-stamp-later { color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 62%, var(--color-inkMuted, #a3a3a3)); border-color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 32%, var(--color-line, #2a2a2a)); } .ds-stamp-quiet { color: var(--color-inkMuted, #a3a3a3); border-color: var(--color-line, #2a2a2a); } .ds-stamp-land { animation: ds-stamp-land 260ms cubic-bezier(0.16, 1, 0.3, 1) both; } @keyframes ds-stamp-land { from { opacity: 0; transform: scale(1.12); } to { opacity: 1; transform: none; } } @media (prefers-reduced-motion: reduce) { .ds-stamp-land { animation: none; } }"
+    },
+    {
+      "name": "Due for Return Slip",
+      "kind": "custom",
+      "refersTo": "slip-header",
+      "description": "The review queue as a date-due slip: a red printed header rule and column heads, call numbers, boxes and stamps; not-yet-due rows muted under their group label.",
+      "html": "<section class=\"ds-slip-panel\" aria-labelledby=\"ds-slip-title\"><div class=\"ds-slip-head\"><h2 id=\"ds-slip-title\" class=\"ds-slip-title\">Due for return</h2><p class=\"ds-slip-summary\"><strong>1 overdue</strong> · 1 due today · 1 more this week</p><button type=\"button\" class=\"ds-slip-action\">Start review · 2 due</button></div><table class=\"ds-slip\"><thead><tr><th scope=\"col\">Call no.</th><th scope=\"col\">Question</th><th scope=\"col\">Box</th><th scope=\"col\">Due</th></tr></thead><tbody><tr><td><span class=\"ds-slip-callno\">ORG·3</span></td><td class=\"ds-slip-q\">Which mechanism inverts the configuration at the carbon?</td><td>Box 3 · 7 days</td><td><span class=\"ds-slip-stamp ds-slip-stamp-overdue\">Overdue · 04 NOV</span></td></tr><tr><td><span class=\"ds-slip-callno\">LIN·2</span></td><td class=\"ds-slip-q\">When is zero an eigenvalue of a matrix?</td><td>Box 2 · 3 days</td><td><span class=\"ds-slip-stamp\">06 NOV 2026</span></td></tr><tr class=\"ds-slip-group\"><td colspan=\"4\">On loan · not yet due</td></tr><tr class=\"is-later\"><td><span class=\"ds-slip-callno\">CON·2</span></td><td>What problem does a mutex solve?</td><td>Box 2 · 3 days</td><td><span class=\"ds-slip-stamp ds-slip-stamp-later\">08 NOV 2026</span></td></tr></tbody></table></section>",
+      "css": ".ds-slip-panel { overflow: hidden; border: 1px solid var(--color-line, #2a2a2a); border-radius: 0.375rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-slip-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; padding: 0.75rem 1.25rem; border-bottom: 2px solid var(--color-errorInk, #ff6b5f); } .ds-slip-title { margin: 0; font-size: 1.5rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.015em; } .ds-slip-summary { margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--color-inkMuted, #a3a3a3); font-variant-numeric: tabular-nums; } .ds-slip-summary strong { font-weight: 700; color: var(--color-errorInk, #ff6b5f); } .ds-slip-action { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-slip-action:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-slip-action:disabled { opacity: 0.5; cursor: not-allowed; } .ds-slip-action svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-slip-action { margin-left: auto; background: var(--color-primary, #5b43d6); border-color: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-slip-action:hover { background: var(--color-primaryHover, #6a54e6); border-color: var(--color-primaryHover, #6a54e6); } .ds-slip { width: 100%; border-collapse: collapse; font-size: 0.9375rem; line-height: 1.5; } .ds-slip th { padding: 0.5rem 1rem 0.5rem 0; text-align: left; font-size: 0.6875rem; font-weight: 600; line-height: 1.25; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-errorInk, #ff6b5f); border-bottom: 1px solid var(--color-errorInk, #ff6b5f); } .ds-slip td { padding: 0.5rem 1rem 0.5rem 0; vertical-align: middle; white-space: nowrap; border-bottom: 1px solid color-mix(in srgb, var(--color-errorInk, #ff6b5f) 20%, var(--color-line, #2a2a2a)); } .ds-slip th:first-child, .ds-slip td:first-child { padding-left: 1.25rem; } .ds-slip th:last-child, .ds-slip td:last-child { padding-right: 1.25rem; } .ds-slip tr:last-child td { border-bottom: 0; } .ds-slip-q { font-weight: 500; } .ds-slip .ds-slip-group td { padding-top: 0.75rem; padding-bottom: 0.375rem; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-inkMuted, #a3a3a3); } .ds-slip .is-later td { color: var(--color-inkMuted, #a3a3a3); } .ds-slip-callno { white-space: nowrap; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-inkSoft, #c8c8c8); } .ds-slip .is-later .ds-slip-callno { color: var(--color-inkMuted, #a3a3a3); } .ds-slip-stamp { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 3px 0.5rem; border: 1.5px solid currentColor; border-radius: 0.125rem; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-accentInk, #9d8cff); } .ds-slip-stamp-overdue { color: var(--color-errorInk, #ff6b5f); } .ds-slip-stamp-later { color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 62%, var(--color-inkMuted, #a3a3a3)); border-color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 32%, var(--color-line, #2a2a2a)); } .ds-slip-stamp-quiet { color: var(--color-inkMuted, #a3a3a3); border-color: var(--color-line, #2a2a2a); }"
+    },
+    {
+      "name": "Loan Periods",
+      "kind": "custom",
+      "refersTo": "loan-track",
+      "description": "Each Leitner box drawn from day 0 to its interval on one 0–30 day axis, split into not-yet-due, due-today and overdue shares.",
+      "html": "<section class=\"ds-loans\" aria-label=\"Loan periods\"><div class=\"ds-loans-head\"><h2 class=\"ds-loans-title\">Loan periods</h2><span class=\"ds-loans-meta\">9 on loan · 1 retired</span></div><div class=\"ds-loan-row ds-loan-axis\"><span>Box</span><span class=\"ds-loan-ticks\"><span style=\"left: 0%\">0</span><span style=\"left: 23.333%\">7</span><span style=\"left: 46.667%\">14</span><span style=\"left: 100%; transform: translateX(-100%)\">30 days</span></span><span class=\"ds-loan-num\">On loan</span><span class=\"ds-loan-num\">Due</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 1</b> <span>1 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 3.333%\"><span class=\"ds-loan-later\" style=\"width: 50%\"></span><span class=\"ds-loan-overdue\" style=\"width: 50%\"></span></span></span><span class=\"ds-loan-num\">2</span><span class=\"ds-loan-num ds-loan-due-overdue\">1</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 2</b> <span>3 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 10.0%\"><span class=\"ds-loan-later\" style=\"width: 33.333%\"></span><span class=\"ds-loan-today\" style=\"width: 66.667%\"></span></span></span><span class=\"ds-loan-num\">3</span><span class=\"ds-loan-num ds-loan-due-today\">2</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 3</b> <span>7 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 23.333%\"><span class=\"ds-loan-today\" style=\"width: 50%\"></span><span class=\"ds-loan-overdue\" style=\"width: 50%\"></span></span></span><span class=\"ds-loan-num\">2</span><span class=\"ds-loan-num ds-loan-due-overdue\">2</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 4</b> <span>14 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 46.667%\"><span class=\"ds-loan-later\" style=\"width: 100%\"></span></span></span><span class=\"ds-loan-num\">1</span><span class=\"ds-loan-num ds-loan-due-none\">0</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 5</b> <span>30 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 100.0%\"><span class=\"ds-loan-later\" style=\"width: 100%\"></span></span></span><span class=\"ds-loan-num\">1</span><span class=\"ds-loan-num ds-loan-due-none\">0</span></div></section>",
+      "css": ".ds-loans { max-width: 26.5rem; border: 1px solid var(--color-line, #2a2a2a); border-radius: 0.375rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; } .ds-loans-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1rem; padding: 0.625rem 1.25rem; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-loans-title { margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.5; } .ds-loans-meta { color: var(--color-inkMuted, #a3a3a3); font-variant-numeric: tabular-nums; } .ds-loan-row { display: grid; grid-template-columns: 5rem minmax(0, 1fr) 3.5rem 2rem; align-items: center; gap: 0 0.75rem; padding: 0.25rem 1.25rem; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-loan-row:last-child { border-bottom: 0; } .ds-loan-axis { padding-top: 0.5rem; padding-bottom: 0.5rem; font-size: 0.6875rem; font-weight: 600; line-height: 1.25; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-inkMuted, #a3a3a3); } .ds-loan-ticks { position: relative; height: 0.875rem; } .ds-loan-ticks > span { position: absolute; top: 0; white-space: nowrap; } .ds-loan-box { white-space: nowrap; } .ds-loan-box b { font-weight: 600; } .ds-loan-box span { margin-left: 0.25rem; color: var(--color-inkMuted, #a3a3a3); } .ds-loan-track { position: relative; display: block; height: 0.5rem; overflow: hidden; border-radius: 0.125rem; background: var(--color-sunken, #202020); } .ds-loan-bar { position: absolute; top: 0; bottom: 0; left: 0; display: flex; } .ds-loan-bar > span { display: block; height: 100%; } .ds-loan-bar > span + span { border-left: 1px solid var(--color-surface, #181818); } .ds-loan-later { background: color-mix(in srgb, var(--color-accent, #9d8cff) 45%, var(--color-sunken, #202020)); } .ds-loan-today { background: var(--color-accent, #9d8cff); } .ds-loan-overdue { background: var(--color-error, #ff6b5f); } .ds-loan-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-loan-due-overdue { font-weight: 700; color: var(--color-errorInk, #ff6b5f); } .ds-loan-due-today { font-weight: 700; color: var(--color-accentInk, #9d8cff); } .ds-loan-due-none { color: var(--color-inkMuted, #a3a3a3); }"
     },
     {
       "name": "Answer Options",
       "kind": "custom",
       "refersTo": "option",
-      "description": "Signature: options as ruled rows with a key column; after grading all stay visible with the pick, the correct answer and notes.",
-      "html": "<div class=\"ds-options\" role=\"group\" aria-label=\"Answer options\"><button type=\"button\" class=\"ds-option\" data-state=\"wrong\" disabled><span class=\"ds-option-key\">A</span><span>It moves up one box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>Your answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"correct\" disabled><span class=\"ds-option-key\">B</span><span>It returns to the first box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg>Correct answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"muted\" disabled><span class=\"ds-option-key\">C</span><span>It stays in its current box</span><span class=\"ds-option-note\"></span></button><button type=\"button\" class=\"ds-option\"><span class=\"ds-option-key\">D</span><span>It is removed from the deck</span><span class=\"ds-option-note\"></span></button></div>",
-      "css": ".ds-options { max-width: 68ch; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-option { display: grid; width: 100%; grid-template-columns: 1.75rem 1fr auto; align-items: baseline; column-gap: 0.75rem; padding: 0.75rem 1rem; border: 0; border-bottom: 1px solid var(--color-line, #dfe5e5); background: transparent; color: var(--color-ink, #23373b); text-align: left; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; cursor: pointer; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-option:first-child { border-top: 1px solid var(--color-line, #dfe5e5); } .ds-option:disabled { cursor: default; } .ds-option:not(:disabled):hover { background: var(--color-sunken, #eef1f1); } .ds-option:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-option-key { font-size: 0.875rem; font-weight: 600; color: var(--color-inkSoft, #45585c); } .ds-option-note { display: flex; align-items: center; gap: 0.25rem; white-space: nowrap; font-size: 0.75rem; line-height: 1rem; font-weight: 600; } .ds-option[data-state='selected'] { background: color-mix(in srgb, var(--color-primary, #23373b) 9%, var(--color-surface, #ffffff)); } .ds-option[data-state='selected'] .ds-option-key { color: var(--color-ink, #23373b); } .ds-option[data-state='correct'] { background: color-mix(in srgb, var(--color-success, #14b03d) 12%, var(--color-surface, #ffffff)); } .ds-option[data-state='correct'] .ds-option-key, .ds-option[data-state='correct'] .ds-option-note { color: var(--color-successInk, #0d7a2a); } .ds-option[data-state='wrong'] { background: color-mix(in srgb, var(--color-error, #d13a2e) 10%, var(--color-surface, #ffffff)); } .ds-option[data-state='wrong'] .ds-option-key, .ds-option[data-state='wrong'] .ds-option-note { color: var(--color-errorInk, #b3261e); } .ds-option[data-state='muted'] { color: var(--color-inkMuted, #5b6c70); }"
+      "description": "Rows, not cards. After grading every option stays visible: the correct one tinted green, a wrong pick tinted red, the rest muted.",
+      "html": "<div class=\"ds-options\" role=\"group\" aria-label=\"Answer options\"><button type=\"button\" class=\"ds-option\" data-state=\"wrong\"><span class=\"ds-option-key\">A</span><span>It moves up one box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>Your answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"correct\"><span class=\"ds-option-key\">B</span><span>It returns to the first box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg>Correct answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"muted\"><span class=\"ds-option-key\">C</span><span>It stays in its current box</span><span class=\"ds-option-note\"></span></button><button type=\"button\" class=\"ds-option\" data-state=\"muted\"><span class=\"ds-option-key\">D</span><span>It is removed from the deck</span><span class=\"ds-option-note\"></span></button></div>",
+      "css": ".ds-options { max-width: 34rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-option { display: grid; grid-template-columns: 1.75rem 1fr auto; align-items: baseline; column-gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; border: 0; border-bottom: 1px solid var(--color-line, #2a2a2a); background: transparent; color: var(--color-ink, #ececec); font-family: inherit; font-size: 1rem; line-height: 1.5; text-align: left; cursor: pointer; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-option:first-child { border-top: 1px solid var(--color-line, #2a2a2a); } .ds-option:hover { background: var(--color-sunken, #202020); } .ds-option:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-option-key { font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.9375rem; font-weight: 700; color: var(--color-inkMuted, #a3a3a3); } .ds-option[data-state=\"selected\"] { background: var(--color-sunken, #202020); box-shadow: inset 0 0 0 1px var(--color-accent, #9d8cff); } .ds-option[data-state=\"selected\"] .ds-option-key { color: var(--color-accentInk, #9d8cff); } .ds-option[data-state=\"correct\"] { background: color-mix(in srgb, var(--color-success, #3fbf74) 13%, var(--color-surface, #181818)); } .ds-option[data-state=\"correct\"] .ds-option-key, .ds-option[data-state=\"correct\"] .ds-option-note { color: var(--color-successInk, #6fd896); } .ds-option[data-state=\"wrong\"] { background: color-mix(in srgb, var(--color-error, #ff6b5f) 11%, var(--color-surface, #181818)); } .ds-option[data-state=\"wrong\"] .ds-option-key, .ds-option[data-state=\"wrong\"] .ds-option-note { color: var(--color-errorInk, #ff6b5f); } .ds-option[data-state=\"muted\"] { color: var(--color-inkMuted, #a3a3a3); } .ds-option-note { display: flex; align-items: center; gap: 0.25rem; white-space: nowrap; font-size: 0.75rem; font-weight: 600; line-height: 1rem; } .ds-option-note svg { width: 0.875rem; height: 0.875rem; }"
     },
     {
       "name": "Progress Rule",
       "kind": "custom",
       "refersTo": "progress-rule",
-      "description": "Signature: a 4px line under the title bar, one segment per question; orange marks the current one; plus the travelling loading rule.",
-      "html": "<div class=\"ds-rules\"><div class=\"ds-progress-rule\" role=\"img\" aria-label=\"4 answered, 2 correct\"><span data-state=\"correct\"></span><span data-state=\"wrong\"></span><span data-state=\"correct\"></span><span data-state=\"wrong\"></span><span data-state=\"current\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span></div><div class=\"ds-loading-rule\" role=\"status\" aria-label=\"Writing the next question\"></div></div>",
-      "css": ".ds-rules { display: grid; gap: 1.5rem; } .ds-progress-rule { display: flex; gap: 1px; width: 100%; height: 0.25rem; background: var(--color-line, #dfe5e5); } .ds-progress-rule > span { flex: 1; height: 100%; transform-origin: left center; } .ds-progress-rule > [data-state='correct'] { background: var(--color-success, #14b03d); } .ds-progress-rule > [data-state='wrong'] { background: var(--color-error, #d13a2e); } .ds-progress-rule > [data-state='current'] { background: var(--color-accent, #eb811b); } .ds-progress-rule > [data-state='pending'] { background: transparent; } .ds-progress-rule > [data-state]:not([data-state='pending']) { animation: ds-rule-grow 480ms cubic-bezier(0.16, 1, 0.3, 1) both; } .ds-loading-rule { position: relative; height: 0.25rem; width: 100%; overflow: hidden; background: var(--color-line, #dfe5e5); } .ds-loading-rule::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 33.333333%; background: var(--color-accent, #eb811b); animation: ds-rule-travel 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite; } @keyframes ds-rule-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } } @keyframes ds-rule-travel { from { transform: translateX(-100%); } to { transform: translateX(300%); } } @media (prefers-reduced-motion: reduce) { .ds-progress-rule > span, .ds-loading-rule::after { animation-duration: 0.01ms; animation-iteration-count: 1; } }"
+      "description": "A 4px rule across the top of the study loop: one segment per question, green correct, red wrong, violet current; open-ended sessions grow in blocks of ten.",
+      "html": "<div class=\"ds-progress\" role=\"img\" aria-label=\"4 answered, 3 correct\"><span data-state=\"correct\"></span><span data-state=\"correct\"></span><span data-state=\"wrong\"></span><span data-state=\"correct\"></span><span data-state=\"current\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span></div>",
+      "css": ".ds-progress { display: flex; gap: 1px; width: 100%; height: 0.25rem; background: var(--color-line, #2a2a2a); } .ds-progress > span { flex: 1; height: 100%; transform-origin: left center; } .ds-progress > [data-state=\"correct\"] { background: var(--color-success, #3fbf74); } .ds-progress > [data-state=\"wrong\"] { background: var(--color-error, #ff6b5f); } .ds-progress > [data-state=\"current\"] { background: var(--color-accent, #9d8cff); } .ds-progress > [data-state=\"pending\"] { background: transparent; } .ds-progress > [data-state]:not([data-state=\"pending\"]) { animation: ds-rule-grow 480ms cubic-bezier(0.16, 1, 0.3, 1) both; } @keyframes ds-rule-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } } @media (prefers-reduced-motion: reduce) { .ds-progress > [data-state] { animation: none; } }"
     },
     {
-      "name": "Toast",
+      "name": "Extent Bar",
       "kind": "custom",
-      "refersTo": "toast",
-      "description": "Transient message under the title bar: surface panel, overlay shadow, 4px state rule along the top; click dismisses.",
-      "html": "<div class=\"ds-toast-region\" aria-live=\"polite\"><div class=\"ds-toast\" data-type=\"success\"><div class=\"ds-toast-body\"><p class=\"ds-toast-title\">API key configured</p><p class=\"ds-toast-message\">OpenAI API key has been automatically configured from URL.</p></div></div><div class=\"ds-toast\" data-type=\"error\" role=\"alert\"><div class=\"ds-toast-body\"><p class=\"ds-toast-title\">Could not save your data</p><p class=\"ds-toast-message\">Browser storage is full or unavailable, so recent changes will be lost when you reload. Delete old sessions in Settings to free space.</p></div></div><div class=\"ds-toast\" data-type=\"info\"><div class=\"ds-toast-body\"><p class=\"ds-toast-title\">Lembrion updated</p><p class=\"ds-toast-message\">Updated from v2.0.0 to v2.1.0. Your API keys and provider settings, study sessions, language and theme were kept. Other cached data was cleared.</p></div></div></div>",
-      "css": ".ds-toast-region { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; width: 24rem; max-width: 100%; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-toast { width: 100%; cursor: pointer; overflow: hidden; border: 1px solid var(--color-line, #dfe5e5); border-radius: 0.25rem; background: var(--color-surface, #ffffff); color: var(--color-ink, #23373b); box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12); animation: ds-toast-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both; } .ds-toast::before { content: ''; display: block; height: 0.25rem; background: var(--ds-toast-rule, var(--color-primary, #23373b)); } .ds-toast[data-type='success'] { --ds-toast-rule: var(--color-success, #14b03d); } .ds-toast[data-type='error'] { --ds-toast-rule: var(--color-error, #d13a2e); } .ds-toast[data-type='warning'] { --ds-toast-rule: var(--color-warning, #e0a526); } .ds-toast-body { padding: 0.75rem 1rem; } .ds-toast-title { margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.375; } .ds-toast-message { margin: 0.125rem 0 0; font-size: 0.875rem; line-height: 1.375; color: var(--color-inkSoft, #45585c); } .ds-toast:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } @keyframes ds-toast-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } } @media (prefers-reduced-motion: reduce) { .ds-toast { animation-duration: 0.01ms; } }"
-    },
-    {
-      "name": "Data Table",
-      "kind": "custom",
-      "refersTo": "data-table-header",
-      "description": "Recent sessions on the ground: ink rule under headers, hairline rows, underlined topic links, tabular figures right-aligned.",
-      "html": "<table class=\"ds-table\"><thead><tr><th scope=\"col\">Topics</th><th scope=\"col\">Type</th><th scope=\"col\" class=\"ds-num\">Questions</th><th scope=\"col\" class=\"ds-num\">Score</th><th scope=\"col\" class=\"ds-num\">Date</th></tr></thead><tbody><tr><td class=\"ds-topic\"><a href=\"#\">Photosynthesis · Calvin cycle</a></td><td class=\"ds-soft\">Multiple choice</td><td class=\"ds-num\">5</td><td class=\"ds-num\">80%</td><td class=\"ds-num ds-nowrap\">Nov 5, 2026</td></tr><tr><td class=\"ds-topic\"><a href=\"#\">Cell respiration</a></td><td class=\"ds-soft\">Dissertative</td><td class=\"ds-num\">3</td><td class=\"ds-num\">67%</td><td class=\"ds-num ds-nowrap\">Nov 3, 2026</td></tr><tr><td class=\"ds-topic\"><a href=\"#\">Krebs cycle · Electron transport</a></td><td class=\"ds-soft\">Mixed</td><td class=\"ds-num\">8</td><td class=\"ds-num\">75%</td><td class=\"ds-num ds-nowrap\">Oct 30, 2026</td></tr></tbody></table>",
-      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; } .ds-table thead th { padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--color-ink, #23373b); text-align: left; font-weight: 500; color: var(--color-inkSoft, #45585c); } .ds-table td { padding: 0.625rem 1rem 0.625rem 0; border-bottom: 1px solid var(--color-line, #dfe5e5); vertical-align: baseline; text-align: left; font-weight: 400; color: var(--color-ink, #23373b); } .ds-table th:last-child, .ds-table td:last-child { padding-right: 0; } .ds-table .ds-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-table .ds-nowrap { white-space: nowrap; } .ds-table .ds-soft { white-space: nowrap; color: var(--color-inkSoft, #45585c); } .ds-table .ds-topic { max-width: 26rem; } .ds-table .ds-topic a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--color-ink, #23373b); text-decoration: underline; text-decoration-color: var(--color-lineStrong, #869699); text-decoration-thickness: 1px; text-underline-offset: 0.2em; } .ds-table .ds-topic a:hover { text-decoration-color: var(--color-ink, #23373b); } .ds-table a:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; }"
+      "refersTo": "extent",
+      "description": "Answered questions per session on one shared scale (the most answered session), one segment per topic; set before the answered count in Recent sessions and History.",
+      "html": "<div class=\"ds-extents\"><div class=\"ds-extent-row\"><span class=\"ds-extent-callno\">CEL/LEA</span><span class=\"ds-extent-topic\">Cellular respiration · Learning science</span><span class=\"ds-extent\" aria-hidden=\"true\"><span style=\"width: 25%\"></span><span style=\"width: 25%\"></span></span><span class=\"ds-extent-count\">4</span></div><div class=\"ds-extent-row\"><span class=\"ds-extent-callno\">LIN</span><span class=\"ds-extent-topic\">Linear algebra: eigenvalues</span><span class=\"ds-extent\" aria-hidden=\"true\"><span style=\"width: 100%\"></span></span><span class=\"ds-extent-count\">8</span></div><div class=\"ds-extent-row\"><span class=\"ds-extent-callno\">ORG</span><span class=\"ds-extent-topic\">Organic chemistry: SN1 vs SN2</span><span class=\"ds-extent\" aria-hidden=\"true\"><span style=\"width: 62.5%\"></span></span><span class=\"ds-extent-count\">5</span></div></div>",
+      "css": ".ds-extents { max-width: 30rem; background: var(--color-surface, #181818); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-ink, #ececec); } .ds-extent-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 3rem 2ch; align-items: center; gap: 0 0.75rem; padding: 0.375rem 0; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-extent-row:last-child { border-bottom: 0; } .ds-extent-callno { white-space: nowrap; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-inkSoft, #c8c8c8); } .ds-extent-topic { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; } .ds-extent { display: inline-flex; width: 3rem; height: 0.25rem; overflow: hidden; border-radius: 0.125rem; background: var(--color-sunken, #202020); } .ds-extent > span { height: 100%; flex-shrink: 0; background: var(--color-lineStrong, #6b6b6b); } .ds-extent > span + span { box-shadow: inset 1px 0 0 var(--color-surface, #181818); } .ds-extent-count { text-align: right; font-variant-numeric: tabular-nums; }"
     }
   ],
   "narrative": {
-    "northStar": "The Lecture Deck",
-    "overview": "Lembrion is set like a well-made Metropolis Beamer deck. One dark teal title bar carries the wordmark and the routes; below it sits a pale ground with one idea per frame, and during a session a 4px progress line under the bar records every answer. Where a page needs an overview, the bar's ground carries on below it as a band, Metropolis's standout frame: the Dashboard opens with one, and the study setup summary becomes one on wide screens. Hierarchy comes from type size and weight and from rules (a 2px ink rule under each section title, hairlines between rows), not from boxes. Explanation and feedback arrive in titled blocks: a teal title strip over a pale teal-grey body, exactly as Metropolis draws them.\n\nThe density is that of a good handout: counts live in data tables and facts lists with right-aligned tabular figures, controls state their exact values, and the right column of a two-column frame holds the facts of the current session, the response to a graded answer, or the next action. Colour is disciplined. Teal does the structural work (title bar, band, primary buttons, block titles, heading rules); Metropolis orange marks only where the learner is (progress, the current item, the active route, reviews due); green and red appear only to report state. Three palettes (light, dark, contrast) share one set of token names, so every component follows the active theme without a reload; the default System preference picks light or dark from the browser and follows it live.\n\nThe world is flat. PRODUCT.md binds it to no skeuomorphism, and the shipped build carries no gradients, glow, icon tiles, or stacked shadowed cards; the only shadow in the system belongs to things that float (the theme menu, dialogs and toasts).",
+    "northStar": "The Circulation Desk",
+    "overview": "Lembrion is a conventional study-app shell with one library ritual laid over it. The shell is the category standard: a left sidebar from 1024px (a top bar below that), a page title beside the date, and calm bordered panels on a neutral, untinted ground. The ritual is the loan. Every question and every session carries a call number like a spine label (`ORG·3`, `CEL/LEA`), questions that come back for review are listed on a date-due slip, and each one is marked with a date stamp in narrow caps: violet when it is due, red when it is overdue, faded while it is still out, grey once it is returned.\n\nThe density is that of a circulation ledger. Numbers live in tables with small caps column heads, hairline rows and right-aligned tabular figures; progress figures are set in Archivo Narrow; loan periods are drawn to their true length on one 0–30 day axis, and each session's answered questions are drawn as a bar on one shared scale, so lengths can be compared across rows and pages. Colour is spent sparingly: stamp violet marks what is due, actionable or current; slip red prints the due slip's header and marks what is overdue, and doubles as the error hue; green and amber only report state. Dark is the default palette; Light, System and High contrast are one click away in the theme menu, and all of them share one set of token names.\n\nThe world is flat. PRODUCT.md binds it to no skeuomorphism: a date stamp is a 1.5px frame of narrow caps, not an inked rubber impression; there are no gradients, glow, icon tiles or rounded bubbly cards, nothing is rounder than 6px, and the only shadow in the system belongs to things that float (menus, dialogs, toasts).",
     "keyCharacteristics": [
-      "A single dark teal title bar, sticky, 3.5rem tall, white Fira Sans on teal; where a page needs an overview, its ground carries on below it as a band with inverse buttons.",
-      "One orange rule: the progress line, the loading line, and the 3px underline under the active route or tab.",
-      "Titled blocks (teal strip, pale teal-grey body) for every explanation and piece of feedback.",
-      "Tables and facts lists with tabular figures right-aligned; no stat tiles.",
-      "Two radii only (2px and 4px); 1px borders; 2px ink rules under section titles.",
-      "Flat content on a tonal ground; shadows only on overlays.",
-      "Fira Sans for everything (Light only for figures and statements), Fira Mono for keys, model IDs, URLs and code; sentence-case copy."
+      "A standard shell: a 14.5rem sidebar whose current route is a filled violet label, and a 3.5rem top bar below 1024px.",
+      "Panels with 1px hairline borders and 6px corners on a neutral grey ground; no shadow on content.",
+      "A call number in Archivo Narrow caps on every question and session.",
+      "Date stamps in a 1.5px frame: violet due, red overdue, faded not yet due, grey returned or retired.",
+      "The \"Due for return\" slip: the review queue under a red printed header rule and red column heads.",
+      "Loan periods and extent bars drawn to exact length on shared axes.",
+      "Libre Franklin for the interface, Archivo Narrow for marks and figures; hierarchy by size and weight."
     ],
     "rules": [
       {
-        "name": "The Where-You-Are Rule",
-        "body": "Orange marks progress and the current item only: the current progress segment, the loading line, the active route and tab underline, review boxes with questions due, and \"Active\" or due labels. It never fills a button, a heading, a block, or a decorative surface.",
+        "name": "The Due-or-Actionable Rule",
+        "body": "Violet marks only what is due, actionable or current: the current route, primary buttons, selected segments and tabs, selected choices and options, due stamps, due and not-yet-due loan shares, the current progress segment, the loading rule, links and the \"Active\" status. It never fills a panel, a heading, a tag at rest, or decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Slip Red Rule",
+        "body": "Red prints only the due slip's header and column heads and marks what is overdue; everywhere else it means an error or a wrong answer. It is never a decorative accent, and never a second action colour.",
         "section": "colors"
       },
       {
         "name": "The Ink Twin Rule",
-        "body": "Every signal hue has an ink twin. The base (accent, success, error, warning) fills rules, strips and tints; text in that hue on the ground always uses the `*Ink` token. On a band the ground is Title-bar Teal, so due counts there use `--band-accent` (accent mixed 75% with Title-bar White) instead. Light-theme Metropolis Orange is 2.62:1 on the ground and never carries text.",
+        "body": "Every signal hue has an ink twin. The base (`accent`, `success`, `error`, `warning`) fills rules, bars and tints; text and stamp frames in that hue always use the `*Ink` token, which holds at least 4.5:1 on Panel in every palette.",
         "section": "colors"
       },
       {
         "name": "The Tint, Not Fill Rule",
-        "body": "State surfaces are tints mixed into the surface with `color-mix(in srgb, <hue> N%, var(--color-surface))`, never solid fills: choice checked (primary 8%), option selected (primary 9%), option correct (success 12%), option wrong (error 10%), success block body (success 10%), error block body (error 9%), error notice (error 10%), warning notice (warning 14%), accent tag (accent 16%), success tag (success 14%), error tag (error 12%), danger button hover (error 10%). The only solid state fills are block title strips, progress segments, and the scheduled and due review-box strips.",
+        "body": "State surfaces are tints mixed into Panel with `color-mix(in srgb, <hue> N%, var(--color-surface))`: correct option (success 13%), wrong option (error 11%), success note title (success 10%), error note title (error 9%), error notice (error 9%), warning notice (warning 12%), accent tag (accent 16%), success tag (success 14%), error tag (error 13%), danger button hover (error 10%), pressed suggested model (primary 11%). A selected choice or option is neutral (Inset with a 1px Due Violet inset outline). The only solid fills are primary buttons, the current route, selected segments, progress segments, loan shares, extent segments, the loading bar and toast rules.",
         "section": "colors"
       },
       {
+        "name": "The Two Faces Rule",
+        "body": "Libre Franklin sets the interface; Archivo Narrow is reserved for the circulation marks and figures: call numbers, date stamps, figures, option keys and the \"Enter\" key hint. Narrow never sets body text, headings or buttons.",
+        "section": "typography"
+      },
+      {
         "name": "The Size-and-Weight Rule",
-        "body": "Hierarchy is size and weight (300 for figures and statements, then 400, 500, 600) plus rules. No text is uppercased or letter-spaced anywhere; tracking moves only on the page title, figures and statements (-0.01em) and the wordmark (0.01em). No kickers or eyebrows above titles.",
+        "body": "Hierarchy is size and weight (400 through 800) plus Muted Ink for secondary text. Uppercase and tracking belong only to printed labels (column heads and group labels at 0.08em), call numbers (0.05em), stamps (0.06em) and the key hint; negative tracking only to the wordmark, page titles, the slip title and the question. No kickers or eyebrows above titles.",
         "section": "typography"
       },
       {
         "name": "The Tabular Figures Rule",
-        "body": "Every count, score, percentage, ratio and date sets in tabular figures (`font-variant-numeric: tabular-nums`) and right-aligns in table number columns and facts values. Ratios are written with spaced slashes (\"3 / 5\", \"0 / 1\"); topic lists join with \" · \".",
-        "section": "typography"
-      },
-      {
-        "name": "The Sentence Case Rule",
-        "body": "All UI copy is sentence case: \"Start review\", \"Recent sessions\", \"New study session\", \"End session\".",
+        "body": "Every count, score, percentage, ratio, date and stamp sets in tabular figures and right-aligns in number columns and fact values. Ratios are written with spaced slashes (\"0 / 1\", \"3 / 5\"); lists and metadata join with \" · \".",
         "section": "typography"
       },
       {
         "name": "The One Measure Rule",
-        "body": "Reading text never runs wider than 68ch. Wide content (tables, two-column frames) may use the full 72rem; prose may not.",
+        "body": "Reading text never runs wider than 68ch. Tables and two-column frames may use the full 76rem; prose may not.",
+        "section": "layout"
+      },
+      {
+        "name": "The Reading Order Rule",
+        "body": "Phones read the panels in DOM order, and wide layouts only place them. The slip always follows Progress: second in the phone stack, the full-width middle row from 1280px.",
         "section": "layout"
       },
       {
         "name": "The Overlays-Only Rule",
-        "body": "A shadow means \"this floats above the page\". Tables, blocks, bands, choice groups, option rows and every other piece of content sit flat on the ground; if it does not float, it does not cast.",
+        "body": "A shadow means \"this floats above the page\". Panels, the slip, tables, notes and every other piece of content sit flat; if it does not float, it does not cast.",
         "section": "elevation"
       },
       {
-        "name": "The Two Radii Rule",
-        "body": "2px for what you read, 4px for what you press or type into; nothing rounder.",
+        "name": "The Three Radii Rule",
+        "body": "2px for marks, 4px for controls, 6px for containers; nothing rounder, and no pills.",
         "section": "shapes"
       }
     ],
     "dos": [
-      "Do put every route inside the 72rem frame under the teal title bar (the Dashboard band holds the same frame inside it), open with one `page-title` (the Dashboard's is visually hidden; its band opens the page), and head each section with a `section-title` and its 2px ink rule.",
-      "Do give each screen one primary (Deck Teal) button for the next step, or one inverse button on a band; make every other action secondary or ghost (outline inverse on a band).",
-      "Do carry a page's overview on a band: the title bar's ground below the bar, Title-bar White and Title-bar Mist for text and rules, inverse buttons for actions.",
-      "Do keep Metropolis Orange for progress and the current item, and set orange text in Burnt Orange Ink (`--band-accent` on a band).",
-      "Do set counts, scores, ratios and dates in tabular figures, right-aligned in tables and facts lists.",
-      "Do put explanations and feedback in titled blocks, and show grading as a tint mixed into the surface plus inked text.",
-      "Do style through the semantic tokens (`bg-shell`, `text-ink-soft`, `border-line-strong`) so all three themes follow; build tints with `color-mix()` in CSS, because the token classes take no `/opacity` modifier.",
-      "Do show any AI wait as the 4px loading rule with a one-line label.",
-      "Do raise transient, out-of-flow messages through the toast: a surface panel with a 4px state rule on top, a title and a short message.",
-      "Do write UI copy in sentence case."
+      "Do put every route in the 76rem page frame beside the sidebar (under the top bar on phones), open it with one `page-title` and its lede, and group its content in panels with a 1px Hairline border and 6px corners.",
+      "Do give each screen one Stamp Violet primary button for the next step; make every other action secondary or ghost.",
+      "Do tag every question and session with its call number, and mark every scheduled question with a date stamp: violet due, red overdue, faded not yet due, quiet once returned.",
+      "Do keep violet for what is due, actionable or current, and set violet, green, red and amber text in the `*Ink` tokens.",
+      "Do draw lengths to scale on a shared axis: loan periods on the 0–30 day axis, extent bars against the most answered session.",
+      "Do set counts, scores, ratios, dates and stamps in tabular figures, right-aligned in tables and facts lists.",
+      "Do show grading as a tint mixed into Panel plus inked text, and keep every option, the user's pick, the correct answer and the explanation visible after grading.",
+      "Do style through the semantic tokens (`bg-surface`, `text-ink-muted`, `border-line-strong`) so all three palettes follow; build tints with `color-mix()` in CSS, because the token classes take no `/opacity` modifier.",
+      "Do show any AI wait as the 3px loading rule with a one-line label."
     ],
     "donts": [
-      "Don't use skeuomorphic texture, gradients or glow; PRODUCT.md rules out skeuomorphism.",
+      "Don't use skeuomorphic texture, gradients or glow; PRODUCT.md rules out skeuomorphism, so the stamp stays a flat frame of caps.",
+      "Don't build rounded bubbly cards, icon tiles or stat tiles; numbers belong in tables, facts and figures, and nothing is rounder than 6px.",
       "Don't put a shadow on content; only menus, dialogs and toasts carry the overlay shadow.",
-      "Don't build stat tiles, icon tiles or stacked shadowed cards; numbers belong in data tables and facts lists.",
-      "Don't add a coloured side stripe to notices or blocks; state is a tint plus inked text.",
-      "Don't fill buttons, headings or surfaces with orange, or set text in the base accent.",
-      "Don't put primary, secondary or ghost buttons, or Deck Ink and Soft Slate text, on a band; they are drawn for the ground.",
-      "Don't uppercase or letter-space labels, or put kickers or eyebrows above titles.",
-      "Don't round anything past 4px or draw pills.",
-      "Don't hard-code hex in components; every colour comes from a `--color-*` token so the three themes stay whole."
+      "Don't use violet as decoration, or red for anything but the slip's print, overdue and errors.",
+      "Don't add a coloured side stripe to notices, notes or panels; state is a tint plus inked text.",
+      "Don't set body text, headings or buttons in Archivo Narrow, or uppercase anything but printed labels, call numbers, stamps and the key hint.",
+      "Don't put kickers or eyebrows above titles.",
+      "Don't hard-code hex in components; every colour comes from a `--color-*` token so the three palettes stay whole."
     ]
   }
 }

@@ -1,69 +1,69 @@
 ---
 name: Lembrion
-description: "A flat lecture-deck study tool: one teal title bar, one orange progress rule, questions set in Fira Sans."
+description: "A standard study-app shell with a library circulation desk inside: call numbers, a date-due slip and flat date stamps on a neutral dark ground."
 colors:
-  shell: "#23373b"
-  shellInk: "#ffffff"
-  shellMuted: "#b9c6c8"
-  ground: "#fafafa"
-  surface: "#ffffff"
-  sunken: "#eef1f1"
-  ink: "#23373b"
-  inkSoft: "#45585c"
-  inkMuted: "#5b6c70"
-  line: "#dfe5e5"
-  lineStrong: "#869699"
-  primary: "#23373b"
-  primaryHover: "#30494e"
+  shell: "#0c0c0c"
+  shellInk: "#ececec"
+  shellMuted: "#a3a3a3"
+  ground: "#121212"
+  surface: "#181818"
+  sunken: "#202020"
+  ink: "#ececec"
+  inkSoft: "#c8c8c8"
+  inkMuted: "#a3a3a3"
+  line: "#2a2a2a"
+  lineStrong: "#6b6b6b"
+  primary: "#5b43d6"
+  primaryHover: "#6a54e6"
   onPrimary: "#ffffff"
-  accent: "#eb811b"
-  accentInk: "#a8560a"
-  success: "#14b03d"
-  successInk: "#0d7a2a"
-  error: "#d13a2e"
-  errorInk: "#b3261e"
+  accent: "#9d8cff"
+  accentInk: "#9d8cff"
+  success: "#3fbf74"
+  successInk: "#6fd896"
+  error: "#ff6b5f"
+  errorInk: "#ff6b5f"
   warning: "#e0a526"
-  warningInk: "#8a5a00"
-  focus: "#23373b"
-  dark-shell: "#0f0f0f"
-  dark-shellInk: "#f5f5f5"
-  dark-shellMuted: "#a8a8a8"
-  dark-ground: "#161616"
-  dark-surface: "#1e1e1e"
-  dark-sunken: "#262626"
-  dark-ink: "#ededed"
-  dark-inkSoft: "#c9c9c9"
-  dark-inkMuted: "#a3a3a3"
-  dark-line: "#2e2e2e"
-  dark-lineStrong: "#737373"
-  dark-primary: "#ededed"
-  dark-primaryHover: "#ffffff"
-  dark-onPrimary: "#141414"
-  dark-accent: "#eb811b"
-  dark-accentInk: "#f39a45"
-  dark-success: "#2fc25a"
-  dark-successInk: "#5fd682"
-  dark-error: "#e5574b"
-  dark-errorInk: "#ff8a80"
-  dark-warning: "#e0a526"
-  dark-warningInk: "#f0c060"
-  dark-focus: "#f39a45"
-  contrast-shell: "#0b1416"
-  contrast-shellInk: "#ffffff"
-  contrast-shellMuted: "#d5dee0"
+  warningInk: "#f0c060"
+  focus: "#9d8cff"
+  light-shell: "#ffffff"
+  light-shellInk: "#1c1f2a"
+  light-shellMuted: "#5d6170"
+  light-ground: "#f7f7f8"
+  light-surface: "#ffffff"
+  light-sunken: "#f1f1f4"
+  light-ink: "#1c1f2a"
+  light-inkSoft: "#3d4150"
+  light-inkMuted: "#5d6170"
+  light-line: "#e3e3e8"
+  light-lineStrong: "#8b8e9e"
+  light-primary: "#4b33b5"
+  light-primaryHover: "#3e289c"
+  light-onPrimary: "#ffffff"
+  light-accent: "#4b33b5"
+  light-accentInk: "#4b33b5"
+  light-success: "#1f8a4c"
+  light-successInk: "#17703d"
+  light-error: "#c8323a"
+  light-errorInk: "#b8262f"
+  light-warning: "#c98a0b"
+  light-warningInk: "#8a5a00"
+  light-focus: "#4b33b5"
+  contrast-shell: "#ffffff"
+  contrast-shellInk: "#000000"
+  contrast-shellMuted: "#2b2b33"
   contrast-ground: "#ffffff"
   contrast-surface: "#ffffff"
-  contrast-sunken: "#f0f2f2"
+  contrast-sunken: "#f0f0f2"
   contrast-ink: "#000000"
-  contrast-inkSoft: "#1d2a2c"
-  contrast-inkMuted: "#3b4a4d"
-  contrast-line: "#8a9a9c"
-  contrast-lineStrong: "#4a5a5d"
-  contrast-primary: "#0b1416"
-  contrast-primaryHover: "#25373b"
+  contrast-inkSoft: "#1f1f26"
+  contrast-inkMuted: "#3a3a44"
+  contrast-line: "#8a8a96"
+  contrast-lineStrong: "#4a4a55"
+  contrast-primary: "#2a1690"
+  contrast-primaryHover: "#3a24a8"
   contrast-onPrimary: "#ffffff"
-  contrast-accent: "#c25e00"
-  contrast-accentInk: "#9a4a00"
+  contrast-accent: "#2a1690"
+  contrast-accentInk: "#2a1690"
   contrast-success: "#0a6b22"
   contrast-successInk: "#0a6b22"
   contrast-error: "#a3140b"
@@ -72,109 +72,137 @@ colors:
   contrast-warningInk: "#6b4700"
   contrast-focus: "#000000"
 typography:
-  page-title:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
-    fontSize: "1.5rem"
-    fontWeight: 500
-    lineHeight: 1.25
-    letterSpacing: "-0.01em"
   question:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "1.25rem"
-    fontWeight: 400
+    fontWeight: 500
     lineHeight: 1.375
-  figure:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
-    fontSize: "1.75rem"
-    fontWeight: 300
-    lineHeight: 1
     letterSpacing: "-0.01em"
-    fontFeature: "'tnum'"
-  statement:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
-    fontSize: "1.5rem"
-    fontWeight: 300
+  page-title:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "1.625rem"
+    fontWeight: 700
     lineHeight: 1.25
-    letterSpacing: "-0.01em"
+    letterSpacing: "-0.015em"
+  slip-title:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 800
+    lineHeight: 1.25
+    letterSpacing: "-0.015em"
+  figure:
+    fontFamily: "\"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif"
+    fontSize: "1.75rem"
+    fontWeight: 700
+    lineHeight: 1
+    fontFeature: "'tnum'"
   wordmark:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
-    fontSize: "1.125rem"
-    fontWeight: 500
-    lineHeight: "1.75rem"
-    letterSpacing: "0.01em"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 800
+    lineHeight: 1
+    letterSpacing: "-0.02em"
   dialog-title:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "1.125rem"
-    fontWeight: 500
-    lineHeight: "1.75rem"
-  section-title:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontWeight: 700
+    lineHeight: 1.25
+  panel-title:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 600
     lineHeight: 1.5
-  subhead:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
-    fontSize: "0.875rem"
-    fontWeight: 600
-    lineHeight: "1.25rem"
   body:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.5
     fontFeature: "'kern', 'liga'"
   reading:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.625
-  control:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
-    fontSize: "0.9375rem"
-    fontWeight: 500
-    lineHeight: 1.25
   compact:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.5
+  control:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 600
+    lineHeight: 1.25
+  nav:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 500
+    lineHeight: 1.5
   tab:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 500
     lineHeight: 1.5
   small:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.875rem"
     fontWeight: 400
     lineHeight: "1.25rem"
-  label:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+  small-medium:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.875rem"
     fontWeight: 500
     lineHeight: "1.25rem"
-  tag:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+  label:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 600
+    lineHeight: "1.25rem"
+  caps-label:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "0.6875rem"
+    fontWeight: 600
+    lineHeight: 1.25
+    letterSpacing: "0.08em"
+  call-number:
+    fontFamily: "\"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif"
+    fontSize: "0.8125rem"
+    fontWeight: 600
+    letterSpacing: "0.05em"
+    fontFeature: "'tnum'"
+  stamp:
+    fontFamily: "\"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif"
     fontSize: "0.75rem"
-    fontWeight: 500
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "0.06em"
+    fontFeature: "'tnum'"
+  option-key:
+    fontFamily: "\"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 700
+  tag:
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 600
     lineHeight: 1
   note:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.75rem"
     fontWeight: 600
     lineHeight: "1rem"
   toast-title:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 600
     lineHeight: 1.375
   toast-message:
-    fontFamily: "\"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+    fontFamily: "\"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
     fontSize: "0.875rem"
     fontWeight: 400
     lineHeight: 1.375
   mono:
-    fontFamily: "\"Fira Mono\", ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
     fontSize: "0.875rem"
     fontWeight: 400
     lineHeight: 1.6
@@ -182,6 +210,7 @@ rounded:
   none: "0px"
   sm: "0.125rem"
   DEFAULT: "0.25rem"
+  md: "0.375rem"
 spacing:
   px: "1px"
   "0.5": "0.125rem"
@@ -192,24 +221,68 @@ spacing:
   "3": "0.75rem"
   "3.5": "0.875rem"
   "4": "1rem"
+  "5": "1.25rem"
   "6": "1.5rem"
   "8": "2rem"
   "10": "2.5rem"
   "12": "3rem"
   "16": "4rem"
   bar-height: "3.5rem"
+  sidebar: "14.5rem"
+  page-max: "76rem"
+  measure: "68ch"
 components:
-  title-bar:
+  sidebar:
     backgroundColor: "{colors.shell}"
     textColor: "{colors.shellInk}"
-    typography: "{typography.wordmark}"
-    height: "{spacing.bar-height}"
-  nav-link:
-    textColor: "{colors.shellMuted}"
-    typography: "{typography.compact}"
-  nav-link-active:
+    padding: "1.5rem 0.75rem 1rem"
+    width: "{spacing.sidebar}"
+  topbar:
+    backgroundColor: "{colors.shell}"
     textColor: "{colors.shellInk}"
+    padding: "0 1rem"
+    height: "{spacing.bar-height}"
+  wordmark:
+    textColor: "{colors.shellInk}"
+    typography: "{typography.wordmark}"
+  nav-item:
+    textColor: "{colors.shellMuted}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.DEFAULT}"
+    padding: "0.5rem 0.625rem"
+    height: "2.5rem"
+  nav-item-hover:
+    textColor: "{colors.shellInk}"
+  nav-item-active:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.onPrimary}"
+  icon-button:
+    textColor: "{colors.shellMuted}"
+    rounded: "{rounded.DEFAULT}"
+    size: "2.5rem"
+  page-title:
+    textColor: "{colors.ink}"
+    typography: "{typography.page-title}"
+  page-lede:
+    textColor: "{colors.inkMuted}"
     typography: "{typography.compact}"
+  panel:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.md}"
+  panel-head:
+    textColor: "{colors.ink}"
+    typography: "{typography.panel-title}"
+    padding: "0.625rem 1rem"
+  panel-meta:
+    textColor: "{colors.inkMuted}"
+    typography: "{typography.small}"
+  panel-body:
+    padding: "1rem"
+  section-title:
+    textColor: "{colors.ink}"
+    typography: "{typography.panel-title}"
+    padding: "0 0 0.5rem"
   button-primary:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.onPrimary}"
@@ -247,28 +320,14 @@ components:
     rounded: "{rounded.DEFAULT}"
     padding: "0.5rem 1rem"
     height: "2.5rem"
-  button-inverse:
-    backgroundColor: "{colors.shellInk}"
-    textColor: "{colors.shell}"
-    typography: "{typography.control}"
-    rounded: "{rounded.DEFAULT}"
-    padding: "0.5rem 1rem"
-    height: "2.5rem"
-  button-outline-inverse:
-    backgroundColor: "transparent"
-    textColor: "{colors.shellInk}"
-    typography: "{typography.control}"
-    rounded: "{rounded.DEFAULT}"
-    padding: "0.5rem 1rem"
-    height: "2.5rem"
   button-small:
     typography: "{typography.label}"
     padding: "0.375rem 0.75rem"
     height: "2rem"
   button-icon:
-    width: "2.5rem"
-    height: "2.5rem"
     padding: "0"
+    height: "2.5rem"
+    width: "2.5rem"
   field:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
@@ -289,25 +348,21 @@ components:
     typography: "{typography.small}"
   choice-group:
     backgroundColor: "{colors.surface}"
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.md}"
   choice:
     textColor: "{colors.ink}"
     padding: "0.75rem 1rem"
   choice-hover:
     backgroundColor: "{colors.sunken}"
-  choice-grid:
-    rounded: "{rounded.DEFAULT}"
-  choice-grid-cell:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    padding: "0.75rem 1rem"
+  choice-selected:
+    backgroundColor: "{colors.sunken}"
   segmented:
     backgroundColor: "{colors.surface}"
     rounded: "{rounded.DEFAULT}"
     padding: "0.125rem"
   segmented-option:
     textColor: "{colors.inkSoft}"
-    typography: "{typography.label}"
+    typography: "{typography.small-medium}"
     rounded: "{rounded.sm}"
     padding: "0 0.875rem"
     height: "2.25rem"
@@ -315,64 +370,11 @@ components:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.onPrimary}"
   tab:
-    textColor: "{colors.inkSoft}"
+    textColor: "{colors.inkMuted}"
     typography: "{typography.tab}"
     padding: "0.25rem 0 0.625rem"
   tab-selected:
     textColor: "{colors.ink}"
-  section-title:
-    textColor: "{colors.ink}"
-    typography: "{typography.section-title}"
-    padding: "0 0 0.375rem"
-  band:
-    backgroundColor: "{colors.shell}"
-    textColor: "{colors.shellInk}"
-  band-section-title:
-    textColor: "{colors.shellInk}"
-    typography: "{typography.section-title}"
-    padding: "0 0 0.375rem"
-  band-data-table-header:
-    textColor: "{colors.shellMuted}"
-    typography: "{typography.label}"
-    padding: "0.5rem 1rem 0.5rem 0"
-  band-data-table-cell:
-    textColor: "{colors.shellInk}"
-    typography: "{typography.small}"
-    padding: "0.625rem 1rem 0.625rem 0"
-  band-facts-term:
-    textColor: "{colors.shellMuted}"
-    typography: "{typography.small}"
-  band-facts-value:
-    textColor: "{colors.shellInk}"
-    typography: "{typography.label}"
-  block:
-    rounded: "{rounded.sm}"
-  block-title:
-    backgroundColor: "{colors.shell}"
-    textColor: "{colors.shellInk}"
-    typography: "{typography.subhead}"
-    padding: "0.5rem 1rem"
-  block-body:
-    backgroundColor: "{colors.sunken}"
-    textColor: "{colors.ink}"
-    typography: "{typography.reading}"
-    padding: "0.875rem 1rem"
-  block-success-title:
-    backgroundColor: "{colors.successInk}"
-    textColor: "{colors.surface}"
-  block-error-title:
-    backgroundColor: "{colors.errorInk}"
-    textColor: "{colors.surface}"
-  notice:
-    backgroundColor: "{colors.sunken}"
-    textColor: "{colors.ink}"
-    typography: "{typography.compact}"
-    rounded: "{rounded.sm}"
-    padding: "0.75rem 1rem"
-  notice-error:
-    textColor: "{colors.errorInk}"
-  notice-warning:
-    textColor: "{colors.warningInk}"
   tag:
     backgroundColor: "{colors.sunken}"
     textColor: "{colors.inkSoft}"
@@ -385,38 +387,112 @@ components:
     textColor: "{colors.successInk}"
   tag-error:
     textColor: "{colors.errorInk}"
-  data-table-header:
+  link:
+    textColor: "{colors.accentInk}"
+  call-number:
     textColor: "{colors.inkSoft}"
-    typography: "{typography.label}"
+    typography: "{typography.call-number}"
+  stamp:
+    textColor: "{colors.accentInk}"
+    typography: "{typography.stamp}"
+    rounded: "{rounded.sm}"
+    padding: "3px 0.5rem"
+  stamp-overdue:
+    textColor: "{colors.errorInk}"
+  stamp-quiet:
+    textColor: "{colors.inkMuted}"
+  slip-title:
+    textColor: "{colors.ink}"
+    typography: "{typography.slip-title}"
+  slip-header:
+    textColor: "{colors.errorInk}"
+    typography: "{typography.caps-label}"
+    padding: "0.5rem 1rem 0.5rem 0"
+  slip-cell:
+    textColor: "{colors.ink}"
+    typography: "{typography.compact}"
+    padding: "0.5rem 1rem 0.5rem 0"
+  slip-cell-later:
+    textColor: "{colors.inkMuted}"
+  data-table-header:
+    textColor: "{colors.inkMuted}"
+    typography: "{typography.caps-label}"
     padding: "0.5rem 1rem 0.5rem 0"
   data-table-cell:
     textColor: "{colors.ink}"
     typography: "{typography.small}"
     padding: "0.625rem 1rem 0.625rem 0"
+  figure:
+    textColor: "{colors.ink}"
+    typography: "{typography.figure}"
   facts-term:
-    textColor: "{colors.inkSoft}"
+    textColor: "{colors.inkMuted}"
     typography: "{typography.small}"
   facts-value:
     textColor: "{colors.ink}"
-    typography: "{typography.label}"
+    typography: "{typography.small-medium}"
+  loan-track:
+    backgroundColor: "{colors.sunken}"
+    rounded: "{rounded.sm}"
+    height: "0.5rem"
+  loan-today:
+    backgroundColor: "{colors.accent}"
+  loan-overdue:
+    backgroundColor: "{colors.error}"
+  extent:
+    backgroundColor: "{colors.sunken}"
+    rounded: "{rounded.sm}"
+    height: "0.25rem"
+    width: "3rem"
+  extent-segment:
+    backgroundColor: "{colors.lineStrong}"
   option:
     textColor: "{colors.ink}"
     typography: "{typography.body}"
     rounded: "{rounded.none}"
     padding: "0.75rem"
   option-key:
-    textColor: "{colors.inkSoft}"
-    typography: "{typography.subhead}"
+    textColor: "{colors.inkMuted}"
+    typography: "{typography.option-key}"
   option-hover:
+    backgroundColor: "{colors.sunken}"
+  option-selected:
     backgroundColor: "{colors.sunken}"
   option-muted:
     textColor: "{colors.inkMuted}"
   option-note:
     typography: "{typography.note}"
+  note:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.md}"
+  note-title:
+    backgroundColor: "{colors.sunken}"
+    textColor: "{colors.ink}"
+    typography: "{typography.label}"
+    padding: "0.625rem 1rem"
+  note-body:
+    textColor: "{colors.ink}"
+    typography: "{typography.reading}"
+    padding: "0.875rem 1rem"
+  note-success-title:
+    textColor: "{colors.successInk}"
+  note-error-title:
+    textColor: "{colors.errorInk}"
+  notice:
+    backgroundColor: "{colors.sunken}"
+    textColor: "{colors.ink}"
+    typography: "{typography.compact}"
+    rounded: "{rounded.md}"
+    padding: "0.75rem 1rem"
+  notice-error:
+    textColor: "{colors.errorInk}"
+  notice-warning:
+    textColor: "{colors.warningInk}"
   progress-rule:
     backgroundColor: "{colors.line}"
-    height: "0.25rem"
     rounded: "{rounded.none}"
+    height: "0.25rem"
   progress-segment-correct:
     backgroundColor: "{colors.success}"
   progress-segment-wrong:
@@ -425,22 +501,15 @@ components:
     backgroundColor: "{colors.accent}"
   loading-rule:
     backgroundColor: "{colors.line}"
-    height: "0.25rem"
+    height: "3px"
   loading-rule-bar:
     backgroundColor: "{colors.accent}"
     width: "33.333333%"
-  box-track:
-    height: "0.25rem"
-    rounded: "{rounded.none}"
-  box-fill-scheduled:
-    backgroundColor: "{colors.shellInk}"
-  box-fill-due:
-    backgroundColor: "{colors.accent}"
   menu:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
     typography: "{typography.small}"
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.md}"
     padding: "0.25rem 0"
     width: "12rem"
   menu-item:
@@ -450,11 +519,14 @@ components:
   dialog:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.md}"
+  dialog-title:
+    textColor: "{colors.ink}"
+    typography: "{typography.dialog-title}"
   toast:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.md}"
     width: "24rem"
   toast-body:
     padding: "0.75rem 1rem"
@@ -465,21 +537,21 @@ components:
     textColor: "{colors.inkSoft}"
     typography: "{typography.toast-message}"
   toast-rule-info:
-    backgroundColor: "{colors.primary}"
-    height: "0.25rem"
+    backgroundColor: "{colors.accent}"
+    height: "3px"
   toast-rule-success:
     backgroundColor: "{colors.success}"
-    height: "0.25rem"
+    height: "3px"
   toast-rule-error:
     backgroundColor: "{colors.error}"
-    height: "0.25rem"
+    height: "3px"
   toast-rule-warning:
     backgroundColor: "{colors.warning}"
-    height: "0.25rem"
+    height: "3px"
   code-block:
     backgroundColor: "{colors.sunken}"
     typography: "{typography.mono}"
-    rounded: "{rounded.sm}"
+    rounded: "{rounded.DEFAULT}"
     padding: "0.75rem 1rem"
 ---
 
@@ -487,244 +559,264 @@ components:
 
 ## Overview
 
-**Creative North Star: "The Lecture Deck"**
+**Creative North Star: "The Circulation Desk"**
 
-Lembrion is set like a well-made Metropolis Beamer deck. One dark teal title bar carries the wordmark and the routes; below it sits a pale ground with one idea per frame, and during a session a 4px progress line under the bar records every answer. Where a page needs an overview, the bar's ground carries on below it as a band, Metropolis's standout frame: the Dashboard opens with one, and the study setup summary becomes one on wide screens. Hierarchy comes from type size and weight and from rules (a 2px ink rule under each section title, hairlines between rows), not from boxes. Explanation and feedback arrive in titled blocks: a teal title strip over a pale teal-grey body, exactly as Metropolis draws them.
+Lembrion is a conventional study-app shell with one library ritual laid over it. The shell is the category standard: a left sidebar from 1024px (a top bar below that), a page title beside the date, and calm bordered panels on a neutral, untinted ground. The ritual is the loan. Every question and every session carries a call number like a spine label (`ORG·3`, `CEL/LEA`), questions that come back for review are listed on a date-due slip, and each one is marked with a date stamp in narrow caps: violet when it is due, red when it is overdue, faded while it is still out, grey once it is returned.
 
-The density is that of a good handout: counts live in data tables and facts lists with right-aligned tabular figures, controls state their exact values, and the right column of a two-column frame holds the facts of the current session, the response to a graded answer, or the next action. Colour is disciplined. Teal does the structural work (title bar, band, primary buttons, block titles, heading rules); Metropolis orange marks only where the learner is (progress, the current item, the active route, reviews due); green and red appear only to report state. Three palettes (light, dark, contrast) share one set of token names, so every component follows the active theme without a reload; the default System preference picks light or dark from the browser and follows it live.
+The density is that of a circulation ledger. Numbers live in tables with small caps column heads, hairline rows and right-aligned tabular figures; progress figures are set in Archivo Narrow; loan periods are drawn to their true length on one 0–30 day axis, and each session's answered questions are drawn as a bar on one shared scale, so lengths can be compared across rows and pages. Colour is spent sparingly: stamp violet marks what is due, actionable or current; slip red prints the due slip's header and marks what is overdue, and doubles as the error hue; green and amber only report state. Dark is the default palette; Light, System and High contrast are one click away in the theme menu, and all of them share one set of token names.
 
-The world is flat. PRODUCT.md binds it to no skeuomorphism, and the shipped build carries no gradients, glow, icon tiles, or stacked shadowed cards; the only shadow in the system belongs to things that float (the theme menu, dialogs and toasts).
+The world is flat. PRODUCT.md binds it to no skeuomorphism: a date stamp is a 1.5px frame of narrow caps, not an inked rubber impression; there are no gradients, glow, icon tiles or rounded bubbly cards, nothing is rounder than 6px, and the only shadow in the system belongs to things that float (menus, dialogs, toasts).
 
 **Key Characteristics:**
-- A single dark teal title bar, sticky, 3.5rem tall, white Fira Sans on teal; where a page needs an overview, its ground carries on below it as a band with inverse buttons.
-- One orange rule: the progress line, the loading line, and the 3px underline under the active route or tab.
-- Titled blocks (teal strip, pale teal-grey body) for every explanation and piece of feedback.
-- Tables and facts lists with tabular figures right-aligned; no stat tiles.
-- Two radii only (2px and 4px); 1px borders; 2px ink rules under section titles.
-- Flat content on a tonal ground; shadows only on overlays.
-- Fira Sans for everything (Light only for figures and statements), Fira Mono for keys, model IDs, URLs and code; sentence-case copy.
+- A standard shell: a 14.5rem sidebar whose current route is a filled violet label, and a 3.5rem top bar below 1024px.
+- Panels with 1px hairline borders and 6px corners on a neutral grey ground; no shadow on content.
+- A call number in Archivo Narrow caps on every question and session.
+- Date stamps in a 1.5px frame: violet due, red overdue, faded not yet due, grey returned or retired.
+- The "Due for return" slip: the review queue under a red printed header rule and red column heads.
+- Loan periods and extent bars drawn to exact length on shared axes.
+- Libre Franklin for the interface, Archivo Narrow for marks and figures; hierarchy by size and weight.
 
 ## Colors
 
-A teal-slate monochrome with one Metropolis orange and three state hues, each signal hue paired with an ink twin for text.
+A neutral grey ground with one violet for what is due or actionable, one printed red, and two state hues; every signal hue has an ink twin for text.
+
+The unprefixed keys in the frontmatter are the Dark palette, the default. `light-*` and `contrast-*` are the same 23 roles in the Light and High contrast palettes. Values below are Dark first, then Light.
 
 ### Primary
-- **Title-bar Teal** (`shell`, #23373b): the title bar ground, the band ground, every block title strip, the ground of the brand mark, and the label of inverse buttons. Also written to `<meta name="theme-color">` by `applyTheme()`.
-- **Deck Teal** (`primary`, #23373b): primary button fill and border, the selected segment of a segmented control, the top rule of info toasts, and the `accent-color` of native checkboxes, radios and ranges. In the light theme it is the same teal as the title bar and the ink.
-- **Deck Teal Lifted** (`primaryHover`, #30494e): primary button hover.
-- **On-Teal White** (`onPrimary`, #ffffff): text and icons on primary fills.
+- **Stamp Violet** (`primary`, #5b43d6; light #4b33b5): the fill of primary buttons, the current navigation item, the selected segment of a segmented control, and the `accent-color` of native checkboxes, radios and ranges. It hovers to **Stamp Violet Hover** (`primaryHover`, #6a54e6, a step lighter; light #3e289c, a step darker) and carries **On Violet** (`onPrimary`, #ffffff) text.
+- **Due Violet** (`accent`, #9d8cff; light #4b33b5): violet as a mark rather than an action: the due-today share of a loan bar (and, mixed 45% into Inset, the not-yet-due share), the current segment of the progress rule, the travelling loading rule, the 2px underline of the selected tab, the 1px inset outline of a selected choice or answer option, the top rule of info toasts, the text caret, and the `::selection` tint (32% into transparent).
+- **Due Violet Ink** (`accentInk`, #9d8cff; light #4b33b5): violet as text and line: due date stamps, links, the "Active" session status, due-today counts, and pressed suggested-model toggles in Settings. Mixed 62% with Muted Ink (its frame 32% into Hairline) it draws the faded not-yet-due stamp.
 
 ### Secondary
-- **Metropolis Orange** (`accent`, #eb811b): the current segment of the progress rule, the travelling bar of the loading rule, the 3px underline under the active title-bar link and the selected tab, review-box strips with questions due, the text caret, and the `::selection` tint (30% mixed into transparent). It also becomes the focus ring on the title bar and on bands (`.on-shell` and `.band` remap `--color-focus` to it), and mixed 75% with Title-bar White (`--band-accent`) it sets the due counts in the Dashboard band.
-- **Burnt Orange Ink** (`accentInk`, #a8560a): orange as text on the ground: the text of the accent tag ("Active"). In the dark theme it is also the focus ring.
+- **Slip Red** (`error`, #ff6b5f; light #c8323a) and **Slip Red Ink** (`errorInk`, #ff6b5f; light #b8262f): the print of the due slip (the 2px rule under its header, its caps column heads over a 1px rule, and its row hairlines at 20% into Hairline) and everything overdue (overdue stamps, the overdue count, the overdue share of a loan bar). The same pair is the error hue: wrong progress segments and options, the "Your answer" note on a wrong pick, error notes and notices, invalid field borders, danger buttons, "Incorrect" and "Incomplete" tags, and error toasts.
 
 ### Tertiary
-- **Graded Green** (`success`, #14b03d) and **Graded Green Ink** (`successInk`, #0d7a2a): correct progress segments, correct-option tint, success block bodies (tint) and titles (ink), the top rule of success toasts, "Correct" and "Added" tags.
-- **Graded Red** (`error`, #d13a2e) and **Graded Red Ink** (`errorInk`, #b3261e): wrong progress segments, wrong-option tint, error block titles and bodies, invalid field borders, error notices, the top rule of error toasts, danger buttons, "Incorrect", "Removed" and "Incomplete" tags.
-- **Caution Amber** (`warning`, #e0a526) and **Caution Amber Ink** (`warningInk`, #8a5a00): the warning notice (provider not ready on the Dashboard) and the top rule of warning toasts.
+- **Correct Green** (`success`, #3fbf74; light #1f8a4c) and **Correct Green Ink** (`successInk`, #6fd896; light #17703d): correct progress segments, the correct option's tint, key and note, success note titles, "Correct" tags, success toasts, and strings in code.
+- **Caution Amber** (`warning`, #e0a526; light #c98a0b) and **Caution Amber Ink** (`warningInk`, #f0c060; light #8a5a00): the provider-not-ready notice on the Dashboard, warning toasts, and numbers in code.
 
 ### Neutral
-- **Slide Ground** (`ground`, #fafafa): the page ground and the ground of the pinned mobile action bars.
-- **Surface White** (`surface`, #ffffff): fields, choice groups, choice-grid cells, segmented frames, secondary buttons, menus, dialogs, toasts; the base every state tint is mixed into.
-- **Pale Teal-Grey** (`sunken`, #eef1f1): block bodies, notices, tags, code, and every hover fill.
-- **Deck Ink** (`ink`, #23373b): body text, titles, section-title rules, table header rules.
-- **Soft Slate Ink** (`inkSoft`, #45585c): secondary text: ledes, table headers, facts labels, inactive tabs and segments, option keys, field hover border.
-- **Muted Slate Ink** (`inkMuted`, #5b6c70): hints, placeholders, list markers, footnotes.
-- **Hairline** (`line`, #dfe5e5): row separators, tab baseline, menu and toast borders, progress and loading tracks.
-- **Control Slate** (`lineStrong`, #869699): borders of fields, choice groups and grids, segmented controls, secondary and danger buttons (3.07:1 on surface), scrollbar thumb; mixed 55% into Surface White it fills the 1px gaps of a choice grid.
-- **Title-bar White** (`shellInk`, #ffffff) and **Title-bar Mist** (`shellMuted`, #b9c6c8): active and idle text on the title bar and on bands. Title-bar White also draws band section rules, inverse button fills and scheduled review-box strips; mixed 16% into transparent (`--band-rule`) it draws band hairlines and review-box tracks. Title-bar Mist sets band table headers, facts labels and hints, and at 45% the empty review-box strips.
-- **Focus Ring** (`focus`, #23373b): the 2px focus outline on the ground.
+- **Desk** (`shell`, #0c0c0c; light #ffffff): the ground of the sidebar, the top bar and the phone menu; `applyTheme()` also writes it to `<meta name="theme-color">`.
+- **Desk Ink** (`shellInk`, #ececec; light #1c1f2a) and **Desk Muted** (`shellMuted`, #a3a3a3; light #5d6170): the wordmark, hovered and idle navigation labels and icons. A hovered item or icon button fills with Desk Ink at 7% into transparent.
+- **Reading Room** (`ground`, #121212; light #f7f7f8): the page ground, the pinned action bars on phones, and the fullscreen study frame.
+- **Panel** (`surface`, #181818; light #ffffff): panels, notes, fields, secondary and danger buttons, segmented frames, choice cells, menus, dialogs and toasts; the base every state tint is mixed into.
+- **Inset** (`sunken`, #202020; light #f1f1f4): note title strips, notices, tags, code, loan and extent tracks, every hover fill, the ground of a selected choice or option, History's selection bar and the setup-steps inset in Settings.
+- **Ink** (`ink`, #ececec; light #1c1f2a): body text, titles and figures.
+- **Soft Ink** (`inkSoft`, #c8c8c8; light #3d4150): call numbers, the session strip, ghost button and segment labels, toast messages, blockquotes, and the hover border of fields.
+- **Muted Ink** (`inkMuted`, #a3a3a3; light #5d6170): column heads, ledes and metadata, not-yet-due rows, hints, placeholders, option keys at rest, list markers and the "Completed" status.
+- **Hairline** (`line`, #2a2a2a; light #e3e3e8): panel borders, panel-head rules, row separators, the tab baseline, the progress and loading tracks, and the 1px gaps of a choice grid.
+- **Control Edge** (`lineStrong`, #6b6b6b; light #8b8e9e): borders of fields, choice groups and grids, segmented controls, and secondary and danger buttons (above 3:1 on Panel in every palette); extent segments, the scrollbar thumb, the blockquote rule and the underline of topic links.
+- **Focus Ring** (`focus`, #9d8cff; light #4b33b5; high contrast #000000): the 2px focus outline, 2px offset; on fields, the border plus a 1px ring of the same colour.
 
 ### Themes
-The stored preference is `system` (the default, `DEFAULTS.THEME`), `light`, `dark` or `contrast`; the theme menu lists them as System, Light, Dark and High contrast. `resolveThemePreference()` maps a stored value to a preference (the retired `midnight` and `neon` become `dark`, any other unknown string `light`, a missing or non-string value `system`), and `themeForPreference()` turns `system` into light or dark from `prefers-color-scheme`. Every `useTheme()` listens for scheme changes and, while the stored preference is `system`, applies the matching palette live, without a reload.
+The stored preference is `system`, `light`, `dark` or `contrast`, and the default is `dark` (`DEFAULTS.THEME`). The theme menu lists System, Light, Dark and High contrast, each with its icon (monitor, sun, moon, contrast) and a check on the current one. `resolveThemePreference()` maps the retired `midnight` and `neon` ids to `dark`, any other unknown string to `light`, and a missing or non-string value to `dark`; `themeForPreference()` resolves `system` from `prefers-color-scheme`, and `useTheme()` follows scheme changes live while the stored preference is `system`.
 
-`useTheme()` writes every token of the active palette to `--color-<key>` on `<html>`; `:root` in `src/index.css` carries the light values so the first paint matches. The boot script in `index.html` sets `data-boot='dark'` when the stored preference is `dark` or a retired dark id (`midnight`, `neon`), or when it is `system`, missing or unreadable and the browser prefers dark; `html[data-boot='dark']` then overrides `shell`, `ground`, `ink` and `line` until React mounts. The `dark-*` and `contrast-*` keys in the frontmatter are the same roles in the other two palettes.
-- **Dark** is neutral and achromatic, with no teal tint. It keeps the structure and inverts the fills: the title bar and bands are near-black, the ground a step lighter, surfaces and sunken regions a step above that, and `dark-primary` turns near-white, so primary buttons read as light keys with near-black text. `dark-accentInk` doubles as `dark-focus`. Metropolis Orange and Caution Amber keep their light values.
-- **Contrast** pushes every pair: pure black ink on white, hairlines darkened to mid-slate, the title bar near-black, and orange deepened (`contrast-accent`) so it holds 4.29:1 on white. Its success and error base and ink values are the same colour.
+`applyTheme()` writes every token of the active palette to `--color-<key>` on `<html>` and sets `data-theme` and `color-scheme`. `:root` in `src/index.css` carries the Light values; the boot script in `index.html` sets `data-boot='dark'` when the stored value is dark, a retired dark id, missing or unreadable, or `system` with a dark browser, and `html[data-boot='dark']` paints the dark neutrals and violets until React mounts.
+- **Dark** is neutral and achromatic: a near-black desk, the ground a step lighter, panels and insets a step above that. Its violet is lifted (Stamp Violet #5b43d6, Due Violet #9d8cff so it reads as text) and its red is a light coral; Due Violet equals its ink, and so does Slip Red.
+- **High contrast** sets black ink on white, darkens hairlines to a mid grey (`contrast-line`), deepens the violet to `contrast-primary` and makes the focus ring black. Its success and error base and ink are the same colour.
 
 ### Named Rules
-**The Where-You-Are Rule.** Orange marks progress and the current item only: the current progress segment, the loading line, the active route and tab underline, review boxes with questions due, and "Active" or due labels. It never fills a button, a heading, a block, or a decorative surface.
+**The Due-or-Actionable Rule.** Violet marks only what is due, actionable or current: the current route, primary buttons, selected segments and tabs, selected choices and options, due stamps, due and not-yet-due loan shares, the current progress segment, the loading rule, links and the "Active" status. It never fills a panel, a heading, a tag at rest, or decoration.
 
-**The Ink Twin Rule.** Every signal hue has an ink twin. The base (accent, success, error, warning) fills rules, strips and tints; text in that hue on the ground always uses the `*Ink` token. On a band the ground is Title-bar Teal, so due counts there use `--band-accent` (accent mixed 75% with Title-bar White) instead. Light-theme Metropolis Orange is 2.62:1 on the ground and never carries text.
+**The Slip Red Rule.** Red prints only the due slip's header and column heads and marks what is overdue; everywhere else it means an error or a wrong answer. It is never a decorative accent, and never a second action colour.
 
-**The Tint, Not Fill Rule.** State surfaces are tints mixed into the surface with `color-mix(in srgb, <hue> N%, var(--color-surface))`, never solid fills: choice checked (primary 8%), option selected (primary 9%), option correct (success 12%), option wrong (error 10%), success block body (success 10%), error block body (error 9%), error notice (error 10%), warning notice (warning 14%), accent tag (accent 16%), success tag (success 14%), error tag (error 12%), danger button hover (error 10%). The only solid state fills are block title strips, progress segments, and the scheduled and due review-box strips.
+**The Ink Twin Rule.** Every signal hue has an ink twin. The base (`accent`, `success`, `error`, `warning`) fills rules, bars and tints; text and stamp frames in that hue always use the `*Ink` token, which holds at least 4.5:1 on Panel in every palette.
+
+**The Tint, Not Fill Rule.** State surfaces are tints mixed into Panel with `color-mix(in srgb, <hue> N%, var(--color-surface))`: correct option (success 13%), wrong option (error 11%), success note title (success 10%), error note title (error 9%), error notice (error 9%), warning notice (warning 12%), accent tag (accent 16%), success tag (success 14%), error tag (error 13%), danger button hover (error 10%), pressed suggested model (primary 11%). A selected choice or option is neutral (Inset with a 1px Due Violet inset outline). The only solid fills are primary buttons, the current route, selected segments, progress segments, loan shares, extent segments, the loading bar and toast rules.
 
 ## Typography
 
-**Display Font:** Fira Sans (with system-ui, -apple-system, Segoe UI, sans-serif)
-**Body Font:** Fira Sans (same stack)
-**Label/Mono Font:** Fira Mono (with ui-monospace, SFMono-Regular, Menlo, monospace)
+**Display Font:** Libre Franklin (with system-ui, -apple-system, Segoe UI, sans-serif)
+**Body Font:** Libre Franklin (same stack)
+**Label/Mono Font:** Archivo Narrow (with Arial Narrow, Libre Franklin, sans-serif) for marks and figures; code uses the system monospace stack (ui-monospace, SFMono-Regular, Menlo, Consolas, monospace).
 
-**Character:** Fira Sans is the Metropolis theme's own face: humanist, a little narrow, legible at 12px and fluent in tabular figures. One family carries every role; Fira Mono appears only where the user reads or types a literal (API keys, model IDs, base URLs, code, the "Enter" key hint). Self-hosted through `@fontsource`: Fira Sans 300, 400, 400 italic, 500 and 600, and Fira Mono 400. Nothing heavier than 600 is loaded; Light (300), the Metropolis title weight, is kept for figures and statements.
+**Character:** Libre Franklin is a sturdy Franklin Gothic: plain and even at interface sizes, emphatic at 800 for the wordmark and the slip title. Archivo Narrow is the date-stamp and spine-label face: condensed caps and tabular figures that fit a stamp frame or a narrow column without crowding. Both are self-hosted through `@fontsource`: Libre Franklin 400, 400 italic, 500, 600, 700 and 800; Archivo Narrow 500, 600 and 700. There is no monospace webfont.
 
 ### Hierarchy
-- **Display, the question** (`question`): the question stem in the study loop, regular weight, the largest text in the loop; steps up to 1.5rem from 640px. From 1024px it fills the left of two equal columns, which keep one width before and after grading.
-- **Figure** (`figure`): the Dashboard's progress numbers, set in Fira Sans Light inside the progress table's cells: 1.75rem, line-height 1, tabular, -0.01em tracking.
-- **Statement** (`statement`): the one sentence a frame exists to say, in Fira Sans Light with tight leading and -0.01em tracking: the next-action line in the Dashboard band ("3 questions due for review") and the Dashboard's empty-state line; steps up to 1.75rem from 640px.
-- **Headline** (`page-title`): one per route, page titles and the session-details topic line; steps up to 1.75rem from 640px. The Dashboard's `h1` is visually hidden: its band opens the page. `h1`–`h4` use `text-wrap: balance`. A lede under it uses `body` in Soft Slate Ink.
-- **Title** (`wordmark`, `dialog-title`): the "Lembrion" wordmark in the title bar and dialog headers.
-- **Section title** (`section-title`): section headings, always with the 2px ink rule below (Title-bar White rule and text on a band).
-- **Subhead** (`subhead`): block titles, option keys, small headings inside a section ("How to get a key", history lists).
-- **Body** (`body`): default text and fields, with `kern` and `liga` on; `reading` is the block body and Markdown measure (0.9375rem, relaxed); `compact` is the title-bar links and notices.
-- **Controls** (`control`, `tab`): button labels and tabs, medium weight.
-- **Label** (`small`, `label`, `tag`, `note`): tables, facts, hints and session strips at 0.875rem; field labels and table headers at medium weight; tags at 0.75rem medium; option notes ("Your answer", "Correct answer") at 0.75rem semibold.
-- **Mono** (`mono`): code blocks and inline code (0.9em); mono fields keep the field's 1rem.
+- **Display, the question** (`question`; 500, 1.25rem, 1.5rem from 640px, line-height 1.375, -0.01em): the question stem in the study loop, the largest text on that screen.
+- **Headline** (`page-title`; 700, 1.625rem, 1.75rem from 640px, line-height 1.25, -0.015em): one per route, with the lede (the date, a count, a description) on its baseline; on Session details it is the topic line. `h1`–`h4` use `text-wrap: balance`.
+- **Slip title** (`slip-title`; 800, 1.5rem, line-height 1.25, -0.015em): "Due for return", the loudest heading on the Dashboard.
+- **Figure** (`figure`; Archivo Narrow 700, 1.75rem, line-height 1, tabular): the Dashboard's progress numbers (1.5rem below 640px), the review-complete results, and the Session details facts (1.375rem).
+- **Title** (`wordmark`; 800, 1.375rem, -0.02em, 1.25rem in the top bar; `dialog-title`; 700, 1.125rem): the "Lembrion" wordmark and dialog headings.
+- **Panel title** (`panel-title`; 600, 0.9375rem): panel heads and section titles.
+- **Body** (`body`; 400, 1rem, line-height 1.5, `kern` and `liga` on): default text, fields and answer options. `reading` (0.9375rem, 1.625) is the note body and model output; `compact` (0.9375rem, 1.5) sets ledes, slip rows and notices.
+- **Controls** (`control`; 600, 0.9375rem, 1.25): button labels. `nav` and `tab` (500, 0.9375rem) set navigation items and tabs; `small-medium` (500, 0.875rem) sets segments and fact values.
+- **Small** (`small`; 400, 0.875rem): tables, facts, hints, metadata and the session strip. `label` (600, 0.875rem) sets field labels, note titles and small buttons.
+- **Printed label** (`caps-label`; 600, 0.6875rem, 0.08em, uppercase): column heads of data tables and of the slip (there in Slip Red Ink), group labels ("On loan · not yet due"), and small list headings.
+- **Marks** (Archivo Narrow): `call-number` (600, 0.8125rem, 0.05em, uppercase, tabular) in Soft Ink; `stamp` (600, 0.75rem, 0.06em, uppercase, line-height 1); `option-key` (700, 0.9375rem) for the A–D keys.
+- **Tags and notes** (`tag`; 600, 0.75rem, line-height 1; `note`; 600, 0.75rem): status tags, and the "Correct answer" / "Your answer" notes on graded options.
+- **Toasts** (`toast-title`; 600, 0.9375rem; `toast-message`; 400, 0.875rem; both line-height 1.375).
+- **Mono** (`mono`; 0.875rem, line-height 1.6): code blocks; inline code at 0.9em; API keys, model IDs and base URLs in Settings fields (at the field's 1rem).
 
 ### Named Rules
-**The Size-and-Weight Rule.** Hierarchy is size and weight (300 for figures and statements, then 400, 500, 600) plus rules. No text is uppercased or letter-spaced anywhere; tracking moves only on the page title, figures and statements (-0.01em) and the wordmark (0.01em). No kickers or eyebrows above titles.
+**The Two Faces Rule.** Libre Franklin sets the interface; Archivo Narrow is reserved for the circulation marks and figures: call numbers, date stamps, figures, option keys and the "Enter" key hint. Narrow never sets body text, headings or buttons.
 
-**The Tabular Figures Rule.** Every count, score, percentage, ratio and date sets in tabular figures (`font-variant-numeric: tabular-nums`) and right-aligns in table number columns and facts values. Ratios are written with spaced slashes ("3 / 5", "0 / 1"); topic lists join with " · ".
+**The Size-and-Weight Rule.** Hierarchy is size and weight (400 through 800) plus Muted Ink for secondary text. Uppercase and tracking belong only to printed labels (column heads and group labels at 0.08em), call numbers (0.05em), stamps (0.06em) and the key hint; negative tracking only to the wordmark, page titles, the slip title and the question. No kickers or eyebrows above titles.
 
-**The Sentence Case Rule.** All UI copy is sentence case: "Start review", "Recent sessions", "New study session", "End session".
+**The Tabular Figures Rule.** Every count, score, percentage, ratio, date and stamp sets in tabular figures and right-aligns in number columns and fact values. Ratios are written with spaced slashes ("0 / 1", "3 / 5"); lists and metadata join with " · ".
 
 ## Layout
 
-One frame for every route: a centred container 72rem wide (`max-w-6xl`) with 1rem side padding, 1.5rem from 640px and 2.5rem from 1024px; 1.5rem top padding (2rem from 640px) and 4rem at the bottom. The title bar's inner row uses the same container and padding, so the wordmark aligns with page titles. `scroll-padding-top` is the bar height plus 1rem.
+**Shell.** Below 1024px a sticky top bar (3.5rem, Desk ground, hairline below, z-index 40) holds the wordmark, the theme icon button and the menu button; the menu opens under the bar as a list of the four routes and Support. From 1024px the shell is a `14.5rem minmax(0,1fr)` grid: the sidebar is sticky at full viewport height with a hairline right edge and 1.5rem top padding, the wordmark, the routes 2rem below it with 0.25rem between items, and at the foot, above a hairline, Support and the Theme row (its label left, the current preference right; the menu opens upward). `--bar-height` is 3.5rem below 1024px and 0 from it, and drives `scroll-padding-top` and the toast offset.
 
-The Dashboard opens differently: it has no visible page title, and its band runs full-bleed directly under the title bar, holding the same container and side padding inside (1.5rem top, 2rem from 640px; 2rem bottom, 2.5rem from 1024px). Below the band, in the usual frame on the ground, come Recent sessions (once there are any) and then the data note.
+**Page frame.** Every route sits in `.page`: centred, at most 76rem wide, with 1rem side padding (1.5rem from 640px, 2rem from 1024px), 1.5rem top padding (2rem from 640px; the Dashboard tightens to 1.25rem from 1024px) and 4rem at the bottom. The header row puts the title and its lede on one baseline and the page's action at the far end. Reading text holds a 68ch measure (`max-w-measure`).
 
-Reading text is held to a 68ch measure (`max-w-measure`): prose, notices, loading lines, the Dashboard's empty-state statement and data note, and on Session details each question and its blocks below 1024px (a question with nothing for the right column keeps the measure at every width). Pages that read like documents cap their children narrower: Session details at 56rem (`max-w-4xl`) below 1024px and the full frame from 1024px; on Settings the tab row and the provider tab at 56rem below 1024px and the full frame from 1024px, while the Language and Data tabs stay at 56rem; Support and review-complete at 48rem (`max-w-3xl`).
+**Rhythm.** A 4px scale. Panels sit 1rem apart. A panel head is 0.625rem by 1rem and a panel body 1rem, both widening to 1.25rem at the sides from 640px; tables inside a panel take the same edge padding. In the question loop 2rem separates the question, the options, confidence and the notes (1.5rem from 1024px in the response column), and 3rem separates the columns.
 
-At 1024px pages split into two columns. Sticky columns (the study setup summary, the session facts, the Settings provider list) stick at `calc(3.5rem + 1.5rem)`.
-- **Dashboard:** inside the band, `minmax(0,1fr) 22rem` with a 2.5rem row gap and a 3rem column gap: Progress in column 1, row 1; Review boxes in column 1, row 2; Next in column 2, spanning both rows. Below 1024px they stack as Progress, Next, Review boxes.
-- **Study setup:** `minmax(0,1fr) 22rem` with a 3rem gap (2.5rem when stacked). From 1024px the summary aside is a sticky band holding the session facts and an inverse Start session button; below it the aside sits on the ground and Start session is a primary button in the pinned bottom bar.
-- **Question loop:** two equal columns with a 3rem gap in both states, so the question column never changes width. Before grading the right column holds the session facts, at most 17rem wide and aligned to the frame's end edge; after grading it holds the explanation or AI feedback, the elaborative question, self-explanation and the next action, and the session facts give way. Below 1024px the loop is one column (the facts stack under the question before grading; the response follows it after grading).
-- **Settings, provider tab:** `minmax(0,5fr) minmax(0,7fr)` with a 2.5rem gap: the provider list on the left, sticky; the selected provider's settings on the right.
-- **Session details:** each question with something for the right column becomes two equal columns with a 2.5rem gap: the question and its options (or the written answer) on the left; explanation, feedback, model answer, evaluation and the follow-ups on the right; the header row of tags spans both. A question with nothing for the right column stays one column.
+**Pages.**
+- **Dashboard:** from 1280px a `minmax(0,1fr) 26.5rem` grid with 1rem gaps: Progress beside the unfinished session(s); the "Due for return" slip across both columns; Recent sessions beside Loan periods. Below 1280px the panels stack in reading order: Progress, the slip, unfinished sessions, Loan periods, Recent sessions. With no sessions yet, a single panel offers the first session. A data note at the measure closes the page.
+- **Study setup:** from 1024px a `minmax(0,1fr) 22rem` grid with a 1.5rem gap: the Topics, Instructions, Question type and difficulty, and Learning techniques panels on the left; the Session summary panel on the right, sticky 1.5rem from the top, its call number forming in the head as topics are added. Below 1024px Start session pins to the bottom edge on a ground bar with a hairline top and safe-area padding.
+- **Question loop:** the progress rule runs across the top of the content column, then the session strip (call number, topics, question number, score, difficulty tag; "provider · model" from 1280px; fullscreen; End session) in the 76rem container over a hairline; below 640px the strip wraps to two lines. From 1024px the loop is two equal columns with a 3rem gap, so the question column keeps its width before and after grading: before grading the right column holds the session facts (sticky, at most 19rem, aligned to the end edge); after grading it holds the return stamp, the explanation or feedback note, "Why?", self-explanation and the next action. Below 640px the primary action sticks to the bottom edge on a ground bar.
+- **History:** a header with the session count and New session, a filter row (a search field up to 20rem with a leading icon, the status segmented control, the Select toggle), and one panel holding the sessions as a table from 768px (the Type column from 1024px) or a list below it.
+- **Session details:** a back link, the header (the topic line as the title, call number, metadata, status tags, a row of figures for questions, answered, correct and score), then "Questions and answers": one panel per question, two columns with a 2rem gap from 1024px when it has an explanation, feedback or follow-ups, one column at the measure otherwise.
+- **Settings:** tabs for Provider, Language and Data. The Provider tab is a `minmax(0,5fr) minmax(0,7fr)` grid from 1024px with the provider list sticky on the left; the Language and Data panels hold 48rem.
+- **Support:** panels in two columns from 1024px.
 
-Vertical rhythm uses the 4px Tailwind scale: 2.5rem between sections, 3rem before closing sections, 2rem between the question, options, confidence and blocks (1.5rem from 1024px for the blocks, notices and action after them), 0.5–1rem from a section title to its content. During a session the progress rule runs full-bleed under the title bar, followed by a session strip (small Soft Slate text, 1.5rem column gap, 0.5rem vertical padding, hairline below): topics, question number, score, difficulty tag, and from 1024px the "provider · model" pair in Muted Slate before the fullscreen and End session controls. Below 640px the strip takes two lines: the topics and End session share the first, and the question number, score and difficulty tag (1rem apart) sit on the second.
-
-Responsive behaviour:
-- Below 768px the title-bar nav collapses into a menu button and data tables become stacked rows: an underlined title link, then a small Soft Slate meta line joined with " · ", then the status tag.
-- Below 640px (study loop) and 1024px (study setup) the primary action pins to the bottom edge on a ground-coloured bar with a hairline top and safe-area padding.
-- Below 640px the edit dialog fills the screen; from 640px it is a 42rem panel capped at 90vh.
-- Below 1024px every two-column frame stacks; the "Learning techniques" session facts are shown only from 1024px.
-- Choice grids tile from 640px (question type, 3 columns) and 768px (learning techniques, 2 columns, an odd last cell spanning both); below that they are one column.
+**Responsive switches.** Data tables become stacked lists on phones: the slip below 768px (call number and stamp on one line, the question clamped to two lines, topic and box below), History below 768px, Recent sessions and Loan periods below 640px. The edit dialog fills the screen below 640px. Choice grids tile from 640px (question type, three columns) and 768px (learning techniques, two columns, an odd last cell spanning both).
 
 ### Named Rules
-**The One Measure Rule.** Reading text never runs wider than 68ch. Wide content (tables, two-column frames) may use the full 72rem; prose may not.
+**The One Measure Rule.** Reading text never runs wider than 68ch. Tables and two-column frames may use the full 76rem; prose may not.
+
+**The Reading Order Rule.** Phones read the panels in DOM order, and wide layouts only place them. The slip always follows Progress: second in the phone stack, the full-width middle row from 1280px.
 
 ## Elevation & Depth
 
-The system is flat and tonal. Depth comes from three grounds: Slide Ground for the page, Surface White for things you type into or choose from (fields, choice groups and grid cells, segmented frames, secondary buttons, menus, dialogs, toasts), and Pale Teal-Grey for things set inside the page (block bodies, notices, tags, code, hover fills). The band adds a fourth, dark ground: the title bar's Title-bar Teal carried below it, so an overview reads as part of the bar, not as a raised panel. Hairlines and the 2px section rule do the rest. Only floating layers cast a shadow; dialogs also sit over a 40% black scrim (`rgb(0 0 0 / 0.4)`). `box-shadow` also appears as a line device, never as lift: the 3px inset underline for the active route and tab, and the 1px ring that thickens a focused field's border.
+The system is flat and tonal. Depth comes from three grounds: Reading Room for the page, Panel for everything set on it (panels, notes, fields, buttons, menus), and Inset for what sits inside a panel (note title strips, notices, tags, code, tracks, hover fills). Desk is the shell's own ground, a step darker than the page in Dark and white in Light. Hairline borders and panel-head rules do the rest. Only floating layers cast a shadow; dialogs also sit over a 40% black scrim. On content `box-shadow` appears only as a line: the selected tab's underline, the selected choice's or option's outline, the focused field's ring, and the 1px separators between extent segments.
 
 ### Shadow Vocabulary
-- **Overlay** (`box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12)`): the theme menu, the session edit dialog, the delete confirmation dialog, and toasts. Nothing else.
-- **Active underline** (`box-shadow: inset 0 -3px 0 var(--color-accent)`): active title-bar link and selected tab; transparent at rest.
+- **Overlay** (`box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.35), 0 2px 6px rgb(0 0 0 / 0.14)`): the theme menu, the delete confirmation, the session edit dialog, and toasts. Nothing else.
+- **Tab underline** (`box-shadow: inset 0 -2px 0 var(--color-accent)`): the selected tab; transparent at rest.
+- **Selected outline** (`box-shadow: inset 0 0 0 1px var(--color-accent)`): a selected choice row or cell and a selected answer option, over Inset.
 - **Field focus** (`box-shadow: 0 0 0 1px var(--color-focus)` with `border-color: var(--color-focus)`): a 2px focus edge on fields.
 
 ### Named Rules
-**The Overlays-Only Rule.** A shadow means "this floats above the page". Tables, blocks, bands, choice groups, option rows and every other piece of content sit flat on the ground; if it does not float, it does not cast.
+**The Overlays-Only Rule.** A shadow means "this floats above the page". Panels, the slip, tables, notes and every other piece of content sit flat; if it does not float, it does not cast.
 
 ## Shapes
 
-Near-square, ruled forms. Two radii: 2px (`rounded.sm`) for things you read (titled blocks, notices, tags, code, the study setup band) and for segments nested inside a 4px frame; 4px (`rounded.DEFAULT`) for things you press or type into (buttons, fields, choice groups and grids, segmented frames, menus, dialogs from 640px, title-bar icon buttons, the skip link). Rules, rows, the title bar, the Dashboard band, option rows and the progress rule are square. Nothing is a pill, and nothing is rounder than 4px.
+Near-square, ruled forms with three radii. 2px (`rounded.sm`) for marks and small parts: stamps, tags, segments inside a segmented frame, loan and extent tracks, the key hint and inline code. 4px (`rounded.DEFAULT`) for what you press or type into: buttons, fields, navigation items, icon buttons, the segmented frame, code blocks and the skip link. 6px (`rounded.md`) for containers: panels, notes, notices, choice groups and grids, menus, dialogs and toasts. Rows, answer options, the progress rule and choice grids set inside a panel are square. Nothing is a pill, and nothing is rounder than 6px.
 
-Lines carry the form: 1px borders and hairlines everywhere, a 2px ink rule under section titles (Title-bar White on a band), a 1px ink rule under table headers, a 3px orange underline for the current route, a 4px progress line split by 1px gaps, 4px review-box strips, and 1px gaps between choice-grid cells. Markdown blockquotes take a 1px Control Slate rule on the left; it is a quotation mark, not a state stripe.
+Lines carry the form: 1px borders and hairlines, the stamp's 1.5px frame, the slip's 2px red rule, the selected tab's 2px underline, the 4px progress rule split by 1px gaps, the 3px loading rule and toast rule, 0.5rem loan tracks and 0.25rem extent bars. A Markdown blockquote takes a 2px Control Edge rule on its left; it is a quotation mark, not a state stripe.
 
-The brand mark repeats the title bar in miniature: a flat Title-bar Teal square, a white Fira Sans 500 "L", and an orange rule beneath it. The boot screen in `index.html` is the same idea before React mounts: the 3.5rem title bar with the wordmark and a 4px orange bar travelling along a track, teal by default and near-black when the boot script marks the page dark.
+The brand mark is the date stamp in miniature: a flat Stamp Violet square (the light-palette violet), a white square stamp frame, and a white Libre Franklin 800 "L". The boot screen in `index.html` repeats the shell before React mounts: the wordmark on the page ground over a hairline, and a 3px violet bar travelling along a track, in the Light colours or, when the boot script marks the page dark (as it does for the default preference), the Dark ones.
 
 ### Named Rules
-**The Two Radii Rule.** 2px for what you read, 4px for what you press or type into; nothing rounder.
+**The Three Radii Rule.** 2px for marks, 4px for controls, 6px for containers; nothing rounder, and no pills.
 
 ## Components
 
 ### Buttons
-Quiet, rectangular keys; one teal key per screen (an inverse key on a band) marks the next step.
-- **Shape:** gently squared corners (4px), 1px border, 2.5rem minimum height, 0.5rem gap between icon and label, 16px icons.
-- **Primary:** Deck Teal fill and border, On-Teal White label. Used for the single next action on the ground: "Next question", "Submit answer", "Continue session", History's "New session", and "Start session" below 1024px.
-- **Hover / Focus:** colour transitions of 120ms `ease-out`; primary hovers to Deck Teal Lifted, secondary to Pale Teal-Grey. Focus is the global 2px solid Focus Ring outline with 2px offset (orange on the title bar and on bands). Disabled buttons drop to 50% opacity with a not-allowed cursor and no hover.
-- **Secondary:** Surface White with a Control Slate border and Deck Ink label: Resume, End session, Add, Cancel, outbound links.
-- **Ghost:** transparent, Soft Slate label, Pale Teal-Grey fill on hover; used for icon actions (close, show key, fullscreen, copy code).
-- **Danger:** Surface White with a Control Slate border and Graded Red Ink label; on hover a 10% error tint and an error border.
-- **Inverse** (on a band): Title-bar White fill and border with a Title-bar Teal label; on hover the fill mixes 86% Title-bar White over Title-bar Teal. The band's next action: "Start review" or "Resume review", "Start your first session", "New session" when nothing else is next, and "Start session" in the study setup summary from 1024px.
-- **Outline inverse** (on a band): transparent with a 45% Title-bar White border and a Title-bar White label; on hover the border turns full Title-bar White over a 10% Title-bar White fill. The band's other actions: "Resume" on an active session, and "New session" when something else is next.
-- **Small / Icon:** small is 2rem tall with 0.875rem labels (raised back to 2.5rem where it is the only touch target); icon is a 2.5rem square.
-- **Toggle chip:** the suggested-model buttons in Settings are small secondary buttons; when pressed they take a Deck Ink border, a Pale Teal-Grey fill and a leading check.
+Quiet rectangular keys; one violet key per screen marks the next step.
+- **Shape:** gently squared corners (4px), a 1px border, at least 2.5rem tall, 0.5rem between a 16px icon and the label.
+- **Primary:** Stamp Violet fill and border, On Violet label: "Start review · 5 due", Start session, Submit answer and Next question, Continue session, History's New session, the unfinished-session panel's New session when nothing is due, and the empty Dashboard's first session.
+- **Hover / Focus:** colour transitions of 120ms `ease-out`; primary hovers to Stamp Violet Hover, secondary and ghost to Inset. Focus is the global 2px Focus Ring outline with a 2px offset. Disabled buttons drop to 50% opacity with a not-allowed cursor and no hover.
+- **Secondary:** Panel with a Control Edge border and an Ink label: the Dashboard's New session, Resume, Add, Cancel, End session (small, kept 2.5rem tall in the session strip).
+- **Ghost:** transparent with a Soft Ink label, Inset with Ink on hover: icon actions (close, show key, fullscreen, copy code) and the History Select toggle.
+- **Danger:** Panel with a Control Edge border and a Slip Red Ink label; on hover a 10% error tint and a Slip Red border.
+- **Small / Icon:** small is 2rem tall with 0.875rem labels; icon is a 2.5rem square.
+- **Toggle:** suggested models in Settings are small secondary buttons; pressed, they take a Due Violet border, an 11% Stamp Violet tint and Due Violet Ink text.
+- **Key hint:** from 1024px the study loop's primary action carries an "Enter" hint: Archivo Narrow 0.75rem caps in Muted Ink inside a 1px Hairline frame with 2px corners.
 
 ### Chips (tags)
-- **Style:** small inline labels, 2px corners, 0.75rem medium text on Pale Teal-Grey in Soft Slate Ink, no border.
-- **State:** accent (orange tint, Burnt Orange Ink) for "Active"; success tint for "Correct" and "Added"; error tint for "Incorrect", "Removed" and "Incomplete"; neutral for type, difficulty, confidence, "Completed" and "Needs key"; the provider "Configured" tag stays neutral with Deck Ink text and a 12px leading check. Topic and instruction tags in the setup form grow to 0.875rem Deck Ink with a 2.5rem-tall remove button.
+- **Style:** small inline labels with 2px corners, 0.75rem semibold text in Soft Ink on Inset, no border.
+- **State:** accent (16% violet tint, Due Violet Ink) for "Active"; success tint for "Correct"; error tint for "Incorrect" and "Incomplete"; neutral for difficulty, question type, "Review", "Completed", confidence, cost tier and "Needs key"; the provider "Configured" tag is neutral with Ink text and a 12px leading check. The topic and instruction chips of the setup form grow to 0.875rem Ink with a 2.5rem-tall remove button.
 
 ### Segmented control and tabs
-- **Segmented:** a 1px Control Slate frame on Surface White with 2px inner padding; segments are 2.25rem tall, 0.875rem medium Soft Slate text, 2px corners. Selected (`aria-checked`, `aria-pressed` or `aria-selected`) fills with Deck Teal and On-Teal White. Used for difficulty, the history status filter and the 1–5 confidence scale.
-- **Tabs:** a row with 1.5rem gaps over a hairline; labels in Soft Slate, Deck Ink on hover and when selected, the selected tab marked by the 3px orange underline (160ms on the system ease).
+- **Segmented:** a 1px Control Edge frame on Panel with 4px corners and 2px inner padding; segments are 2.25rem tall, 0.875rem medium Soft Ink (Ink on hover), 2px corners. The selected segment (`aria-checked`, `aria-pressed` or `aria-selected`) fills with Stamp Violet and On Violet. Used for difficulty (Easy, Medium, Hard), the History status filter, the 1–5 confidence scale and the edit dialog.
+- **Tabs:** a row with 1.5rem gaps over a hairline; labels 0.9375rem medium in Muted Ink, Ink on hover and when selected, the selected tab underlined 2px in Due Violet (the underline moves on 160ms of the system ease).
 
 ### Cards / Containers
-There are no cards. Containers are the band, the titled block, the notice, the choice group and the choice grid.
-- **Band:** the Metropolis standout frame: the title bar's Title-bar Teal ground carried below the bar, with Title-bar White text, used for the Dashboard overview (progress, review boxes, next action) and, from 1024px, the study setup summary. Inside it section titles take a Title-bar White rule and text; data-table headers turn Title-bar Mist over a 55% Title-bar White rule, and cells Title-bar White over `--band-rule` (Title-bar White at 16%); facts labels and hints turn Title-bar Mist, facts values Title-bar White; `.band-rows` divides a list with `--band-rule` hairlines; `.text-band-accent` sets due counts in `--band-accent`; the focus ring turns orange. The Dashboard band runs full-bleed with a 1px `--band-rule` top border, so the sticky title bar's edge stays visible against the same ground; the study setup band is a sticky aside with 2px corners and 1.25rem padding. Actions on a band use the inverse buttons.
-- **Titled block:** 2px corners, clipped. Title strip in Title-bar Teal with Title-bar White subhead text (0.5rem by 1rem, optional 16px icon); body in Pale Teal-Grey with `reading` text (0.875rem by 1rem). Success and error variants switch the strip to the green or red ink with Surface White text and tint the body. Used for Explanation, Why?, Feedback, Your answer, Model answer, Evaluation and Explanation feedback.
-- **Notice:** 2px corners, 0.75rem by 1rem, a 16px leading icon, no side stripe. Neutral on Pale Teal-Grey; error and warning variants tint the ground and ink the text.
-- **Choice group:** a bordered stack (1px Control Slate, 4px corners, Surface White, hairline dividers). Each row (0.75rem by 1rem) holds a native radio or checkbox, a medium title and a small Soft Slate description, and a right-aligned status tag when needed. Rows fill Pale Teal-Grey on hover and take the 8% primary tint when checked. Used for the Settings provider and language lists and the edit dialog's options.
-- **Choice grid:** the same choice cells tiled in columns inside a 1px Control Slate frame with 4px corners; each cell is Surface White, and the 1px gaps between cells show Control Slate mixed 55% into Surface White, strong enough to survive the checked tint in the dark theme. Cells keep the choice's hover fill and checked tint. Question type tiles in 3 columns from 640px; learning techniques in 2 columns from 768px, where an odd last cell spans both.
+There are no cards. Containers are the panel, the note, the notice, and the choice group or grid.
+- **Panel:** Panel ground, a 1px Hairline border, 6px corners, no shadow. A head row (0.9375rem semibold title, optional small Muted Ink meta or a call number at the end) sits over a hairline; the body pads 1rem (1.25rem at the sides from 640px). Every Dashboard section, the setup panels, History's list, each question in Session details, Settings and Support are panels.
+- **Note:** a small panel for explanation and feedback: a title strip in Inset (0.875rem semibold Ink, optional 16px icon) over a hairline, and a `reading` body padded 0.875rem by 1rem. The success and error variants tint the strip (success 10%, error 9%), ink its text, and tint the border (45% into Hairline). Used for Explanation, Feedback, Why?, self-explanation, Your answer, Model answer and Evaluation.
+- **Notice:** 6px corners, a Hairline border, 0.75rem by 1rem, a 16px leading icon, no side stripe. Neutral on Inset; the error and warning variants tint the ground and border and ink the text.
+- **Choice group:** a bordered stack (1px Control Edge, 6px corners, Panel, hairline dividers). Each row (0.75rem by 1rem) holds a native radio or checkbox, a semibold title, a small description and, when needed, a status tag. Rows fill Inset on hover; the selected row is Inset with a 1px Due Violet inset outline. Inside a panel the group runs to the panel edges with no frame of its own (provider and language lists).
+- **Choice grid:** the same cells tiled in columns with 1px Hairline gaps, framed in Control Edge with 6px corners, or frameless to the panel edges (question type, learning techniques).
 - **Shadow Strategy:** none; see Elevation & Depth.
 
 ### Inputs / Fields
-- **Style:** 1px Control Slate border, Surface White, 4px corners, 0.5rem by 0.75rem, 1rem Deck Ink text, Muted Slate placeholders at full opacity. Textareas are at least 6rem tall, vertically resizable, relaxed leading. Keys, model IDs and URLs set in Fira Mono. The history search field carries a 16px Muted Slate leading icon.
+- **Style:** a 1px Control Edge border, Panel, 4px corners, 0.5rem by 0.75rem, 1rem Ink text, Muted Ink placeholders at full opacity. Textareas are at least 6rem tall, vertically resizable, with relaxed leading. Keys, model IDs and URLs set in the monospace stack. The History search carries a 16px Muted Ink leading icon.
 - **Focus:** no outline; the border turns Focus Ring and a 1px ring of the same colour doubles it (120ms).
-- **Hover:** border darkens to Soft Slate Ink.
-- **Error / Disabled:** `aria-invalid="true"` turns the border Graded Red; disabled fields go Pale Teal-Grey with Muted Slate text. A label sits 0.375rem above (small medium Deck Ink); hints and errors sit 0.375rem below (small Muted Slate or Graded Red Ink).
+- **Hover:** the border darkens to Soft Ink.
+- **Error / Disabled:** `aria-invalid="true"` turns the border Slip Red; disabled fields go Inset with Muted Ink text. A label sits 0.375rem above (0.875rem semibold Ink); hints and errors sit 0.375rem below (0.875rem Muted Ink or Slip Red Ink).
 
 ### Navigation
-- **Title bar:** sticky, Title-bar Teal, 3.5rem tall, z-index 40. The wordmark on the left, route links 1.75rem apart, then "Support" (0.875rem) and the theme control on the right.
-- **Links:** `compact` text in Title-bar Mist, Title-bar White on hover (120ms); the current route is Title-bar White with the 3px orange underline sitting on the bar's bottom edge and `aria-current="page"`.
-- **Icon buttons:** 2.5rem squares with 20px icons and 4px corners; hover or expanded state lifts the icon to white over an 8% white fill.
-- **Theme control:** the icon of the current preference (a monitor for System, then a sun, moon or contrast icon) opens a menu of four choices in this order: System, Light, Dark, High contrast, with a check on the current one; closes on outside pointer-down or Escape.
-- **Mobile:** below 768px the links move into a menu under the bar (1rem text, 0.75rem padding, 4px corners, 6% white on hover, 10% white and medium weight when current, a 10% white hairline on top).
+- **Sidebar (from 1024px):** Desk ground, the 1.375rem 800 wordmark, then Dashboard, Study, History and Settings, each a 2.5rem row with an 18px icon (1.75 stroke), 0.9375rem medium Desk Muted text and 4px corners. Hover lifts the text to Desk Ink over a 7% Desk Ink fill (120ms). The current route is a filled Stamp Violet label with On Violet text and `aria-current="page"`. Support and the Theme row sit at the foot above a hairline.
+- **Top bar (below 1024px):** Desk ground, 3.5rem, a hairline below; the wordmark at 1.25rem, then the theme icon button and the menu button (2.5rem squares, 20px icons, 4px corners, the same hover fill, also when expanded). The menu opens under the bar on Desk with the same items, Support included.
+- **Theme menu:** the current preference's icon (or the Theme row in the sidebar) opens a menu of System, Light, Dark and High contrast with a check on the current one; it closes on an outside pointer-down or Escape.
 
 ### Data tables and facts
-- **Table:** full width, 0.875rem text. Headers in medium Soft Slate over a 1px Deck Ink rule; cells over hairlines with 0.625rem vertical padding and baseline alignment (0.375rem in the History table). Number columns right-align in tabular figures. Row headers read like body cells. Topic links are medium Deck Ink, underlined in Control Slate; the underline darkens to Deck Ink on hover.
-- **Table on a band:** headers in Title-bar Mist over a 55% Title-bar White rule; cells and row headers in Title-bar White over `--band-rule` hairlines. The Dashboard's progress table is set this way with its values as `figure`s: rows Last 7 days and All time, columns Sessions, Questions answered and Accuracy.
-- **Facts:** a two-column list, label left in Soft Slate, value right in medium Deck Ink tabular figures, 0.5rem between rows. Under a section title in a right column, or as a four-up row on Session details with a hairline under each pair. On a band, labels turn Title-bar Mist and values Title-bar White.
+- **Table:** full width, 0.875rem text. Column heads are printed labels in Muted Ink over a hairline; cells sit over hairlines with 0.625rem vertical padding (the Dashboard tightens its tables to 0.5rem, 0.375rem and 0.25rem). Number columns right-align in tabular figures; row headers read like body cells (0.875rem medium Ink). Topic links in Recent sessions are medium Ink underlined in Control Edge, the underline darkening to Ink on hover. History's Started column sorts from a button in its head.
+- **Progress table:** rows Last 7 days and All time, columns Sessions, Answered and Accuracy, the values as figures.
+- **Facts:** a two-column list, the label left in Muted Ink, the value right in medium Ink tabular figures, 0.5rem between rows: the setup summary, the session facts in the loop. Session details sets its facts as a row of caps labels beside 1.375rem figures.
+
+### Call numbers (signature)
+A call number tags every question and session like a spine label. A topic's code is its first three letters or digits, uppercased without diacritics ("Cellular respiration" is CEL); a question adds its Leitner box after a middle dot (CEL·2); a session joins the codes of its first two topics with a slash and counts the rest (CEL/LEA, CEL/LEA+1); an empty topic shows "—". Call numbers set as `call-number` in Soft Ink (Muted Ink on not-yet-due rows and in the Unfinished session head) on the slip, Recent sessions, History, the setup summary, the session strip, review complete, Session details and its question heads, and the edit dialog.
+
+### Date stamps (signature)
+The rubber date stamp drawn flat: `stamp` caps inside a 1.5px frame of the text colour, 2px corners, 3px by 0.5rem. The date reads as a stamp prints it ("06 NOV 2026", month names in the UI language; "06 NOV" without the year; "06 NOV · 01:22 PM" for a time later today).
+- **Due:** Due Violet Ink text and frame. On Session details the label reads "Due 06 NOV 2026".
+- **Overdue:** Slip Red Ink: "Overdue · 04 NOV" (the year only when it differs from the current one).
+- **Not yet due:** faded: Due Violet Ink mixed 62% with Muted Ink, the frame 32% into Hairline.
+- **Quiet:** Muted Ink on a Hairline frame: "Returned" (answered without entering the review queue), "Returned for good" in the loop and "Retired" on Session details once a question leaves the queue.
+- **Return stamp:** after grading, the response column opens with "Comes back", a due stamp and "· Box 1" in small Soft Ink, or a quiet stamp. The stamp lands once: 260ms from opacity 0 and 112% scale to rest on the system ease-out curve.
+- Unanswered questions and review copies carry no stamp.
+
+### Due for return slip (signature)
+The review queue as a library slip, in a panel. Its header row holds the slip title, a summary line (the overdue count in bold Slip Red Ink, then "3 due today" and "2 more this week" in Muted Ink, or "Nothing due now. Next return:" with the next date) and, when anything is due, the primary "Start review · N due" (or "Resume review · N due") at the far end, full width on phones. A 2px Slip Red Ink rule closes the header.
+- **Table (from 768px):** Call no. (6.5rem), Question (medium Ink, truncated), Topic (24%, from 1280px; below that the topic sits under the question in small Muted Ink), Box ("Box 3 · 7 days", 9.5rem) and Due (11rem, the stamp). Column heads are printed labels in Slip Red Ink over a 1px Slip Red Ink rule; rows sit over Slip Red Ink hairlines mixed 20% into Hairline, and tighten from 1280px.
+- **Order:** overdue and due rows first, oldest first, up to eight, then "+N more due"; then the "On loan · not yet due" group label and up to two not-yet-due rows (five when nothing is due) in Muted Ink with faded stamps.
+- **Phones:** each row is a list item: the call number and stamp on one line, the question clamped to two lines, the topic and box below.
+- **Empty:** one Muted Ink line at the measure explains how questions come to be on loan.
+
+### Loan periods (signature)
+Each Leitner box drawn as a loan on one 0–30 day axis. From 640px a table: Box ("Box 1" semibold, "1 d" muted), a track column headed by the axis ticks (0, 7, 14, "30 days"; ticks drop when the track is too narrow to hold them), On loan and Due. Each box's bar runs from day 0 to its interval (1, 3, 7, 14 and 30 days) on a 0.5rem Inset track with 2px corners, split by 1px Panel lines into its not-yet-due share (Due Violet at 45% into Inset), due-today share (Due Violet) and overdue share (Slip Red), so the due part sits at the bar's end; an empty box draws its bar in Hairline. The Due figure is bold Slip Red Ink when anything is overdue, bold Due Violet Ink when something is due today, and Muted Ink at zero. A Retired row closes the table. Below 640px each box is a row with its counts above a full-width track. A screen-reader table carries the same figures.
+
+### Extent bars (signature)
+A hairline bar, 3rem by 0.25rem on Inset with 2px corners, set before the answered count in Recent sessions and History. Its full length is the most questions answered in any one session (`mostAnswered`), so a session draws the same length on every page; it fills with one Control Edge segment per topic, in topic order, separated by 1px Panel lines. It is decorative (`aria-hidden`); the count beside it carries the number.
 
 ### Answer options (signature)
-The question loop's options are rows, not cards: a 1.75rem key column (A–D, semibold Soft Slate), the option text, and a right-hand note column; 0.75rem padding (1rem sides from 640px), hairline above the first and below each. Hover fills Pale Teal-Grey. Selected takes the 9% primary tint and Deck Ink key. After grading every option stays visible: the correct one in the success tint with a green-ink key and a check note ("Correct answer", or a combined your-answer-correct note when the pick was right), a wrong pick in the error tint with a red-ink key and a cross note ("Your answer"), the rest in Muted Slate. Session details reuses the same rows read-only.
+Rows, not cards: a 1.75rem key column (Archivo Narrow A–D in Muted Ink), the option text at 1rem, and a right-hand note column; 0.75rem padding (1rem at the sides from 640px), a hairline above the first and below each. Hover fills Inset. A selected option is Inset with a 1px Due Violet inset outline and a Due Violet Ink key. After grading every option stays visible: the correct one in a 13% success tint with a green-ink key and a check note ("Correct answer", or "Your answer · correct"), a wrong pick in an 11% error tint with a red-ink key and a cross note ("Your answer"), the rest in Muted Ink. Session details reuses the same rows, read-only.
 
-### Progress rule and loading rule (signature)
-- **Progress rule:** a 4px Hairline track the full width of the viewport under the title bar, split into one flex segment per question with 1px gaps: Graded Green for correct, Graded Red for wrong, Metropolis Orange for the current question, transparent for pending. Each filled segment grows in from the left once (`scaleX` 0 to 1, 480ms, `cubic-bezier(0.16, 1, 0.3, 1)`).
-- **Loading rule:** the same 4px track with a one-third-width orange bar travelling left to right (`translateX(-100%)` to `translateX(300%)`, 1.2s on the same curve, infinite). It stands for every AI wait, with a one-line small Soft Slate label under it, and for the boot screen.
-
-### Review box strips (signature)
-In the Dashboard band the five review boxes are drawn on one linear 0–30 day axis at their true intervals: a 4px track per box (`.box-track`, in `--band-rule`) with a strip from the previous interval to this one (`.box-fill`): Metropolis Orange when the box has questions due, Title-bar White when it holds scheduled questions, Title-bar Mist at 45% when empty. Box labels sit left in small Title-bar Mist, due counts right in 0.75rem medium `--band-accent`, totals in medium Title-bar White tabular figures, axis ticks in 0.75rem Title-bar Mist, and a small Title-bar Mist caption counts what is due now and retired. A screen-reader table carries the same data.
+### Progress and loading rules
+- **Progress rule:** a 4px Hairline track across the top of the content column, one segment per question with 1px gaps: Correct Green for correct, Slip Red for wrong, Due Violet for the current question, transparent for pending. Open-ended sessions grow the rule in blocks of ten slots; review sessions show their whole queue. Each filled segment grows in from the left once (480ms, `cubic-bezier(0.16, 1, 0.3, 1)`).
+- **Loading rule:** a 3px Hairline track with a one-third-width violet bar travelling left to right (1.2s on the same curve, infinite), with a one-line small Soft Ink label under it. It stands for every AI wait, the route fallback and, in `index.html`, the boot screen.
 
 ### Menus and dialogs
-- **Menu:** at least 12rem wide, Surface White, 1px Hairline border, 4px corners, 0.25rem vertical padding, 0.875rem text, the overlay shadow. Items are 0.5rem by 0.75rem with 16px Soft Slate icons and a Pale Teal-Grey fill on hover and keyboard focus.
-- **Dialog:** a 40% black scrim; a Surface White panel with the overlay shadow, 4px corners from 640px. The edit dialog has a header row (dialog title and a ghost close button) over a hairline and a scrolling body of sections; the delete confirmation is a 24rem panel with 1.5rem padding and danger and secondary buttons.
+- **Menu:** at least 12rem wide, Panel, a 1px Hairline border, 6px corners, 0.25rem vertical padding, 0.875rem text and the overlay shadow. Items are 0.5rem by 0.75rem with 16px Soft Ink icons and an Inset fill on hover and keyboard focus.
+- **Dialog:** a 40% black scrim; a Panel with a Hairline border, 6px corners and the overlay shadow. The delete confirmation is a 24rem panel with a panel head (the dialog title) and a body with the message in Soft Ink and secondary and danger buttons. The session edit dialog fills the screen below 640px and is a 42rem panel capped at 90vh from 640px: a head with the title and a ghost close button, a scrolling body of sections, and a footer bar over a hairline.
 
 ### Toasts
-Transient messages (an API key applied from the URL, a failed storage write, an app update) appear as toasts drawn outside React by `notificationService.ts`.
-- **Placement:** a region fixed under the title bar (top `calc(var(--bar-height) + 0.75rem)`, z-index 70), 1rem from each edge on phones, a 24rem column 1.5rem from the right from 640px. Toasts stack right-aligned with 0.5rem between them; the region is `aria-live="polite"` and passes pointer events only to the toasts.
-- **Panel:** Surface White, 1px Hairline border, 4px corners, the overlay shadow, Deck Ink text. A 4px state rule runs along the top edge, like the progress rule: Deck Teal for info, Graded Green for success, Graded Red for error, Caution Amber for warning (set through `--toast-rule`).
-- **Content:** 0.75rem by 1rem padding; a semibold title and a short Soft Slate message 0.125rem below it, both with snug leading. No icons.
-- **Behaviour:** enters with `toast-in` (fade and a 6px drop, 240ms on `cubic-bezier(0.16, 1, 0.3, 1)`), leaves with `toast-out` (160ms `ease-in`). It leaves after 5 seconds by default (a duration of 0 keeps it) or on click. Error toasts carry `role="alert"`.
+Transient messages (an API key applied from the URL, a failed storage write, an app update) are drawn outside React by `notificationService.ts`.
+- **Placement:** a region fixed `0.75rem` under the bar height (z-index 70), 1rem from each edge on phones and a 24rem column 1.5rem from the right from 640px. Toasts stack right-aligned 0.5rem apart; the region is `aria-live="polite"` and passes pointer events only to the toasts.
+- **Panel:** Panel, a 1px Hairline border, 6px corners, the overlay shadow, and a 3px state rule along the top: Due Violet for info, Correct Green for success, Slip Red for error, Caution Amber for warning.
+- **Content:** 0.75rem by 1rem; a semibold title and a short Soft Ink message 0.125rem below it. No icons.
+- **Behaviour:** enters with a fade and a 6px drop (240ms on the system ease), leaves with a fade and a 6px rise (160ms `ease-in`), after 5 seconds by default or on click. Error toasts carry `role="alert"`.
 
 ### Markdown
-Model output renders inside the system: paragraphs 0.75rem apart; headings at 1.25rem medium, 1.125rem medium, 1rem semibold, 1rem medium; lists with Muted Slate markers; blockquotes behind a 1px Control Slate rule in Soft Slate; inline code on Pale Teal-Grey with 2px corners in Fira Mono at 0.9em; code blocks on Pale Teal-Grey with a header row (the language in 0.75rem Fira Mono, a ghost copy button); tables reuse the data table; display math renders as centred text.
+Model output renders inside the system: paragraphs 0.75rem apart; headings at 1.25rem bold, 1.125rem semibold, 1rem semibold and 0.9375rem semibold; lists with Muted Ink markers; blockquotes behind a 2px Control Edge rule in Soft Ink; links in medium Due Violet Ink, underlined, thickening to 2px on hover; inline code tinted with Ink at 9% into transparent, 2px corners, monospace at 0.9em. Code blocks sit on Inset inside a 1px Hairline frame with 4px corners: a caption row with the language in 0.75rem monospace Muted Ink and a ghost copy button, then numbered lines (numbers in Muted Ink). Syntax colours come from the tokens: comments Muted Ink italic, punctuation Soft Ink, keywords and tags Due Violet Ink, strings Correct Green Ink, numbers Caution Amber Ink, deletions Slip Red Ink, functions Ink at 500; this is the one place the signal inks appear outside their roles. Tables reuse the data table; rules are Hairline; display math renders as centred text.
 
 ### Motion
-State changes are colour-only and quick: 120ms `ease-out` on backgrounds, borders and text; underlines move on 160ms `cubic-bezier(0.16, 1, 0.3, 1)`. The progress rule, the loading rule and toast entry and exit are the only animations. Under `prefers-reduced-motion: reduce` every animation and transition collapses to 0.01ms, and the boot rule stops.
+State changes are colour-only and quick: 120ms `ease-out` on backgrounds, borders and text; the tab underline moves on 160ms of `cubic-bezier(0.16, 1, 0.3, 1)`. The only animations are the return stamp landing, the progress rule's segments growing, the loading rule travelling, and toasts entering and leaving. Under `prefers-reduced-motion: reduce` every animation and transition collapses to 0.01ms and the boot rule stops.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** put every route inside the 72rem frame under the teal title bar (the Dashboard band holds the same frame inside it), open with one `page-title` (the Dashboard's is visually hidden; its band opens the page), and head each section with a `section-title` and its 2px ink rule.
-- **Do** give each screen one primary (Deck Teal) button for the next step, or one inverse button on a band; make every other action secondary or ghost (outline inverse on a band).
-- **Do** carry a page's overview on a band: the title bar's ground below the bar, Title-bar White and Title-bar Mist for text and rules, inverse buttons for actions.
-- **Do** keep Metropolis Orange for progress and the current item, and set orange text in Burnt Orange Ink (`--band-accent` on a band).
-- **Do** set counts, scores, ratios and dates in tabular figures, right-aligned in tables and facts lists.
-- **Do** put explanations and feedback in titled blocks, and show grading as a tint mixed into the surface plus inked text.
-- **Do** style through the semantic tokens (`bg-shell`, `text-ink-soft`, `border-line-strong`) so all three themes follow; build tints with `color-mix()` in CSS, because the token classes take no `/opacity` modifier.
-- **Do** show any AI wait as the 4px loading rule with a one-line label.
-- **Do** raise transient, out-of-flow messages through the toast: a surface panel with a 4px state rule on top, a title and a short message.
-- **Do** write UI copy in sentence case.
+- **Do** put every route in the 76rem page frame beside the sidebar (under the top bar on phones), open it with one `page-title` and its lede, and group its content in panels with a 1px Hairline border and 6px corners.
+- **Do** give each screen one Stamp Violet primary button for the next step; make every other action secondary or ghost.
+- **Do** tag every question and session with its call number, and mark every scheduled question with a date stamp: violet due, red overdue, faded not yet due, quiet once returned.
+- **Do** keep violet for what is due, actionable or current, and set violet, green, red and amber text in the `*Ink` tokens.
+- **Do** draw lengths to scale on a shared axis: loan periods on the 0–30 day axis, extent bars against the most answered session.
+- **Do** set counts, scores, ratios, dates and stamps in tabular figures, right-aligned in tables and facts lists.
+- **Do** show grading as a tint mixed into Panel plus inked text, and keep every option, the user's pick, the correct answer and the explanation visible after grading.
+- **Do** style through the semantic tokens (`bg-surface`, `text-ink-muted`, `border-line-strong`) so all three palettes follow; build tints with `color-mix()` in CSS, because the token classes take no `/opacity` modifier.
+- **Do** show any AI wait as the 3px loading rule with a one-line label.
 
 ### Don't:
-- **Don't** use skeuomorphic texture, gradients or glow; PRODUCT.md rules out skeuomorphism.
+- **Don't** use skeuomorphic texture, gradients or glow; PRODUCT.md rules out skeuomorphism, so the stamp stays a flat frame of caps.
+- **Don't** build rounded bubbly cards, icon tiles or stat tiles; numbers belong in tables, facts and figures, and nothing is rounder than 6px.
 - **Don't** put a shadow on content; only menus, dialogs and toasts carry the overlay shadow.
-- **Don't** build stat tiles, icon tiles or stacked shadowed cards; numbers belong in data tables and facts lists.
-- **Don't** add a coloured side stripe to notices or blocks; state is a tint plus inked text.
-- **Don't** fill buttons, headings or surfaces with orange, or set text in the base accent.
-- **Don't** put primary, secondary or ghost buttons, or Deck Ink and Soft Slate text, on a band; they are drawn for the ground.
-- **Don't** uppercase or letter-space labels, or put kickers or eyebrows above titles.
-- **Don't** round anything past 4px or draw pills.
-- **Don't** hard-code hex in components; every colour comes from a `--color-*` token so the three themes stay whole.
+- **Don't** use violet as decoration, or red for anything but the slip's print, overdue and errors.
+- **Don't** add a coloured side stripe to notices, notes or panels; state is a tint plus inked text.
+- **Don't** set body text, headings or buttons in Archivo Narrow, or uppercase anything but printed labels, call numbers, stamps and the key hint.
+- **Don't** put kickers or eyebrows above titles.
+- **Don't** hard-code hex in components; every colour comes from a `--color-*` token so the three palettes stay whole.
