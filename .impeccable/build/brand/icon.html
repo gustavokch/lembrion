@@ -1,0 +1,55 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:'Fira Sans';font-weight:500;src:url('/node_modules/@fontsource/fira-sans/files/fira-sans-latin-500-normal.woff2') format('woff2')}
+html,body{margin:0;padding:0;background:transparent}
+svg{display:block}
+</style></head><body>
+<script>
+const p = new URLSearchParams(location.search);
+const size = Number(p.get('size') || 512);
+const mask = p.get('mask') === '1';
+// Maskable icons keep the mark inside the 80% safe circle.
+const scale = mask ? 0.72 : 1;
+const small = size <= 48;
+const ns = 'http://www.w3.org/2000/svg';
+
+document.fonts.load("500 100px 'Fira Sans'").then(() => {
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size);
+  svg.setAttribute('viewBox', '0 0 512 512');
+  svg.innerHTML = '<rect width="512" height="512" fill="#23373b"/>';
+  const fontSize = (small ? 380 : 330) * scale;
+  const text = document.createElementNS(ns, 'text');
+  text.setAttribute('font-family', 'Fira Sans');
+  text.setAttribute('font-weight', '500');
+  text.setAttribute('font-size', String(fontSize));
+  text.setAttribute('fill', '#ffffff');
+  text.textContent = 'L';
+  svg.appendChild(text);
+  document.body.appendChild(svg);
+
+  // Measure the glyph's ink so the mark centres optically and the rule spans stem to foot.
+  const ctx = document.createElement('canvas').getContext('2d');
+  ctx.font = `500 ${fontSize}px 'Fira Sans'`;
+  const m = ctx.measureText('L');
+  const inkW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+  const cap = m.actualBoundingBoxAscent;
+  const gap = fontSize * (small ? 0.12 : 0.1);
+  const ruleH = fontSize * (small ? 0.13 : 0.08);
+  const baseline = 256 - (cap + gap + ruleH) / 2 + cap;
+  const inkLeft = 256 - inkW / 2;
+  text.setAttribute('x', String(inkLeft + m.actualBoundingBoxLeft));
+  text.setAttribute('y', String(baseline));
+  const rule = document.createElementNS(ns, 'rect');
+  rule.setAttribute('x', String(inkLeft));
+  rule.setAttribute('y', String(baseline + gap));
+  rule.setAttribute('width', String(inkW));
+  rule.setAttribute('height', String(ruleH));
+  rule.setAttribute('fill', '#eb811b');
+  svg.appendChild(rule);
+  document.body.setAttribute('data-ready', '1');
+});
+</script>
+</body></html>

@@ -1,0 +1,1582 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T09:52:00+00:00",
+  "title": "Design System: Lembrion",
+  "extensions": {
+    "colorMeta": {
+      "shell": {
+        "role": "primary",
+        "displayName": "Title-bar Teal",
+        "canonical": "#23373b",
+        "theme": "light",
+        "cssVar": "--color-shell",
+        "purpose": "Title bar ground and block title strips.",
+        "tonalRamp": [
+          "oklch(15% 0.011 211)",
+          "oklch(26% 0.019 211)",
+          "oklch(38% 0.024 211)",
+          "oklch(49% 0.026 211)",
+          "oklch(61% 0.026 211)",
+          "oklch(72% 0.024 211)",
+          "oklch(84% 0.019 211)",
+          "oklch(95% 0.011 211)"
+        ]
+      },
+      "shellInk": {
+        "role": "neutral",
+        "displayName": "Title-bar White",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-shellInk",
+        "purpose": "Text on the title bar; active route.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "shellMuted": {
+        "role": "neutral",
+        "displayName": "Title-bar Mist",
+        "canonical": "#b9c6c8",
+        "theme": "light",
+        "cssVar": "--color-shellMuted",
+        "purpose": "Idle route links and icons on the title bar.",
+        "tonalRamp": [
+          "oklch(15% 0.006 208)",
+          "oklch(26% 0.010 208)",
+          "oklch(38% 0.013 208)",
+          "oklch(49% 0.014 208)",
+          "oklch(61% 0.014 208)",
+          "oklch(72% 0.013 208)",
+          "oklch(84% 0.010 208)",
+          "oklch(95% 0.006 208)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Slide Ground",
+        "canonical": "#fafafa",
+        "theme": "light",
+        "cssVar": "--color-ground",
+        "purpose": "Page ground.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface White",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-surface",
+        "purpose": "Fields, choice groups, menus, dialogs; base for every state tint.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "sunken": {
+        "role": "neutral",
+        "displayName": "Pale Teal-Grey",
+        "canonical": "#eef1f1",
+        "theme": "light",
+        "cssVar": "--color-sunken",
+        "purpose": "Block bodies, notices, tags, code, hover fills.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Deck Ink",
+        "canonical": "#23373b",
+        "theme": "light",
+        "cssVar": "--color-ink",
+        "purpose": "Body text, titles, section and table-header rules.",
+        "tonalRamp": [
+          "oklch(15% 0.011 211)",
+          "oklch(26% 0.019 211)",
+          "oklch(38% 0.024 211)",
+          "oklch(49% 0.026 211)",
+          "oklch(61% 0.026 211)",
+          "oklch(72% 0.024 211)",
+          "oklch(84% 0.019 211)",
+          "oklch(95% 0.011 211)"
+        ]
+      },
+      "inkSoft": {
+        "role": "neutral",
+        "displayName": "Soft Slate Ink",
+        "canonical": "#45585c",
+        "theme": "light",
+        "cssVar": "--color-inkSoft",
+        "purpose": "Secondary text: ledes, table headers, facts labels, inactive tabs.",
+        "tonalRamp": [
+          "oklch(15% 0.010 212)",
+          "oklch(26% 0.017 212)",
+          "oklch(38% 0.022 212)",
+          "oklch(49% 0.024 212)",
+          "oklch(61% 0.024 212)",
+          "oklch(72% 0.022 212)",
+          "oklch(84% 0.017 212)",
+          "oklch(95% 0.010 212)"
+        ]
+      },
+      "inkMuted": {
+        "role": "neutral",
+        "displayName": "Muted Slate Ink",
+        "canonical": "#5b6c70",
+        "theme": "light",
+        "cssVar": "--color-inkMuted",
+        "purpose": "Hints, placeholders, list markers, axis ticks.",
+        "tonalRamp": [
+          "oklch(15% 0.009 214)",
+          "oklch(26% 0.015 214)",
+          "oklch(38% 0.019 214)",
+          "oklch(49% 0.021 214)",
+          "oklch(61% 0.021 214)",
+          "oklch(72% 0.019 214)",
+          "oklch(84% 0.015 214)",
+          "oklch(95% 0.009 214)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#dfe5e5",
+        "theme": "light",
+        "cssVar": "--color-line",
+        "purpose": "Hairline separators and rule tracks.",
+        "tonalRamp": [
+          "oklch(15% 0.003 197)",
+          "oklch(26% 0.005 197)",
+          "oklch(38% 0.006 197)",
+          "oklch(49% 0.006 197)",
+          "oklch(61% 0.006 197)",
+          "oklch(72% 0.006 197)",
+          "oklch(84% 0.005 197)",
+          "oklch(95% 0.003 197)"
+        ]
+      },
+      "lineStrong": {
+        "role": "neutral",
+        "displayName": "Control Slate",
+        "canonical": "#869699",
+        "theme": "light",
+        "cssVar": "--color-lineStrong",
+        "purpose": "Form-control borders (3:1 against surface).",
+        "tonalRamp": [
+          "oklch(15% 0.008 210)",
+          "oklch(26% 0.013 210)",
+          "oklch(38% 0.017 210)",
+          "oklch(49% 0.019 210)",
+          "oklch(61% 0.019 210)",
+          "oklch(72% 0.017 210)",
+          "oklch(84% 0.013 210)",
+          "oklch(95% 0.008 210)"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Deck Teal",
+        "canonical": "#23373b",
+        "theme": "light",
+        "cssVar": "--color-primary",
+        "purpose": "Primary button fill and selected segment.",
+        "tonalRamp": [
+          "oklch(15% 0.011 211)",
+          "oklch(26% 0.019 211)",
+          "oklch(38% 0.024 211)",
+          "oklch(49% 0.026 211)",
+          "oklch(61% 0.026 211)",
+          "oklch(72% 0.024 211)",
+          "oklch(84% 0.019 211)",
+          "oklch(95% 0.011 211)"
+        ]
+      },
+      "primaryHover": {
+        "role": "primary",
+        "displayName": "Deck Teal Lifted",
+        "canonical": "#30494e",
+        "theme": "light",
+        "cssVar": "--color-primaryHover",
+        "purpose": "Primary button hover.",
+        "tonalRamp": [
+          "oklch(15% 0.013 211)",
+          "oklch(26% 0.022 211)",
+          "oklch(38% 0.028 211)",
+          "oklch(49% 0.031 211)",
+          "oklch(61% 0.031 211)",
+          "oklch(72% 0.028 211)",
+          "oklch(84% 0.022 211)",
+          "oklch(95% 0.013 211)"
+        ]
+      },
+      "onPrimary": {
+        "role": "primary",
+        "displayName": "On-Teal White",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-onPrimary",
+        "purpose": "Text and icons on primary fills.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "accent": {
+        "role": "secondary",
+        "displayName": "Metropolis Orange",
+        "canonical": "#eb811b",
+        "theme": "light",
+        "cssVar": "--color-accent",
+        "purpose": "Progress and the current item only.",
+        "tonalRamp": [
+          "oklch(15% 0.037 57)",
+          "oklch(26% 0.065 57)",
+          "oklch(38% 0.090 57)",
+          "oklch(49% 0.118 57)",
+          "oklch(61% 0.146 57)",
+          "oklch(72% 0.146 57)",
+          "oklch(84% 0.107 57)",
+          "oklch(95% 0.029 57)"
+        ]
+      },
+      "accentInk": {
+        "role": "secondary",
+        "displayName": "Burnt Orange Ink",
+        "canonical": "#a8560a",
+        "theme": "light",
+        "cssVar": "--color-accentInk",
+        "purpose": "Accent as text on the ground.",
+        "tonalRamp": [
+          "oklch(15% 0.038 54)",
+          "oklch(26% 0.066 54)",
+          "oklch(38% 0.093 54)",
+          "oklch(49% 0.122 54)",
+          "oklch(61% 0.130 54)",
+          "oklch(72% 0.117 54)",
+          "oklch(84% 0.092 54)",
+          "oklch(95% 0.028 54)"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Graded Green",
+        "canonical": "#14b03d",
+        "theme": "light",
+        "cssVar": "--color-success",
+        "purpose": "Correct progress segments and success tints.",
+        "tonalRamp": [
+          "oklch(15% 0.046 146)",
+          "oklch(26% 0.081 146)",
+          "oklch(38% 0.115 146)",
+          "oklch(49% 0.150 146)",
+          "oklch(61% 0.184 146)",
+          "oklch(72% 0.175 146)",
+          "oklch(84% 0.137 146)",
+          "oklch(95% 0.080 146)"
+        ]
+      },
+      "successInk": {
+        "role": "tertiary",
+        "displayName": "Graded Green Ink",
+        "canonical": "#0d7a2a",
+        "theme": "light",
+        "cssVar": "--color-successInk",
+        "purpose": "Success text and success block titles.",
+        "tonalRamp": [
+          "oklch(15% 0.046 146)",
+          "oklch(26% 0.079 146)",
+          "oklch(38% 0.114 146)",
+          "oklch(49% 0.146 146)",
+          "oklch(61% 0.146 146)",
+          "oklch(72% 0.132 146)",
+          "oklch(84% 0.103 146)",
+          "oklch(95% 0.060 146)"
+        ]
+      },
+      "error": {
+        "role": "tertiary",
+        "displayName": "Graded Red",
+        "canonical": "#d13a2e",
+        "theme": "light",
+        "cssVar": "--color-error",
+        "purpose": "Wrong segments, error tints, invalid borders.",
+        "tonalRamp": [
+          "oklch(15% 0.061 29)",
+          "oklch(26% 0.108 29)",
+          "oklch(38% 0.155 29)",
+          "oklch(49% 0.188 29)",
+          "oklch(61% 0.188 29)",
+          "oklch(72% 0.169 29)",
+          "oklch(84% 0.090 29)",
+          "oklch(95% 0.023 29)"
+        ]
+      },
+      "errorInk": {
+        "role": "tertiary",
+        "displayName": "Graded Red Ink",
+        "canonical": "#b3261e",
+        "theme": "light",
+        "cssVar": "--color-errorInk",
+        "purpose": "Error text, danger buttons, error block titles.",
+        "tonalRamp": [
+          "oklch(15% 0.063 29)",
+          "oklch(26% 0.108 29)",
+          "oklch(38% 0.155 29)",
+          "oklch(49% 0.176 29)",
+          "oklch(61% 0.176 29)",
+          "oklch(72% 0.159 29)",
+          "oklch(84% 0.090 29)",
+          "oklch(95% 0.025 29)"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Caution Amber",
+        "canonical": "#e0a526",
+        "theme": "light",
+        "cssVar": "--color-warning",
+        "purpose": "Warning notice tint.",
+        "tonalRamp": [
+          "oklch(15% 0.032 81)",
+          "oklch(26% 0.055 81)",
+          "oklch(38% 0.077 81)",
+          "oklch(49% 0.101 81)",
+          "oklch(61% 0.125 81)",
+          "oklch(72% 0.131 81)",
+          "oklch(84% 0.103 81)",
+          "oklch(95% 0.046 81)"
+        ]
+      },
+      "warningInk": {
+        "role": "tertiary",
+        "displayName": "Caution Amber Ink",
+        "canonical": "#8a5a00",
+        "theme": "light",
+        "cssVar": "--color-warningInk",
+        "purpose": "Warning text.",
+        "tonalRamp": [
+          "oklch(15% 0.032 73)",
+          "oklch(26% 0.055 73)",
+          "oklch(38% 0.080 73)",
+          "oklch(49% 0.105 73)",
+          "oklch(61% 0.107 73)",
+          "oklch(72% 0.096 73)",
+          "oklch(84% 0.075 73)",
+          "oklch(95% 0.038 73)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus Ring",
+        "canonical": "#23373b",
+        "theme": "light",
+        "cssVar": "--color-focus",
+        "purpose": "Focus ring on the ground.",
+        "tonalRamp": [
+          "oklch(15% 0.011 211)",
+          "oklch(26% 0.019 211)",
+          "oklch(38% 0.024 211)",
+          "oklch(49% 0.026 211)",
+          "oklch(61% 0.026 211)",
+          "oklch(72% 0.024 211)",
+          "oklch(84% 0.019 211)",
+          "oklch(95% 0.011 211)"
+        ]
+      },
+      "dark-shell": {
+        "role": "primary",
+        "displayName": "Dark · Title-bar Teal",
+        "canonical": "#142225",
+        "theme": "dark",
+        "cssVar": "--color-shell",
+        "purpose": "Title bar ground and block title strips.",
+        "tonalRamp": [
+          "oklch(15% 0.008 213)",
+          "oklch(26% 0.014 213)",
+          "oklch(38% 0.018 213)",
+          "oklch(49% 0.020 213)",
+          "oklch(61% 0.020 213)",
+          "oklch(72% 0.018 213)",
+          "oklch(84% 0.014 213)",
+          "oklch(95% 0.008 213)"
+        ]
+      },
+      "dark-shellInk": {
+        "role": "neutral",
+        "displayName": "Dark · Title-bar White",
+        "canonical": "#f3f5f5",
+        "theme": "dark",
+        "cssVar": "--color-shellInk",
+        "purpose": "Text on the title bar; active route.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "dark-shellMuted": {
+        "role": "neutral",
+        "displayName": "Dark · Title-bar Mist",
+        "canonical": "#9fb1b4",
+        "theme": "dark",
+        "cssVar": "--color-shellMuted",
+        "purpose": "Idle route links and icons on the title bar.",
+        "tonalRamp": [
+          "oklch(15% 0.008 209)",
+          "oklch(26% 0.014 209)",
+          "oklch(38% 0.018 209)",
+          "oklch(49% 0.020 209)",
+          "oklch(61% 0.020 209)",
+          "oklch(72% 0.018 209)",
+          "oklch(84% 0.014 209)",
+          "oklch(95% 0.008 209)"
+        ]
+      },
+      "dark-ground": {
+        "role": "neutral",
+        "displayName": "Dark · Slide Ground",
+        "canonical": "#1c2c2f",
+        "theme": "dark",
+        "cssVar": "--color-ground",
+        "purpose": "Page ground.",
+        "tonalRamp": [
+          "oklch(15% 0.009 210)",
+          "oklch(26% 0.015 210)",
+          "oklch(38% 0.020 210)",
+          "oklch(49% 0.022 210)",
+          "oklch(61% 0.022 210)",
+          "oklch(72% 0.020 210)",
+          "oklch(84% 0.015 210)",
+          "oklch(95% 0.009 210)"
+        ]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Dark · Surface White",
+        "canonical": "#23373b",
+        "theme": "dark",
+        "cssVar": "--color-surface",
+        "purpose": "Fields, choice groups, menus, dialogs; base for every state tint.",
+        "tonalRamp": [
+          "oklch(15% 0.011 211)",
+          "oklch(26% 0.019 211)",
+          "oklch(38% 0.024 211)",
+          "oklch(49% 0.026 211)",
+          "oklch(61% 0.026 211)",
+          "oklch(72% 0.024 211)",
+          "oklch(84% 0.019 211)",
+          "oklch(95% 0.011 211)"
+        ]
+      },
+      "dark-sunken": {
+        "role": "neutral",
+        "displayName": "Dark · Pale Teal-Grey",
+        "canonical": "#2a3f43",
+        "theme": "dark",
+        "cssVar": "--color-sunken",
+        "purpose": "Block bodies, notices, tags, code, hover fills.",
+        "tonalRamp": [
+          "oklch(15% 0.011 211)",
+          "oklch(26% 0.019 211)",
+          "oklch(38% 0.024 211)",
+          "oklch(49% 0.027 211)",
+          "oklch(61% 0.027 211)",
+          "oklch(72% 0.024 211)",
+          "oklch(84% 0.019 211)",
+          "oklch(95% 0.011 211)"
+        ]
+      },
+      "dark-ink": {
+        "role": "neutral",
+        "displayName": "Dark · Deck Ink",
+        "canonical": "#eef2f2",
+        "theme": "dark",
+        "cssVar": "--color-ink",
+        "purpose": "Body text, titles, section and table-header rules.",
+        "tonalRamp": [
+          "oklch(15% 0.002 197)",
+          "oklch(26% 0.003 197)",
+          "oklch(38% 0.004 197)",
+          "oklch(49% 0.004 197)",
+          "oklch(61% 0.004 197)",
+          "oklch(72% 0.004 197)",
+          "oklch(84% 0.003 197)",
+          "oklch(95% 0.002 197)"
+        ]
+      },
+      "dark-inkSoft": {
+        "role": "neutral",
+        "displayName": "Dark · Soft Slate Ink",
+        "canonical": "#c3cfd0",
+        "theme": "dark",
+        "cssVar": "--color-inkSoft",
+        "purpose": "Secondary text: ledes, table headers, facts labels, inactive tabs.",
+        "tonalRamp": [
+          "oklch(15% 0.005 203)",
+          "oklch(26% 0.009 203)",
+          "oklch(38% 0.012 203)",
+          "oklch(49% 0.013 203)",
+          "oklch(61% 0.013 203)",
+          "oklch(72% 0.012 203)",
+          "oklch(84% 0.009 203)",
+          "oklch(95% 0.005 203)"
+        ]
+      },
+      "dark-inkMuted": {
+        "role": "neutral",
+        "displayName": "Dark · Muted Slate Ink",
+        "canonical": "#a3b4b7",
+        "theme": "dark",
+        "cssVar": "--color-inkMuted",
+        "purpose": "Hints, placeholders, list markers, axis ticks.",
+        "tonalRamp": [
+          "oklch(15% 0.008 209)",
+          "oklch(26% 0.014 209)",
+          "oklch(38% 0.017 209)",
+          "oklch(49% 0.019 209)",
+          "oklch(61% 0.019 209)",
+          "oklch(72% 0.017 209)",
+          "oklch(84% 0.014 209)",
+          "oklch(95% 0.008 209)"
+        ]
+      },
+      "dark-line": {
+        "role": "neutral",
+        "displayName": "Dark · Hairline",
+        "canonical": "#31474b",
+        "theme": "dark",
+        "cssVar": "--color-line",
+        "purpose": "Hairline separators and rule tracks.",
+        "tonalRamp": [
+          "oklch(15% 0.011 210)",
+          "oklch(26% 0.020 210)",
+          "oklch(38% 0.025 210)",
+          "oklch(49% 0.028 210)",
+          "oklch(61% 0.028 210)",
+          "oklch(72% 0.025 210)",
+          "oklch(84% 0.020 210)",
+          "oklch(95% 0.011 210)"
+        ]
+      },
+      "dark-lineStrong": {
+        "role": "neutral",
+        "displayName": "Dark · Control Slate",
+        "canonical": "#6a868b",
+        "theme": "dark",
+        "cssVar": "--color-lineStrong",
+        "purpose": "Form-control borders (3:1 against surface).",
+        "tonalRamp": [
+          "oklch(15% 0.013 210)",
+          "oklch(26% 0.023 210)",
+          "oklch(38% 0.029 210)",
+          "oklch(49% 0.032 210)",
+          "oklch(61% 0.032 210)",
+          "oklch(72% 0.029 210)",
+          "oklch(84% 0.023 210)",
+          "oklch(95% 0.013 210)"
+        ]
+      },
+      "dark-primary": {
+        "role": "primary",
+        "displayName": "Dark · Deck Teal",
+        "canonical": "#e9eeee",
+        "theme": "dark",
+        "cssVar": "--color-primary",
+        "purpose": "Primary button fill and selected segment.",
+        "tonalRamp": [
+          "oklch(15% 0.002 197)",
+          "oklch(26% 0.004 197)",
+          "oklch(38% 0.005 197)",
+          "oklch(49% 0.005 197)",
+          "oklch(61% 0.005 197)",
+          "oklch(72% 0.005 197)",
+          "oklch(84% 0.004 197)",
+          "oklch(95% 0.002 197)"
+        ]
+      },
+      "dark-primaryHover": {
+        "role": "primary",
+        "displayName": "Dark · Deck Teal Lifted",
+        "canonical": "#ffffff",
+        "theme": "dark",
+        "cssVar": "--color-primaryHover",
+        "purpose": "Primary button hover.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "dark-onPrimary": {
+        "role": "primary",
+        "displayName": "Dark · On-Teal White",
+        "canonical": "#142225",
+        "theme": "dark",
+        "cssVar": "--color-onPrimary",
+        "purpose": "Text and icons on primary fills.",
+        "tonalRamp": [
+          "oklch(15% 0.008 213)",
+          "oklch(26% 0.014 213)",
+          "oklch(38% 0.018 213)",
+          "oklch(49% 0.020 213)",
+          "oklch(61% 0.020 213)",
+          "oklch(72% 0.018 213)",
+          "oklch(84% 0.014 213)",
+          "oklch(95% 0.008 213)"
+        ]
+      },
+      "dark-accent": {
+        "role": "secondary",
+        "displayName": "Dark · Metropolis Orange",
+        "canonical": "#eb811b",
+        "theme": "dark",
+        "cssVar": "--color-accent",
+        "purpose": "Progress and the current item only.",
+        "tonalRamp": [
+          "oklch(15% 0.037 57)",
+          "oklch(26% 0.065 57)",
+          "oklch(38% 0.090 57)",
+          "oklch(49% 0.118 57)",
+          "oklch(61% 0.146 57)",
+          "oklch(72% 0.146 57)",
+          "oklch(84% 0.107 57)",
+          "oklch(95% 0.029 57)"
+        ]
+      },
+      "dark-accentInk": {
+        "role": "secondary",
+        "displayName": "Dark · Burnt Orange Ink",
+        "canonical": "#f39a45",
+        "theme": "dark",
+        "cssVar": "--color-accentInk",
+        "purpose": "Accent as text on the ground.",
+        "tonalRamp": [
+          "oklch(15% 0.035 61)",
+          "oklch(26% 0.061 61)",
+          "oklch(38% 0.087 61)",
+          "oklch(49% 0.113 61)",
+          "oklch(61% 0.139 61)",
+          "oklch(72% 0.129 61)",
+          "oklch(84% 0.101 61)",
+          "oklch(95% 0.031 61)"
+        ]
+      },
+      "dark-success": {
+        "role": "tertiary",
+        "displayName": "Dark · Graded Green",
+        "canonical": "#2fc25a",
+        "theme": "dark",
+        "cssVar": "--color-success",
+        "purpose": "Correct progress segments and success tints.",
+        "tonalRamp": [
+          "oklch(15% 0.043 148)",
+          "oklch(26% 0.076 148)",
+          "oklch(38% 0.108 148)",
+          "oklch(49% 0.140 148)",
+          "oklch(61% 0.172 148)",
+          "oklch(72% 0.168 148)",
+          "oklch(84% 0.132 148)",
+          "oklch(95% 0.077 148)"
+        ]
+      },
+      "dark-successInk": {
+        "role": "tertiary",
+        "displayName": "Dark · Graded Green Ink",
+        "canonical": "#5fd682",
+        "theme": "dark",
+        "cssVar": "--color-successInk",
+        "purpose": "Success text and success block titles.",
+        "tonalRamp": [
+          "oklch(15% 0.041 151)",
+          "oklch(26% 0.070 151)",
+          "oklch(38% 0.101 151)",
+          "oklch(49% 0.133 151)",
+          "oklch(61% 0.159 151)",
+          "oklch(72% 0.143 151)",
+          "oklch(84% 0.112 151)",
+          "oklch(95% 0.065 151)"
+        ]
+      },
+      "dark-error": {
+        "role": "tertiary",
+        "displayName": "Dark · Graded Red",
+        "canonical": "#e5574b",
+        "theme": "dark",
+        "cssVar": "--color-error",
+        "purpose": "Wrong segments, error tints, invalid borders.",
+        "tonalRamp": [
+          "oklch(15% 0.061 28)",
+          "oklch(26% 0.107 28)",
+          "oklch(38% 0.153 28)",
+          "oklch(49% 0.177 28)",
+          "oklch(61% 0.177 28)",
+          "oklch(72% 0.159 28)",
+          "oklch(84% 0.091 28)",
+          "oklch(95% 0.025 28)"
+        ]
+      },
+      "dark-errorInk": {
+        "role": "tertiary",
+        "displayName": "Dark · Graded Red Ink",
+        "canonical": "#ff8a80",
+        "theme": "dark",
+        "cssVar": "--color-errorInk",
+        "purpose": "Error text, danger buttons, error block titles.",
+        "tonalRamp": [
+          "oklch(15% 0.058 26)",
+          "oklch(26% 0.100 26)",
+          "oklch(38% 0.128 26)",
+          "oklch(49% 0.142 26)",
+          "oklch(61% 0.142 26)",
+          "oklch(72% 0.128 26)",
+          "oklch(84% 0.090 26)",
+          "oklch(95% 0.024 26)"
+        ]
+      },
+      "dark-warning": {
+        "role": "tertiary",
+        "displayName": "Dark · Caution Amber",
+        "canonical": "#e0a526",
+        "theme": "dark",
+        "cssVar": "--color-warning",
+        "purpose": "Warning notice tint.",
+        "tonalRamp": [
+          "oklch(15% 0.032 81)",
+          "oklch(26% 0.055 81)",
+          "oklch(38% 0.077 81)",
+          "oklch(49% 0.101 81)",
+          "oklch(61% 0.125 81)",
+          "oklch(72% 0.131 81)",
+          "oklch(84% 0.103 81)",
+          "oklch(95% 0.046 81)"
+        ]
+      },
+      "dark-warningInk": {
+        "role": "tertiary",
+        "displayName": "Dark · Caution Amber Ink",
+        "canonical": "#f0c060",
+        "theme": "dark",
+        "cssVar": "--color-warningInk",
+        "purpose": "Warning text.",
+        "tonalRamp": [
+          "oklch(15% 0.031 83)",
+          "oklch(26% 0.054 83)",
+          "oklch(38% 0.077 83)",
+          "oklch(49% 0.101 83)",
+          "oklch(61% 0.125 83)",
+          "oklch(72% 0.113 83)",
+          "oklch(84% 0.088 83)",
+          "oklch(95% 0.049 83)"
+        ]
+      },
+      "dark-focus": {
+        "role": "neutral",
+        "displayName": "Dark · Focus Ring",
+        "canonical": "#f39a45",
+        "theme": "dark",
+        "cssVar": "--color-focus",
+        "purpose": "Focus ring on the ground.",
+        "tonalRamp": [
+          "oklch(15% 0.035 61)",
+          "oklch(26% 0.061 61)",
+          "oklch(38% 0.087 61)",
+          "oklch(49% 0.113 61)",
+          "oklch(61% 0.139 61)",
+          "oklch(72% 0.129 61)",
+          "oklch(84% 0.101 61)",
+          "oklch(95% 0.031 61)"
+        ]
+      },
+      "contrast-shell": {
+        "role": "primary",
+        "displayName": "Contrast · Title-bar Teal",
+        "canonical": "#0b1416",
+        "theme": "contrast",
+        "cssVar": "--color-shell",
+        "purpose": "Title bar ground and block title strips.",
+        "tonalRamp": [
+          "oklch(15% 0.006 213)",
+          "oklch(26% 0.010 213)",
+          "oklch(38% 0.012 213)",
+          "oklch(49% 0.014 213)",
+          "oklch(61% 0.014 213)",
+          "oklch(72% 0.012 213)",
+          "oklch(84% 0.010 213)",
+          "oklch(95% 0.006 213)"
+        ]
+      },
+      "contrast-shellInk": {
+        "role": "neutral",
+        "displayName": "Contrast · Title-bar White",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-shellInk",
+        "purpose": "Text on the title bar; active route.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-shellMuted": {
+        "role": "neutral",
+        "displayName": "Contrast · Title-bar Mist",
+        "canonical": "#d5dee0",
+        "theme": "contrast",
+        "cssVar": "--color-shellMuted",
+        "purpose": "Idle route links and icons on the title bar.",
+        "tonalRamp": [
+          "oklch(15% 0.004 213)",
+          "oklch(26% 0.007 213)",
+          "oklch(38% 0.009 213)",
+          "oklch(49% 0.010 213)",
+          "oklch(61% 0.010 213)",
+          "oklch(72% 0.009 213)",
+          "oklch(84% 0.007 213)",
+          "oklch(95% 0.004 213)"
+        ]
+      },
+      "contrast-ground": {
+        "role": "neutral",
+        "displayName": "Contrast · Slide Ground",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-ground",
+        "purpose": "Page ground.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-surface": {
+        "role": "neutral",
+        "displayName": "Contrast · Surface White",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-surface",
+        "purpose": "Fields, choice groups, menus, dialogs; base for every state tint.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-sunken": {
+        "role": "neutral",
+        "displayName": "Contrast · Pale Teal-Grey",
+        "canonical": "#f0f2f2",
+        "theme": "contrast",
+        "cssVar": "--color-sunken",
+        "purpose": "Block bodies, notices, tags, code, hover fills.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-ink": {
+        "role": "neutral",
+        "displayName": "Contrast · Deck Ink",
+        "canonical": "#000000",
+        "theme": "contrast",
+        "cssVar": "--color-ink",
+        "purpose": "Body text, titles, section and table-header rules.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-inkSoft": {
+        "role": "neutral",
+        "displayName": "Contrast · Soft Slate Ink",
+        "canonical": "#1d2a2c",
+        "theme": "contrast",
+        "cssVar": "--color-inkSoft",
+        "purpose": "Secondary text: ledes, table headers, facts labels, inactive tabs.",
+        "tonalRamp": [
+          "oklch(15% 0.007 208)",
+          "oklch(26% 0.013 208)",
+          "oklch(38% 0.016 208)",
+          "oklch(49% 0.018 208)",
+          "oklch(61% 0.018 208)",
+          "oklch(72% 0.016 208)",
+          "oklch(84% 0.013 208)",
+          "oklch(95% 0.007 208)"
+        ]
+      },
+      "contrast-inkMuted": {
+        "role": "neutral",
+        "displayName": "Contrast · Muted Slate Ink",
+        "canonical": "#3b4a4d",
+        "theme": "contrast",
+        "cssVar": "--color-inkMuted",
+        "purpose": "Hints, placeholders, list markers, axis ticks.",
+        "tonalRamp": [
+          "oklch(15% 0.008 211)",
+          "oklch(26% 0.014 211)",
+          "oklch(38% 0.018 211)",
+          "oklch(49% 0.019 211)",
+          "oklch(61% 0.019 211)",
+          "oklch(72% 0.018 211)",
+          "oklch(84% 0.014 211)",
+          "oklch(95% 0.008 211)"
+        ]
+      },
+      "contrast-line": {
+        "role": "neutral",
+        "displayName": "Contrast · Hairline",
+        "canonical": "#8a9a9c",
+        "theme": "contrast",
+        "cssVar": "--color-line",
+        "purpose": "Hairline separators and rule tracks.",
+        "tonalRamp": [
+          "oklch(15% 0.008 206)",
+          "oklch(26% 0.013 206)",
+          "oklch(38% 0.016 206)",
+          "oklch(49% 0.018 206)",
+          "oklch(61% 0.018 206)",
+          "oklch(72% 0.016 206)",
+          "oklch(84% 0.013 206)",
+          "oklch(95% 0.008 206)"
+        ]
+      },
+      "contrast-lineStrong": {
+        "role": "neutral",
+        "displayName": "Contrast · Control Slate",
+        "canonical": "#4a5a5d",
+        "theme": "contrast",
+        "cssVar": "--color-lineStrong",
+        "purpose": "Form-control borders (3:1 against surface).",
+        "tonalRamp": [
+          "oklch(15% 0.008 210)",
+          "oklch(26% 0.014 210)",
+          "oklch(38% 0.018 210)",
+          "oklch(49% 0.020 210)",
+          "oklch(61% 0.020 210)",
+          "oklch(72% 0.018 210)",
+          "oklch(84% 0.014 210)",
+          "oklch(95% 0.008 210)"
+        ]
+      },
+      "contrast-primary": {
+        "role": "primary",
+        "displayName": "Contrast · Deck Teal",
+        "canonical": "#0b1416",
+        "theme": "contrast",
+        "cssVar": "--color-primary",
+        "purpose": "Primary button fill and selected segment.",
+        "tonalRamp": [
+          "oklch(15% 0.006 213)",
+          "oklch(26% 0.010 213)",
+          "oklch(38% 0.012 213)",
+          "oklch(49% 0.014 213)",
+          "oklch(61% 0.014 213)",
+          "oklch(72% 0.012 213)",
+          "oklch(84% 0.010 213)",
+          "oklch(95% 0.006 213)"
+        ]
+      },
+      "contrast-primaryHover": {
+        "role": "primary",
+        "displayName": "Contrast · Deck Teal Lifted",
+        "canonical": "#25373b",
+        "theme": "contrast",
+        "cssVar": "--color-primaryHover",
+        "purpose": "Primary button hover.",
+        "tonalRamp": [
+          "oklch(15% 0.010 213)",
+          "oklch(26% 0.017 213)",
+          "oklch(38% 0.022 213)",
+          "oklch(49% 0.024 213)",
+          "oklch(61% 0.024 213)",
+          "oklch(72% 0.022 213)",
+          "oklch(84% 0.017 213)",
+          "oklch(95% 0.010 213)"
+        ]
+      },
+      "contrast-onPrimary": {
+        "role": "primary",
+        "displayName": "Contrast · On-Teal White",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-onPrimary",
+        "purpose": "Text and icons on primary fills.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-accent": {
+        "role": "secondary",
+        "displayName": "Contrast · Metropolis Orange",
+        "canonical": "#c25e00",
+        "theme": "contrast",
+        "cssVar": "--color-accent",
+        "purpose": "Progress and the current item only.",
+        "tonalRamp": [
+          "oklch(15% 0.040 52)",
+          "oklch(26% 0.068 52)",
+          "oklch(38% 0.096 52)",
+          "oklch(49% 0.127 52)",
+          "oklch(61% 0.151 52)",
+          "oklch(72% 0.136 52)",
+          "oklch(84% 0.102 52)",
+          "oklch(95% 0.028 52)"
+        ]
+      },
+      "contrast-accentInk": {
+        "role": "secondary",
+        "displayName": "Contrast · Burnt Orange Ink",
+        "canonical": "#9a4a00",
+        "theme": "contrast",
+        "cssVar": "--color-accentInk",
+        "purpose": "Accent as text on the ground.",
+        "tonalRamp": [
+          "oklch(15% 0.038 53)",
+          "oklch(26% 0.067 53)",
+          "oklch(38% 0.096 53)",
+          "oklch(49% 0.124 53)",
+          "oklch(61% 0.126 53)",
+          "oklch(72% 0.114 53)",
+          "oklch(84% 0.089 53)",
+          "oklch(95% 0.028 53)"
+        ]
+      },
+      "contrast-success": {
+        "role": "tertiary",
+        "displayName": "Contrast · Graded Green",
+        "canonical": "#0a6b22",
+        "theme": "contrast",
+        "cssVar": "--color-success",
+        "purpose": "Correct progress segments and success tints.",
+        "tonalRamp": [
+          "oklch(15% 0.045 146)",
+          "oklch(26% 0.081 146)",
+          "oklch(38% 0.115 146)",
+          "oklch(49% 0.134 146)",
+          "oklch(61% 0.134 146)",
+          "oklch(72% 0.121 146)",
+          "oklch(84% 0.095 146)",
+          "oklch(95% 0.055 146)"
+        ]
+      },
+      "contrast-successInk": {
+        "role": "tertiary",
+        "displayName": "Contrast · Graded Green Ink",
+        "canonical": "#0a6b22",
+        "theme": "contrast",
+        "cssVar": "--color-successInk",
+        "purpose": "Success text and success block titles.",
+        "tonalRamp": [
+          "oklch(15% 0.045 146)",
+          "oklch(26% 0.081 146)",
+          "oklch(38% 0.115 146)",
+          "oklch(49% 0.134 146)",
+          "oklch(61% 0.134 146)",
+          "oklch(72% 0.121 146)",
+          "oklch(84% 0.095 146)",
+          "oklch(95% 0.055 146)"
+        ]
+      },
+      "contrast-error": {
+        "role": "tertiary",
+        "displayName": "Contrast · Graded Red",
+        "canonical": "#a3140b",
+        "theme": "contrast",
+        "cssVar": "--color-error",
+        "purpose": "Wrong segments, error tints, invalid borders.",
+        "tonalRamp": [
+          "oklch(15% 0.062 30)",
+          "oklch(26% 0.107 30)",
+          "oklch(38% 0.153 30)",
+          "oklch(49% 0.174 30)",
+          "oklch(61% 0.174 30)",
+          "oklch(72% 0.157 30)",
+          "oklch(84% 0.091 30)",
+          "oklch(95% 0.024 30)"
+        ]
+      },
+      "contrast-errorInk": {
+        "role": "tertiary",
+        "displayName": "Contrast · Graded Red Ink",
+        "canonical": "#a3140b",
+        "theme": "contrast",
+        "cssVar": "--color-errorInk",
+        "purpose": "Error text, danger buttons, error block titles.",
+        "tonalRamp": [
+          "oklch(15% 0.062 30)",
+          "oklch(26% 0.107 30)",
+          "oklch(38% 0.153 30)",
+          "oklch(49% 0.174 30)",
+          "oklch(61% 0.174 30)",
+          "oklch(72% 0.157 30)",
+          "oklch(84% 0.091 30)",
+          "oklch(95% 0.024 30)"
+        ]
+      },
+      "contrast-warning": {
+        "role": "tertiary",
+        "displayName": "Contrast · Caution Amber",
+        "canonical": "#9a6700",
+        "theme": "contrast",
+        "cssVar": "--color-warning",
+        "purpose": "Warning notice tint.",
+        "tonalRamp": [
+          "oklch(15% 0.032 75)",
+          "oklch(26% 0.056 75)",
+          "oklch(38% 0.078 75)",
+          "oklch(49% 0.103 75)",
+          "oklch(61% 0.115 75)",
+          "oklch(72% 0.104 75)",
+          "oklch(84% 0.082 75)",
+          "oklch(95% 0.040 75)"
+        ]
+      },
+      "contrast-warningInk": {
+        "role": "tertiary",
+        "displayName": "Contrast · Caution Amber Ink",
+        "canonical": "#6b4700",
+        "theme": "contrast",
+        "cssVar": "--color-warningInk",
+        "purpose": "Warning text.",
+        "tonalRamp": [
+          "oklch(15% 0.033 76)",
+          "oklch(26% 0.055 76)",
+          "oklch(38% 0.078 76)",
+          "oklch(49% 0.089 76)",
+          "oklch(61% 0.089 76)",
+          "oklch(72% 0.080 76)",
+          "oklch(84% 0.063 76)",
+          "oklch(95% 0.037 76)"
+        ]
+      },
+      "contrast-focus": {
+        "role": "neutral",
+        "displayName": "Contrast · Focus Ring",
+        "canonical": "#000000",
+        "theme": "contrast",
+        "cssVar": "--color-focus",
+        "purpose": "Focus ring on the ground.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "page-title": {
+        "displayName": "Headline",
+        "purpose": "One page title per route; 1.5rem, stepping to 1.75rem from 640px."
+      },
+      "question": {
+        "displayName": "Display (question)",
+        "purpose": "The question stem in the study loop; 1.25rem, stepping to 1.5rem from 640px; 68ch measure."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "The \"Lembrion\" wordmark in the title bar and the boot bar."
+      },
+      "dialog-title": {
+        "displayName": "Title",
+        "purpose": "Dialog headers."
+      },
+      "section-title": {
+        "displayName": "Section title",
+        "purpose": "Section headings, always over a 2px Deck Ink rule."
+      },
+      "subhead": {
+        "displayName": "Subhead",
+        "purpose": "Block titles, option keys, small headings inside a section."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text and fields."
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Titled-block bodies."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Button labels."
+      },
+      "compact": {
+        "displayName": "Compact",
+        "purpose": "Title-bar links and notices."
+      },
+      "tab": {
+        "displayName": "Tab",
+        "purpose": "Tab labels."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Tables, facts labels, hints, session strip, meta lines."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, table headers, facts values, small buttons, segments."
+      },
+      "tag": {
+        "displayName": "Tag",
+        "purpose": "Status tags."
+      },
+      "note": {
+        "displayName": "Note",
+        "purpose": "Option notes after grading (\"Your answer\", \"Correct answer\")."
+      },
+      "toast-title": {
+        "displayName": "Toast title",
+        "purpose": "Toast titles."
+      },
+      "toast-message": {
+        "displayName": "Toast message",
+        "purpose": "Toast messages, in Soft Slate Ink."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code blocks, inline code (0.9em), keys, model IDs, URLs, key hints."
+      }
+    },
+    "shadows": [
+      {
+        "name": "overlay",
+        "value": "0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12)",
+        "purpose": "Theme menu, dialogs and toasts only (.menu, .overlay-shadow, .toast)."
+      },
+      {
+        "name": "active-underline",
+        "value": "inset 0 -3px 0 var(--color-accent)",
+        "purpose": "Current title-bar link and selected tab; transparent at rest. A line device, not elevation."
+      },
+      {
+        "name": "field-focus",
+        "value": "0 0 0 1px var(--color-focus)",
+        "purpose": "Doubles a focused field border (with border-color: var(--color-focus))."
+      },
+      {
+        "name": "scrim",
+        "value": "rgb(0 0 0 / 0.4)",
+        "purpose": "Background behind dialogs (bg-black/40). A fill, listed here for completeness."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "--ease-out: underline moves and both rule animations."
+      },
+      {
+        "name": "state-colour",
+        "value": "120ms ease-out",
+        "purpose": "Background, border and text colour changes on buttons, fields, rows, segments, links (CSS ease-out keyword)."
+      },
+      {
+        "name": "underline",
+        "value": "160ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Active underline (box-shadow) on title-bar links and tabs."
+      },
+      {
+        "name": "rule-grow",
+        "value": "480ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "Each filled progress segment grows from the left once (scaleX 0 to 1)."
+      },
+      {
+        "name": "toast-in",
+        "value": "240ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "Toast entry: fade in from opacity 0 and translateY(-6px)."
+      },
+      {
+        "name": "toast-out",
+        "value": "160ms ease-in forwards",
+        "purpose": "Toast exit (data-leaving): fade out and rise 6px."
+      },
+      {
+        "name": "rule-travel",
+        "value": "1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite",
+        "purpose": "Loading rule and boot rule: a one-third bar travels translateX(-100%) to translateX(300%)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "prefers-reduced-motion: every animation and transition collapses to 0.01ms; the boot rule stops."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one next action on a screen: Start review, Next question, Start session.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\">Start review</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-primary, #23373b); border-color: var(--color-primary, #23373b); color: var(--color-onPrimary, #ffffff); } .ds-btn-primary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-primary:hover:not(:disabled) { background: var(--color-primaryHover, #30494e); border-color: var(--color-primaryHover, #30494e); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Every other action: Resume, End session, Add, Cancel, outbound links.",
+      "html": "<button type=\"button\" class=\"ds-btn-secondary\">Resume</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-surface, #ffffff); border-color: var(--color-lineStrong, #869699); color: var(--color-ink, #23373b); } .ds-btn-secondary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-secondary:hover:not(:disabled) { background: var(--color-sunken, #eef1f1); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Ghost Icon Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Icon actions: close, show key, fullscreen, copy code. 2.5rem square.",
+      "html": "<button type=\"button\" class=\"ds-btn-ghost\" aria-label=\"Close\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; width: 2.5rem; padding: 0; background: transparent; color: var(--color-inkSoft, #45585c); } .ds-btn-ghost svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-ghost:hover:not(:disabled) { background: var(--color-sunken, #eef1f1); color: var(--color-ink, #23373b); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive actions; red ink at rest, a 10% error tint on hover.",
+      "html": "<button type=\"button\" class=\"ds-btn-danger\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 6h18\"/><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"/><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/><line x1=\"10\" x2=\"10\" y1=\"11\" y2=\"17\"/><line x1=\"14\" x2=\"14\" y1=\"11\" y2=\"17\"/></svg>Delete selected</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-surface, #ffffff); border-color: var(--color-lineStrong, #869699); color: var(--color-errorInk, #b3261e); } .ds-btn-danger svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-error, #d13a2e) 10%, var(--color-surface, #ffffff)); border-color: var(--color-error, #d13a2e); } .ds-btn-danger:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Label above, hint below; mono for keys, model IDs and URLs; focus doubles the border.",
+      "html": "<div class=\"ds-field-wrap\"><label class=\"ds-label\" for=\"ds-model\">Model</label><input id=\"ds-model\" class=\"ds-field ds-field-mono\" type=\"text\" value=\"llama3.1:8b\" spellcheck=\"false\"><p class=\"ds-hint\">Type any model ID your provider supports, or pick a suggestion below.</p></div>",
+      "css": ".ds-field-wrap { font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; max-width: 28rem; } .ds-label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; color: var(--color-ink, #23373b); } .ds-field { display: block; width: 100%; box-sizing: border-box; padding: 0.5rem 0.75rem; border: 1px solid var(--color-lineStrong, #869699); border-radius: 0.25rem; background: var(--color-surface, #ffffff); color: var(--color-ink, #23373b); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; transition: border-color 120ms ease-out, box-shadow 120ms ease-out; } .ds-field-mono { font-family: \"Fira Mono\", ui-monospace, SFMono-Regular, Menlo, monospace; } .ds-field::placeholder { color: var(--color-inkMuted, #5b6c70); opacity: 1; } .ds-field:hover:not(:disabled) { border-color: var(--color-inkSoft, #45585c); } .ds-field:focus { outline: none; border-color: var(--color-focus, #23373b); box-shadow: 0 0 0 1px var(--color-focus, #23373b); } .ds-field[aria-invalid='true'] { border-color: var(--color-error, #d13a2e); } .ds-field:disabled { background: var(--color-sunken, #eef1f1); color: var(--color-inkMuted, #5b6c70); cursor: not-allowed; } .ds-hint { margin: 0.375rem 0 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-inkMuted, #5b6c70); }"
+    },
+    {
+      "name": "Title Bar",
+      "kind": "nav",
+      "refersTo": "title-bar",
+      "description": "The single dark teal bar: wordmark, routes with the orange current-route underline, theme control.",
+      "html": "<header class=\"ds-bar\"><a class=\"ds-wordmark\" href=\"#\">Lembrion</a><nav class=\"ds-bar-nav\" aria-label=\"Main\"><a class=\"ds-bar-link is-active\" href=\"#\" aria-current=\"page\">Dashboard</a><a class=\"ds-bar-link\" href=\"#\">Study</a><a class=\"ds-bar-link\" href=\"#\">History</a><a class=\"ds-bar-link\" href=\"#\">Settings</a></nav><button type=\"button\" class=\"ds-bar-icon\" aria-label=\"Select theme\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/></svg></button></header>",
+      "css": ".ds-bar { display: flex; align-items: center; gap: 2rem; height: 3.5rem; padding: 0 1.5rem; background: var(--color-shell, #23373b); color: var(--color-shellInk, #ffffff); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-wordmark { font-size: 1.125rem; line-height: 1.75rem; font-weight: 500; letter-spacing: 0.01em; color: var(--color-shellInk, #ffffff); text-decoration: none; } .ds-bar-nav { display: flex; align-self: stretch; gap: 1.75rem; } .ds-bar-link { display: flex; align-items: center; font-size: 0.9375rem; color: var(--color-shellMuted, #b9c6c8); text-decoration: none; box-shadow: inset 0 -3px 0 transparent; transition: color 120ms ease-out, box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-bar-link:hover { color: var(--color-shellInk, #ffffff); } .ds-bar-link.is-active { color: var(--color-shellInk, #ffffff); box-shadow: inset 0 -3px 0 var(--color-accent, #eb811b); } .ds-bar a:focus-visible, .ds-bar button:focus-visible { outline: 2px solid var(--color-accent, #eb811b); outline-offset: 2px; } .ds-bar-icon { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 0.25rem; background: transparent; color: var(--color-shellMuted, #b9c6c8); cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-bar-icon:hover, .ds-bar-icon[aria-expanded='true'] { color: var(--color-shellInk, #ffffff); background: rgb(255 255 255 / 0.08); }"
+    },
+    {
+      "name": "Status Tags",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Small 2px-cornered labels; tints for active (orange), correct and incorrect.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag\">Completed</span><span class=\"ds-tag ds-tag-accent\">Active</span><span class=\"ds-tag ds-tag-success\">Correct</span><span class=\"ds-tag ds-tag-error\">Incorrect</span></div>",
+      "css": ".ds-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-tag { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 0.125rem 0.375rem; border-radius: 0.125rem; font-size: 0.75rem; font-weight: 500; line-height: 1; background: var(--color-sunken, #eef1f1); color: var(--color-inkSoft, #45585c); } .ds-tag-accent { background: color-mix(in srgb, var(--color-accent, #eb811b) 16%, var(--color-surface, #ffffff)); color: var(--color-accentInk, #a8560a); } .ds-tag-success { background: color-mix(in srgb, var(--color-success, #14b03d) 14%, var(--color-surface, #ffffff)); color: var(--color-successInk, #0d7a2a); } .ds-tag-error { background: color-mix(in srgb, var(--color-error, #d13a2e) 12%, var(--color-surface, #ffffff)); color: var(--color-errorInk, #b3261e); }"
+    },
+    {
+      "name": "Titled Block",
+      "kind": "card",
+      "refersTo": "block",
+      "description": "Metropolis block: teal title strip over a pale teal-grey body; success and error variants for graded feedback.",
+      "html": "<div class=\"ds-blocks\"><section class=\"ds-block\"><h4 class=\"ds-block-title\">Explanation</h4><div class=\"ds-block-body\">A miss resets the interval: the card goes back to box 1 and is due again soon.</div></section><section class=\"ds-block ds-block-success\"><h4 class=\"ds-block-title\">Feedback</h4><div class=\"ds-block-body\">Correct: the electron transport chain is fed by NADH and FADH₂.</div></section></div>",
+      "css": ".ds-blocks { display: grid; gap: 1rem; max-width: 68ch; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-block { margin: 0; border-radius: 0.125rem; overflow: hidden; } .ds-block-title { margin: 0; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--color-shell, #23373b); color: var(--color-shellInk, #ffffff); font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; } .ds-block-body { padding: 0.875rem 1rem; background: var(--color-sunken, #eef1f1); color: var(--color-ink, #23373b); font-size: 0.9375rem; line-height: 1.625; } .ds-block-success .ds-block-title { background: var(--color-successInk, #0d7a2a); color: var(--color-surface, #ffffff); } .ds-block-success .ds-block-body { background: color-mix(in srgb, var(--color-success, #14b03d) 10%, var(--color-surface, #ffffff)); } .ds-block-error .ds-block-title { background: var(--color-errorInk, #b3261e); color: var(--color-surface, #ffffff); } .ds-block-error .ds-block-body { background: color-mix(in srgb, var(--color-error, #d13a2e) 9%, var(--color-surface, #ffffff)); }"
+    },
+    {
+      "name": "Answer Options",
+      "kind": "custom",
+      "refersTo": "option",
+      "description": "Signature: options as ruled rows with a key column; after grading all stay visible with the pick, the correct answer and notes.",
+      "html": "<div class=\"ds-options\" role=\"group\" aria-label=\"Answer options\"><button type=\"button\" class=\"ds-option\" data-state=\"wrong\" disabled><span class=\"ds-option-key\">A</span><span>It moves up one box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>Your answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"correct\" disabled><span class=\"ds-option-key\">B</span><span>It returns to the first box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg>Correct answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"muted\" disabled><span class=\"ds-option-key\">C</span><span>It stays in its current box</span><span class=\"ds-option-note\"></span></button><button type=\"button\" class=\"ds-option\"><span class=\"ds-option-key\">D</span><span>It is removed from the deck</span><span class=\"ds-option-note\"></span></button></div>",
+      "css": ".ds-options { max-width: 68ch; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-option { display: grid; width: 100%; grid-template-columns: 1.75rem 1fr auto; align-items: baseline; column-gap: 0.75rem; padding: 0.75rem 1rem; border: 0; border-bottom: 1px solid var(--color-line, #dfe5e5); background: transparent; color: var(--color-ink, #23373b); text-align: left; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; cursor: pointer; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-option:first-child { border-top: 1px solid var(--color-line, #dfe5e5); } .ds-option:disabled { cursor: default; } .ds-option:not(:disabled):hover { background: var(--color-sunken, #eef1f1); } .ds-option:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-option-key { font-size: 0.875rem; font-weight: 600; color: var(--color-inkSoft, #45585c); } .ds-option-note { display: flex; align-items: center; gap: 0.25rem; white-space: nowrap; font-size: 0.75rem; line-height: 1rem; font-weight: 600; } .ds-option[data-state='selected'] { background: color-mix(in srgb, var(--color-primary, #23373b) 9%, var(--color-surface, #ffffff)); } .ds-option[data-state='selected'] .ds-option-key { color: var(--color-ink, #23373b); } .ds-option[data-state='correct'] { background: color-mix(in srgb, var(--color-success, #14b03d) 12%, var(--color-surface, #ffffff)); } .ds-option[data-state='correct'] .ds-option-key, .ds-option[data-state='correct'] .ds-option-note { color: var(--color-successInk, #0d7a2a); } .ds-option[data-state='wrong'] { background: color-mix(in srgb, var(--color-error, #d13a2e) 10%, var(--color-surface, #ffffff)); } .ds-option[data-state='wrong'] .ds-option-key, .ds-option[data-state='wrong'] .ds-option-note { color: var(--color-errorInk, #b3261e); } .ds-option[data-state='muted'] { color: var(--color-inkMuted, #5b6c70); }"
+    },
+    {
+      "name": "Progress Rule",
+      "kind": "custom",
+      "refersTo": "progress-rule",
+      "description": "Signature: a 4px line under the title bar, one segment per question; orange marks the current one; plus the travelling loading rule.",
+      "html": "<div class=\"ds-rules\"><div class=\"ds-progress-rule\" role=\"img\" aria-label=\"4 answered, 2 correct\"><span data-state=\"correct\"></span><span data-state=\"wrong\"></span><span data-state=\"correct\"></span><span data-state=\"wrong\"></span><span data-state=\"current\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span></div><div class=\"ds-loading-rule\" role=\"status\" aria-label=\"Writing the next question\"></div></div>",
+      "css": ".ds-rules { display: grid; gap: 1.5rem; } .ds-progress-rule { display: flex; gap: 1px; width: 100%; height: 0.25rem; background: var(--color-line, #dfe5e5); } .ds-progress-rule > span { flex: 1; height: 100%; transform-origin: left center; } .ds-progress-rule > [data-state='correct'] { background: var(--color-success, #14b03d); } .ds-progress-rule > [data-state='wrong'] { background: var(--color-error, #d13a2e); } .ds-progress-rule > [data-state='current'] { background: var(--color-accent, #eb811b); } .ds-progress-rule > [data-state='pending'] { background: transparent; } .ds-progress-rule > [data-state]:not([data-state='pending']) { animation: ds-rule-grow 480ms cubic-bezier(0.16, 1, 0.3, 1) both; } .ds-loading-rule { position: relative; height: 0.25rem; width: 100%; overflow: hidden; background: var(--color-line, #dfe5e5); } .ds-loading-rule::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 33.333333%; background: var(--color-accent, #eb811b); animation: ds-rule-travel 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite; } @keyframes ds-rule-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } } @keyframes ds-rule-travel { from { transform: translateX(-100%); } to { transform: translateX(300%); } } @media (prefers-reduced-motion: reduce) { .ds-progress-rule > span, .ds-loading-rule::after { animation-duration: 0.01ms; animation-iteration-count: 1; } }"
+    },
+    {
+      "name": "Toast",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "Transient message under the title bar: surface panel, overlay shadow, 4px state rule along the top; click dismisses.",
+      "html": "<div class=\"ds-toast-region\" aria-live=\"polite\"><div class=\"ds-toast\" data-type=\"success\"><div class=\"ds-toast-body\"><p class=\"ds-toast-title\">API key configured</p><p class=\"ds-toast-message\">OpenAI API key has been automatically configured from URL.</p></div></div><div class=\"ds-toast\" data-type=\"error\" role=\"alert\"><div class=\"ds-toast-body\"><p class=\"ds-toast-title\">Could not save your data</p><p class=\"ds-toast-message\">Browser storage is full or unavailable, so recent changes will be lost when you reload. Delete old sessions in Settings to free space.</p></div></div><div class=\"ds-toast\" data-type=\"info\"><div class=\"ds-toast-body\"><p class=\"ds-toast-title\">Lembrion updated</p><p class=\"ds-toast-message\">Updated from v2.0.0 to v2.1.0. Your API keys and provider settings, study sessions, language and theme were kept. Other cached data was cleared.</p></div></div></div>",
+      "css": ".ds-toast-region { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; width: 24rem; max-width: 100%; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-toast { width: 100%; cursor: pointer; overflow: hidden; border: 1px solid var(--color-line, #dfe5e5); border-radius: 0.25rem; background: var(--color-surface, #ffffff); color: var(--color-ink, #23373b); box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12); animation: ds-toast-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both; } .ds-toast::before { content: ''; display: block; height: 0.25rem; background: var(--ds-toast-rule, var(--color-primary, #23373b)); } .ds-toast[data-type='success'] { --ds-toast-rule: var(--color-success, #14b03d); } .ds-toast[data-type='error'] { --ds-toast-rule: var(--color-error, #d13a2e); } .ds-toast[data-type='warning'] { --ds-toast-rule: var(--color-warning, #e0a526); } .ds-toast-body { padding: 0.75rem 1rem; } .ds-toast-title { margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.375; } .ds-toast-message { margin: 0.125rem 0 0; font-size: 0.875rem; line-height: 1.375; color: var(--color-inkSoft, #45585c); } .ds-toast:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } @keyframes ds-toast-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } } @media (prefers-reduced-motion: reduce) { .ds-toast { animation-duration: 0.01ms; } }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "custom",
+      "refersTo": "data-table-header",
+      "description": "Counts in a ruled table: ink rule under headers, hairline rows, tabular figures right-aligned.",
+      "html": "<table class=\"ds-table\"><thead><tr><th scope=\"col\"><span class=\"ds-sr\">Measure</span></th><th scope=\"col\" class=\"ds-num\">Last 7 days</th><th scope=\"col\" class=\"ds-num\">All time</th></tr></thead><tbody><tr><th scope=\"row\">Sessions</th><td class=\"ds-num\">4</td><td class=\"ds-num\">6</td></tr><tr><th scope=\"row\">Questions answered</th><td class=\"ds-num\">23</td><td class=\"ds-num\">40</td></tr><tr><th scope=\"row\">Accuracy</th><td class=\"ds-num\">74%</td><td class=\"ds-num\">78%</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; } .ds-table thead th { padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--color-ink, #23373b); text-align: left; font-weight: 500; color: var(--color-inkSoft, #45585c); } .ds-table td, .ds-table tbody th { padding: 0.625rem 1rem 0.625rem 0; border-bottom: 1px solid var(--color-line, #dfe5e5); vertical-align: baseline; text-align: left; font-weight: 400; color: var(--color-ink, #23373b); } .ds-table th:last-child, .ds-table td:last-child { padding-right: 0; } .ds-table .ds-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Lecture Deck",
+    "overview": "Lembrion is set like a well-made Metropolis Beamer deck. One dark teal title bar carries the wordmark and the routes; below it sits a pale ground with one idea per frame, and during a session a 4px progress line under the bar records every answer. Hierarchy comes from type size and weight and from rules (a 2px ink rule under each section title, hairlines between rows), not from boxes. Explanation and feedback arrive in titled blocks: a teal title strip over a pale teal-grey body, exactly as Metropolis draws them.\n\nThe density is that of a good handout: counts live in data tables and facts lists with right-aligned tabular figures, controls state their exact values, and the right column of a two-column frame holds the facts of the current session or the next action. Colour is disciplined. Teal does the structural work (title bar, primary buttons, block titles, heading rules); Metropolis orange marks only where the learner is (progress, the current item, the active route, reviews due); green and red appear only to report state. Three themes (light, dark, contrast) share one set of token names, so every component follows the active theme without a reload.\n\nThe world is flat. PRODUCT.md binds it to no skeuomorphism, and the shipped build carries no gradients, glow, icon tiles, or stacked shadowed cards; the only shadow in the system belongs to things that float (the theme menu, dialogs and toasts).",
+    "keyCharacteristics": [
+      "A single dark teal title bar, sticky, 3.5rem tall, white Fira Sans on teal.",
+      "One orange rule: the progress line, the loading line, and the 3px underline under the active route or tab.",
+      "Titled blocks (teal strip, pale teal-grey body) for every explanation and piece of feedback.",
+      "Tables and facts lists with tabular figures right-aligned; no stat tiles.",
+      "Two radii only (2px and 4px); 1px borders; 2px ink rules under section titles.",
+      "Flat content on a tonal ground; shadows only on overlays.",
+      "Fira Sans for everything, Fira Mono for keys, model IDs, URLs and code; sentence-case copy."
+    ],
+    "rules": [
+      {
+        "name": "The Where-You-Are Rule",
+        "body": "Orange marks progress and the current item only: the current progress segment, the loading line, the active route and tab underline, review boxes with questions due, and \"Active\" or due labels. It never fills a button, a heading, a block, or a decorative surface.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Twin Rule",
+        "body": "Every signal hue has an ink twin. The base (accent, success, error, warning) fills rules, strips and tints; text in that hue always uses the `*Ink` token. Light-theme Metropolis Orange is 2.62:1 on the ground and never carries text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tint, Not Fill Rule",
+        "body": "State surfaces are tints mixed into the surface with `color-mix(in srgb, <hue> N%, var(--color-surface))`, never solid fills: choice checked (primary 8%), option selected (primary 9%), option correct (success 12%), option wrong (error 10%), success block body (success 10%), error block body (error 9%), error notice (error 10%), warning notice (warning 14%), accent tag (accent 16%), success tag (success 14%), error tag (error 12%), danger button hover (error 10%). The only solid state fills are block title strips and progress segments.",
+        "section": "colors"
+      },
+      {
+        "name": "The Size-and-Weight Rule",
+        "body": "Hierarchy is size and weight (400, 500, 600) plus rules. No text is uppercased or letter-spaced anywhere; tracking moves only on the page title (-0.01em) and the wordmark (0.01em). No kickers or eyebrows above titles.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every count, score, percentage, ratio and date sets in tabular figures (`font-variant-numeric: tabular-nums`) and right-aligns in table number columns and facts values. Ratios are written with spaced slashes (\"3 / 5\", \"0 / 1\"); topic lists join with \" · \".",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "All UI copy is sentence case: \"Start review\", \"Recent sessions\", \"New study session\", \"End session\".",
+        "section": "typography"
+      },
+      {
+        "name": "The One Measure Rule",
+        "body": "Reading text never runs wider than 68ch. Wide content (tables, two-column frames) may use the full 72rem; prose may not.",
+        "section": "layout"
+      },
+      {
+        "name": "The Overlays-Only Rule",
+        "body": "A shadow means \"this floats above the page\". Tables, blocks, choice groups, option rows and every other piece of content sit flat on the ground; if it does not float, it does not cast.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Two Radii Rule",
+        "body": "2px for what you read, 4px for what you press or type into; nothing rounder.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do put every route inside the 72rem frame under the teal title bar, open with one `page-title`, and head each section with a `section-title` and its 2px ink rule.",
+      "Do give each screen one primary (Deck Teal) button for the next step; make every other action secondary or ghost.",
+      "Do keep Metropolis Orange for progress and the current item, and set orange text in Burnt Orange Ink.",
+      "Do set counts, scores, ratios and dates in tabular figures, right-aligned in tables and facts lists.",
+      "Do put explanations and feedback in titled blocks, and show grading as a tint mixed into the surface plus inked text.",
+      "Do style through the semantic tokens (`bg-shell`, `text-ink-soft`, `border-line-strong`) so all three themes follow; build tints with `color-mix()` in CSS, because the token classes take no `/opacity` modifier.",
+      "Do show any AI wait as the 4px loading rule with a one-line label.",
+      "Do raise transient, out-of-flow messages through the toast: a surface panel with a 4px state rule on top, a title and a short message.",
+      "Do write UI copy in sentence case."
+    ],
+    "donts": [
+      "Don't use skeuomorphic texture, gradients or glow; PRODUCT.md rules out skeuomorphism.",
+      "Don't put a shadow on content; only menus, dialogs and toasts carry the overlay shadow.",
+      "Don't build stat tiles, icon tiles or stacked shadowed cards; numbers belong in data tables and facts lists.",
+      "Don't add a coloured side stripe to notices or blocks; state is a tint plus inked text.",
+      "Don't fill buttons, headings or surfaces with orange, or set text in the base accent.",
+      "Don't uppercase or letter-space labels, or put kickers or eyebrows above titles.",
+      "Don't round anything past 4px or draw pills.",
+      "Don't hard-code hex in components; every colour comes from a `--color-*` token so the three themes stay whole."
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:'Fira Sans';font-weight:400;src:url('/node_modules/@fontsource/fira-sans/files/fira-sans-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Fira Sans';font-weight:500;src:url('/node_modules/@fontsource/fira-sans/files/fira-sans-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Fira Sans';font-weight:600;src:url('/node_modules/@fontsource/fira-sans/files/fira-sans-latin-600-normal.woff2') format('woff2')}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1200px;height:630px;overflow:hidden;background:#fafafa;color:#23373b;font-family:'Fira Sans',sans-serif}
+.bar{height:96px;background:#23373b;color:#fff;display:flex;align-items:center;padding:0 72px;font-size:38px;font-weight:500;letter-spacing:.01em}
+.rule{display:flex;gap:2px;height:8px;background:#dfe5e5}
+.rule span{flex:1}.c{background:#14b03d}.w{background:#d13a2e}.n{background:#eb811b}
+main{display:grid;grid-template-columns:1fr 470px;gap:64px;padding:96px 72px 0}
+h1{font-size:58px;line-height:1.08;font-weight:500;letter-spacing:-.015em}
+p{margin-top:24px;font-size:26px;line-height:1.4;color:#45585c}
+.q{font-size:21px;line-height:1.35;margin-bottom:16px}
+.o{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:11px 14px;border-bottom:1px solid #dfe5e5;font-size:18px;color:#5b6c70}
+.o:first-of-type{border-top:1px solid #dfe5e5}
+.o b{font-weight:600;color:#45585c}
+.o.ok{background:#e3f4e8;color:#23373b}.o.ok b{color:#0d7a2a}
+</style></head><body>
+<div class="bar">Lembrion</div>
+<div class="rule"><span class="c"></span><span class="c"></span><span class="w"></span><span class="c"></span><span class="n"></span><span></span><span></span><span></span><span></span><span></span></div>
+<main>
+<div>
+<h1>Study by answering questions, not rereading notes.</h1>
+<p>Your topics, your AI provider, your browser. Missed questions come back on a 1&#8209;3&#8209;7&#8209;14&#8209;30 day schedule.</p>
+</div>
+<div>
+<div class="q">In spaced repetition, what happens to a question you miss?</div>
+<div class="o"><b>A</b><span>It moves up one box</span></div>
+<div class="o ok"><b>B</b><span>It returns to the first box</span></div>
+<div class="o"><b>C</b><span>It stays in its current box</span></div>
+<div class="o"><b>D</b><span>It is removed from the queue</span></div>
+</div>
+</main>
+<script>document.fonts.ready.then(()=>document.body.setAttribute('data-ready','1'))</script>
+</body></html>

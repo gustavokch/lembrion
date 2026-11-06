@@ -30,3 +30,7 @@ package-lock.json
 
 # trail's local code map (formerly graft) — regenerable, not committed (run `trail build`).
 /graft/
+
+# impeccable working files: review captures and concept-roll state.
+/.impeccable/review/
+/.impeccable/questions/
