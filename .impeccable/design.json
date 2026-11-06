@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-06T09:52:00+00:00",
+  "generatedAt": "2026-11-06T10:50:00+00:00",
   "title": "Design System: Lembrion",
   "extensions": {
     "colorMeta": {
@@ -10,7 +10,7 @@
         "canonical": "#23373b",
         "theme": "light",
         "cssVar": "--color-shell",
-        "purpose": "Title bar ground and block title strips.",
+        "purpose": "Title bar and band ground; block title strips; inverse button label.",
         "tonalRamp": [
           "oklch(15% 0.011 211)",
           "oklch(26% 0.019 211)",
@@ -28,7 +28,7 @@
         "canonical": "#ffffff",
         "theme": "light",
         "cssVar": "--color-shellInk",
-        "purpose": "Text on the title bar; active route.",
+        "purpose": "Text on the title bar and bands; active route; band rules and inverse button fill.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -46,7 +46,7 @@
         "canonical": "#b9c6c8",
         "theme": "light",
         "cssVar": "--color-shellMuted",
-        "purpose": "Idle route links and icons on the title bar.",
+        "purpose": "Idle route links and icons on the title bar; labels and hints on bands.",
         "tonalRamp": [
           "oklch(15% 0.006 208)",
           "oklch(26% 0.010 208)",
@@ -82,7 +82,7 @@
         "canonical": "#ffffff",
         "theme": "light",
         "cssVar": "--color-surface",
-        "purpose": "Fields, choice groups, menus, dialogs; base for every state tint.",
+        "purpose": "Fields, choice groups and grid cells, menus, dialogs; base for every state tint.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -154,7 +154,7 @@
         "canonical": "#5b6c70",
         "theme": "light",
         "cssVar": "--color-inkMuted",
-        "purpose": "Hints, placeholders, list markers, axis ticks.",
+        "purpose": "Hints, placeholders, list markers.",
         "tonalRamp": [
           "oklch(15% 0.009 214)",
           "oklch(26% 0.015 214)",
@@ -421,28 +421,28 @@
       "dark-shell": {
         "role": "primary",
         "displayName": "Dark · Title-bar Teal",
-        "canonical": "#142225",
+        "canonical": "#0f0f0f",
         "theme": "dark",
         "cssVar": "--color-shell",
-        "purpose": "Title bar ground and block title strips.",
+        "purpose": "Title bar and band ground; block title strips; inverse button label.",
         "tonalRamp": [
-          "oklch(15% 0.008 213)",
-          "oklch(26% 0.014 213)",
-          "oklch(38% 0.018 213)",
-          "oklch(49% 0.020 213)",
-          "oklch(61% 0.020 213)",
-          "oklch(72% 0.018 213)",
-          "oklch(84% 0.014 213)",
-          "oklch(95% 0.008 213)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-shellInk": {
         "role": "neutral",
         "displayName": "Dark · Title-bar White",
-        "canonical": "#f3f5f5",
+        "canonical": "#f5f5f5",
         "theme": "dark",
         "cssVar": "--color-shellInk",
-        "purpose": "Text on the title bar; active route.",
+        "purpose": "Text on the title bar and bands; active route; band rules and inverse button fill.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -457,181 +457,181 @@
       "dark-shellMuted": {
         "role": "neutral",
         "displayName": "Dark · Title-bar Mist",
-        "canonical": "#9fb1b4",
+        "canonical": "#a8a8a8",
         "theme": "dark",
         "cssVar": "--color-shellMuted",
-        "purpose": "Idle route links and icons on the title bar.",
+        "purpose": "Idle route links and icons on the title bar; labels and hints on bands.",
         "tonalRamp": [
-          "oklch(15% 0.008 209)",
-          "oklch(26% 0.014 209)",
-          "oklch(38% 0.018 209)",
-          "oklch(49% 0.020 209)",
-          "oklch(61% 0.020 209)",
-          "oklch(72% 0.018 209)",
-          "oklch(84% 0.014 209)",
-          "oklch(95% 0.008 209)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-ground": {
         "role": "neutral",
         "displayName": "Dark · Slide Ground",
-        "canonical": "#1c2c2f",
+        "canonical": "#161616",
         "theme": "dark",
         "cssVar": "--color-ground",
         "purpose": "Page ground.",
         "tonalRamp": [
-          "oklch(15% 0.009 210)",
-          "oklch(26% 0.015 210)",
-          "oklch(38% 0.020 210)",
-          "oklch(49% 0.022 210)",
-          "oklch(61% 0.022 210)",
-          "oklch(72% 0.020 210)",
-          "oklch(84% 0.015 210)",
-          "oklch(95% 0.009 210)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-surface": {
         "role": "neutral",
         "displayName": "Dark · Surface White",
-        "canonical": "#23373b",
+        "canonical": "#1e1e1e",
         "theme": "dark",
         "cssVar": "--color-surface",
-        "purpose": "Fields, choice groups, menus, dialogs; base for every state tint.",
+        "purpose": "Fields, choice groups and grid cells, menus, dialogs; base for every state tint.",
         "tonalRamp": [
-          "oklch(15% 0.011 211)",
-          "oklch(26% 0.019 211)",
-          "oklch(38% 0.024 211)",
-          "oklch(49% 0.026 211)",
-          "oklch(61% 0.026 211)",
-          "oklch(72% 0.024 211)",
-          "oklch(84% 0.019 211)",
-          "oklch(95% 0.011 211)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-sunken": {
         "role": "neutral",
         "displayName": "Dark · Pale Teal-Grey",
-        "canonical": "#2a3f43",
+        "canonical": "#262626",
         "theme": "dark",
         "cssVar": "--color-sunken",
         "purpose": "Block bodies, notices, tags, code, hover fills.",
         "tonalRamp": [
-          "oklch(15% 0.011 211)",
-          "oklch(26% 0.019 211)",
-          "oklch(38% 0.024 211)",
-          "oklch(49% 0.027 211)",
-          "oklch(61% 0.027 211)",
-          "oklch(72% 0.024 211)",
-          "oklch(84% 0.019 211)",
-          "oklch(95% 0.011 211)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-ink": {
         "role": "neutral",
         "displayName": "Dark · Deck Ink",
-        "canonical": "#eef2f2",
+        "canonical": "#ededed",
         "theme": "dark",
         "cssVar": "--color-ink",
         "purpose": "Body text, titles, section and table-header rules.",
         "tonalRamp": [
-          "oklch(15% 0.002 197)",
-          "oklch(26% 0.003 197)",
-          "oklch(38% 0.004 197)",
-          "oklch(49% 0.004 197)",
-          "oklch(61% 0.004 197)",
-          "oklch(72% 0.004 197)",
-          "oklch(84% 0.003 197)",
-          "oklch(95% 0.002 197)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-inkSoft": {
         "role": "neutral",
         "displayName": "Dark · Soft Slate Ink",
-        "canonical": "#c3cfd0",
+        "canonical": "#c9c9c9",
         "theme": "dark",
         "cssVar": "--color-inkSoft",
         "purpose": "Secondary text: ledes, table headers, facts labels, inactive tabs.",
         "tonalRamp": [
-          "oklch(15% 0.005 203)",
-          "oklch(26% 0.009 203)",
-          "oklch(38% 0.012 203)",
-          "oklch(49% 0.013 203)",
-          "oklch(61% 0.013 203)",
-          "oklch(72% 0.012 203)",
-          "oklch(84% 0.009 203)",
-          "oklch(95% 0.005 203)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-inkMuted": {
         "role": "neutral",
         "displayName": "Dark · Muted Slate Ink",
-        "canonical": "#a3b4b7",
+        "canonical": "#a3a3a3",
         "theme": "dark",
         "cssVar": "--color-inkMuted",
-        "purpose": "Hints, placeholders, list markers, axis ticks.",
+        "purpose": "Hints, placeholders, list markers.",
         "tonalRamp": [
-          "oklch(15% 0.008 209)",
-          "oklch(26% 0.014 209)",
-          "oklch(38% 0.017 209)",
-          "oklch(49% 0.019 209)",
-          "oklch(61% 0.019 209)",
-          "oklch(72% 0.017 209)",
-          "oklch(84% 0.014 209)",
-          "oklch(95% 0.008 209)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-line": {
         "role": "neutral",
         "displayName": "Dark · Hairline",
-        "canonical": "#31474b",
+        "canonical": "#2e2e2e",
         "theme": "dark",
         "cssVar": "--color-line",
         "purpose": "Hairline separators and rule tracks.",
         "tonalRamp": [
-          "oklch(15% 0.011 210)",
-          "oklch(26% 0.020 210)",
-          "oklch(38% 0.025 210)",
-          "oklch(49% 0.028 210)",
-          "oklch(61% 0.028 210)",
-          "oklch(72% 0.025 210)",
-          "oklch(84% 0.020 210)",
-          "oklch(95% 0.011 210)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-lineStrong": {
         "role": "neutral",
         "displayName": "Dark · Control Slate",
-        "canonical": "#6a868b",
+        "canonical": "#737373",
         "theme": "dark",
         "cssVar": "--color-lineStrong",
         "purpose": "Form-control borders (3:1 against surface).",
         "tonalRamp": [
-          "oklch(15% 0.013 210)",
-          "oklch(26% 0.023 210)",
-          "oklch(38% 0.029 210)",
-          "oklch(49% 0.032 210)",
-          "oklch(61% 0.032 210)",
-          "oklch(72% 0.029 210)",
-          "oklch(84% 0.023 210)",
-          "oklch(95% 0.013 210)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-primary": {
         "role": "primary",
         "displayName": "Dark · Deck Teal",
-        "canonical": "#e9eeee",
+        "canonical": "#ededed",
         "theme": "dark",
         "cssVar": "--color-primary",
         "purpose": "Primary button fill and selected segment.",
         "tonalRamp": [
-          "oklch(15% 0.002 197)",
-          "oklch(26% 0.004 197)",
-          "oklch(38% 0.005 197)",
-          "oklch(49% 0.005 197)",
-          "oklch(61% 0.005 197)",
-          "oklch(72% 0.005 197)",
-          "oklch(84% 0.004 197)",
-          "oklch(95% 0.002 197)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-primaryHover": {
@@ -655,19 +655,19 @@
       "dark-onPrimary": {
         "role": "primary",
         "displayName": "Dark · On-Teal White",
-        "canonical": "#142225",
+        "canonical": "#141414",
         "theme": "dark",
         "cssVar": "--color-onPrimary",
         "purpose": "Text and icons on primary fills.",
         "tonalRamp": [
-          "oklch(15% 0.008 213)",
-          "oklch(26% 0.014 213)",
-          "oklch(38% 0.018 213)",
-          "oklch(49% 0.020 213)",
-          "oklch(61% 0.020 213)",
-          "oklch(72% 0.018 213)",
-          "oklch(84% 0.014 213)",
-          "oklch(95% 0.008 213)"
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
         ]
       },
       "dark-accent": {
@@ -838,7 +838,7 @@
         "canonical": "#0b1416",
         "theme": "contrast",
         "cssVar": "--color-shell",
-        "purpose": "Title bar ground and block title strips.",
+        "purpose": "Title bar and band ground; block title strips; inverse button label.",
         "tonalRamp": [
           "oklch(15% 0.006 213)",
           "oklch(26% 0.010 213)",
@@ -856,7 +856,7 @@
         "canonical": "#ffffff",
         "theme": "contrast",
         "cssVar": "--color-shellInk",
-        "purpose": "Text on the title bar; active route.",
+        "purpose": "Text on the title bar and bands; active route; band rules and inverse button fill.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -874,7 +874,7 @@
         "canonical": "#d5dee0",
         "theme": "contrast",
         "cssVar": "--color-shellMuted",
-        "purpose": "Idle route links and icons on the title bar.",
+        "purpose": "Idle route links and icons on the title bar; labels and hints on bands.",
         "tonalRamp": [
           "oklch(15% 0.004 213)",
           "oklch(26% 0.007 213)",
@@ -910,7 +910,7 @@
         "canonical": "#ffffff",
         "theme": "contrast",
         "cssVar": "--color-surface",
-        "purpose": "Fields, choice groups, menus, dialogs; base for every state tint.",
+        "purpose": "Fields, choice groups and grid cells, menus, dialogs; base for every state tint.",
         "tonalRamp": [
           "oklch(15% 0 0)",
           "oklch(26% 0 0)",
@@ -982,7 +982,7 @@
         "canonical": "#3b4a4d",
         "theme": "contrast",
         "cssVar": "--color-inkMuted",
-        "purpose": "Hints, placeholders, list markers, axis ticks.",
+        "purpose": "Hints, placeholders, list markers.",
         "tonalRamp": [
           "oklch(15% 0.008 211)",
           "oklch(26% 0.014 211)",
@@ -1250,11 +1250,19 @@
     "typographyMeta": {
       "page-title": {
         "displayName": "Headline",
-        "purpose": "One page title per route; 1.5rem, stepping to 1.75rem from 640px."
+        "purpose": "One page title per route; 1.5rem, stepping to 1.75rem from 640px. Visually hidden on the Dashboard, where the band opens the page."
       },
       "question": {
         "displayName": "Display (question)",
-        "purpose": "The question stem in the study loop; 1.25rem, stepping to 1.5rem from 640px; 68ch measure."
+        "purpose": "The question stem in the study loop; 1.25rem, stepping to 1.5rem from 640px; from 1024px the left of two equal columns."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Dashboard progress numbers in Fira Sans Light (300): 1.75rem, line-height 1, tabular, -0.01em."
+      },
+      "statement": {
+        "displayName": "Statement",
+        "purpose": "The next-action sentence in the Dashboard band and the empty-state line, in Fira Sans Light (300); 1.5rem, stepping to 1.75rem from 640px."
       },
       "wordmark": {
         "displayName": "Wordmark",
@@ -1266,7 +1274,7 @@
       },
       "section-title": {
         "displayName": "Section title",
-        "purpose": "Section headings, always over a 2px Deck Ink rule."
+        "purpose": "Section headings, always over a 2px Deck Ink rule (Title-bar White rule and text on a band)."
       },
       "subhead": {
         "displayName": "Subhead",
@@ -1405,8 +1413,8 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one next action on a screen: Start review, Next question, Start session.",
-      "html": "<button type=\"button\" class=\"ds-btn-primary\">Start review</button>",
+      "description": "The one next action on the ground: Next question, Submit answer, Continue session; Start session below 1024px.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\">Next question</button>",
       "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-primary, #23373b); border-color: var(--color-primary, #23373b); color: var(--color-onPrimary, #ffffff); } .ds-btn-primary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-primary:hover:not(:disabled) { background: var(--color-primaryHover, #30494e); border-color: var(--color-primaryHover, #30494e); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
     },
     {
@@ -1434,6 +1442,14 @@
       "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; background: var(--color-surface, #ffffff); border-color: var(--color-lineStrong, #869699); color: var(--color-errorInk, #b3261e); } .ds-btn-danger svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-error, #d13a2e) 10%, var(--color-surface, #ffffff)); border-color: var(--color-error, #d13a2e); } .ds-btn-danger:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }"
     },
     {
+      "name": "Inverse Buttons",
+      "kind": "button",
+      "refersTo": "button-inverse",
+      "description": "Buttons on a band: shell-ink fill for the next action, a 45% shell-ink outline for the rest.",
+      "html": "<div class=\"ds-inverse-row\"><button type=\"button\" class=\"ds-btn-inverse\">Start review</button><button type=\"button\" class=\"ds-btn-outline-inverse\">New session</button></div>",
+      "css": ".ds-inverse-row { display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 1.25rem; background: var(--color-shell, #23373b); } .ds-btn-inverse, .ds-btn-outline-inverse { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; text-decoration: none; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-inverse { background: var(--color-shellInk, #ffffff); border-color: var(--color-shellInk, #ffffff); color: var(--color-shell, #23373b); } .ds-btn-inverse:hover:not(:disabled) { background: color-mix(in srgb, var(--color-shellInk, #ffffff) 86%, var(--color-shell, #23373b)); } .ds-btn-outline-inverse { background: transparent; border-color: color-mix(in srgb, var(--color-shellInk, #ffffff) 45%, transparent); color: var(--color-shellInk, #ffffff); } .ds-btn-outline-inverse:hover:not(:disabled) { border-color: var(--color-shellInk, #ffffff); background: color-mix(in srgb, var(--color-shellInk, #ffffff) 10%, transparent); } .ds-btn-inverse:disabled, .ds-btn-outline-inverse:disabled { opacity: 0.5; cursor: not-allowed; } .ds-inverse-row button:focus-visible { outline: 2px solid var(--color-accent, #eb811b); outline-offset: 2px; }"
+    },
+    {
       "name": "Text Field",
       "kind": "input",
       "refersTo": "field",
@@ -1442,12 +1458,28 @@
       "css": ".ds-field-wrap { font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; max-width: 28rem; } .ds-label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; color: var(--color-ink, #23373b); } .ds-field { display: block; width: 100%; box-sizing: border-box; padding: 0.5rem 0.75rem; border: 1px solid var(--color-lineStrong, #869699); border-radius: 0.25rem; background: var(--color-surface, #ffffff); color: var(--color-ink, #23373b); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; transition: border-color 120ms ease-out, box-shadow 120ms ease-out; } .ds-field-mono { font-family: \"Fira Mono\", ui-monospace, SFMono-Regular, Menlo, monospace; } .ds-field::placeholder { color: var(--color-inkMuted, #5b6c70); opacity: 1; } .ds-field:hover:not(:disabled) { border-color: var(--color-inkSoft, #45585c); } .ds-field:focus { outline: none; border-color: var(--color-focus, #23373b); box-shadow: 0 0 0 1px var(--color-focus, #23373b); } .ds-field[aria-invalid='true'] { border-color: var(--color-error, #d13a2e); } .ds-field:disabled { background: var(--color-sunken, #eef1f1); color: var(--color-inkMuted, #5b6c70); cursor: not-allowed; } .ds-hint { margin: 0.375rem 0 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-inkMuted, #5b6c70); }"
     },
     {
+      "name": "Choice Grid",
+      "kind": "custom",
+      "refersTo": "choice-grid",
+      "description": "Choice cells tiled in columns with 1px gaps in Control Slate mixed 55% into surface; question type takes 3 columns from 640px.",
+      "html": "<div class=\"ds-choice-grid\" role=\"radiogroup\" aria-label=\"Question type\"><label class=\"ds-choice\"><input type=\"radio\" name=\"ds-question-type\" checked><span class=\"ds-choice-text\"><span class=\"ds-choice-title\">Multiple choice</span><span class=\"ds-choice-desc\">Quick assessment questions</span></span></label><label class=\"ds-choice\"><input type=\"radio\" name=\"ds-question-type\"><span class=\"ds-choice-text\"><span class=\"ds-choice-title\">Dissertative</span><span class=\"ds-choice-desc\">Deep analysis questions</span></span></label><label class=\"ds-choice\"><input type=\"radio\" name=\"ds-question-type\"><span class=\"ds-choice-text\"><span class=\"ds-choice-title\">Mixed</span><span class=\"ds-choice-desc\">Both types, chosen at random</span></span></label></div>",
+      "css": ".ds-choice-grid { display: grid; gap: 1px; overflow: hidden; border: 1px solid var(--color-lineStrong, #869699); border-radius: 0.25rem; background: color-mix(in srgb, var(--color-lineStrong, #869699) 55%, var(--color-surface, #ffffff)); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; } .ds-choice { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--color-surface, #ffffff); cursor: pointer; text-align: left; transition: background-color 120ms ease-out; } .ds-choice:hover { background: var(--color-sunken, #eef1f1); } .ds-choice:has(input:checked) { background: color-mix(in srgb, var(--color-primary, #23373b) 8%, var(--color-surface, #ffffff)); } .ds-choice input { flex-shrink: 0; width: 1rem; height: 1rem; margin: 0.25rem 0 0; accent-color: var(--color-primary, #23373b); } .ds-choice input:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; } .ds-choice-text { min-width: 0; } .ds-choice-title { display: block; font-weight: 500; color: var(--color-ink, #23373b); } .ds-choice-desc { display: block; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-inkSoft, #45585c); } @media (min-width: 640px) { .ds-choice-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }"
+    },
+    {
       "name": "Title Bar",
       "kind": "nav",
       "refersTo": "title-bar",
-      "description": "The single dark teal bar: wordmark, routes with the orange current-route underline, theme control.",
-      "html": "<header class=\"ds-bar\"><a class=\"ds-wordmark\" href=\"#\">Lembrion</a><nav class=\"ds-bar-nav\" aria-label=\"Main\"><a class=\"ds-bar-link is-active\" href=\"#\" aria-current=\"page\">Dashboard</a><a class=\"ds-bar-link\" href=\"#\">Study</a><a class=\"ds-bar-link\" href=\"#\">History</a><a class=\"ds-bar-link\" href=\"#\">Settings</a></nav><button type=\"button\" class=\"ds-bar-icon\" aria-label=\"Select theme\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/></svg></button></header>",
+      "description": "The single dark teal bar: wordmark, routes with the orange current-route underline, theme control (the System preference by default).",
+      "html": "<header class=\"ds-bar\"><a class=\"ds-wordmark\" href=\"#\">Lembrion</a><nav class=\"ds-bar-nav\" aria-label=\"Main\"><a class=\"ds-bar-link is-active\" href=\"#\" aria-current=\"page\">Dashboard</a><a class=\"ds-bar-link\" href=\"#\">Study</a><a class=\"ds-bar-link\" href=\"#\">History</a><a class=\"ds-bar-link\" href=\"#\">Settings</a></nav><button type=\"button\" class=\"ds-bar-icon\" aria-label=\"Select theme\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"20\" height=\"14\" x=\"2\" y=\"3\" rx=\"2\"/><line x1=\"8\" x2=\"16\" y1=\"21\" y2=\"21\"/><line x1=\"12\" x2=\"12\" y1=\"17\" y2=\"21\"/></svg></button></header>",
       "css": ".ds-bar { display: flex; align-items: center; gap: 2rem; height: 3.5rem; padding: 0 1.5rem; background: var(--color-shell, #23373b); color: var(--color-shellInk, #ffffff); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-wordmark { font-size: 1.125rem; line-height: 1.75rem; font-weight: 500; letter-spacing: 0.01em; color: var(--color-shellInk, #ffffff); text-decoration: none; } .ds-bar-nav { display: flex; align-self: stretch; gap: 1.75rem; } .ds-bar-link { display: flex; align-items: center; font-size: 0.9375rem; color: var(--color-shellMuted, #b9c6c8); text-decoration: none; box-shadow: inset 0 -3px 0 transparent; transition: color 120ms ease-out, box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-bar-link:hover { color: var(--color-shellInk, #ffffff); } .ds-bar-link.is-active { color: var(--color-shellInk, #ffffff); box-shadow: inset 0 -3px 0 var(--color-accent, #eb811b); } .ds-bar a:focus-visible, .ds-bar button:focus-visible { outline: 2px solid var(--color-accent, #eb811b); outline-offset: 2px; } .ds-bar-icon { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 0.25rem; background: transparent; color: var(--color-shellMuted, #b9c6c8); cursor: pointer; transition: color 120ms ease-out, background-color 120ms ease-out; } .ds-bar-icon:hover, .ds-bar-icon[aria-expanded='true'] { color: var(--color-shellInk, #ffffff); background: rgb(255 255 255 / 0.08); }"
+    },
+    {
+      "name": "Band",
+      "kind": "custom",
+      "refersTo": "band",
+      "description": "The Metropolis standout frame: the title bar's ground carried below it for the Dashboard overview, with shell-ink rules, figures, a statement, inverse buttons and the review box strips.",
+      "html": "<section class=\"ds-band\" aria-label=\"Dashboard\"><div class=\"ds-band-grid\"><section class=\"ds-band-progress\"><h2 class=\"ds-band-title\">Progress</h2><table class=\"ds-band-table\"><thead><tr><th scope=\"col\"><span class=\"ds-sr\">Period</span></th><th scope=\"col\" class=\"ds-num\">Sessions</th><th scope=\"col\" class=\"ds-num\">Questions answered</th><th scope=\"col\" class=\"ds-num\">Accuracy</th></tr></thead><tbody><tr><th scope=\"row\">Last 7 days</th><td class=\"ds-num\"><span class=\"ds-figure\">4</span></td><td class=\"ds-num\"><span class=\"ds-figure\">23</span></td><td class=\"ds-num\"><span class=\"ds-figure\">74%</span></td></tr><tr><th scope=\"row\">All time</th><td class=\"ds-num\"><span class=\"ds-figure\">6</span></td><td class=\"ds-num\"><span class=\"ds-figure\">40</span></td><td class=\"ds-num\"><span class=\"ds-figure\">78%</span></td></tr></tbody></table></section><section class=\"ds-band-next\"><h2 class=\"ds-band-title\">Next</h2><ul class=\"ds-band-rows\"><li class=\"ds-band-due\"><p class=\"ds-statement\">3 questions due for review</p><button type=\"button\" class=\"ds-btn-inverse\">Start review</button></li><li class=\"ds-band-session\"><div><p class=\"ds-band-topic\">Photosynthesis · Calvin cycle</p><p class=\"ds-band-meta\">5 questions</p></div><button type=\"button\" class=\"ds-btn-outline-inverse ds-btn-sm\" aria-label=\"Resume Photosynthesis · Calvin cycle\">Resume</button></li><li class=\"ds-band-new\"><a class=\"ds-btn-outline-inverse\" href=\"#\">New session</a></li></ul></section><section class=\"ds-band-boxes\"><h2 class=\"ds-band-title\">Review boxes</h2><figure class=\"ds-boxes-figure\"><div class=\"ds-boxes\" aria-hidden=\"true\"><span class=\"ds-box-label\">Box 1 · 1 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"due\" style=\"left: 0%; width: 3.333%;\"></span></div><span class=\"ds-box-due\">2 due</span><span class=\"ds-box-count\">2</span><span class=\"ds-box-label\">Box 2 · 3 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"scheduled\" style=\"left: 3.333%; width: 6.667%;\"></span></div><span class=\"ds-box-due\"></span><span class=\"ds-box-count\">4</span><span class=\"ds-box-label\">Box 3 · 7 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"due\" style=\"left: 10%; width: 13.333%;\"></span></div><span class=\"ds-box-due\">1 due</span><span class=\"ds-box-count\">3</span><span class=\"ds-box-label\">Box 4 · 14 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"empty\" style=\"left: 23.333%; width: 23.333%;\"></span></div><span class=\"ds-box-due\"></span><span class=\"ds-box-count\">0</span><span class=\"ds-box-label\">Box 5 · 30 d</span><div class=\"ds-box-track\"><span class=\"ds-box-fill\" data-state=\"scheduled\" style=\"left: 46.667%; width: 53.333%;\"></span></div><span class=\"ds-box-due\"></span><span class=\"ds-box-count\">1</span></div><figcaption class=\"ds-boxes-caption\">3 due now · 0 retired</figcaption></figure></section></div></section>",
+      "css": ".ds-band { --ds-band-rule: color-mix(in srgb, var(--color-shellInk, #ffffff) 16%, transparent); --ds-band-accent: color-mix(in srgb, var(--color-accent, #eb811b) 75%, var(--color-shellInk, #ffffff)); padding: 1.5rem 1rem 2rem; border-top: 1px solid var(--ds-band-rule); background: var(--color-shell, #23373b); color: var(--color-shellInk, #ffffff); font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; } .ds-band :focus-visible { outline: 2px solid var(--color-accent, #eb811b); outline-offset: 2px; } .ds-band-grid { display: grid; gap: 2.5rem; } .ds-band-progress, .ds-band-next, .ds-band-boxes { min-width: 0; } .ds-band-title { margin: 0; padding-bottom: 0.375rem; border-bottom: 2px solid var(--color-shellInk, #ffffff); font-size: 0.9375rem; line-height: 1.5; font-weight: 600; color: var(--color-shellInk, #ffffff); } .ds-band-table { width: 100%; margin-top: 0.25rem; border-collapse: collapse; font-size: 0.875rem; line-height: 1.25rem; } .ds-band-table thead th { padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-shellInk, #ffffff) 55%, transparent); text-align: left; font-weight: 500; color: var(--color-shellMuted, #b9c6c8); } .ds-band-table td, .ds-band-table tbody th { padding: 0.625rem 1rem 0.625rem 0; border-bottom: 1px solid var(--ds-band-rule); vertical-align: baseline; text-align: left; font-weight: 400; color: var(--color-shellInk, #ffffff); } .ds-band-table tbody th { white-space: nowrap; } .ds-band-table th:last-child, .ds-band-table td:last-child { padding-right: 0; } .ds-band-table .ds-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-figure { font-size: 1.75rem; font-weight: 300; line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; } .ds-statement { margin: 0; font-size: 1.5rem; font-weight: 300; line-height: 1.25; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; } .ds-band-rows { margin: 0; padding: 0; list-style: none; } .ds-band-rows > li + li { border-top: 1px solid var(--ds-band-rule); } .ds-band-due { padding: 1rem 0 1.25rem; } .ds-band-due .ds-btn-inverse { margin-top: 1rem; } .ds-band-session { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; } .ds-band-session > div { min-width: 0; flex: 1; } .ds-band-topic { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; } .ds-band-meta { margin: 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-shellMuted, #b9c6c8); font-variant-numeric: tabular-nums; } .ds-band-new { padding: 1rem 0; } .ds-btn-inverse, .ds-btn-outline-inverse { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 500; line-height: 1.25; text-decoration: none; cursor: pointer; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-inverse { background: var(--color-shellInk, #ffffff); border-color: var(--color-shellInk, #ffffff); color: var(--color-shell, #23373b); } .ds-btn-inverse:hover:not(:disabled) { background: color-mix(in srgb, var(--color-shellInk, #ffffff) 86%, var(--color-shell, #23373b)); } .ds-btn-outline-inverse { background: transparent; border-color: color-mix(in srgb, var(--color-shellInk, #ffffff) 45%, transparent); color: var(--color-shellInk, #ffffff); } .ds-btn-outline-inverse:hover:not(:disabled) { border-color: var(--color-shellInk, #ffffff); background: color-mix(in srgb, var(--color-shellInk, #ffffff) 10%, transparent); } .ds-btn-inverse:disabled, .ds-btn-outline-inverse:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-sm { padding: 0.375rem 0.75rem; font-size: 0.875rem; line-height: 1.25rem; } .ds-boxes-figure { margin: 1rem 0 0; } .ds-boxes { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content 3ch; align-items: center; column-gap: 1rem; row-gap: 0.75rem; font-size: 0.875rem; line-height: 1.25rem; font-variant-numeric: tabular-nums; } .ds-box-label { white-space: nowrap; color: var(--color-shellMuted, #b9c6c8); } .ds-box-track { position: relative; height: 0.25rem; background: var(--ds-band-rule); } .ds-box-fill { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--color-shellMuted, #b9c6c8) 45%, transparent); } .ds-box-fill[data-state='scheduled'] { background: var(--color-shellInk, #ffffff); } .ds-box-fill[data-state='due'] { background: var(--color-accent, #eb811b); } .ds-box-due { white-space: nowrap; text-align: right; font-size: 0.75rem; line-height: 1rem; font-weight: 500; color: var(--ds-band-accent); } .ds-box-count { text-align: right; font-weight: 500; } .ds-boxes-caption { margin-top: 1rem; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-shellMuted, #b9c6c8); font-variant-numeric: tabular-nums; } .ds-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } @media (min-width: 640px) { .ds-band { padding: 2rem 1.5rem; } .ds-statement { font-size: 1.75rem; } } @media (min-width: 1024px) { .ds-band { padding: 2rem 2.5rem 2.5rem; } .ds-band-grid { grid-template-columns: minmax(0, 1fr) 22rem; grid-template-rows: auto 1fr; column-gap: 3rem; } .ds-band-progress { grid-column: 1; grid-row: 1; } .ds-band-next { grid-column: 2; grid-row: 1 / span 2; } .ds-band-boxes { grid-column: 1; grid-row: 2; } }"
     },
     {
       "name": "Status Tags",
@@ -1493,22 +1525,22 @@
       "name": "Data Table",
       "kind": "custom",
       "refersTo": "data-table-header",
-      "description": "Counts in a ruled table: ink rule under headers, hairline rows, tabular figures right-aligned.",
-      "html": "<table class=\"ds-table\"><thead><tr><th scope=\"col\"><span class=\"ds-sr\">Measure</span></th><th scope=\"col\" class=\"ds-num\">Last 7 days</th><th scope=\"col\" class=\"ds-num\">All time</th></tr></thead><tbody><tr><th scope=\"row\">Sessions</th><td class=\"ds-num\">4</td><td class=\"ds-num\">6</td></tr><tr><th scope=\"row\">Questions answered</th><td class=\"ds-num\">23</td><td class=\"ds-num\">40</td></tr><tr><th scope=\"row\">Accuracy</th><td class=\"ds-num\">74%</td><td class=\"ds-num\">78%</td></tr></tbody></table>",
-      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; } .ds-table thead th { padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--color-ink, #23373b); text-align: left; font-weight: 500; color: var(--color-inkSoft, #45585c); } .ds-table td, .ds-table tbody th { padding: 0.625rem 1rem 0.625rem 0; border-bottom: 1px solid var(--color-line, #dfe5e5); vertical-align: baseline; text-align: left; font-weight: 400; color: var(--color-ink, #23373b); } .ds-table th:last-child, .ds-table td:last-child { padding-right: 0; } .ds-table .ds-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }"
+      "description": "Recent sessions on the ground: ink rule under headers, hairline rows, underlined topic links, tabular figures right-aligned.",
+      "html": "<table class=\"ds-table\"><thead><tr><th scope=\"col\">Topics</th><th scope=\"col\">Type</th><th scope=\"col\" class=\"ds-num\">Questions</th><th scope=\"col\" class=\"ds-num\">Score</th><th scope=\"col\" class=\"ds-num\">Date</th></tr></thead><tbody><tr><td class=\"ds-topic\"><a href=\"#\">Photosynthesis · Calvin cycle</a></td><td class=\"ds-soft\">Multiple choice</td><td class=\"ds-num\">5</td><td class=\"ds-num\">80%</td><td class=\"ds-num ds-nowrap\">Nov 5, 2026</td></tr><tr><td class=\"ds-topic\"><a href=\"#\">Cell respiration</a></td><td class=\"ds-soft\">Dissertative</td><td class=\"ds-num\">3</td><td class=\"ds-num\">67%</td><td class=\"ds-num ds-nowrap\">Nov 3, 2026</td></tr><tr><td class=\"ds-topic\"><a href=\"#\">Krebs cycle · Electron transport</a></td><td class=\"ds-soft\">Mixed</td><td class=\"ds-num\">8</td><td class=\"ds-num\">75%</td><td class=\"ds-num ds-nowrap\">Oct 30, 2026</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: \"Fira Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; } .ds-table thead th { padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--color-ink, #23373b); text-align: left; font-weight: 500; color: var(--color-inkSoft, #45585c); } .ds-table td { padding: 0.625rem 1rem 0.625rem 0; border-bottom: 1px solid var(--color-line, #dfe5e5); vertical-align: baseline; text-align: left; font-weight: 400; color: var(--color-ink, #23373b); } .ds-table th:last-child, .ds-table td:last-child { padding-right: 0; } .ds-table .ds-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-table .ds-nowrap { white-space: nowrap; } .ds-table .ds-soft { white-space: nowrap; color: var(--color-inkSoft, #45585c); } .ds-table .ds-topic { max-width: 26rem; } .ds-table .ds-topic a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--color-ink, #23373b); text-decoration: underline; text-decoration-color: var(--color-lineStrong, #869699); text-decoration-thickness: 1px; text-underline-offset: 0.2em; } .ds-table .ds-topic a:hover { text-decoration-color: var(--color-ink, #23373b); } .ds-table a:focus-visible { outline: 2px solid var(--color-focus, #23373b); outline-offset: 2px; }"
     }
   ],
   "narrative": {
     "northStar": "The Lecture Deck",
-    "overview": "Lembrion is set like a well-made Metropolis Beamer deck. One dark teal title bar carries the wordmark and the routes; below it sits a pale ground with one idea per frame, and during a session a 4px progress line under the bar records every answer. Hierarchy comes from type size and weight and from rules (a 2px ink rule under each section title, hairlines between rows), not from boxes. Explanation and feedback arrive in titled blocks: a teal title strip over a pale teal-grey body, exactly as Metropolis draws them.\n\nThe density is that of a good handout: counts live in data tables and facts lists with right-aligned tabular figures, controls state their exact values, and the right column of a two-column frame holds the facts of the current session or the next action. Colour is disciplined. Teal does the structural work (title bar, primary buttons, block titles, heading rules); Metropolis orange marks only where the learner is (progress, the current item, the active route, reviews due); green and red appear only to report state. Three themes (light, dark, contrast) share one set of token names, so every component follows the active theme without a reload.\n\nThe world is flat. PRODUCT.md binds it to no skeuomorphism, and the shipped build carries no gradients, glow, icon tiles, or stacked shadowed cards; the only shadow in the system belongs to things that float (the theme menu, dialogs and toasts).",
+    "overview": "Lembrion is set like a well-made Metropolis Beamer deck. One dark teal title bar carries the wordmark and the routes; below it sits a pale ground with one idea per frame, and during a session a 4px progress line under the bar records every answer. Where a page needs an overview, the bar's ground carries on below it as a band, Metropolis's standout frame: the Dashboard opens with one, and the study setup summary becomes one on wide screens. Hierarchy comes from type size and weight and from rules (a 2px ink rule under each section title, hairlines between rows), not from boxes. Explanation and feedback arrive in titled blocks: a teal title strip over a pale teal-grey body, exactly as Metropolis draws them.\n\nThe density is that of a good handout: counts live in data tables and facts lists with right-aligned tabular figures, controls state their exact values, and the right column of a two-column frame holds the facts of the current session, the response to a graded answer, or the next action. Colour is disciplined. Teal does the structural work (title bar, band, primary buttons, block titles, heading rules); Metropolis orange marks only where the learner is (progress, the current item, the active route, reviews due); green and red appear only to report state. Three palettes (light, dark, contrast) share one set of token names, so every component follows the active theme without a reload; the default System preference picks light or dark from the browser and follows it live.\n\nThe world is flat. PRODUCT.md binds it to no skeuomorphism, and the shipped build carries no gradients, glow, icon tiles, or stacked shadowed cards; the only shadow in the system belongs to things that float (the theme menu, dialogs and toasts).",
     "keyCharacteristics": [
-      "A single dark teal title bar, sticky, 3.5rem tall, white Fira Sans on teal.",
+      "A single dark teal title bar, sticky, 3.5rem tall, white Fira Sans on teal; where a page needs an overview, its ground carries on below it as a band with inverse buttons.",
       "One orange rule: the progress line, the loading line, and the 3px underline under the active route or tab.",
       "Titled blocks (teal strip, pale teal-grey body) for every explanation and piece of feedback.",
       "Tables and facts lists with tabular figures right-aligned; no stat tiles.",
       "Two radii only (2px and 4px); 1px borders; 2px ink rules under section titles.",
       "Flat content on a tonal ground; shadows only on overlays.",
-      "Fira Sans for everything, Fira Mono for keys, model IDs, URLs and code; sentence-case copy."
+      "Fira Sans for everything (Light only for figures and statements), Fira Mono for keys, model IDs, URLs and code; sentence-case copy."
     ],
     "rules": [
       {
@@ -1518,17 +1550,17 @@
       },
       {
         "name": "The Ink Twin Rule",
-        "body": "Every signal hue has an ink twin. The base (accent, success, error, warning) fills rules, strips and tints; text in that hue always uses the `*Ink` token. Light-theme Metropolis Orange is 2.62:1 on the ground and never carries text.",
+        "body": "Every signal hue has an ink twin. The base (accent, success, error, warning) fills rules, strips and tints; text in that hue on the ground always uses the `*Ink` token. On a band the ground is Title-bar Teal, so due counts there use `--band-accent` (accent mixed 75% with Title-bar White) instead. Light-theme Metropolis Orange is 2.62:1 on the ground and never carries text.",
         "section": "colors"
       },
       {
         "name": "The Tint, Not Fill Rule",
-        "body": "State surfaces are tints mixed into the surface with `color-mix(in srgb, <hue> N%, var(--color-surface))`, never solid fills: choice checked (primary 8%), option selected (primary 9%), option correct (success 12%), option wrong (error 10%), success block body (success 10%), error block body (error 9%), error notice (error 10%), warning notice (warning 14%), accent tag (accent 16%), success tag (success 14%), error tag (error 12%), danger button hover (error 10%). The only solid state fills are block title strips and progress segments.",
+        "body": "State surfaces are tints mixed into the surface with `color-mix(in srgb, <hue> N%, var(--color-surface))`, never solid fills: choice checked (primary 8%), option selected (primary 9%), option correct (success 12%), option wrong (error 10%), success block body (success 10%), error block body (error 9%), error notice (error 10%), warning notice (warning 14%), accent tag (accent 16%), success tag (success 14%), error tag (error 12%), danger button hover (error 10%). The only solid state fills are block title strips, progress segments, and the scheduled and due review-box strips.",
         "section": "colors"
       },
       {
         "name": "The Size-and-Weight Rule",
-        "body": "Hierarchy is size and weight (400, 500, 600) plus rules. No text is uppercased or letter-spaced anywhere; tracking moves only on the page title (-0.01em) and the wordmark (0.01em). No kickers or eyebrows above titles.",
+        "body": "Hierarchy is size and weight (300 for figures and statements, then 400, 500, 600) plus rules. No text is uppercased or letter-spaced anywhere; tracking moves only on the page title, figures and statements (-0.01em) and the wordmark (0.01em). No kickers or eyebrows above titles.",
         "section": "typography"
       },
       {
@@ -1548,7 +1580,7 @@
       },
       {
         "name": "The Overlays-Only Rule",
-        "body": "A shadow means \"this floats above the page\". Tables, blocks, choice groups, option rows and every other piece of content sit flat on the ground; if it does not float, it does not cast.",
+        "body": "A shadow means \"this floats above the page\". Tables, blocks, bands, choice groups, option rows and every other piece of content sit flat on the ground; if it does not float, it does not cast.",
         "section": "elevation"
       },
       {
@@ -1558,9 +1590,10 @@
       }
     ],
     "dos": [
-      "Do put every route inside the 72rem frame under the teal title bar, open with one `page-title`, and head each section with a `section-title` and its 2px ink rule.",
-      "Do give each screen one primary (Deck Teal) button for the next step; make every other action secondary or ghost.",
-      "Do keep Metropolis Orange for progress and the current item, and set orange text in Burnt Orange Ink.",
+      "Do put every route inside the 72rem frame under the teal title bar (the Dashboard band holds the same frame inside it), open with one `page-title` (the Dashboard's is visually hidden; its band opens the page), and head each section with a `section-title` and its 2px ink rule.",
+      "Do give each screen one primary (Deck Teal) button for the next step, or one inverse button on a band; make every other action secondary or ghost (outline inverse on a band).",
+      "Do carry a page's overview on a band: the title bar's ground below the bar, Title-bar White and Title-bar Mist for text and rules, inverse buttons for actions.",
+      "Do keep Metropolis Orange for progress and the current item, and set orange text in Burnt Orange Ink (`--band-accent` on a band).",
       "Do set counts, scores, ratios and dates in tabular figures, right-aligned in tables and facts lists.",
       "Do put explanations and feedback in titled blocks, and show grading as a tint mixed into the surface plus inked text.",
       "Do style through the semantic tokens (`bg-shell`, `text-ink-soft`, `border-line-strong`) so all three themes follow; build tints with `color-mix()` in CSS, because the token classes take no `/opacity` modifier.",
@@ -1574,6 +1607,7 @@
       "Don't build stat tiles, icon tiles or stacked shadowed cards; numbers belong in data tables and facts lists.",
       "Don't add a coloured side stripe to notices or blocks; state is a tint plus inked text.",
       "Don't fill buttons, headings or surfaces with orange, or set text in the base accent.",
+      "Don't put primary, secondary or ghost buttons, or Deck Ink and Soft Slate text, on a band; they are drawn for the ground.",
       "Don't uppercase or letter-space labels, or put kickers or eyebrows above titles.",
       "Don't round anything past 4px or draw pills.",
       "Don't hard-code hex in components; every colour comes from a `--color-*` token so the three themes stay whole."
