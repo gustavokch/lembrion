@@ -4,8 +4,8 @@
   "description": "AI study sessions built on learning science. Free, no account required.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fafafa",
-  "theme_color": "#23373b",
+  "background_color": "#121212",
+  "theme_color": "#0c0c0c",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
@@ -13,7 +13,7 @@
   "icons": [
     {
       "src": "/favicon.ico",
-      "sizes": "16x16 32x32",
+      "sizes": "16x16 32x32 48x48",
       "type": "image/x-icon"
     },
     {

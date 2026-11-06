@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { formatMessage } from '../core/services/i18n';
 import { useLanguage } from '../hooks/useLanguage';
 import { Difficulty, LearningSettings, StudySession } from '../types';
+import { sessionCallNumber, topicCode } from './callNumber';
 import { SessionEditUpdates } from './pages/sessionEdits';
 import { DIFFICULTIES, difficultyLabels, normalizeLearningSettings } from './pages/StudyPage/learningTechniques';
 
@@ -220,22 +221,25 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
         aria-modal="true"
         aria-labelledby="edit-session-title"
         tabIndex={-1}
-        className="flex h-full w-full flex-col bg-surface outline-none overlay-shadow sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded"
+        className="flex h-full w-full flex-col bg-surface outline-none overlay-shadow sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-md sm:border sm:border-line"
       >
-        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-line py-2 pl-4 pr-2 sm:pl-6 sm:pr-3">
-          <h2 id="edit-session-title" className="text-lg font-medium text-ink">
-            {t.editSession}
-          </h2>
-          <button type="button" onClick={handleCancel} className="btn btn-ghost btn-icon" aria-label={t.editClose}>
+        <div className="panel-head shrink-0 flex-nowrap py-2 pr-2 sm:pr-3">
+          <div className="flex min-w-0 items-baseline gap-3">
+            <h2 id="edit-session-title" className="text-lg font-bold leading-tight text-ink">
+              {t.editSession}
+            </h2>
+            <span className="callno">{sessionCallNumber(contexts)}</span>
+          </div>
+          <button type="button" onClick={handleCancel} className="btn btn-ghost btn-icon shrink-0" aria-label={t.editClose}>
             <X aria-hidden="true" />
           </button>
         </div>
 
-        <div className="flex-1 space-y-8 overflow-y-auto px-4 py-6 sm:px-6">
+        <div className="flex-1 space-y-7 overflow-y-auto px-4 py-5 sm:px-5">
           {/* Topics */}
           <section aria-labelledby="edit-topics-title">
-            <h3 id="edit-topics-title" className="section-title">{t.editTopics}</h3>
-            <div className="mt-3 flex gap-2">
+            <h3 id="edit-topics-title" className="label">{t.editTopics}</h3>
+            <div className="flex gap-2">
               <label htmlFor="edit-new-topic" className="sr-only">{t.editNewTopic}</label>
               <input
                 id="edit-new-topic"
@@ -259,17 +263,18 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               </button>
             </div>
             {contexts.length > 0 ? (
-              <ul className="mt-3 flex flex-wrap gap-2" aria-label={formatMessage(contexts.length === 1 ? t.contextCountOne : t.contextCountOther, { count: contexts.length })}>
+              <ul className="mt-3 divide-y divide-line rounded-md border border-line" aria-label={formatMessage(contexts.length === 1 ? t.contextCountOne : t.contextCountOther, { count: contexts.length })}>
                 {contexts.map((context, index) => (
-                  <li key={index} className="tag max-w-full py-0 pl-2.5 pr-0 text-sm">
-                    <span className="truncate">{context}</span>
+                  <li key={index} className="flex items-center gap-3 py-0.5 pl-3 pr-0.5">
+                    <span className="callno w-10 shrink-0">{topicCode(context)}</span>
+                    <span className="min-w-0 flex-1 break-words text-[0.9375rem] text-ink">{context}</span>
                     <button
                       type="button"
                       onClick={() => removeContext(index)}
-                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm hover:text-ink"
+                      className="btn btn-ghost btn-icon shrink-0"
                       aria-label={formatMessage(t.editRemoveItem, { item: context })}
                     >
-                      <X className="h-3.5 w-3.5" aria-hidden="true" />
+                      <X aria-hidden="true" />
                     </button>
                   </li>
                 ))}
@@ -281,9 +286,10 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
 
           {/* Instructions */}
           <section aria-labelledby="edit-instructions-title">
-            <h3 id="edit-instructions-title" className="section-title">{t.editInstructions}</h3>
-            <p className="hint">{t.editOptional}</p>
-            <div className="mt-3 flex gap-2">
+            <h3 id="edit-instructions-title" className="label">
+              {t.editInstructions} <span className="font-normal text-ink-muted">· {t.editOptional}</span>
+            </h3>
+            <div className="flex gap-2">
               <label htmlFor="edit-new-instruction" className="sr-only">{t.editNewInstruction}</label>
               <input
                 id="edit-new-instruction"
@@ -305,9 +311,9 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
               </button>
             </div>
             {instructions.length > 0 && (
-              <ul className="mt-3 divide-y divide-line border-y border-line" aria-label={formatMessage(instructions.length === 1 ? t.instructionCountOne : t.instructionCountOther, { count: instructions.length })}>
+              <ul className="mt-3 divide-y divide-line rounded-md border border-line" aria-label={formatMessage(instructions.length === 1 ? t.instructionCountOne : t.instructionCountOther, { count: instructions.length })}>
                 {instructions.map((instruction, index) => (
-                  <li key={index} className="flex items-center justify-between gap-3 py-1 pl-1 text-[0.9375rem] text-ink">
+                  <li key={index} className="flex items-center justify-between gap-3 py-0.5 pl-3 pr-0.5 text-[0.9375rem] text-ink">
                     <span className="min-w-0 break-words">{instruction}</span>
                     <button
                       type="button"
@@ -325,8 +331,8 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
 
           {/* Question type */}
           <section aria-labelledby="edit-question-type-title">
-            <h3 id="edit-question-type-title" className="section-title">{t.questionType}</h3>
-            <div role="radiogroup" aria-labelledby="edit-question-type-title" className="segmented mt-3 flex w-full">
+            <h3 id="edit-question-type-title" className="label">{t.questionType}</h3>
+            <div role="radiogroup" aria-labelledby="edit-question-type-title" className="segmented flex w-full">
               {questionTypes.map(({ value, label }) => (
                 <button
                   key={value}
@@ -344,8 +350,8 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
 
           {/* Difficulty */}
           <section aria-labelledby="edit-difficulty-title">
-            <h3 id="edit-difficulty-title" className="section-title">{t.difficulty}</h3>
-            <div role="radiogroup" aria-labelledby="edit-difficulty-title" className="segmented mt-3 flex w-full">
+            <h3 id="edit-difficulty-title" className="label">{t.difficulty}</h3>
+            <div role="radiogroup" aria-labelledby="edit-difficulty-title" className="segmented flex w-full">
               {DIFFICULTIES.map(level => (
                 <button
                   key={level}
@@ -363,8 +369,8 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
 
           {/* Learning techniques */}
           <section aria-labelledby="edit-learning-title">
-            <h3 id="edit-learning-title" className="section-title">{t.learningTechniques}</h3>
-            <div className="choice-group mt-3">
+            <h3 id="edit-learning-title" className="label">{t.learningTechniques}</h3>
+            <div className="choice-group">
               {learningTechniques.map(({ key, label, desc }) => (
                 <label key={key} className="choice">
                   <input
@@ -374,7 +380,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                     className="mt-1 h-4 w-4 shrink-0"
                   />
                   <span className="min-w-0">
-                    <span className="block font-medium text-ink">{label}</span>
+                    <span className="block font-semibold text-ink">{label}</span>
                     <span className="mt-0.5 block text-sm text-ink-soft">{desc}</span>
                   </span>
                 </label>
@@ -384,8 +390,8 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
 
           {/* Display */}
           <section aria-labelledby="edit-display-title">
-            <h3 id="edit-display-title" className="section-title">{t.editDisplay}</h3>
-            <div className="choice-group mt-3">
+            <h3 id="edit-display-title" className="label">{t.editDisplay}</h3>
+            <div className="choice-group">
               <label className="choice">
                 <input
                   type="checkbox"
@@ -394,7 +400,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                   className="mt-1 h-4 w-4 shrink-0"
                 />
                 <span className="min-w-0">
-                  <span className="block font-medium text-ink">{t.enableLatex}</span>
+                  <span className="block font-semibold text-ink">{t.enableLatex}</span>
                   <span className="mt-0.5 block text-sm text-ink-soft">{t.enableLatexDesc}</span>
                 </span>
               </label>
@@ -406,7 +412,7 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
                   className="mt-1 h-4 w-4 shrink-0"
                 />
                 <span className="min-w-0">
-                  <span className="block font-medium text-ink">{t.enableCodeVisualization}</span>
+                  <span className="block font-semibold text-ink">{t.enableCodeVisualization}</span>
                   <span className="mt-0.5 block text-sm text-ink-soft">{t.enableCodeVisualizationDesc}</span>
                 </span>
               </label>
@@ -414,21 +420,21 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
           </section>
 
           {/* Change history */}
-          <section aria-labelledby="edit-history-title">
-            <h3 id="edit-history-title" className="section-title">{t.editTabHistoryDesc}</h3>
-            {!hasHistory && <p className="mt-3 text-sm text-ink-soft">{t.noChangesYetDesc}</p>}
+          <section aria-labelledby="edit-history-title" className="border-t border-line pt-6">
+            <h3 id="edit-history-title" className="label">{t.editTabHistoryDesc}</h3>
+            {!hasHistory && <p className="text-sm text-ink-muted">{t.noChangesYetDesc}</p>}
 
             {session.contextsHistory && session.contextsHistory.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold text-ink">{t.contextsHistory}</h4>
+              <div className="mt-3">
+                <h4 className="caps-label">{t.contextsHistory}</h4>
                 <ul className="mt-2 divide-y divide-line border-y border-line text-sm">
                   {session.contextsHistory.map(entry => (
                     <li key={entry.id} className="grid gap-1 py-2.5 sm:grid-cols-[11rem_1fr] sm:gap-4">
                       <span className="text-ink-muted tabular">{formatDate(entry.changedAt)}</span>
                       <span className="min-w-0 break-words text-ink">
-                        <span className="text-ink-soft">{t.previousLabel}</span> {entry.previousContexts.join(', ')}
+                        <span className="text-ink-muted">{t.previousLabel}</span> {entry.previousContexts.join(', ')}
                         <br />
-                        <span className="text-ink-soft">{t.newLabel}</span> {entry.newContexts.join(', ')}
+                        <span className="text-ink-muted">{t.newLabel}</span> {entry.newContexts.join(', ')}
                       </span>
                     </li>
                   ))}
@@ -437,16 +443,14 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
             )}
 
             {session.instructionHistory && session.instructionHistory.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold text-ink">{t.instructionsHistory}</h4>
+              <div className="mt-5">
+                <h4 className="caps-label">{t.instructionsHistory}</h4>
                 <ul className="mt-2 divide-y divide-line border-y border-line text-sm">
                   {session.instructionHistory.map(entry => (
                     <li key={entry.id} className="grid gap-1 py-2.5 sm:grid-cols-[11rem_1fr] sm:gap-4">
                       <span className="text-ink-muted tabular">{formatDate(entry.changedAt)}</span>
                       <span className="min-w-0 break-words text-ink">
-                        <span className={`tag mr-2 ${entry.action === 'added' ? 'tag-success' : 'tag-error'}`}>
-                          {entry.action === 'added' ? t.added : t.removed}
-                        </span>
+                        <span className="tag mr-2">{entry.action === 'added' ? t.added : t.removed}</span>
                         {entry.instruction}
                       </span>
                     </li>
@@ -456,8 +460,8 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
             )}
 
             {session.learningSettingsHistory && session.learningSettingsHistory.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold text-ink">{t.learningTechniquesHistory}</h4>
+              <div className="mt-5">
+                <h4 className="caps-label">{t.learningTechniquesHistory}</h4>
                 <ul className="mt-2 divide-y divide-line border-y border-line text-sm">
                   {session.learningSettingsHistory.map(entry => (
                     <li key={entry.id} className="grid gap-1 py-2.5 sm:grid-cols-[11rem_1fr] sm:gap-4">
@@ -471,8 +475,8 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
           </section>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-line px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:px-6">
-          {hasChanges && <p className="mr-auto text-sm text-ink-soft" aria-live="polite">{t.unsavedChanges}</p>}
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-line px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:px-5">
+          {hasChanges && <p className="mr-auto text-sm text-ink-muted" aria-live="polite">{t.unsavedChanges}</p>}
           <button type="button" onClick={handleCancel} className="btn btn-secondary">
             {t.cancel}
           </button>

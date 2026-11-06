@@ -1,54 +1,115 @@
 <!doctype html>
 <html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@800&display=block" rel="stylesheet">
 <style>
-@font-face{font-family:'Fira Sans';font-weight:500;src:url('/node_modules/@fontsource/fira-sans/files/fira-sans-latin-500-normal.woff2') format('woff2')}
-html,body{margin:0;padding:0;background:transparent}
+html,body{margin:0;padding:0;background:#4b33b5;overflow:hidden}
 svg{display:block}
 </style></head><body>
 <script>
+// The Lembrion mark: a white Libre Franklin 800 "L" inside a white date-stamp
+// frame on stamp violet. ?size=N renders at N px; ?mask=1 shrinks the mark into
+// the maskable icon's 80% safe circle on full-bleed violet.
 const p = new URLSearchParams(location.search);
 const size = Number(p.get('size') || 512);
 const mask = p.get('mask') === '1';
-// Maskable icons keep the mark inside the 80% safe circle.
-const scale = mask ? 0.72 : 1;
-const small = size <= 48;
+const VIOLET = '#4b33b5';
+const WHITE = '#ffffff';
 const ns = 'http://www.w3.org/2000/svg';
 
-document.fonts.load("500 100px 'Fira Sans'").then(() => {
+// Proportions on a 512 canvas.
+const FRAME = 340;   // frame outer side
+const STROKE = 22;   // frame line, the stamp's border weight relative to its box
+const RADIUS = 8;    // stamp corner, nearly square
+const CAP = 186;     // height of the L
+const NUDGE = 0.04;  // optical shift of the L to the right, as a share of its width
+
+// Favicon sizes are drawn on the pixel grid with hand-picked frame lines.
+const HINTED = { 16: { frame: 14, stroke: 1 }, 32: { frame: 26, stroke: 2 }, 48: { frame: 38, stroke: 2 } };
+
+function measureL() {
+  const em = 1000;
+  const canvas = document.createElement('canvas');
+  canvas.width = 1400;
+  canvas.height = 1400;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.font = `800 ${em}px 'Libre Franklin'`;
+  const m = ctx.measureText('L');
+  const originX = 200;
+  const baseline = 1200;
+  ctx.fillText('L', originX, baseline);
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  const ink = (x, y) => data[(y * canvas.width + x) * 4 + 3] > 127;
+  const cap = m.actualBoundingBoxAscent;
+  const left = originX - m.actualBoundingBoxLeft;
+  const width = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+  const row = Math.round(baseline - cap / 2);
+  let x = Math.floor(left);
+  while (!ink(x, row)) x++;
+  const stemStart = x;
+  while (ink(x, row)) x++;
+  const col = Math.round(left + width * 0.9);
+  let y = baseline + 20;
+  while (!ink(col, y)) y--;
+  const footEnd = y;
+  while (ink(col, y)) y--;
+  return {
+    em,
+    cap,
+    bearing: m.actualBoundingBoxLeft,
+    width: width / cap,
+    stem: (x - stemStart) / cap,
+    foot: (footEnd - y) / cap,
+  };
+}
+
+function framePath(x, y, side, stroke, radius) {
+  const r = Math.min(radius, side / 2);
+  const outer = r > 0
+    ? `M${x + r} ${y}H${x + side - r}A${r} ${r} 0 0 1 ${x + side} ${y + r}V${y + side - r}A${r} ${r} 0 0 1 ${x + side - r} ${y + side}H${x + r}A${r} ${r} 0 0 1 ${x} ${y + side - r}V${y + r}A${r} ${r} 0 0 1 ${x + r} ${y}Z`
+    : `M${x} ${y}H${x + side}V${y + side}H${x}Z`;
+  const i = side - stroke * 2;
+  const inner = `M${x + stroke} ${y + stroke}V${y + stroke + i}H${x + stroke + i}V${y + stroke}Z`;
+  return outer + inner;
+}
+
+document.fonts.load("800 100px 'Libre Franklin'").then(() => {
+  const L = measureL();
   const svg = document.createElementNS(ns, 'svg');
   svg.setAttribute('width', size);
   svg.setAttribute('height', size);
-  svg.setAttribute('viewBox', '0 0 512 512');
-  svg.innerHTML = '<rect width="512" height="512" fill="#23373b"/>';
-  const fontSize = (small ? 380 : 330) * scale;
-  const text = document.createElementNS(ns, 'text');
-  text.setAttribute('font-family', 'Fira Sans');
-  text.setAttribute('font-weight', '500');
-  text.setAttribute('font-size', String(fontSize));
-  text.setAttribute('fill', '#ffffff');
-  text.textContent = 'L';
-  svg.appendChild(text);
-  document.body.appendChild(svg);
+  svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+  let body = `<rect width="${size}" height="${size}" fill="${VIOLET}"/>`;
 
-  // Measure the glyph's ink so the mark centres optically and the rule spans stem to foot.
-  const ctx = document.createElement('canvas').getContext('2d');
-  ctx.font = `500 ${fontSize}px 'Fira Sans'`;
-  const m = ctx.measureText('L');
-  const inkW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
-  const cap = m.actualBoundingBoxAscent;
-  const gap = fontSize * (small ? 0.12 : 0.1);
-  const ruleH = fontSize * (small ? 0.13 : 0.08);
-  const baseline = 256 - (cap + gap + ruleH) / 2 + cap;
-  const inkLeft = 256 - inkW / 2;
-  text.setAttribute('x', String(inkLeft + m.actualBoundingBoxLeft));
-  text.setAttribute('y', String(baseline));
-  const rule = document.createElementNS(ns, 'rect');
-  rule.setAttribute('x', String(inkLeft));
-  rule.setAttribute('y', String(baseline + gap));
-  rule.setAttribute('width', String(inkW));
-  rule.setAttribute('height', String(ruleH));
-  rule.setAttribute('fill', '#eb811b');
-  svg.appendChild(rule);
+  const hint = HINTED[size];
+  const k = (size / 512) * (mask ? 0.8 : 1);
+  const frame = hint ? hint.frame : Math.round(FRAME * k / 2) * 2 + (size % 2);
+  const stroke = hint ? hint.stroke : Math.max(1, Math.round(STROKE * k));
+  const radius = hint ? 0 : RADIUS * k;
+  const fx = (size - frame) / 2;
+  body += `<path fill="${WHITE}" fill-rule="evenodd" d="${framePath(fx, fx, frame, stroke, radius)}"/>`;
+
+  const inner = frame - stroke * 2;
+  if (size < 100) {
+    // Small icons draw the L as pixel-snapped bars with the glyph's measured proportions.
+    const cap = Math.round(inner * CAP / (FRAME - STROKE * 2));
+    const width = Math.round(cap * L.width);
+    const stem = Math.max(1, Math.round(cap * L.stem));
+    const foot = Math.max(1, Math.round(cap * L.foot));
+    const x = fx + stroke + Math.ceil((inner - width) / 2);
+    const y = fx + stroke + Math.floor((inner - cap) / 2);
+    body += `<rect x="${x}" y="${y}" width="${stem}" height="${cap}" fill="${WHITE}"/>`;
+    body += `<rect x="${x}" y="${y + cap - foot}" width="${width}" height="${foot}" fill="${WHITE}"/>`;
+  } else {
+    const cap = CAP * k;
+    const fontSize = cap * L.em / L.cap;
+    const width = cap * L.width;
+    const left = Math.round(size / 2 - width / 2 + width * NUDGE);
+    const baseline = Math.round(size / 2 + cap / 2);
+    body += `<text x="${left + L.bearing * fontSize / L.em}" y="${baseline}" font-family="Libre Franklin" font-weight="800" font-size="${fontSize}" fill="${WHITE}">L</text>`;
+  }
+  svg.innerHTML = body;
+  document.body.appendChild(svg);
   document.body.setAttribute('data-ready', '1');
 });
 </script>

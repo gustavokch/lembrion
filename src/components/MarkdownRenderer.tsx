@@ -184,7 +184,7 @@ function CodeBlock({ code, tag }: { code: string; tag: string }) {
   const copyLabel = copied ? t.markdownCodeCopied : t.markdownCopyCode;
 
   return (
-    <figure className="my-3 overflow-hidden rounded-sm bg-sunken first:mt-0 last:mb-0">
+    <figure className="my-3 overflow-hidden rounded border border-line bg-sunken first:mt-0 last:mb-0">
       <figcaption className="flex items-center justify-between gap-2 border-b border-line pl-4 text-xs text-ink-muted">
         <span className="font-mono">{tag}</span>
         <button
@@ -223,7 +223,7 @@ const COMPONENTS: Components = {
     const codeNode = node?.children[0];
     if (!codeNode || codeNode.type !== 'element' || codeNode.tagName !== 'code') {
       return (
-        <pre className="my-3 overflow-x-auto rounded-sm bg-sunken px-4 py-3 font-mono text-sm first:mt-0 last:mb-0">
+        <pre className="my-3 overflow-x-auto rounded border border-line bg-sunken px-4 py-3 font-mono text-sm first:mt-0 last:mb-0">
           {children}
         </pre>
       );
@@ -247,9 +247,12 @@ const COMPONENTS: Components = {
     return <CodeBlock code={code} tag={tag} />;
   },
 
+  // A tint of the text colour, so inline code stays visible on panels, insets and selected options alike.
   code({ children }) {
     return (
-      <code className="break-words rounded-sm bg-sunken px-1 py-0.5 font-mono text-[0.9em]">{children}</code>
+      <code className="break-words rounded-sm bg-[color-mix(in_srgb,var(--color-ink)_9%,transparent)] px-1 py-0.5 font-mono text-[0.9em]">
+        {children}
+      </code>
     );
   },
 
@@ -259,7 +262,12 @@ const COMPONENTS: Components = {
 
   a({ href, children }) {
     return (
-      <a href={href} className="text-ink underline hover:text-ink-soft" target="_blank" rel="noopener noreferrer">
+      <a
+        href={href}
+        className="font-medium text-accent-ink underline hover:decoration-2"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {children}
       </a>
     );
@@ -275,18 +283,18 @@ const COMPONENTS: Components = {
 
   blockquote({ children }) {
     return (
-      <blockquote className="my-3 border-l border-line-strong pl-4 text-ink-soft first:mt-0 last:mb-0">
+      <blockquote className="my-3 border-l-2 border-line-strong pl-4 text-ink-soft first:mt-0 last:mb-0">
         {children}
       </blockquote>
     );
   },
 
   h1({ children }) {
-    return <h1 className="mb-2 mt-5 text-xl font-medium first:mt-0">{children}</h1>;
+    return <h1 className="mb-2 mt-5 text-xl font-bold first:mt-0">{children}</h1>;
   },
 
   h2({ children }) {
-    return <h2 className="mb-2 mt-5 text-lg font-medium first:mt-0">{children}</h2>;
+    return <h2 className="mb-2 mt-5 text-lg font-semibold first:mt-0">{children}</h2>;
   },
 
   h3({ children }) {
@@ -294,7 +302,7 @@ const COMPONENTS: Components = {
   },
 
   h4({ children }) {
-    return <h4 className="mb-1 mt-4 text-base font-medium first:mt-0">{children}</h4>;
+    return <h4 className="mb-1 mt-4 text-[0.9375rem] font-semibold first:mt-0">{children}</h4>;
   },
 
   table({ children }) {

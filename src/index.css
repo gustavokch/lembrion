@@ -3,46 +3,66 @@
 @tailwind utilities;
 
 /*
- * Lembrion design system. Flat Metropolis grammar: a dark teal title bar,
- * one orange progress rule, titled blocks, tabular figures, no shadows on
- * content. Colour tokens come from `useTheme()`; these defaults are the light
- * theme so the first paint matches before React mounts.
+ * Lembrion design system: a circulation desk inside a standard study-app shell.
+ * A left sidebar and calm bordered panels on a neutral ground; Libre Franklin
+ * for the interface, Archivo Narrow caps for date stamps, call numbers and
+ * figures. Stamp violet marks only what is due or actionable; slip red is the
+ * due slip's printed rule and the overdue stamp. Colour tokens come from
+ * `useTheme()`; these defaults are the light theme, and the boot override below
+ * paints the dark default before React mounts.
  */
 :root {
-  --color-shell: #23373b;
-  --color-shellInk: #ffffff;
-  --color-shellMuted: #b9c6c8;
-  --color-ground: #fafafa;
+  --color-shell: #ffffff;
+  --color-shellInk: #1c1f2a;
+  --color-shellMuted: #5d6170;
+  --color-ground: #f7f7f8;
   --color-surface: #ffffff;
-  --color-sunken: #eef1f1;
-  --color-ink: #23373b;
-  --color-inkSoft: #45585c;
-  --color-inkMuted: #5b6c70;
-  --color-line: #dfe5e5;
-  --color-lineStrong: #869699;
-  --color-primary: #23373b;
-  --color-primaryHover: #30494e;
+  --color-sunken: #f1f1f4;
+  --color-ink: #1c1f2a;
+  --color-inkSoft: #3d4150;
+  --color-inkMuted: #5d6170;
+  --color-line: #e3e3e8;
+  --color-lineStrong: #8b8e9e;
+  --color-primary: #4b33b5;
+  --color-primaryHover: #3e289c;
   --color-onPrimary: #ffffff;
-  --color-accent: #eb811b;
-  --color-accentInk: #a8560a;
-  --color-success: #14b03d;
-  --color-successInk: #0d7a2a;
-  --color-error: #d13a2e;
-  --color-errorInk: #b3261e;
-  --color-warning: #e0a526;
+  --color-accent: #4b33b5;
+  --color-accentInk: #4b33b5;
+  --color-success: #1f8a4c;
+  --color-successInk: #17703d;
+  --color-error: #c8323a;
+  --color-errorInk: #b8262f;
+  --color-warning: #c98a0b;
   --color-warningInk: #8a5a00;
-  --color-focus: #23373b;
+  --color-focus: #4b33b5;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Phones and tablets have a top bar; from 1024px the sidebar replaces it. */
   --bar-height: 3.5rem;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --bar-height: 0px;
+  }
 }
 
 /* Dark first paint (set by the boot script in index.html) until useTheme() runs. */
 html[data-boot='dark'] {
-  --color-shell: #0f0f0f;
-  --color-ground: #161616;
-  --color-ink: #ededed;
-  --color-line: #2e2e2e;
+  --color-shell: #0c0c0c;
+  --color-shellInk: #ececec;
+  --color-shellMuted: #a3a3a3;
+  --color-ground: #121212;
+  --color-surface: #181818;
+  --color-sunken: #202020;
+  --color-ink: #ececec;
+  --color-inkSoft: #c8c8c8;
+  --color-inkMuted: #a3a3a3;
+  --color-line: #2a2a2a;
+  --color-lineStrong: #6b6b6b;
+  --color-primary: #5b43d6;
+  --color-accent: #9d8cff;
+  --color-accentInk: #9d8cff;
   color-scheme: dark;
 }
 
@@ -67,7 +87,7 @@ html[data-boot='dark'] {
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 32%, transparent);
     color: var(--color-ink);
   }
 
@@ -99,135 +119,206 @@ html[data-boot='dark'] {
 }
 
 @layer components {
-  /* Page frame: every route's content sits in one measure-aware column. */
+  /* Page frame: the content column beside the sidebar. */
   .page {
-    @apply mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pt-8 lg:px-10;
+    @apply mx-auto w-full max-w-[76rem] px-4 pb-16 pt-6 sm:px-6 sm:pt-8 lg:px-8;
   }
-
+  .page-header {
+    @apply flex flex-wrap items-center justify-between gap-x-6 gap-y-3;
+  }
   .page-title {
-    @apply text-2xl font-medium leading-tight text-ink sm:text-[1.75rem];
-    letter-spacing: -0.01em;
+    @apply text-[1.625rem] font-bold leading-tight text-ink sm:text-[1.75rem];
+    letter-spacing: -0.015em;
+  }
+  .page-lede {
+    @apply text-[0.9375rem] text-ink-muted;
   }
 
-  .page-lede {
-    @apply mt-1 text-base text-ink-soft;
+  /* Shell: the sidebar from 1024px, a top bar below it. */
+  .wordmark {
+    @apply text-[1.375rem] font-extrabold leading-none text-shell-ink no-underline;
+    letter-spacing: -0.02em;
   }
-  /* Title bar. Focus rings turn orange against the teal. */
-  .on-shell {
-    --color-focus: var(--color-accent);
+  .sidebar {
+    @apply sticky top-0 hidden h-screen flex-col border-r border-line bg-shell px-3 pb-4 pt-6 lg:flex;
   }
-  .shell-link {
-    @apply flex items-center text-[0.9375rem] text-shell-muted no-underline;
-    box-shadow: inset 0 -3px 0 transparent;
-    transition: color 120ms ease-out, box-shadow 160ms var(--ease-out);
+  .topbar {
+    @apply flex h-14 items-center gap-2 border-b border-line bg-shell px-4;
   }
-  .shell-link:hover {
+  /* Navigation item; the current one is a filled violet spine label. */
+  .nav-item {
+    @apply flex min-h-10 items-center gap-2.5 rounded px-2.5 py-2 text-[0.9375rem] font-medium text-shell-muted no-underline;
+    transition: background-color 120ms ease-out, color 120ms ease-out;
+  }
+  .nav-item svg {
+    @apply h-[18px] w-[18px] shrink-0;
+    stroke-width: 1.75;
+  }
+  .nav-item:hover {
     @apply text-shell-ink;
+    background: color-mix(in srgb, var(--color-shellInk) 7%, transparent);
   }
-  .shell-link.is-active {
-    @apply text-shell-ink;
-    box-shadow: inset 0 -3px 0 var(--color-accent);
+  .nav-item.is-active {
+    background: var(--color-primary);
+    color: var(--color-onPrimary);
   }
-  .shell-icon-button {
+  .icon-button {
     @apply inline-flex h-10 w-10 items-center justify-center rounded text-shell-muted;
-    transition: color 120ms ease-out, background-color 120ms ease-out;
+    transition: background-color 120ms ease-out, color 120ms ease-out;
   }
-  .shell-icon-button:hover,
-  .shell-icon-button[aria-expanded='true'] {
+  .icon-button:hover,
+  .icon-button[aria-expanded='true'] {
     @apply text-shell-ink;
-    background: rgb(255 255 255 / 0.08);
+    background: color-mix(in srgb, var(--color-shellInk) 7%, transparent);
   }
-  .shell-icon-button svg {
+  .icon-button svg {
     @apply h-5 w-5;
   }
-  .shell-menu-link {
-    @apply block rounded px-3 py-3 text-base text-shell-muted no-underline;
+
+  /* Panels: 1px border, 6px corners, no shadow. */
+  .panel {
+    @apply rounded-md border border-line bg-surface;
   }
-  .shell-menu-link:hover {
-    @apply text-shell-ink;
-    background: rgb(255 255 255 / 0.06);
+  .panel-head {
+    @apply flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-line px-4 py-2.5 sm:px-5;
   }
-  .shell-menu-link.is-active {
-    @apply font-medium text-shell-ink;
-    background: rgb(255 255 255 / 0.1);
+  .panel-title {
+    @apply text-[0.9375rem] font-semibold text-ink;
+  }
+  .panel-meta {
+    @apply text-sm text-ink-muted;
+  }
+  .panel-body {
+    @apply px-4 py-4 sm:px-5;
   }
 
-  /* Section heading with a full-width 2px rule below, Metropolis style. */
+  /* Heading for a group outside a panel. */
   .section-title {
-    @apply border-b-2 border-ink pb-1.5 text-[0.9375rem] font-semibold text-ink;
-  }
-
-  /*
-   * Band: the Metropolis "standout" frame. The title bar's ground carried
-   * below it to hold a page's overview and next action (Dashboard, study
-   * setup summary). Text, rules, tables, facts and focus switch to the shell
-   * palette inside it.
-   */
-  .band {
-    @apply bg-shell text-shell-ink;
-    --color-focus: var(--color-accent);
-    --band-rule: color-mix(in srgb, var(--color-shellInk) 16%, transparent);
-    --band-accent: color-mix(in srgb, var(--color-accent) 75%, var(--color-shellInk));
-  }
-  .band .section-title {
-    border-color: var(--color-shellInk);
-    color: var(--color-shellInk);
-  }
-  .band .data-table th {
-    border-color: color-mix(in srgb, var(--color-shellInk) 55%, transparent);
-    color: var(--color-shellMuted);
-  }
-  .band .data-table td,
-  .band .data-table tbody th {
-    border-color: var(--band-rule);
-    color: var(--color-shellInk);
-  }
-  .band .facts dt,
-  .band .hint {
-    color: var(--color-shellMuted);
-  }
-  .band .facts dd {
-    color: var(--color-shellInk);
-  }
-  .band-rows > * + * {
-    border-top: 1px solid var(--band-rule);
-  }
-  /* Large figures and statements: Fira Sans Light, the Metropolis title weight. */
-  .figure {
-    @apply text-[1.75rem] font-light leading-none;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.01em;
-  }
-  .statement {
-    @apply text-2xl font-light leading-tight sm:text-[1.75rem];
-    letter-spacing: -0.01em;
-  }
-  /* Review box strips (Dashboard band): track, interval fill, due fill. */
-  .box-track {
-    @apply relative h-1;
-    background: var(--band-rule, var(--color-line));
-  }
-  .box-fill {
-    @apply absolute inset-y-0;
-    background: color-mix(in srgb, var(--color-shellMuted) 45%, transparent);
-  }
-  .box-fill[data-state='scheduled'] {
-    background: var(--color-shellInk);
-  }
-  .box-fill[data-state='due'] {
-    background: var(--color-accent);
-  }
-  .text-band-accent {
-    color: var(--band-accent);
+    @apply border-b border-line pb-2 text-[0.9375rem] font-semibold text-ink;
   }
 
   .tabular {
     font-variant-numeric: tabular-nums;
   }
+  /* Small uppercase label: table headers, field groups. */
+  .caps-label {
+    @apply text-[0.6875rem] font-semibold uppercase leading-tight text-ink-muted;
+    letter-spacing: 0.08em;
+  }
+  /* Call number: topic code and box, like a spine label. */
+  .callno {
+    @apply whitespace-nowrap font-narrow text-[0.8125rem] font-semibold uppercase text-ink-soft;
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Figures: progress numbers in the narrow face. */
+  .figure {
+    @apply font-narrow text-[1.75rem] font-bold leading-none text-ink;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * Date stamp: the signature. A rubber-stamp date in narrow caps inside a
+   * 1.5px frame, violet when due, red when overdue, faded when not yet due.
+   */
+  .stamp {
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-sm px-2 py-[3px] font-narrow text-xs font-semibold uppercase leading-none;
+    border: 1.5px solid currentColor;
+    color: var(--color-accentInk);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stamp-overdue {
+    color: var(--color-errorInk);
+  }
+  .stamp-later {
+    color: color-mix(in srgb, var(--color-accentInk) 62%, var(--color-inkMuted));
+    border-color: color-mix(in srgb, var(--color-accentInk) 32%, var(--color-line));
+  }
+  .stamp-quiet {
+    color: var(--color-inkMuted);
+    border-color: var(--color-line);
+  }
+  /* The return stamp after grading lands once. */
+  .stamp-land {
+    animation: stamp-land 260ms var(--ease-out) both;
+  }
+
+  /* Due slip: the review queue with the slip's red printed header. */
+  .slip-head {
+    border-bottom: 2px solid var(--color-errorInk);
+  }
+  .slip {
+    @apply w-full border-collapse text-[0.9375rem];
+  }
+  .slip th {
+    @apply py-2 pr-4 text-left text-[0.6875rem] font-semibold uppercase leading-tight;
+    color: var(--color-errorInk);
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--color-errorInk);
+  }
+  .slip td {
+    @apply py-2 pr-4 align-middle text-ink;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-errorInk) 20%, var(--color-line));
+  }
+  .slip th:first-child,
+  .slip td:first-child {
+    @apply pl-4 sm:pl-5;
+  }
+  .slip th:last-child,
+  .slip td:last-child {
+    @apply pr-4 sm:pr-5;
+  }
+  .slip tr:last-child td {
+    border-bottom: 0;
+  }
+  .slip .slip-group td {
+    @apply pb-1.5 pt-3 text-[0.6875rem] font-semibold uppercase text-ink-muted;
+    letter-spacing: 0.08em;
+  }
+  .slip .is-later td {
+    @apply text-ink-muted;
+  }
+
+  /*
+   * Loan periods: each box drawn from day 0 to its interval, split into its
+   * overdue share (red), due-today share (violet) and not-yet-due share (faded violet).
+   */
+  .loan-track {
+    @apply relative h-2 overflow-hidden rounded-sm bg-sunken;
+  }
+  .loan-bar {
+    @apply absolute inset-y-0 left-0 flex;
+  }
+  .loan-overdue {
+    @apply h-full;
+    background: var(--color-error);
+  }
+  .loan-today {
+    @apply h-full;
+    background: var(--color-accent);
+  }
+  .loan-later {
+    @apply h-full;
+    background: color-mix(in srgb, var(--color-accent) 45%, var(--color-sunken));
+  }
+
+  /* Extent: a hairline bar of a session's answered questions against the largest session,
+     one segment per topic, segments split by a 1px surface line. */
+  .extent {
+    @apply inline-flex h-1 w-12 overflow-hidden rounded-sm bg-sunken align-middle;
+  }
+  .extent > span {
+    @apply h-full shrink-0;
+    background: var(--color-lineStrong);
+  }
+  .extent > span + span {
+    box-shadow: inset 1px 0 0 var(--color-surface);
+  }
 
   /* Buttons */
   .btn {
-    @apply inline-flex min-h-10 select-none items-center justify-center gap-2 rounded border px-4 py-2 text-[0.9375rem] font-medium leading-tight;
+    @apply inline-flex min-h-10 select-none items-center justify-center gap-2 rounded border px-4 py-2 text-[0.9375rem] font-semibold leading-tight;
     transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
     touch-action: manipulation;
   }
@@ -263,24 +354,6 @@ html[data-boot='dark'] {
     background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
     border-color: var(--color-error);
   }
-  /* Buttons on a band or the title bar: filled in shell ink, or outlined. */
-  .btn-inverse {
-    border-color: var(--color-shellInk);
-    background: var(--color-shellInk);
-    color: var(--color-shell);
-  }
-  .btn-inverse:not(:disabled):hover {
-    background: color-mix(in srgb, var(--color-shellInk) 86%, var(--color-shell));
-  }
-  .btn-outline-inverse {
-    border-color: color-mix(in srgb, var(--color-shellInk) 45%, transparent);
-    background: transparent;
-    color: var(--color-shellInk);
-  }
-  .btn-outline-inverse:not(:disabled):hover {
-    border-color: var(--color-shellInk);
-    background: color-mix(in srgb, var(--color-shellInk) 10%, transparent);
-  }
   .btn-sm {
     @apply min-h-8 px-3 py-1.5 text-sm;
   }
@@ -311,7 +384,7 @@ html[data-boot='dark'] {
     @apply min-h-24 resize-y leading-relaxed;
   }
   .label {
-    @apply mb-1.5 block text-sm font-medium text-ink;
+    @apply mb-1.5 block text-sm font-semibold text-ink;
   }
   .hint {
     @apply mt-1.5 text-sm text-ink-muted;
@@ -322,7 +395,7 @@ html[data-boot='dark'] {
 
   /* Choice rows: radio-like options in a bordered stack. */
   .choice-group {
-    @apply divide-y divide-line overflow-hidden rounded border border-line-strong bg-surface;
+    @apply divide-y divide-line overflow-hidden rounded-md border border-line-strong bg-surface;
   }
   .choice {
     @apply flex w-full cursor-pointer items-start gap-3 px-4 py-3 text-left;
@@ -330,9 +403,8 @@ html[data-boot='dark'] {
   }
   /* Choice grid: the same cells tiled in columns, hairlines between them. */
   .choice-grid {
-    @apply grid gap-px overflow-hidden rounded border border-line-strong;
-    /* Stronger than --color-line so the hairlines survive the checked-cell tint in dark */
-    background: color-mix(in srgb, var(--color-lineStrong) 55%, var(--color-surface));
+    @apply grid gap-px overflow-hidden rounded-md border border-line-strong;
+    background: var(--color-line);
   }
   .choice-grid > .choice {
     @apply bg-surface;
@@ -340,10 +412,12 @@ html[data-boot='dark'] {
   .choice:hover {
     @apply bg-sunken;
   }
+  /* Selected single choice: a neutral inset with a violet outline; the hue stays on the control. */
   .choice[aria-checked='true'],
   .choice[aria-pressed='true'],
-  .choice:has(input:checked) {
-    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  .choice:has(input[type='radio']:checked) {
+    background: var(--color-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-accent);
   }
 
   /* Segmented control */
@@ -363,13 +437,13 @@ html[data-boot='dark'] {
     @apply bg-primary text-primary-ink;
   }
 
-  /* Tabs: underline in accent, like the title bar's active link. */
+  /* Tabs: a 2px violet underline on the current tab. */
   .tabs {
     @apply flex gap-6 overflow-x-auto border-b border-line;
   }
   .tab {
-    @apply whitespace-nowrap pb-2.5 pt-1 text-[0.9375rem] font-medium text-ink-soft;
-    box-shadow: inset 0 -3px 0 transparent;
+    @apply whitespace-nowrap pb-2.5 pt-1 text-[0.9375rem] font-medium text-ink-muted;
+    box-shadow: inset 0 -2px 0 transparent;
     transition: color 120ms ease-out, box-shadow 160ms var(--ease-out);
   }
   .tab:hover {
@@ -377,40 +451,45 @@ html[data-boot='dark'] {
   }
   .tab[aria-selected='true'] {
     @apply text-ink;
-    box-shadow: inset 0 -3px 0 var(--color-accent);
+    box-shadow: inset 0 -2px 0 var(--color-accent);
   }
 
-  /* Titled block (Metropolis "block"): teal title strip, sunken body. */
-  .block {
-    @apply overflow-hidden rounded-sm;
+  /*
+   * Note: explanation and feedback, a small panel with a head. (Named `note`,
+   * not `block`, so it never collides with Tailwind's `block` display utility.)
+   */
+  .note {
+    @apply overflow-hidden rounded-md border border-line bg-surface;
   }
-  .block-title {
-    @apply flex items-center gap-2 bg-shell px-4 py-2 text-sm font-semibold text-shell-ink;
+  .note-title {
+    @apply flex items-center gap-2 border-b border-line bg-sunken px-4 py-2.5 text-sm font-semibold text-ink;
   }
-  .block-title svg {
+  .note-title svg {
     @apply h-4 w-4 shrink-0;
   }
-  .block-body {
-    @apply bg-sunken px-4 py-3.5 text-[0.9375rem] leading-relaxed text-ink;
+  .note-body {
+    @apply px-4 py-3.5 text-[0.9375rem] leading-relaxed text-ink;
   }
-  .block-success .block-title {
-    background: var(--color-successInk);
-    color: var(--color-surface);
+  .note-success {
+    border-color: color-mix(in srgb, var(--color-success) 45%, var(--color-line));
   }
-  .block-success .block-body {
+  .note-success .note-title {
+    color: var(--color-successInk);
+    border-color: color-mix(in srgb, var(--color-success) 30%, var(--color-line));
     background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
   }
-  .block-error .block-title {
-    background: var(--color-errorInk);
-    color: var(--color-surface);
+  .note-error {
+    border-color: color-mix(in srgb, var(--color-error) 45%, var(--color-line));
   }
-  .block-error .block-body {
+  .note-error .note-title {
+    color: var(--color-errorInk);
+    border-color: color-mix(in srgb, var(--color-error) 30%, var(--color-line));
     background: color-mix(in srgb, var(--color-error) 9%, var(--color-surface));
   }
 
-  /* Inline notices (errors, info) without a coloured side stripe. */
+  /* Inline notices (errors, warnings) without a coloured side stripe. */
   .notice {
-    @apply flex items-start gap-3 rounded-sm px-4 py-3 text-[0.9375rem];
+    @apply flex items-start gap-3 rounded-md border border-line px-4 py-3 text-[0.9375rem];
     background: var(--color-sunken);
     color: var(--color-ink);
   }
@@ -418,31 +497,52 @@ html[data-boot='dark'] {
     @apply mt-0.5 h-4 w-4 shrink-0;
   }
   .notice-error {
-    background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-error) 35%, var(--color-line));
+    background: color-mix(in srgb, var(--color-error) 9%, var(--color-surface));
     color: var(--color-errorInk);
   }
   .notice-warning {
-    background: color-mix(in srgb, var(--color-warning) 14%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-warning) 40%, var(--color-line));
+    background: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
     color: var(--color-warningInk);
   }
 
-  /* Data tables: right-aligned tabular numbers, hairline rows. */
+  /* Data tables: caps headers, hairline rows, right-aligned tabular numbers. */
   .data-table {
     @apply w-full border-collapse text-sm;
   }
   .data-table th {
-    @apply border-b border-ink py-2 pr-4 text-left font-medium text-ink-soft;
+    @apply border-b border-line py-2 pr-4 text-left text-[0.6875rem] font-semibold uppercase leading-tight text-ink-muted;
+    letter-spacing: 0.08em;
   }
   .data-table td {
-    @apply border-b border-line py-2.5 pr-4 align-baseline text-ink;
+    @apply border-b border-line py-2.5 pr-4 align-middle text-ink;
   }
   .data-table th:last-child,
   .data-table td:last-child {
     @apply pr-0;
   }
+  .data-table tbody tr:last-child td,
+  .data-table tbody tr:last-child th {
+    border-bottom: 0;
+  }
   .data-table .num {
     @apply text-right;
     font-variant-numeric: tabular-nums;
+  }
+  /* Row headers (th scope="row") read like body cells. */
+  .data-table tbody th {
+    @apply border-line py-2.5 text-sm font-medium normal-case text-ink;
+    letter-spacing: normal;
+  }
+  /* Inside a panel the table runs edge to edge with the panel's padding. */
+  .panel .data-table th:first-child,
+  .panel .data-table td:first-child {
+    @apply pl-4 sm:pl-5;
+  }
+  .panel .data-table th:last-child,
+  .panel .data-table td:last-child {
+    @apply pr-4 sm:pr-5;
   }
 
   /* Definition list of facts: label left, value right. */
@@ -450,7 +550,7 @@ html[data-boot='dark'] {
     @apply grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-sm;
   }
   .facts dt {
-    @apply text-ink-soft;
+    @apply text-ink-muted;
   }
   .facts dd {
     @apply text-right font-medium text-ink;
@@ -459,7 +559,7 @@ html[data-boot='dark'] {
 
   /* Small status label. */
   .tag {
-    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-sm px-1.5 py-0.5 text-xs font-medium leading-none;
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-sm px-1.5 py-0.5 text-xs font-semibold leading-none;
     background: var(--color-sunken);
     color: var(--color-inkSoft);
   }
@@ -472,14 +572,13 @@ html[data-boot='dark'] {
     color: var(--color-successInk);
   }
   .tag-error {
-    background: color-mix(in srgb, var(--color-error) 12%, var(--color-surface));
+    background: color-mix(in srgb, var(--color-error) 13%, var(--color-surface));
     color: var(--color-errorInk);
   }
 
   /*
-   * Progress rule: the signature. A 4px line under the title bar, one
-   * segment per answered question (success / error), the current one in
-   * accent. Segments grow in from the left once.
+   * Progress rule: one segment per question in the session, success or error
+   * once answered, violet for the current one. Segments grow in once.
    */
   .progress-rule {
     @apply flex h-1 w-full gap-px bg-line;
@@ -513,25 +612,26 @@ html[data-boot='dark'] {
     @apply border-t;
   }
   .option-key {
-    @apply text-sm font-semibold text-ink-soft;
+    @apply font-narrow text-[0.9375rem] font-bold text-ink-muted;
   }
   button.option:not(:disabled):hover {
     @apply bg-sunken;
   }
   .option[data-state='selected'] {
-    background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface));
+    background: var(--color-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-accent);
   }
   .option[data-state='selected'] .option-key {
-    @apply text-ink;
+    color: var(--color-accentInk);
   }
   .option[data-state='correct'] {
-    background: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+    background: color-mix(in srgb, var(--color-success) 13%, var(--color-surface));
   }
   .option[data-state='correct'] .option-key {
     color: var(--color-successInk);
   }
   .option[data-state='wrong'] {
-    background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+    background: color-mix(in srgb, var(--color-error) 11%, var(--color-surface));
   }
   .option[data-state='wrong'] .option-key {
     color: var(--color-errorInk);
@@ -552,13 +652,13 @@ html[data-boot='dark'] {
     @apply h-3.5 w-3.5;
   }
 
-  /* Overlays (menus, dialogs) are the only elements with a shadow. */
+  /* Overlays (menus, dialogs, toasts) are the only elements with a shadow. */
   .overlay-shadow {
-    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12);
+    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.35), 0 2px 6px rgb(0 0 0 / 0.14);
   }
   .menu {
-    @apply min-w-48 rounded border border-line bg-surface py-1 text-sm text-ink;
-    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12);
+    @apply min-w-48 rounded-md border border-line bg-surface py-1 text-sm text-ink;
+    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.35), 0 2px 6px rgb(0 0 0 / 0.14);
   }
   .menu-item {
     @apply flex w-full items-center gap-2.5 px-3 py-2 text-left;
@@ -572,21 +672,20 @@ html[data-boot='dark'] {
     @apply h-4 w-4 shrink-0 text-ink-soft;
   }
 
-  /* Toasts (notificationService.ts): a surface panel under the title bar,
-     its state carried by a 4px rule along the top, like the progress rule. */
+  /* Toasts (notificationService.ts): a panel at the top right, its state a 3px top rule. */
   .toast-region {
     @apply pointer-events-none fixed inset-x-4 z-[70] flex flex-col items-end gap-2 sm:left-auto sm:right-6 sm:w-96;
     top: calc(var(--bar-height) + 0.75rem);
   }
   .toast {
-    @apply pointer-events-auto w-full cursor-pointer overflow-hidden rounded border border-line bg-surface text-ink;
-    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.12);
+    @apply pointer-events-auto w-full cursor-pointer overflow-hidden rounded-md border border-line bg-surface text-ink;
+    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.35), 0 2px 6px rgb(0 0 0 / 0.14);
     animation: toast-in 240ms var(--ease-out) both;
   }
   .toast::before {
     content: '';
-    @apply block h-1;
-    background: var(--toast-rule, var(--color-primary));
+    @apply block h-[3px];
+    background: var(--toast-rule, var(--color-accent));
   }
   .toast[data-type='success'] {
     --toast-rule: var(--color-success);
@@ -617,19 +716,14 @@ html[data-boot='dark'] {
     @apply not-sr-only fixed left-4 top-2 z-[60] rounded bg-surface px-4 py-2 font-medium text-ink;
   }
 
-  /* Indeterminate loading line (AI calls): the rule, travelling. */
+  /* Indeterminate loading line (AI calls): a violet segment travelling. */
   .loading-rule {
-    @apply relative h-1 w-full overflow-hidden bg-line;
+    @apply relative h-[3px] w-full overflow-hidden bg-line;
   }
   .loading-rule::after {
     content: '';
     @apply absolute inset-y-0 left-0 w-1/3 bg-accent;
     animation: rule-travel 1.2s var(--ease-out) infinite;
-  }
-
-  /* Row headers (th scope="row") in a data table read like body cells. */
-  .data-table tbody th {
-    @apply border-line py-2.5 font-normal text-ink;
   }
 }
 
@@ -645,6 +739,17 @@ html[data-boot='dark'] {
   }
   to {
     transform: scaleX(1);
+  }
+}
+
+@keyframes stamp-land {
+  from {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

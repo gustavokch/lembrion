@@ -28,11 +28,11 @@ describe('resolveThemePreference', () => {
     }
   });
 
-  it('follows the system for missing or non-string values', () => {
-    expect(resolveThemePreference(undefined)).toBe('system');
-    expect(resolveThemePreference(null)).toBe('system');
-    expect(resolveThemePreference(42)).toBe('system');
-    expect(resolveThemePreference({ id: 'dark' })).toBe('system');
+  it('falls back to the dark default for missing or non-string values', () => {
+    expect(resolveThemePreference(undefined)).toBe('dark');
+    expect(resolveThemePreference(null)).toBe('dark');
+    expect(resolveThemePreference(42)).toBe('dark');
+    expect(resolveThemePreference({ id: 'light' })).toBe('dark');
   });
 });
 
@@ -55,7 +55,7 @@ describe('getTheme', () => {
   it('returns a palette for an unknown id instead of throwing', () => {
     expect(getTheme('constructor' as Theme).id).toBe('light');
     expect(getTheme('system' as Theme).id).toBe('light');
-    expect(getTheme(undefined as unknown as Theme).id).toBe('light');
+    expect(getTheme(undefined as unknown as Theme).id).toBe('dark');
     expect(getTheme('midnight' as Theme).id).toBe('dark');
   });
 });

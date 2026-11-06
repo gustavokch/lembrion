@@ -23,8 +23,9 @@ export default {
         warning: { DEFAULT: token('warning'), ink: token('warningInk') },
       },
       fontFamily: {
-        sans: ['"Fira Sans"', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
-        mono: ['"Fira Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        sans: ['"Libre Franklin"', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
+        narrow: ['"Archivo Narrow"', '"Arial Narrow"', '"Libre Franklin"', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       maxWidth: {
         measure: '68ch',

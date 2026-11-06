@@ -14,11 +14,11 @@ export type ThemePreference = (typeof THEME_PREFERENCE_IDS)[number];
  * Every value is a 6-digit hex.
  */
 export interface ThemeColors {
-  /** Title bar ground. */
+  /** Ground of the sidebar, the phone top bar and its menu. */
   shell: string;
-  /** Text on the title bar. */
+  /** Text on the shell. */
   shellInk: string;
-  /** Secondary text on the title bar. */
+  /** Secondary text on the shell (nav items at rest). */
   shellMuted: string;
   /** Page ground. */
   ground: string;

@@ -6,9 +6,11 @@ import { formatDate, formatMessage } from '../../core/services';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { StudySession } from '../../types';
+import { sessionCallNumber } from '../callNumber';
 import SessionEditModal from '../SessionEditModal';
 import { applySessionEditById, SessionEditUpdates } from './sessionEdits';
-import { answeredCount, sessionScore } from './StudyPage/learningTechniques';
+import ExtentBar from '../ui/ExtentBar';
+import { answeredCount, mostAnswered, sessionScore } from './StudyPage/learningTechniques';
 
 type StatusFilter = 'all' | 'active' | 'completed';
 
@@ -112,11 +114,13 @@ export default function SessionHistory() {
   const scoreLabel = (session: StudySession) =>
     answeredCount(session.questions) > 0 ? `${sessionScore(session.questions)}%` : '—';
 
+  const extentScale = mostAnswered(sessions);
+
   const statusTag = (session: StudySession) =>
     session.status === 'active' ? (
       <span className="tag tag-accent">{t.historyStatusActive}</span>
     ) : (
-      <span className="tag">{t.completed}</span>
+      <span className="tag">{t.sessionStatusCompleted}</span>
     );
 
   const statusFilters: { value: StatusFilter; label: string }[] = [
@@ -129,13 +133,17 @@ export default function SessionHistory() {
   if (sessions.length === 0) {
     return (
       <div className="page">
-        <h1 className="page-title">{t.studyHistory}</h1>
-        <div className="mt-8 max-w-measure">
-          <p className="text-lg font-medium text-ink">{t.noSessionsYet}</p>
-          <p className="mt-1 text-ink-soft">{t.noSessionsYetDesc}</p>
-          <Link to="/study" className="btn btn-primary mt-6">
-            {t.startFirstSession}
-          </Link>
+        <header className="page-header">
+          <h1 className="page-title">{t.studyHistory}</h1>
+        </header>
+        <div className="panel mt-6">
+          <div className="panel-body sm:py-6">
+            <p className="text-base font-semibold text-ink">{t.noSessionsYet}</p>
+            <p className="mt-1 max-w-measure text-ink-soft">{t.noSessionsYetDesc}</p>
+            <Link to="/study" className="btn btn-primary mt-5">
+              {t.startFirstSession}
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -192,10 +200,10 @@ export default function SessionHistory() {
 
   return (
     <div className="page">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-baseline gap-x-3">
+      <header className="page-header">
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <h1 className="page-title">{t.studyHistory}</h1>
-          <p className="tabular text-ink-soft">
+          <p className="page-lede tabular">
             {formatMessage(sessions.length === 1 ? t.historySessionCountOne : t.historySessionCountOther, { count: sessions.length })}
           </p>
         </div>
@@ -203,7 +211,7 @@ export default function SessionHistory() {
           <Plus aria-hidden="true" />
           {t.newSession}
         </Link>
-      </div>
+      </header>
 
       {/* Filters */}
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -248,145 +256,155 @@ export default function SessionHistory() {
         </div>
       </div>
 
-      {/* Selection bar */}
-      {isSelectionMode && (
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-y border-line py-2">
-          <span className="mr-2 text-sm font-medium text-ink tabular" aria-live="polite">
-            {formatMessage(selectedSessions.length === 1 ? t.selectedCountOne : t.selectedCountOther, { count: selectedSessions.length })}
-          </span>
-          <button type="button" onClick={selectAllSessions} className="btn btn-ghost">
-            {t.selectAll}
-          </button>
-          <button type="button" onClick={deselectAllSessions} className="btn btn-ghost">
-            {t.clear}
-          </button>
-          <button
-            type="button"
-            onClick={() => selectedSessions.length > 0 && setShowDeleteConfirm(true)}
-            disabled={selectedSessions.length === 0}
-            className="btn btn-danger sm:ml-auto"
-          >
-            <Trash2 aria-hidden="true" />
-            {t.deleteSelected}
-          </button>
-        </div>
-      )}
-
       {/* Sessions */}
-      {filteredSessions.length === 0 ? (
-        <div className="mt-10 max-w-measure">
-          <p className="text-lg font-medium text-ink">{t.historyNoMatch}</p>
-          <p className="mt-1 text-ink-soft">{t.adjustFilters}</p>
-          <button type="button" onClick={clearFilters} className="btn btn-secondary mt-5">
-            {t.historyClearFilters}
-          </button>
-        </div>
-      ) : (
-        <>
-          {/* md and up: table */}
-          <table className="data-table mt-6 hidden md:table [&_td]:py-1.5">
-            <thead>
-              <tr>
-                {isSelectionMode && (
-                  <th scope="col" className="w-10">
-                    <span className="sr-only">{t.historySelect}</span>
-                  </th>
-                )}
-                <th scope="col">{t.historyColTopics}</th>
-                <th scope="col">{t.historyColType}</th>
-                <th scope="col" className="num">{t.questions}</th>
-                <th scope="col" className="num">{t.score}</th>
-                <th scope="col" className="num" aria-sort={sortOrder === 'desc' ? 'descending' : 'ascending'}>
-                  <button
-                    type="button"
-                    onClick={toggleSortOrder}
-                    className="inline-flex items-center gap-1 font-medium hover:text-ink"
-                  >
-                    {t.historyColStarted}
-                    {sortOrder === 'desc' ? (
-                      <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
-                    ) : (
-                      <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
-                    )}
-                  </button>
-                </th>
-                <th scope="col">{t.historyColStatus}</th>
-                {!isSelectionMode && (
-                  <th scope="col" className="text-right">
-                    <span className="sr-only">{t.historyColActions}</span>
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredSessions.map(session => (
-                <tr key={session.id}>
-                  {isSelectionMode && <td className="align-middle">{selectBox(session)}</td>}
-                  <td className="align-middle">
-                    <Link to={`/session/${session.id}`} className="font-medium text-ink hover:underline">
-                      {topicsOf(session)}
-                    </Link>
-                    {session.kind === 'review' && <span className="tag ml-2">{t.reviewSessionLabel}</span>}
-                  </td>
-                  <td className="align-middle text-ink-soft">{typeLabel(session)}</td>
-                  <td className="num align-middle">{answeredCount(session.questions)}</td>
-                  <td className="num align-middle">{scoreLabel(session)}</td>
-                  <td className="num whitespace-nowrap align-middle">{formatDate(session.createdAt, language)}</td>
-                  <td className="align-middle">{statusTag(session)}</td>
-                  {!isSelectionMode && (
-                    <td className="align-middle">
-                      <div className="flex items-center justify-end gap-1">{rowActions(session, 'sm')}</div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Below md: stacked rows */}
-          <div className="mt-6 md:hidden">
+      <div className="panel mt-4 overflow-hidden">
+        {/* Selection bar */}
+        {isSelectionMode && (
+          <div className="flex flex-wrap items-center gap-2 border-b border-line bg-sunken px-3 py-2 sm:px-4">
+            <span className="mr-2 text-sm font-semibold text-ink tabular" aria-live="polite">
+              {formatMessage(selectedSessions.length === 1 ? t.selectedCountOne : t.selectedCountOther, { count: selectedSessions.length })}
+            </span>
+            <button type="button" onClick={selectAllSessions} className="btn btn-ghost">
+              {t.selectAll}
+            </button>
+            <button type="button" onClick={deselectAllSessions} className="btn btn-ghost">
+              {t.clear}
+            </button>
             <button
               type="button"
-              onClick={toggleSortOrder}
-              className="btn btn-ghost -ml-4 mb-2"
+              onClick={() => selectedSessions.length > 0 && setShowDeleteConfirm(true)}
+              disabled={selectedSessions.length === 0}
+              className="btn btn-danger sm:ml-auto"
             >
-              {t.historyColStarted}
-              {sortOrder === 'desc' ? <ArrowDown aria-hidden="true" /> : <ArrowUp aria-hidden="true" />}
+              <Trash2 aria-hidden="true" />
+              {t.deleteSelected}
             </button>
-            <ul className="divide-y divide-line border-y border-line">
-              {filteredSessions.map(session => (
-                <li key={session.id} className="py-4">
-                  <div className="flex items-start gap-3">
-                    {isSelectionMode && selectBox(session)}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
+          </div>
+        )}
+
+        {filteredSessions.length === 0 ? (
+          <div className="panel-body sm:py-6">
+            <p className="text-base font-semibold text-ink">{t.historyNoMatch}</p>
+            <p className="mt-1 max-w-measure text-ink-soft">{t.adjustFilters}</p>
+            <button type="button" onClick={clearFilters} className="btn btn-secondary mt-5">
+              {t.historyClearFilters}
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* md and up: table */}
+            <div className="hidden overflow-x-auto md:block">
+              <table className="data-table [&_td]:py-1.5 [&_th]:pt-3">
+                <thead>
+                  <tr>
+                    {isSelectionMode && (
+                      <th scope="col" className="w-10">
+                        <span className="sr-only">{t.historySelect}</span>
+                      </th>
+                    )}
+                    <th scope="col" className="w-24">{t.historyColCallNo}</th>
+                    <th scope="col">{t.historyColTopics}</th>
+                    <th scope="col" className="hidden lg:table-cell">{t.historyColType}</th>
+                    <th scope="col" className="num">{t.questions}</th>
+                    <th scope="col" className="num">{t.score}</th>
+                    <th scope="col" aria-sort={sortOrder === 'desc' ? 'descending' : 'ascending'}>
+                      <button
+                        type="button"
+                        onClick={toggleSortOrder}
+                        className="inline-flex items-center gap-1 uppercase hover:text-ink"
+                      >
+                        {t.historyColStarted}
+                        {sortOrder === 'desc' ? (
+                          <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                        ) : (
+                          <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+                        )}
+                      </button>
+                    </th>
+                    <th scope="col">{t.historyColStatus}</th>
+                    {!isSelectionMode && (
+                      <th scope="col">
+                        <span className="sr-only">{t.historyColActions}</span>
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSessions.map(session => (
+                    <tr key={session.id}>
+                      {isSelectionMode && <td>{selectBox(session)}</td>}
+                      <td className="callno">{sessionCallNumber(session.contexts)}</td>
+                      <td>
+                        <Link to={`/session/${session.id}`} className="font-medium text-ink hover:underline">
+                          {topicsOf(session)}
+                        </Link>
+                        {session.kind === 'review' && <span className="tag ml-2">{t.reviewSessionLabel}</span>}
+                      </td>
+                      <td className="hidden whitespace-nowrap text-ink-soft lg:table-cell">{typeLabel(session)}</td>
+                      <td className="num whitespace-nowrap">
+                        <ExtentBar session={session} scale={extentScale} />
+                        <span className="ml-2 inline-block min-w-[2ch]">{answeredCount(session.questions)}</span>
+                      </td>
+                      <td className="num">{scoreLabel(session)}</td>
+                      <td className="tabular whitespace-nowrap text-ink-soft">{formatDate(session.createdAt, language)}</td>
+                      <td>{statusTag(session)}</td>
+                      {!isSelectionMode && (
+                        <td>
+                          <div className="flex items-center justify-end gap-1">{rowActions(session, 'sm')}</div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Below md: stacked rows */}
+            <div className="md:hidden">
+              <div className="border-b border-line px-1.5 py-1">
+                <button type="button" onClick={toggleSortOrder} className="btn btn-ghost text-sm">
+                  {t.historyColStarted}
+                  {sortOrder === 'desc' ? <ArrowDown aria-hidden="true" /> : <ArrowUp aria-hidden="true" />}
+                </button>
+              </div>
+              <ul className="divide-y divide-line">
+                {filteredSessions.map(session => (
+                  <li key={session.id} className="px-4 py-3.5">
+                    <div className="flex items-start gap-3">
+                      {isSelectionMode && selectBox(session)}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="callno">{sessionCallNumber(session.contexts)}</span>
+                          {statusTag(session)}
+                        </div>
                         <Link
                           to={`/session/${session.id}`}
-                          className="min-w-0 break-words font-medium text-ink hover:underline"
+                          className="mt-1 block break-words font-semibold text-ink hover:underline"
                         >
                           {topicsOf(session)}
                         </Link>
-                        <span className="mt-0.5 shrink-0">{statusTag(session)}</span>
+                        <p className="mt-1 text-sm text-ink-muted tabular">{formatDate(session.createdAt, language)}</p>
+                        <p className="mt-0.5 flex items-center gap-2 text-sm text-ink-muted tabular">
+                          <ExtentBar session={session} scale={extentScale} />
+                          <span>
+                            {formatMessage(answeredCount(session.questions) === 1 ? t.questionCountOne : t.questionCountOther, { count: answeredCount(session.questions) })}
+                          </span>
+                          <span aria-hidden="true">·</span>
+                          <span>{t.score} {scoreLabel(session)}</span>
+                        </p>
+                        {session.kind === 'review' && <span className="tag mt-2">{t.reviewSessionLabel}</span>}
                       </div>
-                      <p className="mt-1 text-sm text-ink-soft tabular">
-                        {formatDate(session.createdAt, language)}
-                        {' · '}
-                        {formatMessage(answeredCount(session.questions) === 1 ? t.questionCountOne : t.questionCountOther, { count: answeredCount(session.questions) })}
-                        {' · '}
-                        {t.score} {scoreLabel(session)}
-                      </p>
-                      {session.kind === 'review' && <span className="tag mt-2">{t.reviewSessionLabel}</span>}
                     </div>
-                  </div>
-                  {!isSelectionMode && (
-                    <div className="mt-3 flex items-center gap-1">{rowActions(session, 'md')}</div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      )}
+                    {!isSelectionMode && (
+                      <div className="mt-2.5 flex items-center gap-1">{rowActions(session, 'md')}</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+      </div>
 
       {showDeleteConfirm && (
         <DeleteConfirmDialog
@@ -462,21 +480,25 @@ function DeleteConfirmDialog({ message, onCancel, onConfirm }: DeleteConfirmDial
         aria-modal="true"
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-desc"
-        className="w-full max-w-sm rounded bg-surface p-6 overlay-shadow"
+        className="w-full max-w-sm rounded-md border border-line bg-surface overlay-shadow"
       >
-        <h2 id="delete-dialog-title" className="text-lg font-medium text-ink">
-          {t.confirmDeletion}
-        </h2>
-        <p id="delete-dialog-desc" className="mt-2 text-ink-soft">
-          {message}
-        </p>
-        <div className="mt-6 flex justify-end gap-3">
-          <button ref={cancelRef} type="button" onClick={onCancel} className="btn btn-secondary">
-            {t.cancel}
-          </button>
-          <button type="button" onClick={onConfirm} className="btn btn-danger">
-            {t.delete}
-          </button>
+        <div className="panel-head">
+          <h2 id="delete-dialog-title" className="text-lg font-bold leading-tight text-ink">
+            {t.confirmDeletion}
+          </h2>
+        </div>
+        <div className="panel-body">
+          <p id="delete-dialog-desc" className="text-ink-soft">
+            {message}
+          </p>
+          <div className="mt-5 flex justify-end gap-3">
+            <button ref={cancelRef} type="button" onClick={onCancel} className="btn btn-secondary">
+              {t.cancel}
+            </button>
+            <button type="button" onClick={onConfirm} className="btn btn-danger">
+              {t.delete}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -24,7 +24,7 @@ export const PATREON_URL: string = '';
 // Default values
 export const DEFAULTS = {
   LANGUAGE: 'en-US',
-  THEME: 'system',
+  THEME: 'dark',
   PRELOAD_QUESTIONS: 3,
   MODEL: 'gpt-4o-mini',
   SESSION_TIMER: 30, // minutes

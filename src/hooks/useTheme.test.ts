@@ -60,15 +60,13 @@ describe('useTheme', () => {
     Reflect.deleteProperty(window, 'matchMedia');
   });
 
-  it('follows the system colour scheme live when nothing is stored', () => {
+  it('uses the dark default when nothing is stored, whatever the system scheme', () => {
     mountShellAndMenu();
-    expect(appliedTheme()).toBe('light');
-
-    setSystemDark(true);
     expect(appliedTheme()).toBe('dark');
 
+    setSystemDark(true);
     setSystemDark(false);
-    expect(appliedTheme()).toBe('light');
+    expect(appliedTheme()).toBe('dark');
   });
 
   it('keeps a choice made in the menu when the system scheme changes', () => {
@@ -87,6 +85,7 @@ describe('useTheme', () => {
 
   it('uses the light palette for system where matchMedia is missing', () => {
     Reflect.deleteProperty(window, 'matchMedia');
+    window.localStorage.setItem('studorama-theme', JSON.stringify('system'));
     mountShellAndMenu();
     expect(appliedTheme()).toBe('light');
   });

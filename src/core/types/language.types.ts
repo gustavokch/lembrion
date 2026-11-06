@@ -63,7 +63,6 @@ export interface Translations {
   newSession: string;
   noSessionsYet: string;
   startFirstSession: string;
-  questionsAnswered: string;
   date: string;
   continue: string;
   
@@ -216,13 +215,6 @@ export interface Translations {
   dissertativeAnswerPlaceholder: string;
 
   // Review queue and explanation feedback
-  /** Placeholder: {count} */
-  reviewDueCountOne: string;
-  /** Placeholder: {count} */
-  reviewDueCountOther: string;
-  /** Placeholder: {date} */
-  reviewNextDue: string;
-  startReview: string;
   reviewCompleteTitle: string;
   reviewCompleteDesc: string;
   reviewSessionLabel: string;
@@ -325,32 +317,82 @@ export interface Translations {
 
   // Dashboard
   dashboardProgress: string;
-  dashboardPeriod: string;
   dashboardLast7Days: string;
   dashboardAllTime: string;
   dashboardSessions: string;
+  dashboardAnswered: string;
   dashboardAccuracy: string;
-  dashboardReviewBoxes: string;
-  dashboardBox: string;
-  dashboardScheduledQuestions: string;
-  /** Placeholders: {box}, {days} */
-  dashboardBoxLabel: string;
-  /** Placeholder: {days} */
-  dashboardDays: string;
-  /** Placeholders: {due}, {retired} */
-  dashboardBoxSummary: string;
+  dashboardUnfinishedOne: string;
+  dashboardUnfinishedOther: string;
   /** Placeholder: {count} */
-  dashboardBoxDue: string;
-  dashboardDueNow: string;
-  dashboardNext: string;
-  dashboardResumeReview: string;
+  dashboardAnsweredCountOne: string;
+  /** Placeholder: {count} */
+  dashboardAnsweredCountOther: string;
+  /** Placeholder: {percent} */
+  dashboardPercentCorrect: string;
+  /** Placeholder: {date} */
+  dashboardStarted: string;
+  dashboardNoUnfinished: string;
+  dashboardNoUnfinishedDesc: string;
   dashboardResume: string;
   /** Placeholder: {topics} */
   dashboardResumeAria: string;
-  dashboardAllSessions: string;
+  dashboardDueForReturn: string;
+  /** Placeholder: {count} */
+  dashboardOverdueOne: string;
+  /** Placeholder: {count} */
+  dashboardOverdueOther: string;
+  /** Placeholder: {count} */
+  dashboardDueToday: string;
+  /** Placeholder: {count} */
+  dashboardDueThisWeek: string;
+  /** Placeholder: {count} */
+  dashboardStartReview: string;
+  /** Placeholder: {count} */
+  dashboardResumeReview: string;
+  dashboardCallNo: string;
+  dashboardTopic: string;
+  dashboardBox: string;
+  dashboardDueDateColumn: string;
+  /** Placeholders: {box}, {days} */
+  dashboardBoxIntervalOne: string;
+  /** Placeholders: {box}, {days} */
+  dashboardBoxIntervalOther: string;
+  /** Placeholder: {date} */
+  dashboardOverdueStamp: string;
+  /** Placeholder: {count} */
+  dashboardMoreDue: string;
+  dashboardNotYetDue: string;
+  /** Placeholder: {date} */
+  dashboardNextReturn: string;
+  dashboardNothingOnLoan: string;
+  dashboardLoanPeriods: string;
+  /** Placeholder: {count} */
+  dashboardOnLoanCountOne: string;
+  /** Placeholder: {count} */
+  dashboardOnLoanCountOther: string;
+  /** Placeholder: {count} */
+  dashboardRetiredCountOne: string;
+  /** Placeholder: {count} */
+  dashboardRetiredCountOther: string;
+  /** Placeholder: {box} */
+  dashboardBoxNumber: string;
+  /** Placeholder: {days} */
+  dashboardDays: string;
+  /** Placeholder: {days} */
+  dashboardAxisDays: string;
+  dashboardOnLoanColumn: string;
+  dashboardDueColumn: string;
+  /** Placeholder: {count} */
+  dashboardDueCountOne: string;
+  /** Placeholder: {count} */
+  dashboardDueCountOther: string;
+  dashboardRetired: string;
+  dashboardAllHistory: string;
   dashboardTopics: string;
-  dashboardType: string;
   dashboardStatus: string;
+  /** One session's status; `completed` is the plural filter label. */
+  sessionStatusCompleted: string;
   dashboardProviderNotReady: string;
   dashboardOpenSettings: string;
   dashboardSupportLine: string;
@@ -400,6 +442,13 @@ export interface Translations {
   /** Placeholder: {item} */
   editRemoveItem: string;
   editDisplay: string;
+  historyColCallNo: string;
+  /** Placeholder: {date} */
+  detailsStampDue: string;
+  /** Placeholder: {date} */
+  detailsStampOverdue: string;
+  detailsStampRetired: string;
+  detailsStampReturned: string;
 
   // Settings, Support, and Markdown code blocks
   settingsProviderTitle: string;
@@ -455,6 +504,10 @@ export interface Translations {
   studySettingOn: string;
   studySettingOff: string;
   studyLeftInQueue: string;
+  studyComesBack: string;
+  studyReturnBox: string;
+  studyReturned: string;
+  studyReturnedForGood: string;
   studyEnterKey: string;
   studyEnterFullscreen: string;
   studyExitFullscreen: string;

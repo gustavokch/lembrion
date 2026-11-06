@@ -10,9 +10,11 @@ import { createId } from "../../../core/utils/id";
 import { useLanguage, useLocalStorage, useMultiProviderSettings } from "../../../hooks";
 import { Difficulty, LearningSettings, Question, StudySession } from "../../../types";
 import MarkdownRenderer from "../../MarkdownRenderer";
+import { sessionCallNumber } from "../../callNumber";
 import { stripExplanationLabel } from "../../explanationText";
+import { stampDate } from "../../stampDate";
 import { answeredCount, createReviewCopy, DIFFICULTIES, difficultyLabels, findDueReview, isAnswered, nextDifficulty, nextFocusContext, normalizeLearningSettings, sessionScore } from "./learningTechniques";
-import { enterQueue, recordReviewResult, takeNextReview } from "./reviewSchedule";
+import { enterQueue, recordReviewResult, RETIRED_BOX, takeNextReview } from "./reviewSchedule";
 
 const OPTION_KEYS = ["A", "B", "C", "D"];
 
@@ -535,103 +537,116 @@ export default function StudyPage() {
     const canStart = contexts.length > 0 && isProviderConfigured && !isGenerating;
 
     return (
-      <div className="page grid gap-10 pb-36 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12 lg:pb-16">
-        <div className="min-w-0">
+      <div className="page pb-36 lg:pb-16">
+        <header className="page-header">
           <h1 className="page-title">{t.startNewStudySession}</h1>
+        </header>
 
-          <div className="mt-6 space-y-7">
+        <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-6">
+          <div className="min-w-0 space-y-4">
             {/* Topics */}
-            <div>
-              <label htmlFor="topic-input" className="label">
-                {t.studyContexts}
-              </label>
-              <div className="flex gap-2">
-                <input
-                  id="topic-input"
-                  type="text"
-                  value={newContext}
-                  onChange={(e) => setNewContext(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      addContext();
-                    }
-                  }}
-                  placeholder={t.studyContextPlaceholder}
-                  aria-describedby="topic-hint"
-                  className="field min-w-0 flex-1"
-                />
-                <button type="button" onClick={addContext} disabled={!newContext.trim()} className="btn btn-secondary">
-                  {t.add}
-                </button>
+            <section className="panel">
+              <div className="panel-head">
+                <h2 className="panel-title">
+                  <label htmlFor="topic-input">{t.studyContexts}</label>
+                </h2>
               </div>
-              <p id="topic-hint" className="hint">
-                {t.studyContextsHelp}
-              </p>
-              {contexts.length > 0 && (
-                <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-3">
-                  {contexts.map((context, index) => (
-                    <li key={context} className="tag max-w-full whitespace-normal py-1 pl-2 pr-0 text-sm text-ink">
-                      <span className="min-w-0 break-words">{context}</span>
-                      <button type="button" onClick={() => removeContext(index)} aria-label={formatMessage(t.studyRemoveItem, { item: context })} className="-my-2 inline-flex h-10 w-9 shrink-0 items-center justify-center text-ink-muted hover:text-ink">
-                        <X className="h-4 w-4" aria-hidden="true" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+              <div className="panel-body">
+                <div className="flex gap-2">
+                  <input
+                    id="topic-input"
+                    type="text"
+                    value={newContext}
+                    onChange={(e) => setNewContext(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addContext();
+                      }
+                    }}
+                    placeholder={t.studyContextPlaceholder}
+                    aria-describedby="topic-hint"
+                    className="field min-w-0 flex-1"
+                  />
+                  <button type="button" onClick={addContext} disabled={!newContext.trim()} className="btn btn-secondary">
+                    {t.add}
+                  </button>
+                </div>
+                <p id="topic-hint" className="hint">
+                  {t.studyContextsHelp}
+                </p>
+                {contexts.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-3">
+                    {contexts.map((context, index) => (
+                      <li key={context} className="tag max-w-full whitespace-normal py-1 pl-2 pr-0 text-sm text-ink">
+                        <span className="min-w-0 break-words">{context}</span>
+                        <button type="button" onClick={() => removeContext(index)} aria-label={formatMessage(t.studyRemoveItem, { item: context })} className="-my-2 inline-flex h-10 w-9 shrink-0 items-center justify-center text-ink-muted hover:text-ink">
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
 
             {/* Instructions */}
-            <div>
-              <label htmlFor="instruction-input" className="label">
-                {t.specialInstructions} <span className="font-normal text-ink-muted">{t.studyOptional}</span>
-              </label>
-              <div className="flex gap-2">
-                <input
-                  id="instruction-input"
-                  type="text"
-                  value={newInstruction}
-                  onChange={(e) => setNewInstruction(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      addInstruction();
-                    }
-                  }}
-                  placeholder={t.studyInstructionPlaceholder}
-                  aria-describedby="instruction-hint"
-                  className="field min-w-0 flex-1"
-                />
-                <button type="button" onClick={addInstruction} disabled={!newInstruction.trim()} className="btn btn-secondary">
-                  {t.add}
-                </button>
+            <section className="panel">
+              <div className="panel-head">
+                <h2 className="panel-title">
+                  <label htmlFor="instruction-input">{t.specialInstructions}</label>
+                </h2>
+                <span className="panel-meta">{t.studyOptional}</span>
               </div>
-              <p id="instruction-hint" className="hint">
-                {t.specialInstructionsHelp}
-              </p>
-              {instructions.length > 0 && (
-                <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-3">
-                  {instructions.map((instruction, index) => (
-                    <li key={instruction} className="tag max-w-full whitespace-normal py-1 pl-2 pr-0 text-sm text-ink">
-                      <span className="min-w-0 break-words">{instruction}</span>
-                      <button type="button" onClick={() => removeInstruction(index)} aria-label={formatMessage(t.studyRemoveItem, { item: instruction })} className="-my-2 inline-flex h-10 w-9 shrink-0 items-center justify-center text-ink-muted hover:text-ink">
-                        <X className="h-4 w-4" aria-hidden="true" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+              <div className="panel-body">
+                <div className="flex gap-2">
+                  <input
+                    id="instruction-input"
+                    type="text"
+                    value={newInstruction}
+                    onChange={(e) => setNewInstruction(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addInstruction();
+                      }
+                    }}
+                    placeholder={t.studyInstructionPlaceholder}
+                    aria-describedby="instruction-hint"
+                    className="field min-w-0 flex-1"
+                  />
+                  <button type="button" onClick={addInstruction} disabled={!newInstruction.trim()} className="btn btn-secondary">
+                    {t.add}
+                  </button>
+                </div>
+                <p id="instruction-hint" className="hint">
+                  {t.specialInstructionsHelp}
+                </p>
+                {instructions.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-3">
+                    {instructions.map((instruction, index) => (
+                      <li key={instruction} className="tag max-w-full whitespace-normal py-1 pl-2 pr-0 text-sm text-ink">
+                        <span className="min-w-0 break-words">{instruction}</span>
+                        <button type="button" onClick={() => removeInstruction(index)} aria-label={formatMessage(t.studyRemoveItem, { item: instruction })} className="-my-2 inline-flex h-10 w-9 shrink-0 items-center justify-center text-ink-muted hover:text-ink">
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
 
-            {/* Question type */}
-            <div>
-              <p id="question-type-label" className="label">
-                {t.questionType}
-              </p>
-              <div role="radiogroup" aria-labelledby="question-type-label" className="choice-grid sm:grid-cols-3">
+            {/* Question type, then difficulty on its own row; the choice cells run to the panel edges */}
+            <section className="panel overflow-hidden">
+              <div className="panel-head">
+                <h2 id="question-type-label" className="panel-title">
+                  {t.questionType}
+                </h2>
+              </div>
+              <div role="radiogroup" aria-labelledby="question-type-label" className="choice-grid rounded-none border-0 sm:grid-cols-3">
                 {questionTypeOptions.map((option) => (
-                  <label key={option.value} className="choice">
+                  <label key={option.value} className="choice sm:px-5">
                     <input type="radio" name="question-type" value={option.value} checked={questionType === option.value} onChange={() => setQuestionType(option.value)} className="mt-1 h-4 w-4 shrink-0" />
                     <span className="min-w-0">
                       <span className="block font-medium text-ink">{questionTypeLabels[option.value]}</span>
@@ -640,30 +655,30 @@ export default function StudyPage() {
                   </label>
                 ))}
               </div>
-            </div>
-
-            {/* Difficulty */}
-            <div>
-              <p id="difficulty-label" className="label">
-                {t.difficulty}
-              </p>
-              <div role="radiogroup" aria-labelledby="difficulty-label" className="segmented">
-                {DIFFICULTIES.map((level) => (
-                  <button key={level} type="button" role="radio" aria-checked={difficulty === level} onClick={() => setDifficulty(level)} className="min-w-20">
-                    {levelLabels[level]}
-                  </button>
-                ))}
+              <div className="panel-body flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line">
+                <p id="difficulty-label" className="text-sm font-semibold text-ink">
+                  {t.difficulty}
+                </p>
+                <div role="radiogroup" aria-labelledby="difficulty-label" className="segmented">
+                  {DIFFICULTIES.map((level) => (
+                    <button key={level} type="button" role="radio" aria-checked={difficulty === level} onClick={() => setDifficulty(level)} className="min-w-20">
+                      {levelLabels[level]}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            </section>
 
             {/* Learning techniques */}
-            <div>
-              <p id="techniques-label" className="label">
-                {t.learningTechniques}
-              </p>
-              <div role="group" aria-labelledby="techniques-label" className="choice-grid md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2">
+            <section className="panel overflow-hidden">
+              <div className="panel-head">
+                <h2 id="techniques-label" className="panel-title">
+                  {t.learningTechniques}
+                </h2>
+              </div>
+              <div role="group" aria-labelledby="techniques-label" className="choice-grid rounded-none border-0 md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2">
                 {techniqueRows.map(({ key, label, desc }) => (
-                  <label key={key} className="choice">
+                  <label key={key} className="choice sm:px-5">
                     <input
                       type="checkbox"
                       checked={learningSettings[key]}
@@ -680,84 +695,106 @@ export default function StudyPage() {
                   </label>
                 ))}
               </div>
-            </div>
+            </section>
           </div>
+
+          {/* Session summary and the start action; the call number forms as topics are added */}
+          <aside className="panel min-w-0 lg:sticky lg:top-6">
+            <div className="panel-head">
+              <h2 className="panel-title">{t.studySessionSummaryTitle}</h2>
+              {contexts.length > 0 && (
+                <span className="callno" aria-hidden="true">
+                  {sessionCallNumber(contexts)}
+                </span>
+              )}
+            </div>
+            <div className="panel-body">
+              <dl className="facts [&_dt]:whitespace-nowrap">
+                <dt>{t.aiProvider}</dt>
+                <dd className="min-w-0">
+                  <span className="break-words">
+                    {currentProviderConfig.name} · {currentProviderSettings.model}
+                  </span>{" "}
+                  <Link to="/settings" className="font-semibold text-accent-ink underline">
+                    {t.studyChange}
+                  </Link>
+                </dd>
+                <dt>{t.studyContexts}</dt>
+                <dd>{contexts.length}</dd>
+                <dt>{t.questionType}</dt>
+                <dd>{questionTypeLabels[questionType]}</dd>
+                <dt>{t.difficulty}</dt>
+                <dd>{levelLabels[difficulty]}</dd>
+                <dt>{t.studyTechniquesOn}</dt>
+                <dd>
+                  {techniquesOn} / {techniqueRows.length}
+                </dd>
+              </dl>
+
+              {error && (
+                <div className="notice notice-error mt-5" role="alert">
+                  <AlertCircle aria-hidden="true" />
+                  <p>{error}</p>
+                </div>
+              )}
+
+              {/* Phones: the start action stays pinned to the bottom edge while the form scrolls */}
+              <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-ground px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 lg:static lg:mt-5 lg:border-0 lg:bg-transparent lg:p-0">
+                <button type="button" onClick={startNewSession} disabled={!canStart} className="btn btn-primary w-full">
+                  {isGenerating ? t.generatingQuestion : t.startEnhancedSession}
+                </button>
+                {isGenerating && <div className="loading-rule mt-3" role="status" aria-label={t.generatingQuestion} />}
+                {!isGenerating && contexts.length === 0 && <p className="hint">{t.aiErrorMissingContext}</p>}
+                {!isGenerating && contexts.length > 0 && !isProviderConfigured && (
+                  <p className="hint">
+                    {formatMessage(t.studyProviderNeedsKey, { provider: currentProviderConfig.name })}{" "}
+                    <Link to="/settings" className="font-semibold text-accent-ink underline">
+                      {t.studyOpenSettings}
+                    </Link>
+                  </p>
+                )}
+              </div>
+            </div>
+          </aside>
         </div>
-
-        {/* Session summary and the start action: a band on wide screens */}
-        <aside className="min-w-0 lg:band lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:self-start lg:rounded-sm lg:p-5">
-          <h2 className="section-title">{t.studySessionSummaryTitle}</h2>
-          <dl className="facts mt-3 [&_dt]:whitespace-nowrap">
-            <dt>{t.aiProvider}</dt>
-            <dd className="min-w-0">
-              <span className="break-words">
-                {currentProviderConfig.name} · {currentProviderSettings.model}
-              </span>{" "}
-              <Link to="/settings" className="font-normal text-ink-soft underline hover:text-ink lg:text-shell-muted lg:hover:text-shell-ink">
-                {t.studyChange}
-              </Link>
-            </dd>
-            <dt>{t.studyContexts}</dt>
-            <dd>{contexts.length}</dd>
-            <dt>{t.questionType}</dt>
-            <dd>{questionTypeLabels[questionType]}</dd>
-            <dt>{t.difficulty}</dt>
-            <dd>{levelLabels[difficulty]}</dd>
-            <dt>{t.studyTechniquesOn}</dt>
-            <dd>
-              {techniquesOn} / {techniqueRows.length}
-            </dd>
-          </dl>
-
-          {error && (
-            <div className="notice notice-error mt-6" role="alert">
-              <AlertCircle aria-hidden="true" />
-              <p>{error}</p>
-            </div>
-          )}
-
-          {/* Phones: the start action stays pinned to the bottom edge while the form scrolls */}
-          <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-ground px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 lg:static lg:mt-6 lg:border-0 lg:bg-transparent lg:p-0">
-            <button type="button" onClick={startNewSession} disabled={!canStart} className="btn btn-primary w-full lg:btn-inverse">
-              {isGenerating ? t.generatingQuestion : t.startEnhancedSession}
-            </button>
-            {isGenerating && <div className="loading-rule mt-3" role="status" aria-label={t.generatingQuestion} />}
-            {!isGenerating && contexts.length === 0 && <p className="hint">{t.aiErrorMissingContext}</p>}
-            {!isGenerating && contexts.length > 0 && !isProviderConfigured && (
-              <p className="hint">
-                {formatMessage(t.studyProviderNeedsKey, { provider: currentProviderConfig.name })}{" "}
-                <Link to="/settings" className="text-ink underline lg:text-shell-ink">
-                  {t.studyOpenSettings}
-                </Link>
-              </p>
-            )}
-          </div>
-        </aside>
       </div>
     );
   }
 
   // A review session whose queue is empty: show the result instead of a new question
   if (currentSession && reviewComplete) {
-    const answered = answeredCount(currentSession.questions);
-    const correct = currentSession.questions.filter((q) => q.isCorrect === true).length;
+    const results = [
+      { label: t.studyAnsweredLabel, value: String(answeredCount(currentSession.questions)) },
+      { label: t.correct, value: String(currentSession.questions.filter((q) => q.isCorrect === true).length) },
+      { label: t.score, value: `${sessionScore(currentSession.questions)}%` },
+    ];
     return (
-      <div className="page [&>*]:max-w-3xl">
-        <h1 className="page-title">{t.reviewCompleteTitle}</h1>
-        <p className="page-lede">{t.reviewCompleteDesc}</p>
-        <dl className="facts mt-6 max-w-sm">
-          <dt>{t.studyAnsweredLabel}</dt>
-          <dd>{answered}</dd>
-          <dt>{t.correct}</dt>
-          <dd>{correct}</dd>
-          <dt>{t.score}</dt>
-          <dd>{sessionScore(currentSession.questions)}%</dd>
-        </dl>
-        <div className="mt-8 flex flex-wrap gap-3">
+      <div className="page">
+        <header className="page-header">
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
+            <h1 className="page-title">{t.reviewCompleteTitle}</h1>
+            <p className="page-lede">{t.reviewCompleteDesc}</p>
+          </div>
           <button type="button" onClick={endSession} className="btn btn-primary">
             {t.endSession}
           </button>
-        </div>
+        </header>
+        <section className="panel mt-6 max-w-xl">
+          <div className="panel-head">
+            <h2 className="panel-title">{t.studyThisSession}</h2>
+            <span className="callno" aria-hidden="true">
+              {sessionCallNumber(currentSession.contexts)}
+            </span>
+          </div>
+          <dl className="grid grid-cols-3 divide-x divide-line">
+            {results.map(({ label, value }) => (
+              <div key={label} className="min-w-0 px-4 py-4 sm:px-5">
+                <dt className="caps-label">{label}</dt>
+                <dd className="figure mt-2">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       </div>
     );
   }
@@ -795,18 +832,23 @@ export default function StudyPage() {
       </div>
       <div className="border-b border-line">
         {/* Phones: topics and End session on one line, the counts under them */}
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-sm text-ink-soft sm:px-6 lg:px-10">
-          <p className="order-1 min-w-0 flex-1 truncate sm:max-w-[28rem] sm:flex-none lg:max-w-[36rem]" title={currentSession.contexts.join(" · ")}>
-            {currentSession.contexts.map((context, index) => (
-              <Fragment key={context}>
-                {index > 0 && " · "}
-                <span className={focusContext === undefined ? "text-ink" : context === focusContext ? "font-medium text-ink" : undefined}>{context}</span>
-              </Fragment>
-            ))}
+        <div className="mx-auto flex w-full max-w-[76rem] flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-sm text-ink-soft sm:px-6 lg:px-8">
+          <p className="order-1 flex min-w-0 flex-1 items-baseline gap-2.5" title={currentSession.contexts.join(" · ")}>
+            <span className="callno" aria-hidden="true">
+              {sessionCallNumber(currentSession.contexts)}
+            </span>
+            <span className="min-w-0 truncate">
+              {currentSession.contexts.map((context, index) => (
+                <Fragment key={context}>
+                  {index > 0 && " · "}
+                  <span className={focusContext === undefined ? "text-ink" : context === focusContext ? "font-medium text-ink" : undefined}>{context}</span>
+                </Fragment>
+              ))}
+            </span>
           </p>
           <div className="order-3 flex basis-full items-center gap-x-4 sm:order-2 sm:basis-auto sm:gap-x-6">
-            <span className="tabular">{questionLabel}</span>
-            <span>
+            <span className="tabular whitespace-nowrap">{questionLabel}</span>
+            <span className="whitespace-nowrap">
               {t.score}{" "}
               <span className="tabular font-medium text-ink">
                 {correct} / {answered}
@@ -814,14 +856,14 @@ export default function StudyPage() {
             </span>
             <span className="tag">{levelLabels[shownDifficulty]}</span>
           </div>
-          <div className="order-2 ml-auto flex shrink-0 items-center gap-2 sm:order-3">
-            <span className="mr-2 hidden text-ink-muted lg:inline" title={t.aiProvider}>
+          <div className="order-2 flex shrink-0 items-center gap-2 sm:order-3">
+            <span className="mr-2 hidden max-w-[16rem] truncate text-ink-muted xl:inline" title={t.aiProvider}>
               {currentProviderConfig.name} · {currentProviderSettings.model}
             </span>
             <button type="button" onClick={toggleFullscreen} aria-pressed={isFullscreen} aria-label={isFullscreen ? t.studyExitFullscreen : t.studyEnterFullscreen} title={isFullscreen ? t.studyExitFullscreen : t.studyEnterFullscreen} className="btn btn-ghost btn-icon hidden sm:inline-flex">
               {isFullscreen ? <Minimize aria-hidden="true" /> : <Maximize aria-hidden="true" />}
             </button>
-            <button type="button" onClick={endSession} className="btn btn-secondary btn-sm">
+            <button type="button" onClick={endSession} className="btn btn-secondary btn-sm min-h-10">
               {t.endSession}
             </button>
           </div>
@@ -831,9 +873,11 @@ export default function StudyPage() {
   );
 
   const sessionFacts = (
-    <aside className="min-w-0 lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:w-full lg:max-w-[17rem] lg:self-start lg:justify-self-end">
-      <h2 className="section-title">{t.studyThisSession}</h2>
-      <dl className="facts mt-3">
+    <aside className="panel min-w-0 lg:sticky lg:top-6 lg:w-full lg:max-w-[19rem] lg:self-start lg:justify-self-end">
+      <div className="panel-head">
+        <h2 className="panel-title">{t.studyThisSession}</h2>
+      </div>
+      <dl className="facts panel-body">
         <dt>{t.studyAnsweredLabel}</dt>
         <dd>{answered}</dd>
         <dt>{t.correct}</dt>
@@ -851,9 +895,9 @@ export default function StudyPage() {
           </>
         )}
       </dl>
-      <div className="hidden lg:block">
-        <h2 className="section-title mt-8">{t.learningTechniques}</h2>
-        <dl className="facts mt-3">
+      <div className="hidden border-t border-line lg:block">
+        <h3 className="caps-label px-4 pt-4 sm:px-5">{t.learningTechniques}</h3>
+        <dl className="facts panel-body pt-2.5">
           {techniqueRows.map(({ key, label }) => (
             <Fragment key={key}>
               <dt>{label}</dt>
@@ -872,29 +916,32 @@ export default function StudyPage() {
     return (
       <div ref={questionContainerRef} className={frameClass}>
         {strip}
-        <div className="page">
-          <h1 className="sr-only">{questionLabel}</h1>
-          {error && !isGenerating ? (
-            <div className="max-w-measure">
-              <div className="notice notice-error" role="alert">
-                <AlertCircle aria-hidden="true" />
-                <p>{error}</p>
+        <div className="page grid gap-12 lg:grid-cols-2">
+          <div className="min-w-0">
+            <h1 className="sr-only">{questionLabel}</h1>
+            {error && !isGenerating ? (
+              <div className="max-w-measure">
+                <div className="notice notice-error" role="alert">
+                  <AlertCircle aria-hidden="true" />
+                  <p>{error}</p>
+                </div>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <button type="button" onClick={() => generateNextQuestion(currentSession)} className="btn btn-primary">
+                    {t.tryAgain}
+                  </button>
+                  <button type="button" onClick={endSession} className="btn btn-secondary">
+                    {t.endSession}
+                  </button>
+                </div>
               </div>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button type="button" onClick={() => generateNextQuestion(currentSession)} className="btn btn-primary">
-                  {t.tryAgain}
-                </button>
-                <button type="button" onClick={endSession} className="btn btn-secondary">
-                  {t.endSession}
-                </button>
+            ) : (
+              <div className="max-w-measure" role="status">
+                <div className="loading-rule" />
+                <p className="mt-2 text-sm text-ink-soft">{t.generatingQuestion}</p>
               </div>
-            </div>
-          ) : (
-            <div className="max-w-measure" role="status">
-              <div className="loading-rule" />
-              <p className="mt-2 text-sm text-ink-soft">{t.generatingQuestion}</p>
-            </div>
-          )}
+            )}
+          </div>
+          {sessionFacts}
         </div>
       </div>
     );
@@ -906,6 +953,22 @@ export default function StudyPage() {
   const correctLetter = currentQuestion.correctAnswer !== undefined ? OPTION_KEYS[currentQuestion.correctAnswer] : undefined;
   const showSelfExplanation = showFeedback && sessionSettings.selfExplanation && (currentQuestion.isCorrect || !sessionSettings.elaborativeInterrogation);
   const explanationFeedback = currentQuestion.selfExplanationFeedback && selfExplanation.trim() === currentQuestion.selfExplanation ? currentQuestion.selfExplanationFeedback : undefined;
+
+  // The return mark: once graded, every original carries one. A scheduled question comes back on
+  // a date stamp; one that stays out of the queue is returned; a retired original is returned for
+  // good. A review copy reads its original in the source session, which `recordReviewResult` has
+  // just moved; an in-session copy moves no schedule, so it shows none.
+  const onLoan = !graded
+    ? undefined
+    : currentQuestion.reviewOf === undefined
+      ? currentQuestion
+      : currentQuestion.sourceSessionId
+        ? sessions.find((s) => s.id === currentQuestion.sourceSessionId)?.questions.find((q) => q.id === currentQuestion.reviewOf)
+        : undefined;
+  const returnBox = onLoan?.reviewBox ?? 0;
+  const returnDue = returnBox >= 1 && returnBox < RETIRED_BOX ? onLoan?.nextReview : undefined;
+  const returnStamp = returnDue ? stampDate(returnDue, language) : "";
+  const quietMark = returnBox === RETIRED_BOX ? t.studyReturnedForGood : graded && currentQuestion.reviewOf === undefined && currentQuestion.reviewBox === undefined ? t.studyReturned : undefined;
 
   const waitingLabel = isGenerating ? t.generatingQuestion : isEvaluating ? (showFeedback ? t.studyWritingFollowUp : t.evaluating) : null;
   const primaryAction = showFeedback
@@ -936,7 +999,7 @@ export default function StudyPage() {
         <button type="button" onClick={primaryAction.onClick} disabled={primaryAction.disabled} className="btn btn-primary w-full sm:w-auto">
           {primaryAction.label}
         </button>
-        <kbd className="hidden font-mono text-xs text-ink-muted lg:inline">{t.studyEnterKey}</kbd>
+        <kbd className="hidden rounded-sm border border-line px-1.5 py-0.5 font-narrow text-xs font-semibold uppercase tracking-wide text-ink-muted lg:inline">{t.studyEnterKey}</kbd>
       </div>
     </>
   );
@@ -956,7 +1019,7 @@ export default function StudyPage() {
           )}
           <div hidden={isGenerating}>
             <h1 className="sr-only">{questionLabel}</h1>
-            <div className="text-xl font-normal leading-snug text-ink sm:text-2xl [&_p:last-child]:mb-0 [&_p]:leading-snug">
+            <div className="text-xl font-medium leading-snug tracking-[-0.01em] text-ink sm:text-2xl [&_p:last-child]:mb-0 [&_p]:leading-snug">
               <MarkdownRenderer content={currentQuestion.question} />
             </div>
 
@@ -1039,72 +1102,91 @@ export default function StudyPage() {
         {/* Phones: `contents`, so the sticky action spans the whole question as before */}
         {feedbackMode ? (
           <div className="contents lg:block lg:min-w-0 lg:[&>*:first-child]:mt-0">
+            {/* The return mark heads the response; the options in the other column do not move */}
+            {returnStamp ? (
+              <p className="mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-ink-soft lg:mt-6">
+                <span>{t.studyComesBack}</span>
+                <time key={returnDue} dateTime={returnDue} className="stamp stamp-land">
+                  {returnStamp}
+                </time>
+                <span>· {formatMessage(t.studyReturnBox, { box: returnBox })}</span>
+              </p>
+            ) : (
+              quietMark && (
+                <p className="mt-8 lg:mt-6">
+                  <span key={quietMark} className="stamp stamp-quiet stamp-land">
+                    {quietMark}
+                  </span>
+                </p>
+              )
+            )}
+
             {isMultipleChoice && currentQuestion.explanation && (
-              <div className="block mt-8 lg:mt-6">
-                <h2 className="block-title">{t.studyExplanationTitle}</h2>
-                <div className="block-body [&_p:last-child]:mb-0">
+              <div className="note mt-8 lg:mt-6">
+                <h2 className="note-title">{t.studyExplanationTitle}</h2>
+                <div className="note-body [&_p:last-child]:mb-0">
                   <MarkdownRenderer content={stripExplanationLabel(currentQuestion.explanation)} />
                 </div>
               </div>
             )}
             {!isMultipleChoice && currentQuestion.feedback && (
-              <div className={`block mt-8 lg:mt-6 ${(currentQuestion.score ?? (currentQuestion.isCorrect ? 100 : 0)) >= 70 ? "block-success" : "block-error"}`}>
-                <h2 className="block-title">{currentQuestion.score !== undefined ? formatMessage(t.studyFeedbackScoreTitle, { score: currentQuestion.score }) : t.studyFeedbackTitle}</h2>
-                <div className="block-body [&_p:last-child]:mb-0">
+              <div className={`note mt-8 lg:mt-6 ${(currentQuestion.score ?? (currentQuestion.isCorrect ? 100 : 0)) >= 70 ? "note-success" : "note-error"}`}>
+                <h2 className="note-title">{currentQuestion.score !== undefined ? formatMessage(t.studyFeedbackScoreTitle, { score: currentQuestion.score }) : t.studyFeedbackTitle}</h2>
+                <div className="note-body [&_p:last-child]:mb-0">
                   <MarkdownRenderer content={currentQuestion.feedback} />
                 </div>
               </div>
             )}
 
-            {/* Elaborative interrogation after a wrong answer */}
+            {/* Elaborative interrogation after a wrong answer: the "why" question and the reply in one block */}
             {elaborativeQuestion && !currentQuestion.isCorrect && (
-              <div className="mt-8 lg:mt-6">
-                <div className="block">
-                  <h2 className="block-title">{t.elaborativePrompt}</h2>
-                  <div className="block-body [&_p:last-child]:mb-0">
+              <div className="note mt-8 lg:mt-6">
+                <h2 className="note-title">{t.elaborativePrompt}</h2>
+                <div className="note-body">
+                  <div className="[&_p:last-child]:mb-0">
                     <MarkdownRenderer content={elaborativeQuestion} />
                   </div>
+                  <label htmlFor="elaborative-answer" className="label mt-4">
+                    {t.studyElaborativeAnswerLabel}
+                  </label>
+                  <textarea id="elaborative-answer" value={elaborativeAnswer} onChange={(e) => setElaborativeAnswer(e.target.value)} placeholder={t.explainReasoning} rows={3} className="field" />
                 </div>
-                <label htmlFor="elaborative-answer" className="label mt-4">
-                  {t.studyElaborativeAnswerLabel}
-                </label>
-                <textarea id="elaborative-answer" value={elaborativeAnswer} onChange={(e) => setElaborativeAnswer(e.target.value)} placeholder={t.explainReasoning} rows={3} className="field" />
               </div>
             )}
 
             {/* Self-explanation: shown when no elaborative question applies */}
             {showSelfExplanation && (
-              <div className="mt-8 lg:mt-6">
-                <label htmlFor="self-explanation" className="label">
-                  {isMultipleChoice && correctLetter ? formatMessage(t.studySelfExplanationPromptOption, { letter: correctLetter }) : t.selfExplanationPrompt}
-                </label>
-                <textarea id="self-explanation" value={selfExplanation} onChange={(e) => setSelfExplanation(e.target.value)} placeholder={t.selfExplanationPlaceholder} rows={3} className="field" />
-                <div className="mt-3">
-                  <button type="button" onClick={requestExplanationFeedback} disabled={isGettingFeedback || !selfExplanation.trim()} className="btn btn-secondary">
+              <div className="note mt-8 lg:mt-6">
+                <h2 className="note-title">
+                  <label htmlFor="self-explanation">{isMultipleChoice && correctLetter ? formatMessage(t.studySelfExplanationPromptOption, { letter: correctLetter }) : t.selfExplanationPrompt}</label>
+                </h2>
+                <div className="note-body">
+                  <textarea id="self-explanation" value={selfExplanation} onChange={(e) => setSelfExplanation(e.target.value)} placeholder={t.selfExplanationPlaceholder} rows={3} className="field" />
+                  <button type="button" onClick={requestExplanationFeedback} disabled={isGettingFeedback || !selfExplanation.trim()} className="btn btn-secondary mt-3">
                     {t.getFeedback}
                   </button>
-                </div>
-                {isGettingFeedback && (
-                  <div className="mt-4" role="status">
-                    <div className="loading-rule" />
-                    <p className="mt-2 text-sm text-ink-soft">{t.gettingFeedback}</p>
-                  </div>
-                )}
-                {/* Shown while the text is the one the feedback reviewed */}
-                {explanationFeedback && (
-                  <div className="block mt-4">
-                    <h2 className="block-title">{t.explanationFeedbackTitle}</h2>
-                    <div className="block-body [&_p:last-child]:mb-0">
-                      <MarkdownRenderer content={explanationFeedback} />
+                  {isGettingFeedback && (
+                    <div className="mt-4" role="status">
+                      <div className="loading-rule" />
+                      <p className="mt-2 text-sm text-ink-soft">{t.gettingFeedback}</p>
                     </div>
-                  </div>
-                )}
-                {explanationFeedbackError && (
-                  <div className="notice notice-error mt-4" role="alert">
-                    <AlertCircle aria-hidden="true" />
-                    <p>{explanationFeedbackError}</p>
-                  </div>
-                )}
+                  )}
+                  {explanationFeedbackError && (
+                    <div className="notice notice-error mt-4" role="alert">
+                      <AlertCircle aria-hidden="true" />
+                      <p>{explanationFeedbackError}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {/* Shown while the text is the one the feedback reviewed */}
+            {showSelfExplanation && explanationFeedback && (
+              <div className="note mt-4">
+                <h2 className="note-title">{t.explanationFeedbackTitle}</h2>
+                <div className="note-body [&_p:last-child]:mb-0">
+                  <MarkdownRenderer content={explanationFeedback} />
+                </div>
               </div>
             )}
 

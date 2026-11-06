@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" sizes="16x16 32x32" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     
     <!-- Primary Meta Tags -->
@@ -47,8 +47,8 @@
     
     <!-- Additional SEO -->
     <link rel="canonical" href="https://lembrion.vercel.app/" />
-    <meta name="theme-color" content="#23373b" />
-    <meta name="msapplication-TileColor" content="#23373b" />
+    <meta name="theme-color" content="#0c0c0c" />
+    <meta name="msapplication-TileColor" content="#4b33b5" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Lembrion" />
@@ -311,48 +311,51 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png" />
     
-    <!-- First paint before React mounts: the title bar and a travelling progress rule.
+    <!-- First paint before React mounts: the wordmark and a travelling violet rule on the page ground.
          Colours here cover only the boot markup; src/index.css owns the page once loaded,
          and applyTheme() removes data-boot. -->
     <style>
+      html {
+        background: #f7f7f8;
+      }
       body {
         margin: 0;
-        font-family: 'Fira Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        font-family: 'Libre Franklin', system-ui, -apple-system, 'Segoe UI', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
       html[data-boot='dark'] {
-        background: #161616;
+        background: #121212;
       }
       .boot-bar {
         height: 3.5rem;
-        background: #23373b;
-        color: #ffffff;
+        color: #1c1f2a;
+        border-bottom: 1px solid #e3e3e8;
         display: flex;
         align-items: center;
         padding: 0 1.5rem;
-        font-size: 1.125rem;
-        font-weight: 500;
+        font-size: 1.25rem;
+        font-weight: 800;
       }
       html[data-boot='dark'] .boot-bar {
-        background: #0f0f0f;
+        color: #ececec;
+        border-bottom-color: #2a2a2a;
       }
       .boot-rule {
         position: relative;
-        height: 4px;
+        height: 3px;
         overflow: hidden;
-        background: rgba(134, 150, 153, 0.25);
-      }
-      html[data-boot='dark'] .boot-rule {
-        background: rgba(255, 255, 255, 0.12);
       }
       .boot-rule::after {
         content: '';
         position: absolute;
         inset: 0 auto 0 0;
         width: 33%;
-        background: #eb811b;
+        background: #4b33b5;
         animation: boot-travel 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      }
+      html[data-boot='dark'] .boot-rule::after {
+        background: #9d8cff;
       }
       @keyframes boot-travel {
         from { transform: translateX(-100%); }
@@ -368,15 +371,17 @@
         try {
           storedTheme = JSON.parse(localStorage.getItem('studorama-theme') || 'null');
         } catch (e) {}
-        // As resolveThemePreference(): a missing, unparseable, or non-string value follows the system.
-        var followsSystem = typeof storedTheme !== 'string' || storedTheme === 'system';
-        if (
+        // As resolveThemePreference(): a missing, unparseable, or non-string value gets the dark default.
+        var isDark =
+          typeof storedTheme !== 'string' ||
           storedTheme === 'dark' || storedTheme === 'midnight' || storedTheme === 'neon' ||
-          (followsSystem && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
-        ) {
+          (storedTheme === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
           document.documentElement.setAttribute('data-boot', 'dark');
         }
-      } catch (e) {}
+      } catch (e) {
+        document.documentElement.setAttribute('data-boot', 'dark');
+      }
     </script>
   </head>
   <body>

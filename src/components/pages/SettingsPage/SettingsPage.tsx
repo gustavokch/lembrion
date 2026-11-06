@@ -117,10 +117,14 @@ export default function SettingsPage() {
 
   return (
     <div className="page">
-      <h1 className="page-title">{t.settingsTitle}</h1>
-      <p className="page-lede">{t.configurePreferences}</p>
+      <header className="page-header">
+        <div className="flex min-w-0 flex-wrap items-baseline gap-x-3.5 gap-y-1">
+          <h1 className="page-title">{t.settingsTitle}</h1>
+          <p className="page-lede">{t.configurePreferences}</p>
+        </div>
+      </header>
 
-      <div role="tablist" aria-label={t.settingsTitle} className="tabs mt-6 max-w-4xl lg:max-w-none" onKeyDown={handleTabKeyDown}>
+      <div role="tablist" aria-label={t.settingsTitle} className="tabs mt-6" onKeyDown={handleTabKeyDown}>
         {TABS.map((id) => (
           <button
             key={id}
@@ -145,25 +149,27 @@ export default function SettingsPage() {
         role="tabpanel"
         id={`settings-panel-${activeTab}`}
         aria-labelledby={`settings-tab-${activeTab}`}
-        className="mt-8 lg:mt-6"
+        className="mt-6"
       >
         {activeTab === 'providers' && (
-          <div className="max-w-4xl lg:grid lg:max-w-none lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             {/* Provider list stays in view while the taller settings column scrolls */}
             <section
               aria-labelledby="settings-provider-heading"
-              className="min-w-0 lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:self-start"
+              className="panel min-w-0 overflow-hidden lg:sticky lg:top-6 lg:self-start"
             >
-              <h2 id="settings-provider-heading" className="section-title">
-                {t.settingsProviderTitle}
-              </h2>
-              <div role="radiogroup" aria-labelledby="settings-provider-heading" className="choice-group mt-4">
+              <div className="panel-head">
+                <h2 id="settings-provider-heading" className="panel-title">
+                  {t.settingsProviderTitle}
+                </h2>
+              </div>
+              <div role="radiogroup" aria-labelledby="settings-provider-heading" className="choice-group rounded-none border-0">
                 {availableProviders.map((provider) => {
                   const settings = multiProviderSettings.providers[provider.id];
                   const configured = validateProviderConfig(provider.id, settings, language).valid;
                   const needsKey = provider.requiresApiKey && !settings.apiKey;
                   return (
-                    <label key={provider.id} className="choice">
+                    <label key={provider.id} className="choice sm:px-5">
                       <input
                         type="radio"
                         name="settings-provider"
@@ -173,10 +179,10 @@ export default function SettingsPage() {
                         className="mt-1 h-4 w-4 shrink-0"
                       />
                       <span className="min-w-0 flex-1">
-                        <span className="block font-medium text-ink">
+                        <span className="block font-semibold text-ink">
                           {getLocalizedProviderName(provider.id, language)}
                         </span>
-                        <span className="block text-sm text-ink-soft">
+                        <span className="mt-0.5 block text-sm text-ink-muted">
                           {getLocalizedProviderDescription(provider.id, language)}
                         </span>
                       </span>
@@ -186,7 +192,7 @@ export default function SettingsPage() {
                           {t.settingsProviderConfigured}
                         </span>
                       ) : needsKey ? (
-                        <span className="tag mt-1 shrink-0">{t.settingsProviderNeedsKey}</span>
+                        <span className="tag mt-1 shrink-0 text-ink-muted">{t.settingsProviderNeedsKey}</span>
                       ) : (
                         <span className="tag tag-error mt-1 shrink-0">{t.settingsProviderIncomplete}</span>
                       )}
@@ -196,13 +202,15 @@ export default function SettingsPage() {
               </div>
             </section>
 
-            <section aria-labelledby="settings-provider-form-heading" className="mt-10 min-w-0 lg:mt-0">
-              <h2 id="settings-provider-form-heading" className="section-title">
-                {formatMessage(t.settingsProviderSettingsTitle, { provider: currentProviderName })}
-              </h2>
-              <p className="hint">{t.settingsAutoSave}</p>
+            <section aria-labelledby="settings-provider-form-heading" className="panel min-w-0">
+              <div className="panel-head">
+                <h2 id="settings-provider-form-heading" className="panel-title">
+                  {formatMessage(t.settingsProviderSettingsTitle, { provider: currentProviderName })}
+                </h2>
+                <p className="panel-meta">{t.settingsAutoSave}</p>
+              </div>
 
-              <div className="mt-6 max-w-xl space-y-8 lg:max-w-none">
+              <div className="panel-body space-y-7">
                 {currentProviderConfig.requiresApiKey && (
                   <div>
                     <label htmlFor="provider-api-key" className="label">
@@ -231,7 +239,7 @@ export default function SettingsPage() {
                         onClick={() => setShowApiKey(prev => !prev)}
                         aria-label={t.settingsShowApiKey}
                         aria-pressed={showApiKey}
-                        className="btn btn-ghost btn-icon shrink-0"
+                        className="btn btn-secondary btn-icon shrink-0"
                       >
                         {showApiKey ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                       </button>
@@ -242,8 +250,9 @@ export default function SettingsPage() {
                   </div>
                 )}
 
-                <div>
-                  <h3 className="text-sm font-semibold text-ink">
+                {/* Setup steps: an inset beside the fields they explain */}
+                <div className="rounded border border-line bg-sunken px-4 pb-2 pt-3">
+                  <h3 className="caps-label">
                     {currentProviderConfig.requiresApiKey ? t.howToGetKey : t.settingsOllamaSetupTitle}
                   </h3>
                   <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-ink-soft marker:text-ink-muted">
@@ -255,7 +264,7 @@ export default function SettingsPage() {
                     href={setupUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-flex min-h-10 items-center gap-1.5 text-sm text-ink underline hover:text-ink-soft"
+                    className="mt-1 inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-accent-ink underline hover:decoration-2"
                   >
                     {formatMessage(t.settingsOpenSite, { site: new URL(setupUrl).host })}
                     <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -297,7 +306,7 @@ export default function SettingsPage() {
                   {/* Registry models as tappable suggestions (datalist support on mobile is unreliable) */}
                   {currentProviderConfig.models.length > 0 && (
                     <div className="mt-4">
-                      <p id="provider-model-suggestions-label" className="text-sm font-medium text-ink">
+                      <p id="provider-model-suggestions-label" className="caps-label">
                         {t.suggestedModels}
                       </p>
                       <div
@@ -317,7 +326,7 @@ export default function SettingsPage() {
                                 'model',
                                 model.id
                               )}
-                              className="btn btn-secondary btn-sm min-h-10 aria-pressed:border-ink aria-pressed:bg-sunken sm:min-h-8"
+                              className="btn btn-secondary btn-sm min-h-10 aria-pressed:border-accent aria-pressed:bg-[color-mix(in_srgb,var(--color-primary)_11%,var(--color-surface))] aria-pressed:text-accent-ink sm:min-h-8"
                             >
                               {isSelected && <Check aria-hidden="true" />}
                               {getLocalizedModelName(currentProvider, model.id, language)}
@@ -366,7 +375,7 @@ export default function SettingsPage() {
                   <div className="notice notice-error">
                     <AlertCircle aria-hidden="true" />
                     <div>
-                      <p className="font-medium">{t.invalidConfiguration}</p>
+                      <p className="font-semibold">{t.invalidConfiguration}</p>
                       <ul className="mt-1 list-disc space-y-0.5 pl-5">
                         {validation.errors.map((error, index) => (
                           <li key={index}>{error}</li>
@@ -381,13 +390,15 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'language' && (
-          <section aria-labelledby="settings-language-heading" className="max-w-4xl">
-            <h2 id="settings-language-heading" className="section-title">
-              {t.language}
-            </h2>
-            <div role="radiogroup" aria-labelledby="settings-language-heading" className="choice-group mt-4 max-w-md">
+          <section aria-labelledby="settings-language-heading" className="panel max-w-3xl overflow-hidden">
+            <div className="panel-head">
+              <h2 id="settings-language-heading" className="panel-title">
+                {t.language}
+              </h2>
+            </div>
+            <div role="radiogroup" aria-labelledby="settings-language-heading" className="choice-group rounded-none border-0">
               {LANGUAGES.map((lang) => (
-                <label key={lang.value} className="choice items-center">
+                <label key={lang.value} className="choice items-center sm:px-5">
                   <input
                     type="radio"
                     name="settings-language"
@@ -396,25 +407,29 @@ export default function SettingsPage() {
                     onChange={() => changeLanguage(lang.value)}
                     className="h-4 w-4 shrink-0"
                   />
-                  <span lang={lang.value} className="font-medium text-ink">
+                  <span lang={lang.value} className="font-semibold text-ink">
                     {lang.label}
                   </span>
                 </label>
               ))}
             </div>
-            <p className="hint max-w-md">{t.languageTipDesc}</p>
+            <p className="panel-body border-t border-line py-3 text-sm text-ink-muted">{t.languageTipDesc}</p>
           </section>
         )}
 
         {activeTab === 'data' && (
-          <section aria-labelledby="settings-data-heading" className="max-w-4xl">
-            <h2 id="settings-data-heading" className="section-title">
-              {t.settingsStoredDataTitle}
-            </h2>
-            <p className="mt-4 max-w-measure text-ink-soft">{t.manageYourData}</p>
+          <section aria-labelledby="settings-data-heading" className="panel max-w-3xl">
+            <div className="panel-head">
+              <h2 id="settings-data-heading" className="panel-title">
+                {t.settingsStoredDataTitle}
+              </h2>
+            </div>
+            <div className="panel-body">
+              <p className="max-w-measure text-ink-soft">{t.manageYourData}</p>
+            </div>
 
-            <div className="mt-10 border-t border-line pt-6">
-              <h3 className="text-base font-semibold text-ink">{t.deleteAllData}</h3>
+            <div className="panel-body border-t border-line">
+              <h3 className="font-semibold text-ink">{t.deleteAllData}</h3>
               <p className="mt-1 max-w-measure text-sm text-ink-soft">{t.deleteAllDataDesc}</p>
               <button
                 ref={deleteButtonRef}
