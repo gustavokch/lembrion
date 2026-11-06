@@ -322,7 +322,7 @@
         -moz-osx-font-smoothing: grayscale;
       }
       html[data-boot='dark'] {
-        background: #1c2c2f;
+        background: #161616;
       }
       .boot-bar {
         height: 3.5rem;
@@ -335,13 +335,16 @@
         font-weight: 500;
       }
       html[data-boot='dark'] .boot-bar {
-        background: #142225;
+        background: #0f0f0f;
       }
       .boot-rule {
         position: relative;
         height: 4px;
         overflow: hidden;
         background: rgba(134, 150, 153, 0.25);
+      }
+      html[data-boot='dark'] .boot-rule {
+        background: rgba(255, 255, 255, 0.12);
       }
       .boot-rule::after {
         content: '';
@@ -361,8 +364,16 @@
     </style>
     <script>
       try {
-        var storedTheme = JSON.parse(localStorage.getItem('studorama-theme') || 'null');
-        if (storedTheme === 'dark' || storedTheme === 'midnight' || storedTheme === 'neon') {
+        var storedTheme = null;
+        try {
+          storedTheme = JSON.parse(localStorage.getItem('studorama-theme') || 'null');
+        } catch (e) {}
+        // As resolveThemePreference(): a missing, unparseable, or non-string value follows the system.
+        var followsSystem = typeof storedTheme !== 'string' || storedTheme === 'system';
+        if (
+          storedTheme === 'dark' || storedTheme === 'midnight' || storedTheme === 'neon' ||
+          (followsSystem && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
           document.documentElement.setAttribute('data-boot', 'dark');
         }
       } catch (e) {}

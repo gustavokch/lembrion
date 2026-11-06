@@ -1,8 +1,20 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocalStorage } from './useLocalStorage';
-import { Theme, ThemeConfig } from '../core/types';
-import { getAllThemes, getTheme, resolveTheme } from '../core/services/theme';
+import { Theme, ThemeConfig, ThemePreference, THEME_PREFERENCE_IDS } from '../core/types';
+import { getTheme, resolveThemePreference, themeForPreference } from '../core/services/theme';
+import { localStorage } from '../core/services/storage';
 import { STORAGE_KEYS, DEFAULTS } from '../core/config/constants';
+
+const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)';
+
+/** `null` where `matchMedia` is missing (jsdom, old browsers), which counts as light. */
+function darkSchemeQuery(): MediaQueryList | null {
+  return typeof window.matchMedia === 'function' ? window.matchMedia(DARK_SCHEME_QUERY) : null;
+}
+
+function systemPrefersDark(): boolean {
+  return darkSchemeQuery()?.matches ?? false;
+}
 
 /**
  * Write a theme's colour tokens to `--color-*` on `<html>`, set
@@ -23,27 +35,51 @@ export function applyTheme(theme: Theme): void {
 }
 
 export function useTheme() {
-  const [storedTheme, setStoredTheme] = useLocalStorage<Theme>(STORAGE_KEYS.THEME, DEFAULTS.THEME as Theme);
-  const currentTheme = resolveTheme(storedTheme);
+  const [storedPreference, setStoredPreference] = useLocalStorage<ThemePreference>(
+    STORAGE_KEYS.THEME,
+    DEFAULTS.THEME as ThemePreference,
+  );
+  const preference = resolveThemePreference(storedPreference);
+  const [prefersDark, setPrefersDark] = useState(systemPrefersDark);
+  const currentTheme = themeForPreference(preference, prefersDark);
+
+  // Apply at mount and when this instance's preference changes (its own choice
+  // or another tab's). A system change is left to the listener below, because
+  // this instance's preference may be stale.
+  useEffect(() => {
+    applyTheme(themeForPreference(preference, systemPrefersDark()));
+  }, [preference]);
 
   useEffect(() => {
-    applyTheme(currentTheme);
-  }, [currentTheme]);
+    const query = darkSchemeQuery();
+    if (!query) return;
+    const onChange = () => {
+      setPrefersDark(query.matches);
+      // Read storage, not this instance's state: `Layout` and `ThemeSelector`
+      // each hold a `useTheme()`, and a choice made in one does not reach the other.
+      const stored = resolveThemePreference(localStorage.getItem<unknown>(STORAGE_KEYS.THEME, DEFAULTS.THEME));
+      if (stored === 'system') applyTheme(themeForPreference(stored, query.matches));
+    };
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
+  }, []);
 
   const changeTheme = useCallback(
-    (theme: Theme) => {
-      applyTheme(theme);
-      setStoredTheme(theme);
+    (next: ThemePreference) => {
+      applyTheme(themeForPreference(next, systemPrefersDark()));
+      setStoredPreference(next);
     },
-    [setStoredTheme],
+    [setStoredPreference],
   );
 
   return {
+    preference,
+    /** The palette on screen: `preference`, with `system` resolved. */
     currentTheme,
     themeConfig: getTheme(currentTheme),
     changeTheme,
-    themes: getAllThemes(),
+    preferences: THEME_PREFERENCE_IDS,
   };
 }
 
-export type { Theme, ThemeConfig };
+export type { Theme, ThemeConfig, ThemePreference };

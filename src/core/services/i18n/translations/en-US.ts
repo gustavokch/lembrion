@@ -255,6 +255,7 @@ export const enUS: Translations = {
 
   // Theme selector and app shell
   selectThemeAria: 'Select theme',
+  themeNameSystem: 'System',
   themeNameLight: 'Light',
   themeNameDark: 'Dark',
   themeNameContrast: 'High contrast',

@@ -1,22 +1,23 @@
-import { Check, Contrast, Moon, Sun } from 'lucide-react';
+import { Check, Contrast, Monitor, Moon, Sun } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getLocalizedThemeName } from '../../core/services/theme';
-import { Theme } from '../../core/types';
+import { ThemePreference } from '../../core/types';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useTheme } from '../../hooks/useTheme';
 
-const THEME_ICONS: Record<Theme, typeof Sun> = {
+const THEME_ICONS: Record<ThemePreference, typeof Sun> = {
+  system: Monitor,
   light: Sun,
   dark: Moon,
   contrast: Contrast,
 };
 
 export default function ThemeSelector() {
-  const { currentTheme, changeTheme, themes } = useTheme();
+  const { preference, changeTheme, preferences } = useTheme();
   const { language, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const CurrentIcon = THEME_ICONS[currentTheme];
+  const CurrentIcon = THEME_ICONS[preference];
 
   useEffect(() => {
     if (!open) return;
@@ -50,23 +51,23 @@ export default function ThemeSelector() {
 
       {open && (
         <div role="menu" aria-label={t.theme} className="menu absolute right-0 top-full z-50 mt-2">
-          {themes.map(theme => {
-            const Icon = THEME_ICONS[theme.id];
-            const selected = theme.id === currentTheme;
+          {preferences.map(id => {
+            const Icon = THEME_ICONS[id];
+            const selected = id === preference;
             return (
               <button
-                key={theme.id}
+                key={id}
                 type="button"
                 role="menuitemradio"
                 aria-checked={selected}
                 className="menu-item"
                 onClick={() => {
-                  changeTheme(theme.id);
+                  changeTheme(id);
                   setOpen(false);
                 }}
               >
                 <Icon aria-hidden="true" />
-                <span className="flex-1">{getLocalizedThemeName(theme.id, language)}</span>
+                <span className="flex-1">{getLocalizedThemeName(id, language)}</span>
                 {selected && <Check aria-hidden="true" className="!text-ink" />}
               </button>
             );

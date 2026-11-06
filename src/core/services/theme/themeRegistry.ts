@@ -1,4 +1,4 @@
-import { Language, Theme, ThemeConfig, THEME_IDS } from '../../types';
+import { Language, Theme, ThemeConfig, ThemePreference, THEME_IDS, THEME_PREFERENCE_IDS } from '../../types';
 import { getTranslations } from '../i18n/translations';
 
 export const themes: Record<Theme, ThemeConfig> = {
@@ -36,20 +36,20 @@ export const themes: Record<Theme, ThemeConfig> = {
     id: 'dark',
     scheme: 'dark',
     colors: {
-      shell: '#142225',
-      shellInk: '#f3f5f5',
-      shellMuted: '#9fb1b4',
-      ground: '#1c2c2f',
-      surface: '#23373b',
-      sunken: '#2a3f43',
-      ink: '#eef2f2',
-      inkSoft: '#c3cfd0',
-      inkMuted: '#a3b4b7',
-      line: '#31474b',
-      lineStrong: '#6a868b',
-      primary: '#e9eeee',
+      shell: '#0f0f0f',
+      shellInk: '#f5f5f5',
+      shellMuted: '#a8a8a8',
+      ground: '#161616',
+      surface: '#1e1e1e',
+      sunken: '#262626',
+      ink: '#ededed',
+      inkSoft: '#c9c9c9',
+      inkMuted: '#a3a3a3',
+      line: '#2e2e2e',
+      lineStrong: '#737373',
+      primary: '#ededed',
       primaryHover: '#ffffff',
-      onPrimary: '#142225',
+      onPrimary: '#141414',
       accent: '#eb811b',
       accentInk: '#f39a45',
       success: '#2fc25a',
@@ -94,28 +94,36 @@ export const themes: Record<Theme, ThemeConfig> = {
 };
 
 /**
- * Map a stored theme id to a current one. Earlier releases shipped ten
- * themes; the dark ones become `dark`, the rest `light`.
+ * Map a stored theme value to a current preference. Earlier releases shipped
+ * ten themes: the dark ones become `dark`, any other string `light`. A missing
+ * or non-string value follows the system.
  */
-export function resolveTheme(value: unknown): Theme {
-  if (typeof value === 'string') {
-    if ((THEME_IDS as readonly string[]).includes(value)) return value as Theme;
-    if (value === 'midnight' || value === 'neon') return 'dark';
-  }
+export function resolveThemePreference(value: unknown): ThemePreference {
+  if (typeof value !== 'string') return 'system';
+  if ((THEME_PREFERENCE_IDS as readonly string[]).includes(value)) return value as ThemePreference;
+  if (value === 'midnight' || value === 'neon') return 'dark';
   return 'light';
 }
 
+/** The palette to show for a preference; `system` follows `prefersDark`. */
+export function themeForPreference(preference: ThemePreference, prefersDark: boolean): Theme {
+  if (preference !== 'system') return preference;
+  return prefersDark ? 'dark' : 'light';
+}
+
+/** Never throws: an unknown id maps like a stored value, and `system` to light. */
 export function getTheme(themeId: Theme): ThemeConfig {
-  return themes[resolveTheme(themeId)];
+  return themes[themeForPreference(resolveThemePreference(themeId), false)];
 }
 
 export function getAllThemes(): ThemeConfig[] {
   return THEME_IDS.map(id => themes[id]);
 }
 
-export function getLocalizedThemeName(themeId: Theme, language: Language): string {
+export function getLocalizedThemeName(preference: ThemePreference, language: Language): string {
   const t = getTranslations(language);
-  switch (themeId) {
+  switch (preference) {
+    case 'system': return t.themeNameSystem;
     case 'light': return t.themeNameLight;
     case 'dark': return t.themeNameDark;
     case 'contrast': return t.themeNameContrast;

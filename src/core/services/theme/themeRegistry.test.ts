@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { getAllThemes, resolveTheme } from './themeRegistry';
+import { Theme } from '../../types';
+import { getAllThemes, getTheme, resolveThemePreference, themeForPreference } from './themeRegistry';
 
 function luminance(hex: string): number {
   const channels = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
@@ -12,25 +13,50 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-describe('resolveTheme', () => {
-  it('keeps current theme ids', () => {
-    expect(resolveTheme('light')).toBe('light');
-    expect(resolveTheme('dark')).toBe('dark');
-    expect(resolveTheme('contrast')).toBe('contrast');
-  });
-
-  it('maps retired dark themes to dark and the rest to light', () => {
-    expect(resolveTheme('midnight')).toBe('dark');
-    expect(resolveTheme('neon')).toBe('dark');
-    for (const id of ['focus', 'forest', 'ocean', 'sunset', 'minimal', 'warm']) {
-      expect(resolveTheme(id)).toBe('light');
+describe('resolveThemePreference', () => {
+  it('keeps current preference ids', () => {
+    for (const id of ['system', 'light', 'dark', 'contrast']) {
+      expect(resolveThemePreference(id)).toBe(id);
     }
   });
 
-  it('falls back to light for missing or corrupted values', () => {
-    expect(resolveTheme(undefined)).toBe('light');
-    expect(resolveTheme(42)).toBe('light');
-    expect(resolveTheme('constructor')).toBe('light');
+  it('maps retired dark themes to dark and any other string to light', () => {
+    expect(resolveThemePreference('midnight')).toBe('dark');
+    expect(resolveThemePreference('neon')).toBe('dark');
+    for (const id of ['focus', 'forest', 'ocean', 'sunset', 'minimal', 'warm', 'constructor', '']) {
+      expect(resolveThemePreference(id)).toBe('light');
+    }
+  });
+
+  it('follows the system for missing or non-string values', () => {
+    expect(resolveThemePreference(undefined)).toBe('system');
+    expect(resolveThemePreference(null)).toBe('system');
+    expect(resolveThemePreference(42)).toBe('system');
+    expect(resolveThemePreference({ id: 'dark' })).toBe('system');
+  });
+});
+
+describe('themeForPreference', () => {
+  it('resolves system by the colour-scheme flag', () => {
+    expect(themeForPreference('system', true)).toBe('dark');
+    expect(themeForPreference('system', false)).toBe('light');
+  });
+
+  it('keeps an explicit palette whatever the flag', () => {
+    for (const prefersDark of [true, false]) {
+      expect(themeForPreference('light', prefersDark)).toBe('light');
+      expect(themeForPreference('dark', prefersDark)).toBe('dark');
+      expect(themeForPreference('contrast', prefersDark)).toBe('contrast');
+    }
+  });
+});
+
+describe('getTheme', () => {
+  it('returns a palette for an unknown id instead of throwing', () => {
+    expect(getTheme('constructor' as Theme).id).toBe('light');
+    expect(getTheme('system' as Theme).id).toBe('light');
+    expect(getTheme(undefined as unknown as Theme).id).toBe('light');
+    expect(getTheme('midnight' as Theme).id).toBe('dark');
   });
 });
 

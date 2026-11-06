@@ -255,6 +255,7 @@ export const ptBR: Translations = {
 
   // Theme selector and app shell
   selectThemeAria: 'Selecionar tema',
+  themeNameSystem: 'Sistema',
   themeNameLight: 'Claro',
   themeNameDark: 'Escuro',
   themeNameContrast: 'Alto contraste',

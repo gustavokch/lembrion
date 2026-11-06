@@ -1,6 +1,12 @@
+/** Concrete palettes. */
 export const THEME_IDS = ['light', 'dark', 'contrast'] as const;
 
 export type Theme = (typeof THEME_IDS)[number];
+
+/** Stored choice: a palette, or `system` to follow `prefers-color-scheme`. */
+export const THEME_PREFERENCE_IDS = ['system', ...THEME_IDS] as const;
+
+export type ThemePreference = (typeof THEME_PREFERENCE_IDS)[number];
 
 /**
  * Colour tokens. `useTheme()` writes each one to `--color-<key>` on

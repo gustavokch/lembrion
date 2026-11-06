@@ -272,6 +272,7 @@ export interface Translations {
 
   // Theme selector and app shell
   selectThemeAria: string;
+  themeNameSystem: string;
   themeNameLight: string;
   themeNameDark: string;
   themeNameContrast: string;

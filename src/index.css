@@ -39,10 +39,10 @@
 
 /* Dark first paint (set by the boot script in index.html) until useTheme() runs. */
 html[data-boot='dark'] {
-  --color-shell: #142225;
-  --color-ground: #1c2c2f;
-  --color-ink: #eef2f2;
-  --color-line: #31474b;
+  --color-shell: #0f0f0f;
+  --color-ground: #161616;
+  --color-ink: #ededed;
+  --color-line: #2e2e2e;
   color-scheme: dark;
 }
 
