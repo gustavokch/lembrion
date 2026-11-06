@@ -734,7 +734,7 @@ There are no cards. Containers are the panel, the note, the notice, and the choi
 - **Shadow Strategy:** none; see Elevation & Depth.
 
 ### Inputs / Fields
-- **Style:** a 1px Control Edge border, Panel, 4px corners, 0.5rem by 0.75rem, 1rem Ink text, Muted Ink placeholders at full opacity. Textareas are at least 6rem tall, vertically resizable, with relaxed leading. Keys, model IDs and URLs set in the monospace stack. The History search carries a 16px Muted Ink leading icon.
+- **Style:** a 1px Control Edge border, Panel, 4px corners, 0.5rem by 0.75rem, 1rem Ink text, Muted Ink placeholders at full opacity. Textareas are at least 6rem tall, vertically resizable, with relaxed leading. Keys, model IDs and URLs set in the monospace stack. The History search carries a 16px Muted Ink leading icon. A select (the reasoning effort in Settings) is the same field with the native arrow removed and a 16px Muted Ink chevron 0.75rem from its right edge; its list is the browser's own, following `color-scheme`. The provider's default level carries "(Recommended)", like the suggested model.
 - **Focus:** no outline; the border turns Focus Ring and a 1px ring of the same colour doubles it (120ms).
 - **Hover:** the border darkens to Soft Ink.
 - **Error / Disabled:** `aria-invalid="true"` turns the border Slip Red; disabled fields go Inset with Muted Ink text. A label sits 0.375rem above (0.875rem semibold Ink); hints and errors sit 0.375rem below (0.875rem Muted Ink or Slip Red Ink).

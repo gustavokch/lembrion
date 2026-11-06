@@ -9,7 +9,7 @@
     <title>Lembrion - Free AI Study Sessions Built on Learning Science</title>
     <meta name="title" content="Lembrion - Free AI Study Sessions Built on Learning Science" />
     <meta name="description" content="AI study sessions built on learning science. Lembrion generates personalized questions, evaluates your answers, and tracks your progress. Free, no account required - bring your own AI key and start studying instantly." />
-    <meta name="keywords" content="AI study app, free learning platform, study sessions, quiz generator, personalized learning, study assistant, OpenAI, Gemini, Claude, DeepSeek, Ollama, learning techniques, make it stick, retrieval practice, elaborative interrogation, no account required, estudo com IA, plataforma de aprendizado gratuita, sessões de estudo, gerador de quiz, aprendizado personalizado, assistente de estudo, técnicas de aprendizado" />
+    <meta name="keywords" content="AI study app, free learning platform, study sessions, quiz generator, personalized learning, study assistant, OpenAI, Gemini, Claude, DeepSeek, Ollama, vLLM, self-hosted models, learning techniques, make it stick, retrieval practice, elaborative interrogation, no account required, estudo com IA, plataforma de aprendizado gratuita, sessões de estudo, gerador de quiz, aprendizado personalizado, assistente de estudo, técnicas de aprendizado" />
     <meta name="author" content="gustavokch" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="language" content="English" />
@@ -98,14 +98,14 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Lembrion",
-      "description": "Free AI-powered study sessions with multiple-choice and open-ended questions, answer evaluation, and session history. Works with OpenAI, Google Gemini, Anthropic, DeepSeek, or a local Ollama server. No account required.",
+      "description": "Free AI-powered study sessions with multiple-choice and open-ended questions, answer evaluation, and session history. Works with OpenAI, Google Gemini, Anthropic, DeepSeek, or your own server through the Anthropic Messages API or the OpenAI Responses API. No account required.",
       "url": "https://lembrion.vercel.app/",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "Web Browser",
       "browserRequirements": "Requires JavaScript. Supports Chrome, Firefox, Safari, Edge.",
       "softwareVersion": "2.8.0",
-      "datePublished": "2024-01-01",
-      "dateModified": "2024-12-20",
+      "datePublished": "2026-11-06",
+      "dateModified": "2026-11-06",
       "author": {
         "@type": "Person",
         "name": "gustavokch",
@@ -133,7 +133,7 @@
         "AI evaluation of written answers",
         "Elaborative interrogation follow-up questions",
         "Session history and progress tracking",
-        "Works with OpenAI, Google Gemini, Anthropic, DeepSeek, and Ollama",
+        "Works with OpenAI, Google Gemini, Anthropic, DeepSeek, and any server that speaks the Anthropic Messages API or the OpenAI Responses API",
         "No account required",
         "Sessions and settings stored in your browser",
         "Multilingual support (English, Portuguese)",
@@ -177,7 +177,7 @@
       "price": "0",
       "priceCurrency": "USD",
       "softwareVersion": "2.8.0",
-      "datePublished": "2024-01-01",
+      "datePublished": "2026-11-06",
       "publisher": {
         "@type": "Person",
         "name": "gustavokch",
@@ -216,7 +216,7 @@
           "name": "Is Lembrion really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Lembrion is free to use and needs no account. Questions are generated with your own API key from the AI provider you choose (OpenAI, Google Gemini, Anthropic, or DeepSeek), and that provider may charge you for usage. Ollama runs models on your own machine with no API cost."
+            "text": "Lembrion is free to use and needs no account. Questions are generated with your own API key from the AI provider you choose (OpenAI, Google Gemini, Anthropic, or DeepSeek), and that provider may charge you for usage. A model on your own server, such as Ollama, has no per-request cost."
           }
         },
         {
@@ -240,7 +240,7 @@
           "name": "How does the AI generate questions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Lembrion sends your study topics to the AI provider you configure: OpenAI, Google Gemini, Anthropic, DeepSeek, or an Ollama server. You supply your own API key (Ollama needs none) and can use any model id the provider supports."
+            "text": "Lembrion sends your study topics to the AI provider you configure: OpenAI, Google Gemini, Anthropic, DeepSeek, or your own server through the Anthropic Messages API or the OpenAI Responses API. You supply your own API key (your own server may need none) and can use any model id the provider supports."
           }
         },
         {
@@ -248,7 +248,7 @@
           "name": "Is my data private and secure?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Lembrion has no server and no accounts. Your API keys and study sessions are stored in your browser's local storage. To generate and evaluate questions, your browser sends your study topics, answers, and API key directly to the AI provider you selected, which processes them under its own terms. If you run Ollama locally, requests stay on your machine."
+            "text": "Lembrion has no server and no accounts. Your API keys and study sessions are stored in your browser's local storage. To generate and evaluate questions, your browser sends your study topics, answers, and API key directly to the AI provider you selected, which processes them under its own terms. If you run the model server on your own machine, requests stay there."
           }
         },
         {

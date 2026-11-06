@@ -37,16 +37,18 @@ Each session stores five toggles. They are on by default and can be changed when
 - Edit a session's contexts, instructions, difficulty, and learning settings.
 
 ### 🤖 AI providers
-| Provider | API key | Notes |
-|----------|---------|-------|
-| **OpenAI** | Required | |
-| **Google Gemini** | Required | The key is sent in the `x-goog-api-key` request header |
-| **Anthropic** | Required | |
-| **DeepSeek** | Required | |
-| **Ollama** | Not needed | Runs models on your own machine; default base URL `http://localhost:11434/v1` |
+| Provider | API key | Default model | Notes |
+|----------|---------|---------------|-------|
+| **OpenAI** | Required | `gpt-6-luna` | Responses API; reasoning effort low by default |
+| **Google Gemini** | Required | `gemini-3.5-flash-lite` | Thinking level low by default; the key is sent in the `x-goog-api-key` header |
+| **Anthropic** | Required | `claude-haiku-5-5` | Messages API; effort low by default; use a key scoped to a workspace |
+| **DeepSeek** | Required | `deepseek-flash` | Thinking off by default |
+| **Messages API server** | Optional | none | Any server that speaks the Anthropic Messages API; see [Custom endpoints](#custom-endpoints) |
+| **Responses API server** | Optional | none | Any server that speaks the OpenAI Responses API; see [Custom endpoints](#custom-endpoints) |
 
-- **Model ids are free-form**: Settings suggests known models for each provider, but you can enter any model id the provider accepts.
-- Each provider keeps its own API key, model, and (where supported) base URL.
+- **Model ids are free-form**: Settings suggests current models for each hosted provider, but you can enter any model id the provider accepts.
+- Each provider keeps its own API key, model, reasoning effort, and (for the two server providers) base URL.
+- **Reasoning effort** is set per provider in Settings, from the levels that provider offers (for example Off, Low, Medium, High, Extra high and Max for OpenAI). The default is low, or off for DeepSeek: quiz questions and grading need little reasoning. Higher levels are slower and cost more, and Lembrion raises the output limit with the level (up to 64,000 tokens), because reasoning tokens count against it. Not every model accepts every level; a model that rejects one returns an error that names it.
 
 ### 🎨 Interface
 - English and Portuguese (Brazil). Prompts are written per language, so questions come back in the selected language.
@@ -57,43 +59,63 @@ Each session stores five toggles. They are on by default and can be changed when
 ## 🔒 Privacy and costs
 
 - **Stored in your browser**: API keys, provider settings, preferences, and study sessions live in `localStorage`. Lembrion has no server, no account system, and no analytics.
-- **Sent to your AI provider**: to generate and evaluate questions, your browser sends your study topics, instructions, answers, and API key to the provider you selected. The provider processes them under its own terms. With a local Ollama server, requests stay on your machine.
+- **Sent to your AI provider**: to generate and evaluate questions, your browser sends your study topics, instructions, answers, and API key to the provider you selected. The provider processes them under its own terms. With a model server on your own machine, requests stay there.
 - **API keys in URLs**: you can pre-configure a provider with URL parameters (see below). A key in a URL can end up in browser history, bookmarks, or shared links, so treat such links as secrets. The app removes the parameters from the address bar after reading them.
-- **Costs**: Lembrion is free and open source. Cloud providers bill API usage to your key. Ollama has no API cost.
+- **Costs**: Lembrion is free and open source. Cloud providers bill API usage to your key. A model on your own server has no per-request fee.
 - **Delete everything**: Settings → Data removes all Lembrion data from the browser.
 
 ## 🌟 Getting started
 
 ### Use the hosted app
 1. Open [lembrion.vercel.app](https://lembrion.vercel.app).
-2. In **Settings**, pick a provider, paste your API key (not needed for Ollama), and enter or pick a model id.
+2. In **Settings**, pick a provider, paste your API key, and enter or pick a model id. For your own server, enter its base URL first; the key is optional.
 3. Choose your language.
 4. Go to **Study**, enter one or more topics, choose the question type, and start.
 
 ### Configure a provider from the URL
 ```
-https://lembrion.vercel.app/?provider=openai&apikey=sk-...&model=gpt-4o-mini
+https://lembrion.vercel.app/?provider=openai&apikey=sk-...&model=gpt-6-luna
 ```
-Supported parameters: `provider`, `apikey` (or `api_key`, `key`), `model`, `baseUrl` (or `base_url`). Without `provider`, the app guesses it from the key format (`sk-ant-` → Anthropic, `sk-` → OpenAI, `AIza` → Gemini). DeepSeek keys also start with `sk-`, so pass `provider=deepseek` for them.
+Supported parameters: `provider`, `apikey` (or `api_key`, `key`), `model`, `baseUrl` (or `base_url`). Without `provider`, the app guesses it from the key format (`sk-ant-` → Anthropic, `sk-` → OpenAI, `AQ.` or `AIza` → Gemini). DeepSeek keys also start with `sk-`, so pass `provider=deepseek` for them. The server providers are `custom-messages` and `custom-responses`.
 
 ### Get an API key
 - **OpenAI**: platform.openai.com → API keys
-- **Google Gemini**: aistudio.google.com → Get API key
-- **Anthropic**: console.anthropic.com → API keys
-- **DeepSeek**: platform.deepseek.com → API keys
+- **Google Gemini**: aistudio.google.com → API keys. Keys created since May 2026 start with `AQ.`; an older `AIza` key must be restricted to the Gemini API in AI Studio.
+- **Anthropic**: platform.claude.com → Settings → API keys. Scope the key to a workspace; an unscoped key needs a workspace header that Lembrion does not send.
+- **DeepSeek**: platform.deepseek.com → API keys (the account needs a prepaid balance)
 
-### Ollama (local)
+### Custom endpoints
+Two providers connect Lembrion to a server, gateway, or proxy that you choose:
+
+| Provider | Request |
+|----------|---------|
+| **Messages API server** | `POST {base URL}/messages`, Anthropic Messages API format |
+| **Responses API server** | `POST {base URL}/responses`, OpenAI Responses API format |
+
+- The base URL usually ends in `/v1`. A full endpoint URL (ending in `/messages` or `/responses`) also works.
+- An API key, if you enter one, is sent as `Authorization: Bearer <key>`. Lembrion sends no `x-api-key` or `anthropic-*` header, because Ollama's and OpenRouter's CORS checks reject them.
+- Requests are stateless (`store: false` on the Responses API) and carry no temperature. At the default effort, **Server default**, they carry no reasoning setting either, so the server's model defaults apply. Off sends `thinking: {"type": "disabled"}` (Messages) or `reasoning: {"effort": "none"}` (Responses); Low, Medium and High send `output_config.effort` or `reasoning.effort`. The output limit is 16,000 tokens at every level, which leaves room for models that think before answering. Reasoning that a server returns inline as `<think>…</think>` is removed from the answer.
+- The browser calls the server directly, so the server must allow the page's origin (`https://lembrion.vercel.app`, or `http://localhost:5173` for the dev server).
+
+| Server | Base URL | Browser access |
+|--------|----------|----------------|
+| Ollama 0.14+ (Messages), 0.13.3+ (Responses) | `http://localhost:11434/v1` | Pages served from localhost are allowed. For the hosted app, set `OLLAMA_ORIGINS` (below). |
+| vLLM 0.32+ | `http://localhost:8000/v1` | CORS is off by default: start with `--allowed-origins '["https://lembrion.vercel.app"]'`. vLLM reads keys only from `Authorization`. |
+| llama.cpp `llama-server` | `http://localhost:9931/v1` | CORS is on. With `--api-key`, also pass `--cors-headers "Authorization, Content-Type"`: the default `*` does not cover `Authorization`. |
+| LM Studio | `http://localhost:1234/v1` | Turn on **Enable CORS** in the server settings, or run `lms server start --cors`. |
+| LiteLLM proxy | `http://localhost:4000/v1` | CORS is open by default. The proxy requires a key. |
+| OpenRouter | `https://openrouter.ai/api/v1` | Works from the browser with an OpenRouter key. Its Responses API is in beta. |
+
+Ollama example:
 ```bash
-# Install Ollama (see https://ollama.com for other platforms)
-curl -fsSL https://ollama.com/install.sh | sh
+# Install Ollama 0.14 or later from https://ollama.com/download, then pull a model
+ollama pull gpt-oss:20b
 
-# Allow the Lembrion origin to call the local server, then start it
+# Allow the hosted app's origin and start the server. With the macOS app, run
+# launchctl setenv OLLAMA_ORIGINS "https://lembrion.vercel.app" and restart Ollama instead.
 OLLAMA_ORIGINS="https://lembrion.vercel.app" ollama serve
-
-# Pull a model, then enter its id (e.g. llama3.1:8b) in Lembrion's settings
-ollama pull llama3.1:8b
 ```
-Browsers block cross-origin requests to Ollama unless `OLLAMA_ORIGINS` includes the page's origin (use `http://localhost:5173` for the dev server).
+Then pick **Responses API server** (or **Messages API server**) in Settings, enter `http://localhost:11434/v1` and the model id `gpt-oss:20b`, and leave the key empty.
 
 ## 🛠️ Development
 
@@ -138,7 +160,7 @@ npm run deploy           # release a patch: checks, bump, commit, tag, push
 3. Run `npm run typecheck`, `npm run lint`, and `npm run test`.
 4. Commit and open a pull request.
 
-Useful areas: new AI providers, translations, accessibility, and tests.
+Useful areas: translations, accessibility, server compatibility notes, and tests.
 
 ## 📄 License
 
