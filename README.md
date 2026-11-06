@@ -50,7 +50,7 @@ Each session stores five toggles. They are on by default and can be changed when
 
 ### 🎨 Interface
 - English and Portuguese (Brazil). Prompts are written per language, so questions come back in the selected language.
-- 10 color themes.
+- Three themes: light, dark, and high contrast. Every theme meets WCAG AA text contrast.
 - Responsive layout for phones, tablets, and desktops.
 - Questions and feedback are rendered as Markdown with code highlighting; LaTeX-style math is converted to readable text.
 
@@ -116,7 +116,8 @@ The service worker registers only in production builds served from a non-localho
 
 ### Technology
 - React 18 + TypeScript, built with Vite 5
-- Tailwind CSS 3 plus theme CSS variables
+- Tailwind CSS 3 with semantic colour tokens (CSS variables written by the theme hook)
+- Fira Sans and Fira Mono, self-hosted through Fontsource
 - React Router 6
 - State in React hooks persisted to `localStorage` (no state library)
 - AI providers called with `fetch`; no SDKs, no streaming
@@ -152,4 +153,4 @@ MIT. See [LICENSE](LICENSE).
 ## 📞 Support
 
 - **Issues**: [github.com/gustavokch/lembrion/issues](https://github.com/gustavokch/lembrion/issues)
-- **Sponsor**: the in-app **Support Us** page links to sponsorship options.
+- **Sponsor**: the in-app **Support** page lists the ways to support the project.

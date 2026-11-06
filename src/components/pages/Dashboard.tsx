@@ -1,36 +1,113 @@
-import { Award, BookOpen, Calendar, CheckSquare, ChevronRight, ExternalLink, Heart, History, Info, Play, Repeat, Star, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { AlertTriangle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PATREON_URL, STORAGE_KEYS } from '../../core/config/constants';
+import { validateProviderConfig } from '../../core/services/ai/providers/registry';
 import { formatDate, formatMessage } from '../../core/services/i18n';
+import { Language } from '../../core/types';
 import { createId } from '../../core/utils/id';
-import { useLanguage, useLocalStorage, useTheme } from '../../hooks';
+import { useLanguage, useLocalStorage, useMultiProviderSettings } from '../../hooks';
 import { StudySession } from '../../types';
-import Logo from '../ui/Logo';
-import { answeredCount, sessionScore } from './StudyPage/learningTechniques';
-import { createReviewSession, dueReviews, findOpenReviewSession, nextDueDate } from './StudyPage/reviewSchedule';
+import { answeredCount, isAnswered, sessionScore } from './StudyPage/learningTechniques';
+import {
+  createReviewSession,
+  dueReviews,
+  findOpenReviewSession,
+  nextDueDate,
+  RETIRED_BOX,
+  REVIEW_INTERVAL_DAYS,
+} from './StudyPage/reviewSchedule';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const AXIS_DAYS = REVIEW_INTERVAL_DAYS[REVIEW_INTERVAL_DAYS.length - 1];
+const AXIS_TICKS = [0, 7, 14, AXIS_DAYS];
+
+interface ProgressSummary {
+  sessions: number;
+  answered: number;
+  /** Correct / answered as a whole percentage; undefined when nothing was answered. */
+  accuracy?: number;
+}
+
+function summarize(sessions: StudySession[]): ProgressSummary {
+  let answered = 0;
+  let correct = 0;
+  for (const session of sessions) {
+    for (const question of session.questions) {
+      if (!isAnswered(question)) continue;
+      answered++;
+      if (question.isCorrect) correct++;
+    }
+  }
+  return {
+    sessions: sessions.length,
+    answered,
+    accuracy: answered > 0 ? Math.round((correct / answered) * 100) : undefined,
+  };
+}
+
+interface BoxSummary {
+  /** Scheduled originals per box; index 0 is box 1. */
+  counts: number[];
+  /** Questions due at `now` per box. */
+  due: number[];
+  retired: number;
+}
+
+function summarizeBoxes(sessions: StudySession[], now: Date): BoxSummary {
+  const counts = REVIEW_INTERVAL_DAYS.map(() => 0);
+  const due = REVIEW_INTERVAL_DAYS.map(() => 0);
+  let retired = 0;
+  for (const session of sessions) {
+    for (const question of session.questions) {
+      if (question.reviewOf !== undefined || question.reviewBox === undefined) continue;
+      if (question.reviewBox === RETIRED_BOX) {
+        retired++;
+        continue;
+      }
+      const index = question.reviewBox - 1;
+      if (index < 0 || index >= counts.length) continue;
+      counts[index]++;
+      if (question.nextReview && Date.parse(question.nextReview) <= now.getTime()) due[index]++;
+    }
+  }
+  return { counts, due, retired };
+}
+
+function shortDate(iso: string, language: Language): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString(language, { year: 'numeric', month: 'short', day: 'numeric' });
+}
 
 export default function Dashboard() {
   const [sessions, setSessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
+  const [providerSettings] = useMultiProviderSettings();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-  const { themeConfig } = useTheme();
-  const [showWelcomeTip, setShowWelcomeTip] = useState(true);
-  const [_, setDeviceType] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
-  const [animateStats, setAnimateStats] = useState(false);
+
+  const now = new Date();
+  const providerReady = validateProviderConfig(
+    providerSettings.currentProvider,
+    providerSettings.providers[providerSettings.currentProvider],
+    language
+  ).valid;
 
   const totalSessions = sessions.length;
-  const activeSessions = sessions.filter((s) => s.status === 'active').length;
-  const completedSessions = sessions.filter(s => s.status === 'completed').length;
-  const averageScore = completedSessions > 0
-    ? sessions.filter(s => s.status === 'completed').reduce((acc, s) => acc + sessionScore(s.questions), 0) / completedSessions
-    : 0;
+  const weekStart = now.getTime() - 7 * DAY_MS;
+  const allTime = summarize(sessions);
+  const lastWeek = summarize(sessions.filter((s) => Date.parse(s.createdAt) >= weekStart));
 
-  const recentSessions = sessions.slice(-3).reverse();
-
-  // Review queue: hidden when nothing is scheduled; with nothing due, the next due date shows instead
-  const dueReviewCount = dueReviews(sessions, new Date(), Infinity).length;
+  // Review queue: with nothing due, the next due date shows instead
+  const dueReviewCount = dueReviews(sessions, now, Infinity).length;
   const nextReviewDate = nextDueDate(sessions);
+  const openReview = findOpenReviewSession(sessions, now);
+  const boxes = summarizeBoxes(sessions, now);
+
+  // Newest first by start time; review sessions are resumed through the review action
+  const newestFirst = [...sessions].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const activeSessions = newestFirst.filter((s) => s.status === 'active' && s.kind !== 'review').slice(0, 3);
+  const recentSessions = newestFirst.slice(0, 5);
+  const newSessionIsNext = dueReviewCount === 0 && activeSessions.length === 0;
 
   // An unfinished review session is resumed; otherwise a new one is stored and StudyPage resumes it
   const startReview = () => {
@@ -45,640 +122,325 @@ export default function Dashboard() {
     setSessions((prev) => [...prev, reviewSession]);
     navigate('/study', { state: { sessionId: reviewSession.id } });
   };
-  
-  // Detect device type
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        setDeviceType('mobile');
-      } else if (width < 1024) {
-        setDeviceType('tablet');
-      } else {
-        setDeviceType('desktop');
-      }
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // Animate stats when they come into view
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setAnimateStats(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
-    
-    const statsSection = document.getElementById('stats-section');
-    if (statsSection) {
-      observer.observe(statsSection);
-    }
-    
-    return () => observer.disconnect();
-  }, []);
 
-  const handlePatreonSupport = () => {
-    window.open(PATREON_URL, '_blank', 'noopener,noreferrer');
+  const formatPercent = (value: number | undefined) => (value === undefined ? '—' : `${value}%`);
+  const sessionScoreText = (session: StudySession) =>
+    answeredCount(session.questions) > 0 ? `${sessionScore(session.questions)}%` : '—';
+  const questionCountText = (count: number) =>
+    formatMessage(count === 1 ? t.questionCountOne : t.questionCountOther, { count });
+  const boxLabel = (index: number) =>
+    formatMessage(t.dashboardBoxLabel, { box: index + 1, days: REVIEW_INTERVAL_DAYS[index] });
+  const sessionTypeLabel = (session: StudySession) => {
+    if (session.questionType === 'dissertative') return t.dissertative;
+    if (session.questionType === 'mixed') return t.mixed;
+    return t.multipleChoice;
   };
-  
-  const dismissWelcomeTip = () => {
-    setShowWelcomeTip(false);
-  };
+
+  const typeCell = (session: StudySession) =>
+    session.kind === 'review' ? <span className="tag">{t.reviewSessionLabel}</span> : sessionTypeLabel(session);
+  const statusTag = (session: StudySession) =>
+    session.status === 'active' ? (
+      <span className="tag tag-accent">{t.inProgress}</span>
+    ) : (
+      <span className="tag">{t.completed}</span>
+    );
 
   return (
-    <div className="space-y-4 sm:space-y-6 lg:space-y-8 animate-fade-in">
-      {/* Header */}
-      <header className="text-center mb-2 sm:mb-4">
-        <div className="relative">
-          <Logo size="lg" className={"mx-auto mb-3 sm:mb-4".concat(activeSessions > 0 ? " animate-pulse-slow" : "")} />
-          {activeSessions > 0 && (
-            <div 
-              className="absolute top-0 right-1/2 transform translate-x-12 -translate-y-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-              style={{ 
-                backgroundColor: themeConfig.colors.primary,
-                color: 'white',
-                boxShadow: `0 2px 8px ${themeConfig.colors.primary}80`
-              }}
-            >
-              {activeSessions}
-            </div>
-          )}
+    <div className="page">
+      <h1 className="page-title">{t.dashboard}</h1>
+
+      {!providerReady && (
+        <div className="notice notice-warning mt-6">
+          <AlertTriangle aria-hidden="true" />
+          <p>
+            {t.dashboardProviderNotReady}{' '}
+            <Link to="/settings" className="font-medium underline">
+              {t.dashboardOpenSettings}
+            </Link>
+          </p>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-2 leading-tight px-2">
-          {t.welcomeTitle}
-        </h1>
-        <p className="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4 px-2 sm:px-4 leading-relaxed max-w-3xl mx-auto">
-          {t.welcomeSubtitle}
-        </p>
-        
-        {/* No Account Required Badge */}
-        <div 
-          className="inline-flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4 mx-2 shadow-sm"
-          style={{
-            backgroundColor: themeConfig.colors.success + '20',
-            color: themeConfig.colors.success,
-          }}
-        >
-          <Star className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 animate-pulse" aria-hidden="true" />
-          <span className="text-center leading-tight whitespace-nowrap">
-            {t.dashboardBadge}
-          </span>
-        </div>
-      </header>
+      )}
 
-      {/* Status Messages */}
-      <div className="space-y-3 sm:space-y-4 max-w-3xl mx-auto">
-        {/* Privacy Notice */}
-        {showWelcomeTip && (
-          <div 
-            className="rounded-xl sm:rounded-2xl p-4 sm:p-5 border shadow-sm animate-slide-up" 
-            style={{
-              backgroundColor: themeConfig.colors.info + '10',
-              borderColor: themeConfig.colors.info + '30',
-            }}
-          >
-            <div className="flex items-start space-x-3 sm:space-x-4">
-              <div 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: themeConfig.colors.info + '20' }}
-              >
-                <Info className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.info }} />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <h3 className="font-semibold text-sm sm:text-base mb-1" style={{ color: themeConfig.colors.info }}>
-                    {t.dataTipTitle}
-                  </h3>
-                  <button 
-                    onClick={dismissWelcomeTip} 
-                    className="p-1 rounded-full"
-                    style={{ color: themeConfig.colors.info }}
-                    aria-label={t.dismissTip}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                  {t.dataTipDesc}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Stats Cards */}
-      <section id="stats-section" aria-labelledby="stats-heading" className="max-w-4xl mx-auto">
-        <h2 id="stats-heading" className="sr-only">Study Statistics</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-          <div 
-            className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 border shadow-sm ${animateStats ? 'animate-slide-up' : ''}`}
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-              animationDelay: '0ms',
-            }}
-          >
-            <div className="flex items-start space-x-3">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: themeConfig.colors.primary + '20' }}
-              >
-                <BookOpen className="w-5 h-5" style={{ color: themeConfig.colors.primary }} />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.totalSessions}
-                </p>
-                <p className="text-xl sm:text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                  {totalSessions}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div 
-            className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 border shadow-sm ${animateStats ? 'animate-slide-up' : ''}`}
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-              animationDelay: '100ms',
-            }}
-          >
-            <div className="flex items-start space-x-3">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: themeConfig.colors.success + '20' }}
-              >
-                <CheckSquare className="w-5 h-5" style={{ color: themeConfig.colors.success }} />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.completed}
-                </p>
-                <p className="text-xl sm:text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                  {completedSessions}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div 
-            className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 border shadow-sm ${animateStats ? 'animate-slide-up' : ''}`}
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-              animationDelay: '200ms',
-            }}
-          >
-            <div className="flex items-start space-x-3">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: themeConfig.colors.warning + '20' }}
-              >
-                <Award className="w-5 h-5" style={{ color: themeConfig.colors.warning }} />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.averageScore}
-                </p>
-                <p className="text-xl sm:text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                  {Math.round(averageScore)}%
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div 
-            className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 border shadow-sm ${animateStats ? 'animate-slide-up' : ''}`}
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-              animationDelay: '300ms',
-            }}
-          >
-            <div className="flex items-start space-x-3">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: themeConfig.colors.info + '20' }}
-              >
-                <Calendar className="w-5 h-5" style={{ color: themeConfig.colors.info }} />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.questions}
-                </p>
-                <p className="text-xl sm:text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                  {sessions.reduce((acc, s) => acc + answeredCount(s.questions), 0)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Actions */}
-      <section aria-labelledby="actions-heading" className="max-w-4xl mx-auto">
-        <h2 id="actions-heading" className="sr-only">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
-          <Link
-            to="/study"
-            className="group rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-lg transition-all duration-300 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus-ring transform hover:scale-[1.02] active:scale-[0.98]"
-            style={{
-              background: themeConfig.gradients.primary,
-              color: 'white',
-              '--tw-ring-color': themeConfig.colors.primary,
-            }}
-          >
-            <div className="flex items-start space-x-4">
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center bg-white/20 shadow-inner"
-              >
-                <BookOpen className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-white/90 text-lg sm:text-xl font-bold mb-2 leading-tight">{t.startNewSession}</h3>
-                <p className="text-white/90 text-sm sm:text-base leading-relaxed">{t.beginNewSession}</p>
-                <div className="mt-4 flex items-center text-white/80 text-sm font-medium">
-                  <span>{t.startNow}</span>
-                  <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </div>
+      {totalSessions === 0 ? (
+        <section className="mt-8 max-w-measure">
+          <p className="text-ink-soft">{t.noSessionsYetDesc}</p>
+          <Link to="/study" className="btn btn-primary mt-4">
+            {t.startFirstSession}
           </Link>
-
-          <Link
-            to="/history"
-            className="group rounded-xl sm:rounded-2xl p-5 sm:p-6 border shadow-sm transition-all duration-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus-ring transform hover:scale-[1.02] active:scale-[0.98]"
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-              '--tw-ring-color': themeConfig.colors.primary,
-            }}
-          >
-            <div className="flex items-start space-x-4">
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center shadow-inner"
-                style={{ backgroundColor: themeConfig.colors.primary + '20' }}
-              >
-                <History className="w-6 h-6" style={{ color: themeConfig.colors.primary }} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg sm:text-xl font-bold mb-2 leading-tight" style={{ color: themeConfig.colors.text }}>
-                  {t.viewHistory}
-                </h3>
-                <p className="text-sm sm:text-base leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.reviewPastSessions}
-                </p>
-                <div 
-                  className="mt-4 flex items-center text-sm font-medium group-hover:translate-x-1 transition-transform"
-                  style={{ color: themeConfig.colors.primary }}
-                >
-                  <span>{t.viewHistoryLink}</span>
-                  <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          {nextReviewDate && (
-            <div
-              className="md:col-span-2 rounded-xl sm:rounded-2xl p-5 sm:p-6 border shadow-sm"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                borderColor: themeConfig.colors.border,
-              }}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="flex items-start space-x-4 flex-1 min-w-0">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center shadow-inner flex-shrink-0"
-                    style={{ backgroundColor: themeConfig.colors.warning + '20' }}
-                  >
-                    <Repeat className="w-6 h-6" style={{ color: themeConfig.colors.warning }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg sm:text-xl font-bold mb-2 leading-tight" style={{ color: themeConfig.colors.text }}>
-                      {t.reviewCardTitle}
-                    </h3>
-                    <p className="text-sm sm:text-base leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-                      {dueReviewCount > 0
-                        ? formatMessage(dueReviewCount === 1 ? t.reviewDueCountOne : t.reviewDueCountOther, { count: dueReviewCount })
-                        : formatMessage(t.reviewNextDue, { date: formatDate(nextReviewDate, language) })}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={startReview}
-                  disabled={dueReviewCount === 0}
-                  className="px-5 py-3 rounded-xl font-semibold text-sm sm:text-base shadow-lg transition-all duration-200 hover:shadow-xl flex items-center justify-center flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-md"
-                  style={{
-                    background: themeConfig.gradients.primary,
-                    color: '#ffffff',
-                  }}
-                >
-                  <Play className="w-5 h-5 mr-2 flex-shrink-0" />
-                  <span>{t.startReview}</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Support Section - Fixed with theme-aware colors */}
-      <section aria-labelledby="support-heading" className="max-w-4xl mx-auto">
-        <div 
-          className="rounded-xl sm:rounded-2xl p-5 sm:p-6 border shadow-lg overflow-hidden relative"
-          style={{
-            background: themeConfig.gradients.card,
-            borderColor: themeConfig.colors.primary + '30'
-          }}
-        >
-          {/* Background pattern */}
-          <div 
-            className="absolute inset-0 opacity-5 pointer-events-none"
-            style={{ 
-              backgroundImage: `radial-gradient(circle at 20% 30%, ${themeConfig.colors.primary} 0%, transparent 70%)` 
-            }}
-          ></div>
-          
-          <div className="relative z-10">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
-              <div 
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center mb-4 sm:mb-0 sm:mr-6 shadow-lg"
-                style={{ 
-                  background: themeConfig.gradients.primary,
-                  boxShadow: `0 8px 32px ${themeConfig.colors.primary}40`
-                }}
-              >
-                <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-white animate-pulse" />
-              </div>
-              
-              <div className="flex-1">
-                <h2 
-                  id="support-heading" 
-                  className="text-lg sm:text-xl font-bold mb-2 sm:mb-3" 
-                  style={{ color: themeConfig.colors.text }}
-                >
-                  {t.supportLembrion}
+        </section>
+      ) : (
+        <>
+          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+            <div className="min-w-0">
+              <section aria-labelledby="progress-heading">
+                <h2 id="progress-heading" className="section-title">
+                  {t.dashboardProgress}
                 </h2>
-                
-                <p 
-                  className="mb-4 sm:mb-5 text-sm sm:text-base leading-relaxed max-w-2xl" 
-                  style={{ color: themeConfig.colors.textSecondary }}
-                >
-                  {t.supportLembrionShortDesc}
-                </p>
-                
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  {PATREON_URL && (
-                    <button
-                      onClick={handlePatreonSupport}
-                      className="px-5 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
-                      style={{
-                        background: themeConfig.gradients.primary,
-                        color: '#ffffff'
-                      }}
-                    >
-                      <Heart className="w-5 h-5 mr-2 flex-shrink-0" />
-                      <span className="font-semibold">Patreon</span>
-                      <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
-                    </button>
-                  )}
-                  
-                  <Link
-                    to="/pricing"
-                    className="px-5 py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center"
-                    style={{
-                      background: themeConfig.colors.surface,
-                      color: themeConfig.colors.text,
-                      border: `1px solid ${themeConfig.colors.border}`
-                    }}
-                  >
-                    <Heart className="w-5 h-5 mr-2 flex-shrink-0" style={{ color: themeConfig.colors.primary }} />
-                    <span>{t.otherOptions}</span>
-                    <ChevronRight className="w-4 h-4 ml-2 flex-shrink-0" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                <table className="data-table mt-2">
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        <span className="sr-only">{t.dashboardMeasure}</span>
+                      </th>
+                      <th scope="col" className="num">
+                        {t.dashboardLast7Days}
+                      </th>
+                      <th scope="col" className="num">
+                        {t.dashboardAllTime}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">
+                        {t.dashboardSessions}
+                      </th>
+                      <td className="num">{lastWeek.sessions}</td>
+                      <td className="num">{allTime.sessions}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">
+                        {t.questionsAnswered}
+                      </th>
+                      <td className="num">{lastWeek.answered}</td>
+                      <td className="num">{allTime.answered}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">
+                        {t.dashboardAccuracy}
+                      </th>
+                      <td className="num">{formatPercent(lastWeek.accuracy)}</td>
+                      <td className="num">{formatPercent(allTime.accuracy)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
 
-      {/* Recent Sessions */}
-      {recentSessions.length > 0 && (
-        <section aria-labelledby="recent-heading" className="max-w-4xl mx-auto">
-          <div 
-            className="rounded-xl sm:rounded-2xl border shadow-sm overflow-hidden"
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-            }}
-          >
-            <div 
-              className="p-4 sm:p-5 border-b flex items-center justify-between"
-              style={{ borderColor: themeConfig.colors.border }}
-            >
-              <h2 
-                id="recent-heading" 
-                className="text-base sm:text-lg font-bold"
-                style={{ color: themeConfig.colors.text }}
-              >
+              <section aria-labelledby="boxes-heading" className="mt-10">
+                <h2 id="boxes-heading" className="section-title">
+                  {t.dashboardReviewBoxes}
+                </h2>
+                <figure className="mt-4">
+                  {/* Every box drawn on one linear 0-30 day axis, at its true interval */}
+                  <div
+                    aria-hidden="true"
+                    className="grid grid-cols-[max-content_minmax(0,1fr)_max-content_3ch] items-center gap-x-4 gap-y-3 text-sm"
+                  >
+                    {boxes.counts.map((count, index) => {
+                      const from = index === 0 ? 0 : REVIEW_INTERVAL_DAYS[index - 1];
+                      const to = REVIEW_INTERVAL_DAYS[index];
+                      const fill = boxes.due[index] > 0 ? 'bg-accent' : count > 0 ? 'bg-primary' : 'bg-line-strong';
+                      return (
+                        <div key={to} className="contents">
+                          <span className="whitespace-nowrap text-ink-soft tabular">{boxLabel(index)}</span>
+                          <div className="relative h-1 bg-line">
+                            <span
+                              className={`absolute inset-y-0 ${fill}`}
+                              style={{
+                                left: `${(from / AXIS_DAYS) * 100}%`,
+                                width: `${((to - from) / AXIS_DAYS) * 100}%`,
+                              }}
+                            />
+                          </div>
+                          <span className="whitespace-nowrap text-right text-xs font-medium text-accent-ink tabular">
+                            {boxes.due[index] > 0 ? formatMessage(t.dashboardBoxDue, { count: boxes.due[index] }) : ''}
+                          </span>
+                          <span className="text-right font-medium text-ink tabular">{count}</span>
+                        </div>
+                      );
+                    })}
+                    <span />
+                    <div className="relative h-4 text-xs text-ink-muted tabular">
+                      {AXIS_TICKS.map((day) => (
+                        <span
+                          key={day}
+                          className={`absolute top-0 whitespace-nowrap ${
+                            day === 0 ? '' : day === AXIS_DAYS ? '-translate-x-full' : '-translate-x-1/2'
+                          }`}
+                          style={{ left: `${(day / AXIS_DAYS) * 100}%` }}
+                        >
+                          {formatMessage(t.dashboardDays, { days: day })}
+                        </span>
+                      ))}
+                    </div>
+                    <span />
+                    <span />
+                  </div>
+                  <table className="sr-only">
+                    <caption>{t.dashboardReviewBoxes}</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">{t.dashboardBox}</th>
+                        <th scope="col">{t.dashboardScheduledQuestions}</th>
+                        <th scope="col">{t.dashboardDueNow}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {boxes.counts.map((count, index) => (
+                        <tr key={REVIEW_INTERVAL_DAYS[index]}>
+                          <th scope="row">{boxLabel(index)}</th>
+                          <td>{count}</td>
+                          <td>{boxes.due[index]}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <figcaption className="mt-4 text-sm text-ink-soft tabular">
+                    {formatMessage(t.dashboardBoxSummary, { due: dueReviewCount, retired: boxes.retired })}
+                  </figcaption>
+                </figure>
+              </section>
+            </div>
+
+            <section aria-labelledby="next-heading" className="min-w-0">
+              <h2 id="next-heading" className="section-title">
+                {t.dashboardNext}
+              </h2>
+              <ul className="divide-y divide-line">
+                {dueReviewCount > 0 ? (
+                  <li className="py-4">
+                    <p className="tabular">
+                      {formatMessage(dueReviewCount === 1 ? t.reviewDueCountOne : t.reviewDueCountOther, {
+                        count: dueReviewCount,
+                      })}
+                    </p>
+                    <button type="button" onClick={startReview} className="btn btn-primary mt-3">
+                      {openReview ? t.dashboardResumeReview : t.startReview}
+                    </button>
+                  </li>
+                ) : (
+                  nextReviewDate && (
+                    <li className="py-4 text-sm text-ink-soft">
+                      {formatMessage(t.reviewNextDue, { date: formatDate(nextReviewDate, language) })}
+                    </li>
+                  )
+                )}
+                {activeSessions.map((session) => {
+                  const topics = session.contexts.join(' · ');
+                  return (
+                    <li key={session.id} className="flex items-center gap-3 py-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium text-ink" title={topics}>
+                          {topics}
+                        </p>
+                        <p className="text-sm text-ink-soft tabular">
+                          {questionCountText(answeredCount(session.questions))}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigate('/study', { state: { sessionId: session.id } })}
+                        aria-label={formatMessage(t.dashboardResumeAria, { topics })}
+                        className="btn btn-secondary btn-sm min-h-10"
+                      >
+                        {t.dashboardResume}
+                      </button>
+                    </li>
+                  );
+                })}
+                <li className="py-4">
+                  <Link to="/study" className={`btn ${newSessionIsNext ? 'btn-primary' : 'btn-secondary'}`}>
+                    {t.newSession}
+                  </Link>
+                </li>
+              </ul>
+              {PATREON_URL && (
+                <p className="mt-6 text-sm text-ink-muted">
+                  {t.dashboardSupportLine}{' '}
+                  <a
+                    href={PATREON_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-ink-soft underline hover:text-ink"
+                  >
+                    {t.supportOnPatreon}
+                  </a>
+                </p>
+              )}
+            </section>
+          </div>
+
+          <section aria-labelledby="recent-heading" className="mt-12">
+            <div className="flex items-baseline justify-between gap-4 border-b-2 border-ink pb-1.5">
+              <h2 id="recent-heading" className="text-[0.9375rem] font-semibold text-ink">
                 {t.recentSessions}
               </h2>
-              
-              <Link 
-                to="/history"
-                className="text-xs sm:text-sm font-medium flex items-center"
-                style={{ color: themeConfig.colors.primary }}
-              >
-                <span>{t.viewAll}</span>
-                <ChevronRight className="w-4 h-4 ml-0.5" />
+              <Link to="/history" className="text-sm text-ink-soft underline hover:text-ink">
+                {t.dashboardAllSessions}
               </Link>
             </div>
-            
-            <div className="divide-y" style={{ borderColor: themeConfig.colors.border }}>
-              {recentSessions.map((session, index) => (
-                <Link 
-                  key={session.id} 
-                  to={`/session/${session.id}`}
-                  className="block p-4 sm:p-5 hover:bg-gray-50 transition-colors"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="flex items-start space-x-3 sm:space-x-4">
-                    <div 
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                        session.status === 'completed' ? 'bg-green-100' : 'bg-orange-100'
-                      }`}
-                    >
-                      {session.status === 'completed' ? (
-                        <CheckSquare className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <BookOpen className="w-5 h-5 text-orange-600" />
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <h3 
-                            className="font-semibold truncate text-sm sm:text-base"
-                            style={{ color: themeConfig.colors.text }}
-                          >
-                            {session.contexts.join(', ') }
-                          </h3>
-                          
-                          <div className="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1">
-                            <div className="flex items-center">
-                              <Calendar className="w-3 h-3 mr-1" style={{ color: themeConfig.colors.textMuted }} />
-                              <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                                {formatDate(session.createdAt, language)}
-                              </span>
-                            </div>
-                            <div className="flex items-center">
-                              <BookOpen className="w-3 h-3 mr-1" style={{ color: themeConfig.colors.textMuted }} />
-                              <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                                {formatMessage(
-                                  answeredCount(session.questions) === 1 ? t.questionCountOne : t.questionCountOther,
-                                  { count: answeredCount(session.questions) }
-                                )}
-                              </span>
-                            </div>
-                            {session.kind === 'review' && (
-                              <span
-                                className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full"
-                                style={{ backgroundColor: themeConfig.colors.warning + '20', color: themeConfig.colors.warning }}
-                              >
-                                <Repeat className="w-3 h-3 mr-1" />
-                                {t.reviewSessionLabel}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <div 
-                          className={`ml-3 px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
-                            session.status === 'completed' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-orange-100 text-orange-800'
-                          }`}
-                        >
-                          {session.status === 'completed' ? t.completed : t.inProgress}
-                        </div>
-                      </div>
-                      
-                      {/* Progress Bar */}
-                      {session.status === 'completed' && (
-                        <div className="mt-3">
-                          <div className="flex items-center justify-between text-xs mb-1.5">
-                            <span style={{ color: themeConfig.colors.textSecondary }}>
-                              {t.correctAnswers}
-                            </span>
-                            <span style={{ color: themeConfig.colors.textSecondary }}>
-                              {sessionScore(session.questions)}%
-                            </span>
-                          </div>
-                          <div 
-                            className="w-full rounded-full h-1.5 overflow-hidden"
-                            style={{ backgroundColor: themeConfig.colors.border }}
-                          >
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{
-                                width: `${sessionScore(session.questions)}%`,
-                                background: themeConfig.gradients.primary,
-                              }}
-                              role="progressbar"
-                              aria-valuenow={sessionScore(session.questions)}
-                              aria-valuemin={0}
-                              aria-valuemax={100}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {session.status === 'active' && (
-                        <div 
-                          className="mt-3 inline-flex items-center text-xs font-medium"
-                          style={{ color: themeConfig.colors.primary }}
-                        >
-                          {t.continueSessionLink}
-                          <ChevronRight className="w-3 h-3 ml-0.5" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Link>
+
+            <table className="data-table mt-2 hidden md:table">
+              <thead>
+                <tr>
+                  <th scope="col">{t.dashboardTopics}</th>
+                  <th scope="col">{t.dashboardType}</th>
+                  <th scope="col" className="num">
+                    {t.questions}
+                  </th>
+                  <th scope="col" className="num">
+                    {t.score}
+                  </th>
+                  <th scope="col" className="num">
+                    {t.date}
+                  </th>
+                  <th scope="col">{t.dashboardStatus}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentSessions.map((session) => (
+                  <tr key={session.id}>
+                    <td className="max-w-[26rem]">
+                      <Link
+                        to={`/session/${session.id}`}
+                        title={session.contexts.join(' · ')}
+                        className="block truncate font-medium text-ink underline decoration-line-strong hover:decoration-ink"
+                      >
+                        {session.contexts.join(' · ')}
+                      </Link>
+                    </td>
+                    <td className="whitespace-nowrap text-ink-soft">{typeCell(session)}</td>
+                    <td className="num">{answeredCount(session.questions)}</td>
+                    <td className="num">{sessionScoreText(session)}</td>
+                    <td className="num whitespace-nowrap">{shortDate(session.createdAt, language)}</td>
+                    <td>{statusTag(session)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <ul className="divide-y divide-line border-b border-line md:hidden">
+              {recentSessions.map((session) => (
+                <li key={session.id} className="py-2">
+                  <Link
+                    to={`/session/${session.id}`}
+                    className="block truncate py-2 font-medium text-ink underline decoration-line-strong"
+                  >
+                    {session.contexts.join(' · ')}
+                  </Link>
+                  <p className="flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 text-sm text-ink-soft tabular">
+                    <span>{typeCell(session)}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{questionCountText(answeredCount(session.questions))}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{sessionScoreText(session)}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{shortDate(session.createdAt, language)}</span>
+                    {statusTag(session)}
+                  </p>
+                </li>
               ))}
-              
-              {recentSessions.length === 0 && (
-                <div 
-                  className="p-8 text-center"
-                  style={{ color: themeConfig.colors.textMuted }}
-                >
-                  <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p>{t.noRecentSessions}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
+            </ul>
+          </section>
+        </>
       )}
-      
-      {/* Get Started - For new users */}
-      {totalSessions === 0 && (
-        <section className="max-w-md mx-auto">
-          <div 
-            className="rounded-xl sm:rounded-2xl p-5 sm:p-6 border shadow-lg text-center"
-            style={{
-              backgroundColor: themeConfig.colors.primary + '10',
-              borderColor: themeConfig.colors.primary + '30',
-            }}
-          >
-            <div 
-              className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-              style={{ backgroundColor: themeConfig.colors.primary + '20' }}
-            >
-              <Zap className="w-8 h-8" style={{ color: themeConfig.colors.primary }} />
-            </div>
-            
-            <h3 
-              className="text-lg sm:text-xl font-bold mb-2"
-              style={{ color: themeConfig.colors.text }}
-            >
-              {t.startLearningJourney}
-            </h3>
-            
-            <p 
-              className="mb-6 text-sm sm:text-base"
-              style={{ color: themeConfig.colors.textSecondary }}
-            >
-              {t.startLearningJourneyDesc}
-            </p>
-            
-            <Link
-              to="/study"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-200 hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                background: themeConfig.gradients.primary,
-                color: 'white',
-              }}
-            >
-              <BookOpen className="w-5 h-5 mr-2" />
-              {t.startFirstSession}
-            </Link>
-          </div>
-        </section>
-      )}
+
+      <p className="mt-12 max-w-measure text-sm text-ink-muted">
+        {t.dataTipDesc}{' '}
+        <Link to="/settings" className="text-ink-soft underline hover:text-ink">
+          {t.dashboardOpenSettings}
+        </Link>
+      </p>
     </div>
   );
 }

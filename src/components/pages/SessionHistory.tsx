@@ -1,32 +1,27 @@
-import { AlertCircle, ArrowLeft, BookOpen, Calendar, CheckSquare, Edit, Eye, Filter, Info, Play, Repeat, Search, SortAsc, SortDesc, Square, Trash2, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { STORAGE_KEYS } from '../../core/config/constants';
 import { formatDate, formatMessage } from '../../core/services';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { useTheme } from '../../hooks/useTheme';
 import { StudySession } from '../../types';
 import SessionEditModal from '../SessionEditModal';
 import { applySessionEditById, SessionEditUpdates } from './sessionEdits';
 import { answeredCount, sessionScore } from './StudyPage/learningTechniques';
 
+type StatusFilter = 'all' | 'active' | 'completed';
+
 export default function SessionHistory() {
   const [sessions, setSessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
   const { t, language } = useLanguage();
-  const { themeConfig } = useTheme();
   const [editingSession, setEditingSession] = useState<StudySession | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'active'>('all');
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>(window.innerWidth >= 768 ? 'grid' : 'list');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [showInfoTip, setShowInfoTip] = useState(true);
-  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<StatusFilter>('all');
 
   // Sort and filter sessions
   const filteredSessions = useMemo(() => {
@@ -53,14 +48,14 @@ export default function SessionHistory() {
   };
 
   const toggleSelectionMode = () => {
-    setIsSelectionMode(!isSelectionMode);
+    setIsSelectionMode(prev => !prev);
     setSelectedSessions([]);
   };
 
   const toggleSessionSelection = (sessionId: string) => {
-    setSelectedSessions(prev => 
-      prev.includes(sessionId) 
-        ? prev.filter(id => id !== sessionId) 
+    setSelectedSessions(prev =>
+      prev.includes(sessionId)
+        ? prev.filter(id => id !== sessionId)
         : [...prev, sessionId]
     );
   };
@@ -73,6 +68,16 @@ export default function SessionHistory() {
     setSelectedSessions([]);
   };
 
+  const requestDeleteSession = (sessionId: string) => {
+    setSelectedSessions([sessionId]);
+    setShowDeleteConfirm(true);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    if (!isSelectionMode) setSelectedSessions([]);
+  };
+
   const deleteSelectedSessions = () => {
     setSessions(prev => prev.filter(session => !selectedSessions.includes(session.id)));
     setSelectedSessions([]);
@@ -80,576 +85,400 @@ export default function SessionHistory() {
     setShowDeleteConfirm(false);
   };
 
-  // Detect screen size changes for responsive view mode
-  useEffect(() => {
-    const handleResize = () => {
-      // Default to grid on larger screens, list on smaller screens
-      if (window.innerWidth >= 768 && viewMode === 'list') {
-        setViewMode('grid');
-      } else if (window.innerWidth < 768 && viewMode === 'grid') {
-        setViewMode('list');
-      }
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [viewMode]);
-
-  const handleSearchFocus = () => {
-    setIsSearchFocused(true);
-    focusSearchInput();
-  };
-
-  const handleSearchBlur = () => {
-    // Small delay to allow for clicking search results
-    setTimeout(() => {
-      setIsSearchFocused(false);
-    }, 200);
-  };
-
   const toggleSortOrder = () => {
     setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc');
   };
 
-  const focusSearchInput = () => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
+  const clearFilters = () => {
+    setSearchQuery('');
+    setFilterStatus('all');
+  };
+
+  const topicsOf = (session: StudySession) => session.contexts.join(' · ');
+
+  const typeLabel = (session: StudySession) => {
+    switch (session.questionType) {
+      case 'multipleChoice':
+        return t.multipleChoice;
+      case 'dissertative':
+        return t.dissertative;
+      case 'mixed':
+        return t.mixed;
+      default:
+        return '—';
     }
   };
 
-  const dismissInfoTip = () => {
-    setShowInfoTip(false);
-  };
+  const scoreLabel = (session: StudySession) =>
+    answeredCount(session.questions) > 0 ? `${sessionScore(session.questions)}%` : '—';
+
+  const statusTag = (session: StudySession) =>
+    session.status === 'active' ? (
+      <span className="tag tag-accent">{t.historyStatusActive}</span>
+    ) : (
+      <span className="tag">{t.completed}</span>
+    );
+
+  const statusFilters: { value: StatusFilter; label: string }[] = [
+    { value: 'all', label: t.all },
+    { value: 'active', label: t.historyStatusActive },
+    { value: 'completed', label: t.completed },
+  ];
 
   // Empty state
   if (sessions.length === 0) {
     return (
-      <div className="min-h-screen safe-top safe-bottom flex flex-col" style={{ background: themeConfig.gradients.background }}>
-        <div className="max-w-md mx-auto px-4 py-6">
-          <div className="text-center py-12">
-            <div 
-              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse"
-              style={{ backgroundColor: themeConfig.colors.primary + '20' }}
-            >
-              <BookOpen className="w-8 h-8" style={{ color: themeConfig.colors.primary }} />
-            </div>
-            <h2 className="text-xl font-bold mb-3" style={{ color: themeConfig.colors.text }}>
-              {t.noSessionsYet}
-            </h2>
-            <p className="text-base mb-8 leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-              {t.noSessionsYetDesc}
-            </p>
-            <Link
-              to="/study"
-              className="inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-full font-medium shadow-lg transition-transform hover:scale-105 active:scale-95"
-              style={{ 
-                background: themeConfig.gradients.primary,
-                color: '#ffffff'
-              }}
-            >
-              <BookOpen className="w-5 h-5" />
-              <span>{t.startFirstSession}</span>
-            </Link>
-          </div>
+      <div className="page">
+        <h1 className="page-title">{t.studyHistory}</h1>
+        <div className="mt-8 max-w-measure">
+          <p className="text-lg font-medium text-ink">{t.noSessionsYet}</p>
+          <p className="mt-1 text-ink-soft">{t.noSessionsYetDesc}</p>
+          <Link to="/study" className="btn btn-primary mt-6">
+            {t.startFirstSession}
+          </Link>
         </div>
       </div>
     );
   }
 
+  const rowActions = (session: StudySession, size: 'sm' | 'md') => {
+    const topics = topicsOf(session);
+    return (
+      <>
+        {session.status === 'active' && (
+          <>
+            <Link
+              to="/study"
+              state={{ sessionId: session.id }}
+              className={`btn btn-secondary ${size === 'sm' ? 'btn-sm' : ''}`}
+            >
+              {t.historyResume}
+            </Link>
+            <button
+              type="button"
+              onClick={() => handleEditSession(session)}
+              className="btn btn-ghost btn-icon"
+              aria-label={formatMessage(t.historyEditAria, { topics })}
+              title={t.edit}
+            >
+              <Pencil aria-hidden="true" />
+            </button>
+          </>
+        )}
+        <button
+          type="button"
+          onClick={() => requestDeleteSession(session.id)}
+          className="btn btn-ghost btn-icon"
+          aria-label={formatMessage(t.historyDeleteAria, { topics })}
+          title={t.delete}
+        >
+          <Trash2 aria-hidden="true" />
+        </button>
+      </>
+    );
+  };
+
+  const selectBox = (session: StudySession) => (
+    <label className="-m-2 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center">
+      <input
+        type="checkbox"
+        className="h-4 w-4"
+        checked={selectedSessions.includes(session.id)}
+        onChange={() => toggleSessionSelection(session.id)}
+        aria-label={formatMessage(t.historySelectAria, { topics: topicsOf(session) })}
+      />
+    </label>
+  );
+
   return (
-    <div className="min-h-screen safe-top safe-bottom flex flex-col" style={{ background: themeConfig.gradients.background }}>
-      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 flex-1">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8 max-w-md mx-auto">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 shadow-lg animate-bounce-gentle"
-            style={{
-              background: themeConfig.gradients.primary,
-              boxShadow: `0 8px 32px ${themeConfig.colors.primary}40`,
-            }}
-          >
-            <BookOpen className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold mb-2" style={{ color: themeConfig.colors.text }}>
-            {t.studyHistory}
-          </h1>
-          <p className="text-base leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-            {t.reviewProgress}
+    <div className="page">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="page-title">{t.studyHistory}</h1>
+          <p className="page-lede tabular">
+            {formatMessage(sessions.length === 1 ? t.historySessionCountOne : t.historySessionCountOther, { count: sessions.length })}
           </p>
         </div>
-
-        {/* Action Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
-          <div className="flex items-center space-x-1 sm:space-x-2 flex-wrap gap-1 sm:gap-2">
-            <button
-              onClick={toggleSelectionMode}
-              className="p-2 rounded-lg transition-colors"
-              style={{
-                backgroundColor: isSelectionMode ? themeConfig.colors.primary + "20" : "transparent",
-                color: isSelectionMode ? themeConfig.colors.primary : themeConfig.colors.textSecondary,
-              }}
-              aria-label={isSelectionMode ? "Exit selection mode" : "Enter selection mode"}
-            >
-              {isSelectionMode ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
-            </button>
-            <button onClick={toggleSortOrder} className="p-2 rounded-lg transition-colors" style={{ color: themeConfig.colors.textSecondary }} aria-label={sortOrder === "desc" ? "Sort ascending" : "Sort descending"}>
-              {sortOrder === "desc" ? <SortDesc className="w-5 h-5" /> : <SortAsc className="w-5 h-5" />}
-            </button>
-            <button onClick={focusSearchInput} className="p-2 rounded-lg transition-colors" style={{ color: themeConfig.colors.textSecondary }} aria-label="Search sessions">
-              <Search className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setIsFilterExpanded(!isFilterExpanded)}
-              className="p-2 rounded-lg transition-colors"
-              style={{
-                backgroundColor: isFilterExpanded ? themeConfig.colors.primary + "20" : "transparent",
-                color: isFilterExpanded ? themeConfig.colors.primary : themeConfig.colors.textSecondary,
-              }}
-            >
-              <Filter className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setViewMode("list")}
-              className="p-2 rounded-lg transition-colors"
-              style={{
-                backgroundColor: viewMode === "list" ? themeConfig.colors.primary + "20" : "transparent",
-                color: viewMode === "list" ? themeConfig.colors.primary : themeConfig.colors.textSecondary,
-              }}
-              aria-label={viewMode === "list" ? "Current view: List" : "Switch to list view"}
-              aria-pressed={viewMode === "list"}
-            >
-              <div className="w-5 h-5 flex flex-col justify-between">
-                <div className="h-1 w-full rounded-full" style={{ backgroundColor: "currentColor" }}></div>
-                <div className="h-1 w-full rounded-full" style={{ backgroundColor: "currentColor" }}></div>
-                <div className="h-1 w-full rounded-full" style={{ backgroundColor: "currentColor" }}></div>
-              </div>
-            </button>
-            <button
-              onClick={() => setViewMode("grid")}
-              className="p-2 rounded-lg transition-colors"
-              style={{
-                backgroundColor: viewMode === "grid" ? themeConfig.colors.primary + "20" : "transparent",
-                color: viewMode === "grid" ? themeConfig.colors.primary : themeConfig.colors.textSecondary,
-              }}
-              aria-label={viewMode === "grid" ? "Current view: Grid" : "Switch to grid view"}
-              aria-pressed={viewMode === "grid"}
-            >
-              <div className="w-5 h-5 grid grid-cols-2 gap-1">
-                <div className="rounded-sm" style={{ backgroundColor: "currentColor" }}></div>
-                <div className="rounded-sm" style={{ backgroundColor: "currentColor" }}></div>
-                <div className="rounded-sm" style={{ backgroundColor: "currentColor" }}></div>
-                <div className="rounded-sm" style={{ backgroundColor: "currentColor" }}></div>
-              </div>
-            </button>
-          </div>
-
-          <Link
-            to="/study"
-            className="inline-flex items-center space-x-2 px-4 py-2 rounded-full font-medium transition-transform hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: themeConfig.colors.primary,
-              color: "#ffffff",
-            }}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>{t.newSession}</span>
-          </Link>
-        </div>
-
-        {/* Info Tip */}
-        {showInfoTip && (
-          <div
-            className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border animate-fade-in"
-            style={{
-              backgroundColor: themeConfig.colors.info + "10",
-              borderColor: themeConfig.colors.info + "30",
-            }}
-          >
-            <div className="flex items-start space-x-3">
-              <Info className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
-              <div className="flex-1">
-                <p className="text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                  {t.historyTip}
-                </p>
-              </div>
-              <button onClick={dismissInfoTip} className="p-1 rounded-full" style={{ color: themeConfig.colors.info }}>
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Search and Filter */}
-        <div className="mb-4 sm:mb-6 space-y-3 max-w-2xl mx-auto">
-          <div className="relative">
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t.searchSessions}
-              onFocus={handleSearchFocus}
-              onBlur={handleSearchBlur}
-              className="w-full pr-4 py-3 rounded-full border-2 focus:border-2 outline-none transition-all duration-200"
-              style={{
-                paddingLeft: "3.5rem",
-                color: themeConfig.colors.text,
-                backgroundColor: themeConfig.colors.background,
-                borderColor: searchQuery ? themeConfig.colors.primary : themeConfig.colors.border,
-                boxShadow: searchQuery ? `0 0 0 4px ${themeConfig.colors.primary}20` : "none",
-              }}
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: themeConfig.colors.textMuted }} />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery("")} className="flex justify-center items-center absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-full" style={{ backgroundColor: themeConfig.colors.border }} aria-label="Clear search">
-                <Trash2 className="w-3 h-3" style={{ color: themeConfig.colors.textMuted }} />
-              </button>
-            )}
-          </div>
-
-          {isFilterExpanded && (
-            <div className="flex space-x-2 animate-slide-up">
-              {["all", "completed", "active"].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status as any)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex-1`}
-                  style={{
-                    backgroundColor: filterStatus === status ? themeConfig.colors.primary : themeConfig.colors.surface,
-                    color: filterStatus === status ? "#ffffff" : themeConfig.colors.textSecondary,
-                  }}
-                >
-                  {status === "all" ? t.all : status === "completed" ? t.completed : t.inProgress}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Selection Mode Controls */}
-        {isSelectionMode && (
-          <div
-            className="mb-6 p-4 rounded-xl border"
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-medium" style={{ color: themeConfig.colors.text }}>
-                {formatMessage(selectedSessions.length === 1 ? t.selectedCountOne : t.selectedCountOther, { count: selectedSessions.length })}
-              </span>
-              <div className="flex space-x-2">
-                <button
-                  onClick={selectAllSessions}
-                  className="text-xs px-2 py-1 rounded-lg"
-                  style={{
-                    backgroundColor: themeConfig.colors.primary + "20",
-                    color: themeConfig.colors.primary,
-                  }}
-                >
-                  {t.selectAll}
-                </button>
-                <button
-                  onClick={deselectAllSessions}
-                  className="text-xs px-2 py-1 rounded-lg"
-                  style={{
-                    backgroundColor: themeConfig.colors.border,
-                    color: themeConfig.colors.textSecondary,
-                  }}
-                >
-                  {t.clear}
-                </button>
-              </div>
-            </div>
-            <button
-              onClick={() => selectedSessions.length > 0 && setShowDeleteConfirm(true)}
-              disabled={selectedSessions.length === 0}
-              className="w-full py-2 rounded-full font-medium transition-colors disabled:opacity-50"
-              style={{
-                backgroundColor: themeConfig.colors.error,
-                color: "#ffffff",
-              }}
-            >
-              <Trash2 className="w-4 h-4 inline-block mr-2" />
-              {t.deleteSelected}
-            </button>
-          </div>
-        )}
-
-        {/* Stats Overview */}
-        <div
-          className="mb-6 p-4 sm:p-6 rounded-xl border"
-          style={{
-            backgroundColor: themeConfig.colors.surface,
-            borderColor: themeConfig.colors.border,
-          }}
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                {t.totalSessions}
-              </p>
-              <p className="text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                {sessions.length}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                {t.completed}
-              </p>
-              <p className="text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                {sessions.filter((s) => s.status === "completed").length}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                {t.averageScore}
-              </p>
-              <p className="text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                {sessions.filter((s) => s.status === "completed").length > 0 ? Math.round(sessions.filter((s) => s.status === "completed").reduce((acc, s) => acc + sessionScore(s.questions), 0) / sessions.filter((s) => s.status === "completed").length) : 0}%
-              </p>
-            </div>
-            <div>
-              <p className="text-xs sm:text-sm font-medium mb-1" style={{ color: themeConfig.colors.textSecondary }}>
-                {t.questionsAnswered}
-              </p>
-              <p className="text-2xl font-bold" style={{ color: themeConfig.colors.text }}>
-                {sessions.reduce((acc, s) => acc + answeredCount(s.questions), 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Sessions List */}
-        <div className={viewMode === "list" ? "space-y-4" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"}>
-          {filteredSessions.length === 0 ? (
-            <div
-              className="p-6 rounded-xl border text-center"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                borderColor: themeConfig.colors.border,
-              }}
-            >
-              <Search className="w-8 h-8 mx-auto mb-3 opacity-50 animate-pulse" style={{ color: themeConfig.colors.textMuted }} />
-              <p className="text-base" style={{ color: themeConfig.colors.textSecondary }}>
-                {t.noSessionsFound}
-              </p>
-              <p className="text-sm mt-1" style={{ color: themeConfig.colors.textMuted }}>
-                {t.adjustFilters}
-              </p>
-            </div>
-          ) : (
-            filteredSessions.map((session) => (
-              <div
-                key={session.id}
-                className={`rounded-xl sm:rounded-2xl border transition-all duration-200 h-full flex flex-col ${isSelectionMode && selectedSessions.includes(session.id) ? "scale-[1.02] shadow-md" : ""}`}
-                style={{
-                  backgroundColor: themeConfig.colors.surface,
-                  borderColor: isSelectionMode && selectedSessions.includes(session.id) ? themeConfig.colors.primary : themeConfig.colors.border,
-                }}
-              >
-                <div className="p-4 sm:p-5" onClick={() => isSelectionMode && toggleSessionSelection(session.id)}>
-                  <div className="flex items-start space-x-3">
-                    {isSelectionMode && (
-                      <div
-                        className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
-                        style={{
-                          backgroundColor: selectedSessions.includes(session.id) ? themeConfig.colors.primary : themeConfig.colors.background,
-                          borderWidth: 2,
-                          borderColor: selectedSessions.includes(session.id) ? themeConfig.colors.primary : themeConfig.colors.border,
-                        }}
-                      >
-                        {selectedSessions.includes(session.id) && <CheckSquare className="w-4 h-4 text-white" />}
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-bold truncate text-sm sm:text-base" style={{ color: themeConfig.colors.text }}>
-                            {session.contexts.join(", ")}
-                          </h3>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <div className="flex items-center">
-                              <Calendar className="w-3 h-3 mr-1" style={{ color: themeConfig.colors.textMuted }} />
-                              <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                                {formatDate(session.createdAt, language)}
-                              </span>
-                            </div>
-                            <div className="flex items-center">
-                              <BookOpen className="w-3 h-3 mr-1" style={{ color: themeConfig.colors.textMuted }} />
-                              <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                                {formatMessage(answeredCount(session.questions) === 1 ? t.questionCountOne : t.questionCountOther, { count: answeredCount(session.questions) })}
-                              </span>
-                            </div>
-                            {session.kind === "review" && (
-                              <span
-                                className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full"
-                                style={{ backgroundColor: themeConfig.colors.warning + "20", color: themeConfig.colors.warning }}
-                              >
-                                <Repeat className="w-3 h-3 mr-1" />
-                                {t.reviewSessionLabel}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className={`px-2 py-1 rounded-full text-xs font-medium ml-2 flex-shrink-0 ${session.status === "completed" ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"}`}>{session.status === "completed" ? t.completed : t.inProgress}</div>
-                      </div>
-
-                      {session.status === "completed" && (
-                        <div className="mt-3 sm:mt-4">
-                          <div className="flex items-center justify-between text-xs mb-1">
-                            <span style={{ color: themeConfig.colors.textSecondary }}>{t.score}</span>
-                            <span style={{ color: themeConfig.colors.textSecondary }}>{sessionScore(session.questions)}%</span>
-                          </div>
-                          <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: themeConfig.colors.border }}>
-                            <div
-                              className="h-full rounded-full"
-                              style={{
-                                width: `${sessionScore(session.questions)}%`,
-                                background: themeConfig.gradients.primary,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {!isSelectionMode && (
-                  <div className="flex border-t mt-auto" style={{ borderColor: themeConfig.colors.border }}>
-                    {session.status === "active" && (
-                      <>
-                        <Link to="/study" state={{ sessionId: session.id }} className="flex-1 flex items-center justify-center py-3 space-x-1 transition-colors" style={{ color: themeConfig.colors.primary }}>
-                          <Play className="w-4 h-4" />
-                          <span className="text-sm font-medium">{t.continue}</span>
-                        </Link>
-                        <button onClick={() => handleEditSession(session)} className="flex-1 flex items-center justify-center py-3 space-x-1 transition-colors" style={{ color: themeConfig.colors.textSecondary }}>
-                          <Edit className="w-4 h-4" />
-                          <span className="text-sm font-medium">{t.edit}</span>
-                        </button>
-                      </>
-                    )}
-                    <Link to={`/session/${session.id}`} className="flex-1 flex items-center justify-center py-3 space-x-1 transition-colors" style={{ color: themeConfig.colors.textSecondary }}>
-                      <Eye className="w-4 h-4" />
-                      <span className="text-sm font-medium">{t.viewDetails}</span>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Delete Confirmation Modal */}
-        {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div
-              className="rounded-2xl shadow-xl border max-w-sm w-full animate-scale-in"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                borderColor: themeConfig.colors.border,
-              }}
-            >
-              <div className="p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: themeConfig.colors.error + "20" }}>
-                    <AlertCircle className="w-5 h-5" style={{ color: themeConfig.colors.error }} />
-                  </div>
-                  <h3 className="text-lg font-bold" style={{ color: themeConfig.colors.text }}>
-                    {t.confirmDeletion}
-                  </h3>
-                </div>
-                <p className="mb-6" style={{ color: themeConfig.colors.textSecondary }}>
-                  {formatMessage(selectedSessions.length === 1 ? t.deleteSessionsConfirmOne : t.deleteSessionsConfirmOther, { count: selectedSessions.length })}
-                </p>
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="flex-1 py-3 rounded-full font-medium transition-transform active:scale-95"
-                    style={{
-                      backgroundColor: themeConfig.colors.surface,
-                      color: themeConfig.colors.textSecondary,
-                      border: `1px solid ${themeConfig.colors.border}`,
-                    }}
-                  >
-                    {t.cancel}
-                  </button>
-                  <button
-                    onClick={deleteSelectedSessions}
-                    className="flex-1 py-3 rounded-full font-medium transition-transform active:scale-95"
-                    style={{
-                      backgroundColor: themeConfig.colors.error,
-                      color: "#ffffff",
-                    }}
-                  >
-                    {t.delete}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Edit Session Modal */}
-        {editingSession && <SessionEditModal session={editingSession} isOpen={!!editingSession} onClose={() => setEditingSession(null)} onSave={(updates) => handleSaveSession(editingSession.id, updates)} />}
+        <Link to="/study" className="btn btn-primary">
+          <Plus aria-hidden="true" />
+          {t.newSession}
+        </Link>
       </div>
 
-      {/* Search Results Overlay */}
-      {isSearchFocused && searchQuery && (
-        <div className="fixed inset-x-0 top-[120px] bottom-0 z-40 p-4 animate-fade-in" onClick={() => setIsSearchFocused(false)}>
-          <div
-            className="max-w-md mx-auto rounded-2xl shadow-2xl border overflow-hidden"
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: themeConfig.colors.border }}>
-              <h3 className="font-semibold" style={{ color: themeConfig.colors.text }}>
-                {t.searchResults}
-              </h3>
-            </div>
-            <div className="max-h-[60vh] overflow-y-auto p-2">
-              {filteredSessions.length > 0 ? (
-                filteredSessions.slice(0, 5).map((session) => (
-                  <Link key={session.id} to={`/session/${session.id}`} className="block p-3 hover:bg-gray-50 rounded-xl transition-colors">
-                    <p className="font-medium truncate" style={{ color: themeConfig.colors.text }}>
-                      {session.contexts.join(", ")}
-                    </p>
-                    <p className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                      {formatDate(session.createdAt, language)}
-                    </p>
-                  </Link>
-                ))
-              ) : (
-                <div className="p-4 text-center" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.noResultsFound}
-                </div>
-              )}
-            </div>
+      {/* Filters */}
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="relative w-full sm:max-w-xs">
+          <label htmlFor="history-search" className="sr-only">
+            {t.historySearchLabel}
+          </label>
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted"
+            aria-hidden="true"
+          />
+          <input
+            id="history-search"
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t.searchSessions}
+            className="field pl-9"
+          />
+        </div>
+        <div className="flex flex-1 items-center justify-between gap-3">
+          <div className="segmented" role="group" aria-label={t.historyStatusFilter}>
+            {statusFilters.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={filterStatus === value}
+                onClick={() => setFilterStatus(value)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
+          <button
+            type="button"
+            onClick={toggleSelectionMode}
+            aria-pressed={isSelectionMode}
+            className="btn btn-ghost -mr-2"
+          >
+            {isSelectionMode ? t.historyDoneSelecting : t.historySelect}
+          </button>
+        </div>
+      </div>
+
+      {/* Selection bar */}
+      {isSelectionMode && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-y border-line py-2">
+          <span className="mr-2 text-sm font-medium text-ink tabular" aria-live="polite">
+            {formatMessage(selectedSessions.length === 1 ? t.selectedCountOne : t.selectedCountOther, { count: selectedSessions.length })}
+          </span>
+          <button type="button" onClick={selectAllSessions} className="btn btn-ghost">
+            {t.selectAll}
+          </button>
+          <button type="button" onClick={deselectAllSessions} className="btn btn-ghost">
+            {t.clear}
+          </button>
+          <button
+            type="button"
+            onClick={() => selectedSessions.length > 0 && setShowDeleteConfirm(true)}
+            disabled={selectedSessions.length === 0}
+            className="btn btn-danger sm:ml-auto"
+          >
+            <Trash2 aria-hidden="true" />
+            {t.deleteSelected}
+          </button>
         </div>
       )}
 
-      {/* Back to top button - appears when scrolling down */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-6 right-6 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
-        style={{
-          backgroundColor: themeConfig.colors.primary,
-          color: "#ffffff",
-          opacity: 0.9,
-          display: "none", // Initially hidden, would be shown with JS on scroll
-        }}
+      {/* Sessions */}
+      {filteredSessions.length === 0 ? (
+        <div className="mt-10 max-w-measure">
+          <p className="text-lg font-medium text-ink">{t.historyNoMatch}</p>
+          <p className="mt-1 text-ink-soft">{t.adjustFilters}</p>
+          <button type="button" onClick={clearFilters} className="btn btn-secondary mt-5">
+            {t.historyClearFilters}
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* md and up: table */}
+          <table className="data-table mt-6 hidden md:table">
+            <thead>
+              <tr>
+                {isSelectionMode && (
+                  <th scope="col" className="w-10">
+                    <span className="sr-only">{t.historySelect}</span>
+                  </th>
+                )}
+                <th scope="col">{t.historyColTopics}</th>
+                <th scope="col">{t.historyColType}</th>
+                <th scope="col" className="num">{t.questions}</th>
+                <th scope="col" className="num">{t.score}</th>
+                <th scope="col" className="num" aria-sort={sortOrder === 'desc' ? 'descending' : 'ascending'}>
+                  <button
+                    type="button"
+                    onClick={toggleSortOrder}
+                    className="inline-flex items-center gap-1 font-medium hover:text-ink"
+                  >
+                    {t.historyColStarted}
+                    {sortOrder === 'desc' ? (
+                      <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+                    ) : (
+                      <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+                    )}
+                  </button>
+                </th>
+                <th scope="col">{t.historyColStatus}</th>
+                {!isSelectionMode && (
+                  <th scope="col" className="text-right">
+                    <span className="sr-only">{t.historyColActions}</span>
+                  </th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredSessions.map(session => (
+                <tr key={session.id}>
+                  {isSelectionMode && <td className="align-middle">{selectBox(session)}</td>}
+                  <td className="align-middle">
+                    <Link to={`/session/${session.id}`} className="font-medium text-ink hover:underline">
+                      {topicsOf(session)}
+                    </Link>
+                    {session.kind === 'review' && <span className="tag ml-2">{t.reviewSessionLabel}</span>}
+                  </td>
+                  <td className="align-middle text-ink-soft">{typeLabel(session)}</td>
+                  <td className="num align-middle">{answeredCount(session.questions)}</td>
+                  <td className="num align-middle">{scoreLabel(session)}</td>
+                  <td className="num whitespace-nowrap align-middle">{formatDate(session.createdAt, language)}</td>
+                  <td className="align-middle">{statusTag(session)}</td>
+                  {!isSelectionMode && (
+                    <td className="align-middle">
+                      <div className="flex items-center justify-end gap-1">{rowActions(session, 'sm')}</div>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Below md: stacked rows */}
+          <div className="mt-6 md:hidden">
+            <button
+              type="button"
+              onClick={toggleSortOrder}
+              className="btn btn-ghost -ml-4 mb-2"
+            >
+              {t.historyColStarted}
+              {sortOrder === 'desc' ? <ArrowDown aria-hidden="true" /> : <ArrowUp aria-hidden="true" />}
+            </button>
+            <ul className="divide-y divide-line border-y border-line">
+              {filteredSessions.map(session => (
+                <li key={session.id} className="py-4">
+                  <div className="flex items-start gap-3">
+                    {isSelectionMode && selectBox(session)}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <Link
+                          to={`/session/${session.id}`}
+                          className="min-w-0 break-words font-medium text-ink hover:underline"
+                        >
+                          {topicsOf(session)}
+                        </Link>
+                        <span className="mt-0.5 shrink-0">{statusTag(session)}</span>
+                      </div>
+                      <p className="mt-1 text-sm text-ink-soft tabular">
+                        {formatDate(session.createdAt, language)}
+                        {' · '}
+                        {formatMessage(answeredCount(session.questions) === 1 ? t.questionCountOne : t.questionCountOther, { count: answeredCount(session.questions) })}
+                        {' · '}
+                        {t.score} {scoreLabel(session)}
+                      </p>
+                      {session.kind === 'review' && <span className="tag mt-2">{t.reviewSessionLabel}</span>}
+                    </div>
+                  </div>
+                  {!isSelectionMode && (
+                    <div className="mt-3 flex items-center gap-1">{rowActions(session, 'md')}</div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
+
+      {showDeleteConfirm && (
+        <DeleteConfirmDialog
+          message={formatMessage(selectedSessions.length === 1 ? t.deleteSessionsConfirmOne : t.deleteSessionsConfirmOther, { count: selectedSessions.length })}
+          onCancel={cancelDelete}
+          onConfirm={deleteSelectedSessions}
+        />
+      )}
+
+      {editingSession && (
+        <SessionEditModal
+          session={editingSession}
+          isOpen={!!editingSession}
+          onClose={() => setEditingSession(null)}
+          onSave={(updates) => handleSaveSession(editingSession.id, updates)}
+        />
+      )}
+    </div>
+  );
+}
+
+interface DeleteConfirmDialogProps {
+  message: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
+
+function DeleteConfirmDialog({ message, onCancel, onConfirm }: DeleteConfirmDialogProps) {
+  const { t } = useLanguage();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  // Move focus in on open; return it to the trigger (or main) on close.
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    cancelRef.current?.focus();
+    return () => {
+      if (previous?.isConnected) previous.focus();
+      else document.getElementById('main-content')?.focus();
+    };
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCancel();
+      } else if (e.key === 'Tab' && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll<HTMLElement>('button:not(:disabled)');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [onCancel]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      onClick={(e) => e.target === e.currentTarget && onCancel()}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-desc"
+        className="w-full max-w-sm rounded bg-surface p-6 overlay-shadow"
       >
-        <ArrowLeft className="w-5 h-5 transform rotate-90" />
-      </button>
+        <h2 id="delete-dialog-title" className="text-lg font-medium text-ink">
+          {t.confirmDeletion}
+        </h2>
+        <p id="delete-dialog-desc" className="mt-2 text-ink-soft">
+          {message}
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button ref={cancelRef} type="button" onClick={onCancel} className="btn btn-secondary">
+            {t.cancel}
+          </button>
+          <button type="button" onClick={onConfirm} className="btn btn-danger">
+            {t.delete}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

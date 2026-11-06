@@ -3,6 +3,7 @@ import { runWhenIdle } from '../../utils/idle';
 import { formatMessage } from '../i18n/formatMessage';
 import { getCurrentLanguage } from '../i18n/languageDetector';
 import { getTranslations } from '../i18n/translations';
+import { showNotification } from '../notification/notificationService';
 import * as localStorage from '../storage/localStorage';
 
 /**
@@ -80,122 +81,16 @@ export function handleVersionMigration(): boolean {
 }
 
 /**
- * Show a notification about version migration (optimized)
+ * Tell the user the app was updated and cached data was refreshed.
  */
 function showMigrationNotification(oldVersion: string, newVersion: string): void {
-  try {
-    const t = getTranslations(getCurrentLanguage());
-    const title = t.appUpdated;
-    const versionText = formatMessage(t.versionUpdated, { oldVersion, newVersion });
-    const dataText = t.dataRefreshed;
-    
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      color: white;
-      padding: 20px 24px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      z-index: 10000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      max-width: 400px;
-      animation: slideInFromRight 0.4s ease-out;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    `;
-    
-    // Add animation styles if not already present
-    if (!document.querySelector('#migration-notification-styles')) {
-      const style = document.createElement('style');
-      style.id = 'migration-notification-styles';
-      style.textContent = `
-        @keyframes slideInFromRight {
-          from { 
-            transform: translateX(100%); 
-            opacity: 0; 
-          }
-          to { 
-            transform: translateX(0); 
-            opacity: 1; 
-          }
-        }
-        @keyframes slideOutToRight {
-          from { 
-            transform: translateX(0); 
-            opacity: 1; 
-          }
-          to { 
-            transform: translateX(100%); 
-            opacity: 0; 
-          }
-        }
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-    
-    notification.innerHTML = `
-      <div style="display: flex; align-items: flex-start; gap: 12px;">
-        <div style="
-          width: 24px; 
-          height: 24px; 
-          background: rgba(255,255,255,0.2); 
-          border-radius: 50%; 
-          display: flex; 
-          align-items: center; 
-          justify-content: center; 
-          flex-shrink: 0;
-          animation: pulse 2s infinite;
-        ">
-          🚀
-        </div>
-        <div style="flex: 1;">
-          <div style="font-weight: 600; margin-bottom: 4px; font-size: 15px;">
-            ${title}
-          </div>
-          <div style="opacity: 0.95; font-size: 13px; line-height: 1.4; margin-bottom: 8px;">
-            ${versionText}
-          </div>
-          <div style="opacity: 0.9; font-size: 12px; line-height: 1.3;">
-            ${dataText}
-          </div>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove notification after 8 seconds
-    setTimeout(() => {
-      notification.style.animation = 'slideOutToRight 0.4s ease-in forwards';
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.parentNode.removeChild(notification);
-        }
-      }, 400);
-    }, 8000);
-    
-    // Allow manual dismissal by clicking
-    notification.addEventListener('click', () => {
-      notification.style.animation = 'slideOutToRight 0.4s ease-in forwards';
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.parentNode.removeChild(notification);
-        }
-      }, 400);
-    });
-    
-  } catch (error) {
-    console.error('Error showing migration notification:', error);
-  }
+  const t = getTranslations(getCurrentLanguage());
+  showNotification({
+    type: 'info',
+    title: t.appUpdated,
+    message: `${formatMessage(t.versionUpdated, { oldVersion, newVersion })} ${t.dataRefreshed}`,
+    duration: 8000,
+  });
 }
 
 /**

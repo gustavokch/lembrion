@@ -35,7 +35,7 @@
     <meta property="og:image" content="https://lembrion.vercel.app/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Lembrion: AI study sessions built on learning science. Free app, bring your own AI key." />
+    <meta property="og:image:alt" content="Lembrion: study by answering questions, not rereading notes. Your topics, your AI provider, your browser." />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -43,12 +43,12 @@
     <meta name="twitter:title" content="Lembrion - Free AI Study Sessions Built on Learning Science" />
     <meta name="twitter:description" content="AI study sessions built on learning science. Generate personalized questions and track your progress. No account required." />
     <meta name="twitter:image" content="https://lembrion.vercel.app/og-image.png" />
-    <meta name="twitter:image:alt" content="Lembrion: AI study sessions built on learning science. Free app, bring your own AI key." />
+    <meta name="twitter:image:alt" content="Lembrion: study by answering questions, not rereading notes. Your topics, your AI provider, your browser." />
     
     <!-- Additional SEO -->
     <link rel="canonical" href="https://lembrion.vercel.app/" />
-    <meta name="theme-color" content="#ea580c" />
-    <meta name="msapplication-TileColor" content="#ea580c" />
+    <meta name="theme-color" content="#23373b" />
+    <meta name="msapplication-TileColor" content="#23373b" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Lembrion" />
@@ -311,69 +311,67 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png" />
     
-    <!-- Critical CSS for above-the-fold content -->
+    <!-- First paint before React mounts: the title bar and a travelling progress rule.
+         Colours here cover only the boot markup; src/index.css owns the page once loaded,
+         and applyTheme() removes data-boot. -->
     <style>
-      /* Critical CSS for immediate rendering */
       body {
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-family: 'Fira Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 50%, #fff7ed 100%);
-        min-height: 100vh;
       }
-      
-      #root {
-        min-height: 100vh;
+      html[data-boot='dark'] {
+        background: #1c2c2f;
       }
-      
-      /* Loading state */
-      .loading-spinner {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #ea580c;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
+      .boot-bar {
+        height: 3.5rem;
+        background: #23373b;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        font-size: 1.125rem;
+        font-weight: 500;
       }
-      
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+      html[data-boot='dark'] .boot-bar {
+        background: #142225;
       }
-      
-      /* Responsive utilities */
-      @media (max-width: 640px) {
-        body {
-          font-size: 14px;
-        }
+      .boot-rule {
+        position: relative;
+        height: 4px;
+        overflow: hidden;
+        background: rgba(134, 150, 153, 0.25);
       }
-      
-      /* High contrast mode support */
-      @media (prefers-contrast: high) {
-        body {
-          background: #ffffff;
-        }
+      .boot-rule::after {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 33%;
+        background: #eb811b;
+        animation: boot-travel 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
       }
-      
-      /* Reduced motion support */
+      @keyframes boot-travel {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(300%); }
+      }
       @media (prefers-reduced-motion: reduce) {
-        * {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
+        .boot-rule::after { animation: none; }
       }
     </style>
+    <script>
+      try {
+        var storedTheme = JSON.parse(localStorage.getItem('studorama-theme') || 'null');
+        if (storedTheme === 'dark' || storedTheme === 'midnight' || storedTheme === 'neon') {
+          document.documentElement.setAttribute('data-boot', 'dark');
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root">
-      <!-- Loading fallback -->
-      <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column;">
-        <div class="loading-spinner"></div>
-        <p style="margin-top: 16px; color: #6b7280;">Loading Lembrion...</p>
-      </div>
+      <div class="boot-bar">Lembrion</div>
+      <div class="boot-rule" role="progressbar" aria-label="Loading Lembrion"></div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

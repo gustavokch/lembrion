@@ -1,57 +1,52 @@
-export type Theme = 
-  | 'light' 
-  | 'dark' 
-  | 'focus' 
-  | 'midnight' 
-  | 'forest' 
-  | 'ocean' 
-  | 'sunset' 
-  | 'neon' 
-  | 'minimal' 
-  | 'warm';
+export const THEME_IDS = ['light', 'dark', 'contrast'] as const;
 
-export type ThemeCategory = 'standard' | 'focus' | 'energy' | 'calm';
+export type Theme = (typeof THEME_IDS)[number];
+
+/**
+ * Colour tokens. `useTheme()` writes each one to `--color-<key>` on
+ * `<html>`; Tailwind maps them to semantic classes (`bg-shell`, `text-ink`).
+ * Every value is a 6-digit hex.
+ */
+export interface ThemeColors {
+  /** Title bar ground. */
+  shell: string;
+  /** Text on the title bar. */
+  shellInk: string;
+  /** Secondary text on the title bar. */
+  shellMuted: string;
+  /** Page ground. */
+  ground: string;
+  /** Inputs, tables, raised regions. */
+  surface: string;
+  /** Block bodies, hover fills, inset regions. */
+  sunken: string;
+  ink: string;
+  inkSoft: string;
+  inkMuted: string;
+  /** Hairline separators. */
+  line: string;
+  /** Form-control borders (3:1 against surface). */
+  lineStrong: string;
+  /** Primary button fill. */
+  primary: string;
+  primaryHover: string;
+  onPrimary: string;
+  /** Progress and the current item only. */
+  accent: string;
+  /** Accent as text on the ground (4.5:1). */
+  accentInk: string;
+  success: string;
+  successInk: string;
+  error: string;
+  errorInk: string;
+  warning: string;
+  warningInk: string;
+  /** Focus ring on the ground. */
+  focus: string;
+}
 
 export interface ThemeConfig {
   id: Theme;
-  category: ThemeCategory;
-  colors: {
-    primary: string;
-    primaryHover: string;
-    secondary: string;
-    accent: string;
-    background: string;
-    surface: string;
-    surfaceHover: string;
-    text: string;
-    textSecondary: string;
-    textMuted: string;
-    border: string;
-    borderHover: string;
-    success: string;
-    warning: string;
-    error: string;
-    info: string;
-  };
-  gradients: {
-    primary: string;
-    secondary: string;
-    background: string;
-    card: string;
-  };
-  shadows: {
-    sm: string;
-    md: string;
-    lg: string;
-    xl: string;
-  };
-  /** Raw CSS values, written to `--effect-*` and used in inline styles. */
-  effects: {
-    /** `backdrop-filter` value, e.g. `blur(8px)` or `none`. */
-    blur: string;
-    /** `box-shadow` value. */
-    glow: string;
-    /** `transition` value, e.g. `all 200ms ease-in-out`. */
-    animation: string;
-  };
+  scheme: 'light' | 'dark';
+  colors: ThemeColors;
 }

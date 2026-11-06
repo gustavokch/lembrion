@@ -37,7 +37,7 @@ function App() {
   return (
     <Router>
       <Layout>
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={<LoadingScreen bar={false} />}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/study" element={<StudyPage />} />

@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
-import ReactMarkdown from 'react-markdown';
+import { Check, Copy } from 'lucide-react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import ReactMarkdown, { type Components, type ExtraProps } from 'react-markdown';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
 import c from 'react-syntax-highlighter/dist/esm/languages/prism/c';
@@ -22,7 +23,8 @@ import swift from 'react-syntax-highlighter/dist/esm/languages/prism/swift';
 import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx';
 import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
-import { materialDark, materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useLanguage } from '../hooks/useLanguage';
+import { convertMathDelimiters, DISPLAY_MATH_LANGUAGE, latexToText } from './markdownMath';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 
@@ -94,453 +96,232 @@ function resolveLanguage(tag: string): RegisteredLanguage | 'text' {
 interface MarkdownRendererProps {
   content: string;
   className?: string;
-  darkMode?: boolean;
 }
 
-/**
- * CRITICAL FIX: Extract text content from React elements recursively
+type HastElement = NonNullable<ExtraProps['node']>;
+type HastChild = HastElement['children'][number];
+
+function hastText(node: HastChild): string {
+  if (node.type === 'text') return node.value;
+  if (node.type === 'element') return node.children.map(hastText).join('');
+  return '';
+}
+
+const INK = 'var(--color-ink)';
+const tokenColor = (color: string): CSSProperties => ({ color });
+
+/*
+ * Prism theme built from the colour tokens, so code follows the light, dark
+ * and high-contrast themes without a second stylesheet.
  */
-function extractTextFromReactElement(element: any): string {
-  // Handle null/undefined
-  if (element == null) return '';
-  
-  // Handle strings and numbers directly
-  if (typeof element === 'string' || typeof element === 'number') {
-    return String(element);
-  }
-  
-  // Handle arrays (recursively process each element)
-  if (Array.isArray(element)) {
-    return element.map(extractTextFromReactElement).join('');
-  }
-  
-  // Handle React elements
-  if (element && typeof element === 'object' && element.$$typeof) {
-    // Extract text from props.children recursively
-    if (element.props && element.props.children) {
-      return extractTextFromReactElement(element.props.children);
+const CODE_STYLE: Record<string, CSSProperties> = {
+  'code[class*="language-"]': {
+    color: INK,
+    background: 'none',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    lineHeight: 'inherit',
+    whiteSpace: 'pre',
+    tabSize: 2,
+    hyphens: 'none',
+  },
+  'pre[class*="language-"]': {
+    color: INK,
+    background: 'var(--color-sunken)',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    lineHeight: 'inherit',
+    margin: 0,
+    overflow: 'auto',
+  },
+  comment: { color: 'var(--color-inkMuted)', fontStyle: 'italic' },
+  prolog: tokenColor('var(--color-inkMuted)'),
+  doctype: tokenColor('var(--color-inkMuted)'),
+  cdata: tokenColor('var(--color-inkMuted)'),
+  punctuation: tokenColor('var(--color-inkSoft)'),
+  operator: tokenColor('var(--color-inkSoft)'),
+  keyword: tokenColor('var(--color-accentInk)'),
+  atrule: tokenColor('var(--color-accentInk)'),
+  builtin: tokenColor('var(--color-accentInk)'),
+  important: tokenColor('var(--color-accentInk)'),
+  selector: tokenColor('var(--color-accentInk)'),
+  tag: tokenColor('var(--color-accentInk)'),
+  string: tokenColor('var(--color-successInk)'),
+  char: tokenColor('var(--color-successInk)'),
+  'attr-value': tokenColor('var(--color-successInk)'),
+  regex: tokenColor('var(--color-successInk)'),
+  inserted: tokenColor('var(--color-successInk)'),
+  url: tokenColor('var(--color-successInk)'),
+  number: tokenColor('var(--color-warningInk)'),
+  boolean: tokenColor('var(--color-warningInk)'),
+  constant: tokenColor('var(--color-warningInk)'),
+  symbol: tokenColor('var(--color-warningInk)'),
+  deleted: tokenColor('var(--color-errorInk)'),
+  function: { color: INK, fontWeight: 500 },
+  'class-name': { color: INK, fontWeight: 500 },
+  bold: { fontWeight: 600 },
+  italic: { fontStyle: 'italic' },
+};
+
+const LINE_NUMBER_STYLE: CSSProperties = {
+  color: 'var(--color-inkMuted)',
+  minWidth: '2.25em',
+  paddingRight: '1em',
+};
+
+const COPIED_RESET_MS = 1500;
+
+function CodeBlock({ code, tag }: { code: string; tag: string }) {
+  const { t } = useLanguage();
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = window.setTimeout(() => setCopied(false), COPIED_RESET_MS);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
+
+  const copyLabel = copied ? t.markdownCodeCopied : t.markdownCopyCode;
+
+  return (
+    <figure className="my-3 overflow-hidden rounded-sm bg-sunken first:mt-0 last:mb-0">
+      <figcaption className="flex items-center justify-between gap-2 border-b border-line pl-4 text-xs text-ink-muted">
+        <span className="font-mono">{tag}</span>
+        <button
+          type="button"
+          className="btn btn-ghost btn-icon"
+          onClick={() => {
+            void navigator.clipboard.writeText(code).then(() => setCopied(true));
+          }}
+          aria-label={copyLabel}
+          title={copyLabel}
+        >
+          {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+        </button>
+        <span role="status" className="sr-only">
+          {copied ? t.markdownCodeCopied : ''}
+        </span>
+      </figcaption>
+      <SyntaxHighlighter
+        language={resolveLanguage(tag)}
+        style={CODE_STYLE}
+        showLineNumbers
+        lineNumberStyle={LINE_NUMBER_STYLE}
+        PreTag="div"
+        className="font-mono text-sm"
+        customStyle={{ margin: 0, padding: '0.75rem 1rem', background: 'transparent', lineHeight: 1.6 }}
+      >
+        {code}
+      </SyntaxHighlighter>
+    </figure>
+  );
+}
+
+const COMPONENTS: Components = {
+  // Fenced blocks arrive as <pre><code class="language-x">; inline code is a bare <code>.
+  pre({ node, children }) {
+    const codeNode = node?.children[0];
+    if (!codeNode || codeNode.type !== 'element' || codeNode.tagName !== 'code') {
+      return (
+        <pre className="my-3 overflow-x-auto rounded-sm bg-sunken px-4 py-3 font-mono text-sm first:mt-0 last:mb-0">
+          {children}
+        </pre>
+      );
     }
-    return '';
-  }
-  
-  // Fallback for other objects
-  return String(element);
-}
 
-/**
- * Enhanced mathematical expression processor for human readability
- */
-function processMathematicalExpressions(text: string): string {
-  // Enhanced LaTeX to human-readable conversion
-  let processed = text;
+    const classNames = codeNode.properties.className;
+    const languageClass = Array.isArray(classNames)
+      ? classNames.map(String).find((name) => name.startsWith('language-'))
+      : undefined;
+    const tag = languageClass ? languageClass.slice('language-'.length) : '';
+    const code = hastText(codeNode).replace(/\n$/, '');
 
-  // Handle fractions with improved readability
-  processed = processed.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, (_match, numerator, denominator) => {
-    // Clean up the numerator and denominator
-    const cleanNum = processMathematicalExpressions(numerator.replace(/\\/g, '').trim());
-    const cleanDen = processMathematicalExpressions(denominator.replace(/\\/g, '').trim());
-    
-    return `(${cleanNum})/(${cleanDen})`;
-  });
-
-  // Handle limits with better formatting
-  processed = processed.replace(/\\lim_\{([^}]+)\}/g, (_match, subscript) => {
-    const cleanSub = subscript.replace(/\\/g, '').replace(/to/g, '→').trim();
-    return `lim (${cleanSub})`;
-  });
-
-  // Handle integrals
-  processed = processed.replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, (_match, lower, upper) => {
-    return `∫ from ${lower} to ${upper}`;
-  });
-
-  // Handle summations
-  processed = processed.replace(/\\sum_\{([^}]+)\}\^\{([^}]+)\}/g, (_match, lower, upper) => {
-    return `Σ (${lower} to ${upper})`;
-  });
-
-  // Handle square roots
-  processed = processed.replace(/\\sqrt\{([^}]+)\}/g, (_match, content) => {
-    return `√(${content})`;
-  });
-
-  // Handle powers/exponents with better formatting
-  processed = processed.replace(/\^(\d+)/g, (_match, exp) => {
-    const superscripts = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
-    if (exp.length === 1 && parseInt(exp) < 10) {
-      return superscripts[parseInt(exp)];
+    if (tag === DISPLAY_MATH_LANGUAGE) {
+      return (
+        <div role="math" data-math="display" className="my-3 overflow-x-auto text-center first:mt-0 last:mb-0">
+          {latexToText(code)}
+        </div>
+      );
     }
-    return `^${exp}`;
-  });
 
-  // Handle complex exponents
-  processed = processed.replace(/\^\{([^}]+)\}/g, (_match, exp) => {
-    return `^(${exp})`;
-  });
+    return <CodeBlock code={code} tag={tag} />;
+  },
 
-  // Handle subscripts
-  processed = processed.replace(/_\{([^}]+)\}/g, (_match, sub) => {
-    return `₍${sub}₎`;
-  });
+  code({ children }) {
+    return (
+      <code className="break-words rounded-sm bg-sunken px-1 py-0.5 font-mono text-[0.9em]">{children}</code>
+    );
+  },
 
-  // Handle simple subscripts
-  processed = processed.replace(/_(\d+)/g, (_match, sub) => {
-    const subscripts = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
-    if (sub.length === 1 && parseInt(sub) < 10) {
-      return subscripts[parseInt(sub)];
-    }
-    return `₍${sub}₎`;
-  });
+  p({ children }) {
+    return <p className="my-3 first:mt-0 last:mb-0">{children}</p>;
+  },
 
-  // Mathematical symbols conversion
-  const symbolMap: Record<string, string> = {
-    '\\to': '→',
-    '\\rightarrow': '→',
-    '\\leftarrow': '←',
-    '\\infty': '∞',
-    '\\pi': 'π',
-    '\\theta': 'θ',
-    '\\alpha': 'α',
-    '\\beta': 'β',
-    '\\gamma': 'γ',
-    '\\delta': 'δ',
-    '\\epsilon': 'ε',
-    '\\lambda': 'λ',
-    '\\mu': 'μ',
-    '\\sigma': 'σ',
-    '\\phi': 'φ',
-    '\\omega': 'ω',
-    '\\pm': '±',
-    '\\mp': '∓',
-    '\\times': '×',
-    '\\div': '÷',
-    '\\leq': '≤',
-    '\\geq': '≥',
-    '\\neq': '≠',
-    '\\approx': '≈',
-    '\\equiv': '≡',
-    '\\partial': '∂',
-    '\\nabla': '∇',
-    '\\cdot': '·',
-    '\\bullet': '•',
-    '\\cap': '∩',
-    '\\cup': '∪',
-    '\\subset': '⊂',
-    '\\supset': '⊃',
-    '\\in': '∈',
-    '\\notin': '∉',
-    '\\forall': '∀',
-    '\\exists': '∃',
-    '\\emptyset': '∅'
-  };
+  a({ href, children }) {
+    return (
+      <a href={href} className="text-ink underline hover:text-ink-soft" target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  },
 
-  // Apply symbol conversions
-  Object.entries(symbolMap).forEach(([latex, symbol]) => {
-    processed = processed.replace(new RegExp(latex.replace(/\\/g, '\\\\'), 'g'), symbol);
-  });
+  ul({ children }) {
+    return <ul className="my-3 list-disc space-y-1 pl-6 marker:text-ink-muted first:mt-0 last:mb-0">{children}</ul>;
+  },
 
-  // Clean up remaining LaTeX artifacts
-  processed = processed.replace(/\\\\/g, ' ');
-  processed = processed.replace(/\\([a-zA-Z]+)/g, '$1');
-  processed = processed.replace(/\{([^}]+)\}/g, '$1');
+  ol({ children }) {
+    return <ol className="my-3 list-decimal space-y-1 pl-6 marker:text-ink-muted first:mt-0 last:mb-0">{children}</ol>;
+  },
 
-  // Improve spacing around mathematical operators
-  processed = processed.replace(/([+\-=<>≤≥≠≈≡])/g, ' $1 ');
-  processed = processed.replace(/\s+/g, ' ');
+  blockquote({ children }) {
+    return (
+      <blockquote className="my-3 border-l border-line-strong pl-4 text-ink-soft first:mt-0 last:mb-0">
+        {children}
+      </blockquote>
+    );
+  },
 
-  return processed.trim();
-}
+  h1({ children }) {
+    return <h1 className="mb-2 mt-5 text-xl font-medium first:mt-0">{children}</h1>;
+  },
+
+  h2({ children }) {
+    return <h2 className="mb-2 mt-5 text-lg font-medium first:mt-0">{children}</h2>;
+  },
+
+  h3({ children }) {
+    return <h3 className="mb-1.5 mt-4 text-base font-semibold first:mt-0">{children}</h3>;
+  },
+
+  h4({ children }) {
+    return <h4 className="mb-1 mt-4 text-base font-medium first:mt-0">{children}</h4>;
+  },
+
+  table({ children }) {
+    return (
+      <div className="my-3 overflow-x-auto first:mt-0 last:mb-0">
+        <table className="data-table">{children}</table>
+      </div>
+    );
+  },
+
+  hr() {
+    return <hr className="my-4 border-line" />;
+  },
+};
 
 /**
- * Check if content contains mathematical expressions
+ * Markdown from the model: GFM, hard line breaks, highlighted code, and
+ * LaTeX inside explicit math delimiters reduced to readable text.
  */
-function containsMathematicalContent(text: string): boolean {
-  const mathPatterns = [
-    /\\frac\{/,
-    /\\lim_/,
-    /\\int_/,
-    /\\sum_/,
-    /\\sqrt\{/,
-    /\^[\d{]/,
-    /_[\d{]/,
-    /\\[a-zA-Z]+/,
-    /[∫∑∏∂∇√∞π]/,
-    /[αβγδεθλμσφω]/,
-    /[≤≥≠≈≡±∓×÷]/
-  ];
-  
-  return mathPatterns.some(pattern => pattern.test(text));
-}
-
-/**
- * Check if content contains programming code
- */
-function containsProgrammingCode(text: string): boolean {
-  // Check for code block markers
-  if (text.includes('```') || text.includes('~~~')) {
-    return true;
-  }
-  
-  // Check for inline code with programming keywords
-  const codePattern = /`[^`]*(?:def|function|class|import|from|if|else|for|while|return|var|let|const|public|private|void|int|string|print|console\.log)[^`]*`/i;
-  if (codePattern.test(text)) {
-    return true;
-  }
-  
-  // Check for common programming patterns
-  const programmingPatterns = [
-    /\b(?:def|function|class|import|from)\s+\w+/i,
-    /\b(?:if|else|for|while|return)\s*[({]/i,
-    /\b(?:var|let|const|public|private|void|int|string)\s+\w+/i,
-    /\b(?:print|console\.log)\s*\(/i,
-    /\w+\s*=\s*\w+\s*\([^)]*\)/,
-    /\w+\.\w+\s*\(/,
-    /\{[^}]*\}/,
-    /\[[^\]]*\]/
-  ];
-  
-  return programmingPatterns.some(pattern => pattern.test(text));
-}
-
-/**
- * Enterprise-grade Markdown renderer with enhanced code block support
- */
-export default function MarkdownRenderer({
-  content,
-  className = '',
-  darkMode = false,
-}: MarkdownRendererProps) {
-  // Process content with improved handling
-  const processedContent = useMemo(() => {
-    if (!content) return '';
-    
-    let processed = content.trim();
-    
-    // Don't process mathematical expressions if content contains programming code
-    if (!containsProgrammingCode(processed) && containsMathematicalContent(processed)) {
-      processed = processMathematicalExpressions(processed);
-    }
-    
-    return processed;
-  }, [content]);
+export default function MarkdownRenderer({ content, className = '' }: MarkdownRendererProps) {
+  const processedContent = useMemo(() => (content ? convertMathDelimiters(content.trim()) : ''), [content]);
 
   if (!content) return null;
 
   return (
-    <div className={`markdown-renderer ${className}`}>      
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkBreaks]}
-        components={{
-          code({ node: _node, inline, className, children, ...props }) {
-            // CRITICAL FIX: Extract text from React elements properly
-            const codeText = extractTextFromReactElement(children).replace(/\n$/, '');
-
-            const match = /language-(\S+)/.exec(className || '');
-            const language = resolveLanguage(match?.[1] ?? '');
-
-            // CRITICAL FIX: Don't process programming code as mathematical expressions
-            if (containsProgrammingCode(codeText)) {
-              // Handle inline programming code
-              if (inline) {
-                return (
-                  <code 
-                    className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded font-mono text-sm text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600" 
-                    {...props}
-                  >
-                    {codeText}
-                  </code>
-                );
-              }
-
-              // Handle block programming code with syntax highlighting
-              return (
-                <div className="relative my-4">
-                  <SyntaxHighlighter
-                    language={language}
-                    //@ts-ignore
-                    style={darkMode ? materialDark : materialLight}
-                    showLineNumbers={true}
-                    PreTag="div"
-                    className="rounded-lg border border-gray-300 dark:border-gray-600"
-                    customStyle={{
-                      margin: 0,
-                      padding: '1rem',
-                      fontSize: '0.875rem',
-                      lineHeight: '1.5'
-                    }}
-                    {...props}
-                  >
-                    {codeText}
-                  </SyntaxHighlighter>
-                  <button
-                    onClick={() => navigator.clipboard.writeText(codeText)}
-                    className="absolute top-2 right-2 p-1.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow-sm text-xs hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                    title="Copy code"
-                  >
-                    📋
-                  </button>
-                </div>
-              );
-            }
-
-            // Handle mathematical expressions (existing logic)
-            if (containsMathematicalContent(codeText)) {
-              const processedMath = processMathematicalExpressions(codeText);
-              
-              if (inline) {
-                return (
-                  <span 
-                    className="inline-block px-2 py-1 bg-blue-50 text-blue-900 rounded font-serif text-base font-medium border border-blue-200"
-                    {...props}
-                  >
-                    {processedMath}
-                  </span>
-                );
-              } else {
-                return (
-                  // @ts-ignore
-                  <div 
-                    className="my-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center"
-                    {...props}
-                  >
-                    <div className="text-xl font-serif font-bold text-blue-900 leading-relaxed">
-                      {processedMath}
-                    </div>
-                  </div>
-                );
-              }
-            }
-
-            // Regular inline code (non-programming, non-mathematical)
-            if (inline) {
-              return (
-                <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded font-mono text-sm text-gray-800 dark:text-gray-200" {...props}>
-                  {codeText}
-                </code>
-              );
-            }
-
-            // Regular block code without syntax highlighting
-            return (
-              <div className="relative my-4">
-                <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto border border-gray-300 dark:border-gray-600">
-                  <code className="font-mono text-sm text-gray-800 dark:text-gray-200">
-                    {codeText}
-                  </code>
-                </pre>
-                <button
-                  onClick={() => navigator.clipboard.writeText(codeText)}
-                  className="absolute top-2 right-2 p-1.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow-sm text-xs hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  title="Copy code"
-                >
-                  📋
-                </button>
-              </div>
-            );
-          },
-          
-          // CRITICAL FIX: Handle paragraph children properly
-          p({ children }) {
-            // CRITICAL FIX: Extract text from React elements
-            const textContent = extractTextFromReactElement(children);
-
-            // Skip mathematical processing if content contains programming code
-            if (containsProgrammingCode(textContent)) {
-              return <p className="mb-4 leading-relaxed">{children}</p>;
-            }
-            
-            if (containsMathematicalContent(textContent)) {
-              const processedContent = processMathematicalExpressions(textContent);
-              
-              return (
-                <div className="my-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="text-lg font-serif font-semibold text-blue-900 leading-relaxed text-center">
-                    {processedContent}
-                  </div>
-                </div>
-              );
-            }
-            
-            return <p className="mb-4 leading-relaxed">{children}</p>;
-          },
-          
-          // Enhanced pre block handling for code blocks
-          pre({ children }) {
-            return <div className="my-4">{children}</div>;
-          },
-          
-          a({ href, children }) {
-            return (
-              <a
-                href={href}
-                className="text-blue-600 hover:text-blue-800 underline transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {children}
-              </a>
-            );
-          },
-          
-          // Enhanced list styling
-          ul({ children }) {
-            return <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>;
-          },
-          
-          ol({ children }) {
-            return <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>;
-          },
-          
-          // Enhanced blockquote styling
-          blockquote({ children }) {
-            return (
-              <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-4 bg-blue-50 italic text-blue-900 rounded-r-lg">
-                {children}
-              </blockquote>
-            );
-          },
-          
-          // Enhanced heading styles
-          h1({ children }) {
-            return <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">{children}</h1>;
-          },
-          
-          h2({ children }) {
-            return <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">{children}</h2>;
-          },
-          
-          h3({ children }) {
-            return <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">{children}</h3>;
-          },
-          
-          // Enhanced table styling
-          table({ children }) {
-            return (
-              <div className="overflow-x-auto my-4">
-                <table className="min-w-full border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                  {children}
-                </table>
-              </div>
-            );
-          },
-          
-          th({ children }) {
-            return (
-              <th className="px-4 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 text-left font-semibold text-gray-900 dark:text-gray-100">
-                {children}
-              </th>
-            );
-          },
-          
-          td({ children }) {
-            return (
-              <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
-                {children}
-              </td>
-            );
-          },
-        }}
-      >
+    <div className={`break-words ${className}`}>
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={COMPONENTS}>
         {processedContent}
       </ReactMarkdown>
     </div>

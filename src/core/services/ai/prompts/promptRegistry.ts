@@ -105,7 +105,7 @@ Example format for code questions:
   "question": "**What is the output of the following Python code?**\\n\\n\`\`\`python\\nfor i in range(3):\\n    print(i * 2)\\n\`\`\`",
   "options": ["0\\n2\\n4", "1\\n2\\n3", "0\\n1\\n2", "2\\n4\\n6"],
   "correctAnswer": 0,
-  "explanation": "**Explanation:** The code iterates through range(3) which gives values 0, 1, 2. Each value is multiplied by 2 and printed, resulting in 0, 2, 4.",
+  "explanation": "The code iterates through range(3) which gives values 0, 1, 2. Each value is multiplied by 2 and printed, resulting in 0, 2, 4.",
   "difficulty": "{difficulty}"
 }
 \`\`\`
@@ -116,7 +116,7 @@ Example format for non-code questions:
   "question": "**Question text here**",
   "options": ["Option A", "Option B", "Option C", "Option D"],
   "correctAnswer": 1,
-  "explanation": "**Explanation:** The correct answer is...",
+  "explanation": "The correct answer is...",
   "difficulty": "{difficulty}"
 }
 \`\`\``,
@@ -197,7 +197,7 @@ Formato de exemplo para questões de código:
   "question": "**Qual é a saída do seguinte código Python?**\\n\\n\`\`\`python\\nfor i in range(3):\\n    print(i * 2)\\n\`\`\`",
   "options": ["0\\n2\\n4", "1\\n2\\n3", "0\\n1\\n2", "2\\n4\\n6"],
   "correctAnswer": 0,
-  "explanation": "**Explicação:** O código itera através de range(3) que fornece valores 0, 1, 2. Cada valor é multiplicado por 2 e impresso, resultando em 0, 2, 4.",
+  "explanation": "O código itera através de range(3) que fornece valores 0, 1, 2. Cada valor é multiplicado por 2 e impresso, resultando em 0, 2, 4.",
   "difficulty": "{difficulty}"
 }
 \`\`\`
@@ -208,7 +208,7 @@ Formato de exemplo para questões não-código:
   "question": "**Texto da questão aqui**",
   "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
   "correctAnswer": 1,
-  "explanation": "**Explicação:** A resposta correta é...",
+  "explanation": "A resposta correta é...",
   "difficulty": "{difficulty}"
 }
 \`\`\``
