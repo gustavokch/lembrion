@@ -19,7 +19,7 @@ Lembrion is a client-only React SPA for AI-generated study sessions: multiple-ch
 |`/history`|`components/pages/SessionHistory.tsx`|
 |`/session/:id`|`components/SessionDetails.tsx`|
 |`/settings`|`components/pages/SettingsPage/SettingsPage.tsx` (tabs: providers, language, data)|
-|`/pricing`|`components/pricing/PricingPage.tsx` (Patreon and GitHub links; no Stripe)|
+|`/pricing`|`components/pricing/PricingPage.tsx` (GitHub link, and a Patreon section shown only when `PATREON_URL` in `constants.ts` is set; it is an empty placeholder now, and the Dashboard Patreon button follows the same rule; no Stripe)|
 
 **State.** The app has no React context and no store library. Each component reads and writes `localStorage` through `useLocalStorage(key, default)` (`src/hooks/useLocalStorage.ts`). `setValue` updates React state and persists in the same call. A failed write (for example, quota) shows a localized toast. The hook syncs other tabs through the `storage` event. It does not sync two components on the same page. A language or theme change does a hard redirect to `/`. Provider settings are read through `useMultiProviderSettings()`, which always returns normalized settings.
 

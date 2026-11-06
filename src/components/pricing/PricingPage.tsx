@@ -1,4 +1,5 @@
 import { CheckCircle, Code, ExternalLink, Github, Globe, Heart, Shield, Sparkles, Star, Users, Zap } from 'lucide-react';
+import { PATREON_URL } from '../../core/config/constants';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useTheme } from '../../hooks/useTheme';
 
@@ -7,7 +8,7 @@ export default function PricingPage() {
   const { themeConfig } = useTheme();
 
   const handlePatreonSupport = () => {
-    window.open('https://patreon.com/studorama', '_blank', 'noopener,noreferrer');
+    window.open(PATREON_URL, '_blank', 'noopener,noreferrer');
   };
 
   const handleGitHubVisit = () => {
@@ -183,44 +184,46 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* Patreon Support Section */}
-        <div className="mb-12 sm:mb-16 lg:mb-20">
-          <div 
-            className="rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12 text-center max-w-4xl mx-auto"
-            style={{ 
-              background: themeConfig.gradients.primary,
-              boxShadow: `0 25px 80px ${themeConfig.colors.primary}30`
-            }}
-          >
-            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full mb-6 sm:mb-8 animate-pulse">
-              <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-            </div>
-            
-            <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
-              {t.supportOnPatreon}
-            </h2>
-            
-            <p className="text-white/90 mb-6 sm:mb-8 text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
-              {t.supportOnPatreonDesc}
-            </p>
-            
-            <button
-              onClick={handlePatreonSupport}
-              className="inline-flex items-center bg-white px-8 sm:px-10 py-4 sm:py-5 rounded-full font-bold hover:bg-gray-50 transition-all duration-200 shadow-2xl hover:shadow-3xl transform hover:scale-105 active:scale-95 text-base sm:text-lg lg:text-xl"
-              style={{ color: themeConfig.colors.primary }}
+        {/* Patreon Support Section: hidden until PATREON_URL is set */}
+        {PATREON_URL && (
+          <div className="mb-12 sm:mb-16 lg:mb-20">
+            <div 
+              className="rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12 text-center max-w-4xl mx-auto"
+              style={{ 
+                background: themeConfig.gradients.primary,
+                boxShadow: `0 25px 80px ${themeConfig.colors.primary}30`
+              }}
             >
-              <Heart className="w-5 h-5 sm:w-6 sm:h-6 mr-3 animate-pulse" />
-              <span>
-                {t.supportOnPatreonButton}
-              </span>
-              <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 ml-3" />
-            </button>
-            
-            <p className="text-white/80 text-sm sm:text-base mt-4 sm:mt-6">
-              patreon.com/studorama
-            </p>
+              <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full mb-6 sm:mb-8 animate-pulse">
+                <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+              </div>
+              
+              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
+                {t.supportOnPatreon}
+              </h2>
+              
+              <p className="text-white/90 mb-6 sm:mb-8 text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
+                {t.supportOnPatreonDesc}
+              </p>
+              
+              <button
+                onClick={handlePatreonSupport}
+                className="inline-flex items-center bg-white px-8 sm:px-10 py-4 sm:py-5 rounded-full font-bold hover:bg-gray-50 transition-all duration-200 shadow-2xl hover:shadow-3xl transform hover:scale-105 active:scale-95 text-base sm:text-lg lg:text-xl"
+                style={{ color: themeConfig.colors.primary }}
+              >
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6 mr-3 animate-pulse" />
+                <span>
+                  {t.supportOnPatreonButton}
+                </span>
+                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 ml-3" />
+              </button>
+              
+              <p className="text-white/80 text-sm sm:text-base mt-4 sm:mt-6">
+                {PATREON_URL.replace(/^https?:\/\//, '')}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Why Support Section */}
         <div 

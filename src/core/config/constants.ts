@@ -17,6 +17,10 @@ export const STORAGE_KEYS = {
   API_KEY_ERROR: 'studorama-api-key-error',
 };
 
+// Patreon page for donations, e.g. 'https://patreon.com/<name>'. Placeholder: while it is empty,
+// the Dashboard and Support pages hide every Patreon button.
+export const PATREON_URL: string = '';
+
 // Default values
 export const DEFAULTS = {
   LANGUAGE: 'en-US',

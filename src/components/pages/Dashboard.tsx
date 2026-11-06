@@ -1,7 +1,7 @@
 import { Award, BookOpen, Calendar, CheckSquare, ChevronRight, ExternalLink, Heart, History, Info, Play, Repeat, Star, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { STORAGE_KEYS } from '../../core/config/constants';
+import { PATREON_URL, STORAGE_KEYS } from '../../core/config/constants';
 import { formatDate, formatMessage } from '../../core/services/i18n';
 import { createId } from '../../core/utils/id';
 import { useLanguage, useLocalStorage, useTheme } from '../../hooks';
@@ -85,7 +85,7 @@ export default function Dashboard() {
   }, []);
 
   const handlePatreonSupport = () => {
-    window.open('https://patreon.com/studorama', '_blank', 'noopener,noreferrer');
+    window.open(PATREON_URL, '_blank', 'noopener,noreferrer');
   };
   
   const dismissWelcomeTip = () => {
@@ -439,18 +439,20 @@ export default function Dashboard() {
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <button
-                    onClick={handlePatreonSupport}
-                    className="px-5 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
-                    style={{
-                      background: themeConfig.gradients.primary,
-                      color: '#ffffff'
-                    }}
-                  >
-                    <Heart className="w-5 h-5 mr-2 flex-shrink-0" />
-                    <span className="font-semibold">Patreon</span>
-                    <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
-                  </button>
+                  {PATREON_URL && (
+                    <button
+                      onClick={handlePatreonSupport}
+                      className="px-5 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
+                      style={{
+                        background: themeConfig.gradients.primary,
+                        color: '#ffffff'
+                      }}
+                    >
+                      <Heart className="w-5 h-5 mr-2 flex-shrink-0" />
+                      <span className="font-semibold">Patreon</span>
+                      <ExternalLink className="w-4 h-4 ml-2 flex-shrink-0" />
+                    </button>
+                  )}
                   
                   <Link
                     to="/pricing"
