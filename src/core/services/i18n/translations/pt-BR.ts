@@ -119,7 +119,7 @@ export const ptBR: Translations = {
   effortMax: 'Máximo',
   
   // Data Management
-  manageYourData: 'O Lembrion guarda tudo no armazenamento local deste navegador: suas sessões de estudo, configurações de provedor e chaves da API, idioma e tema. Não há servidor do Lembrion; as questões vão apenas para o provedor de IA que você escolher.',
+  manageYourData: 'O lembrion guarda tudo no armazenamento local deste navegador: suas sessões de estudo, configurações de provedor e chaves da API, idioma e tema. Não há servidor do lembrion; as questões vão apenas para o provedor de IA que você escolher.',
   deleteAllData: 'Excluir todos os dados',
   deleteAllDataConfirm: 'Excluir todas as sessões, configurações, chaves da API e preferências deste navegador? Isso não pode ser desfeito.',
   deleteAllDataDesc: 'Remove permanentemente suas sessões de estudo, configurações de provedor, chaves da API e preferências deste navegador.',
@@ -128,9 +128,9 @@ export const ptBR: Translations = {
   cancel: 'Cancelar',
   
   // Pricing
-  supportLembrion: 'Apoie o Lembrion',
-  supportLembrionDesc: 'O Lembrion é gratuito e de código aberto, sem conta e sem assinatura.',
-  freeForeverDesc: 'As chamadas de IA são cobradas pelo seu provedor na chave da API que você adiciona em Configurações, pelos preços desse provedor. Um modelo no seu próprio servidor não tem custo por requisição. O Lembrion não cobra taxa.',
+  supportLembrion: 'Apoie o lembrion',
+  supportLembrionDesc: 'O lembrion é gratuito e de código aberto, sem conta e sem assinatura.',
+  freeForeverDesc: 'As chamadas de IA são cobradas pelo seu provedor na chave da API que você adiciona em Configurações, pelos preços desse provedor. Um modelo no seu próprio servidor não tem custo por requisição. O lembrion não cobra taxa.',
   dataStaysInBrowser: 'Sessões e chaves ficam no seu navegador',
   noTrackingOrAnalytics: 'Sem rastreamento ou análises',
   
@@ -149,7 +149,7 @@ export const ptBR: Translations = {
   storageWriteFailedDesc: 'O armazenamento do navegador está cheio ou indisponível, então as alterações recentes serão perdidas ao recarregar. Exclua sessões antigas nas Configurações para liberar espaço.',
   
   // Version Control
-  appUpdated: 'Lembrion atualizado',
+  appUpdated: 'lembrion atualizado',
   versionUpdated: 'Atualizado da v{oldVersion} para v{newVersion}.',
   dataRefreshed: 'Suas chaves de API e configurações de provedores, sessões de estudo, idioma e tema foram mantidos. Outros dados em cache foram apagados.',
   
@@ -160,7 +160,7 @@ export const ptBR: Translations = {
   aiErrorInvalidApiKey: 'O provedor de IA recusou sua chave de API. Verifique-a nas Configurações.',
   aiErrorRateLimited: 'O provedor de IA está limitando as requisições ou sua cota acabou. Aguarde um momento e tente novamente.',
   aiErrorProvider: 'O provedor de IA retornou um erro.',
-  aiErrorInvalidResponse: 'A IA retornou uma resposta que o Lembrion não conseguiu usar. Tente novamente.',
+  aiErrorInvalidResponse: 'A IA retornou uma resposta que o lembrion não conseguiu usar. Tente novamente.',
   aiErrorNetwork: 'Não foi possível acessar o provedor de IA. Verifique sua conexão com a internet e sua chave da API.',
   aiErrorEndpointConnection: 'Não foi possível acessar o servidor na URL base. Verifique se ele está em execução, se a URL e a chave da API estão certas e se as configurações de CORS dele permitem este site.',
   aiErrorRefused: 'A IA recusou esta requisição. Reformule o tópico ou as instruções e tente novamente.',
@@ -406,7 +406,7 @@ export const ptBR: Translations = {
   sessionStatusCompleted: 'Concluída',
   dashboardProviderNotReady: 'Nenhum provedor de IA configurado. As sessões precisam de um para gerar questões.',
   dashboardOpenSettings: 'Abrir configurações',
-  dashboardSupportLine: 'O Lembrion é gratuito e de código aberto.',
+  dashboardSupportLine: 'O lembrion é gratuito e de código aberto.',
 
   // History, session details, and the session edit dialog
   historySessionCountOne: '{count} sessão',

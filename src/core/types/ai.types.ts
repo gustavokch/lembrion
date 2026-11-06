@@ -50,7 +50,7 @@ export interface AIProviderConfig {
   /** Suggestions only: any model id is accepted */
   models: AIModel[];
   defaultModel: string;
-  /** For a user-run server: the path Lembrion appends to the base URL the user enters */
+  /** For a user-run server: the path lembrion appends to the base URL the user enters */
   endpointPath?: '/messages' | '/responses';
   /** Levels offered in Settings, lowest first. Support varies by model: a model rejects a level it lacks. */
   efforts: readonly EffortLevel[];

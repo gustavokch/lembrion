@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /*
- * Lembrion design system: a circulation desk inside a standard study-app shell.
+ * lembrion design system: a circulation desk inside a standard study-app shell.
  * A left sidebar and calm bordered panels on a neutral ground; Libre Franklin
  * for the interface, Archivo Narrow caps for date stamps, call numbers and
  * figures. Stamp violet marks only what is due or actionable; slip red is the
@@ -136,8 +136,12 @@ html[data-boot='dark'] {
 
   /* Shell: the sidebar from 1024px, a top bar below it. */
   .wordmark {
-    @apply text-[1.375rem] font-extrabold leading-none text-shell-ink no-underline;
+    @apply inline-flex items-baseline gap-[0.3em] text-[1.375rem] font-extrabold leading-none text-shell-ink no-underline;
     letter-spacing: -0.02em;
+  }
+  /* The mark spans the word's ink: from the baseline to the top of the l (0.68em in Libre Franklin 800). */
+  .wordmark-mark {
+    @apply h-[0.68em] w-[0.68em] shrink-0;
   }
   .sidebar {
     @apply sticky top-0 hidden h-screen flex-col border-r border-line bg-shell px-3 pb-4 pt-6 lg:flex;

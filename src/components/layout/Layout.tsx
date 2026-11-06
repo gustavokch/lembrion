@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BookOpen, History, LayoutGrid, LifeBuoy, Menu, SlidersHorizontal, X, type LucideIcon } from 'lucide-react';
 import { useLanguage, useTheme } from '../../hooks';
+import BrandMark from '../ui/BrandMark';
 import ThemeSelector from '../ui/ThemeSelector';
 
 interface LayoutProps {
@@ -56,7 +57,8 @@ export default function Layout({ children }: LayoutProps) {
       {/* From 1024px: the sidebar */}
       <aside className="sidebar">
         <Link to="/" className="wordmark px-2.5">
-          Lembrion
+          <BrandMark className="wordmark-mark" />
+          lembrion
         </Link>
         <nav aria-label={t.mainNavigation} className="mt-8">
           <ul className="space-y-1">
@@ -76,7 +78,8 @@ export default function Layout({ children }: LayoutProps) {
         <header className="sticky top-0 z-40 lg:hidden">
           <div className="topbar">
             <Link to="/" className="wordmark text-xl">
-              Lembrion
+              <BrandMark className="wordmark-mark" />
+              lembrion
             </Link>
             <div className="ml-auto flex items-center gap-1">
               <ThemeSelector variant="bar" />

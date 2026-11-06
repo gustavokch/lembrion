@@ -1,5 +1,5 @@
 ---
-name: Lembrion
+name: lembrion
 description: "A standard study-app shell with a library circulation desk inside: call numbers, a date-due slip and flat date stamps on a neutral dark ground."
 colors:
   shell: "#0c0c0c"
@@ -555,17 +555,17 @@ components:
     padding: "0.75rem 1rem"
 ---
 
-# Design System: Lembrion
+# Design System: lembrion
 
 ## Overview
 
 **Creative North Star: "The Circulation Desk"**
 
-Lembrion is a conventional study-app shell with one library ritual laid over it. The shell is the category standard: a left sidebar from 1024px (a top bar below that), a page title beside the date, and calm bordered panels on a neutral, untinted ground. The ritual is the loan. Every question and every session carries a call number like a spine label (`ORG·3`, `CEL/LEA`), questions that come back for review are listed on a date-due slip, and each one is marked with a date stamp in narrow caps: violet when it is due, red when it is overdue, faded while it is still out, grey once it is returned.
+lembrion is a conventional study-app shell with one library ritual laid over it. The shell is the category standard: a left sidebar from 1024px (a top bar below that), a page title beside the date, and calm bordered panels on a neutral, untinted ground. The ritual is the loan. Every question and every session carries a call number like a spine label (`ORG·3`, `CEL/LEA`), questions that come back for review are listed on a date-due slip, and each one is marked with a date stamp in narrow caps: violet when it is due, red when it is overdue, faded while it is still out, grey once it is returned.
 
 The density is that of a circulation ledger. Numbers live in tables with small caps column heads, hairline rows and right-aligned tabular figures; progress figures are set in Archivo Narrow; loan periods are drawn to their true length on one 0–30 day axis, and each session's answered questions are drawn as a bar on one shared scale, so lengths can be compared across rows and pages. Colour is spent sparingly: stamp violet marks what is due, actionable or current; slip red prints the due slip's header and marks what is overdue, and doubles as the error hue; green and amber only report state. Dark is the default palette; Light, System and High contrast are one click away in the theme menu, and all of them share one set of token names.
 
-The world is flat. PRODUCT.md binds it to no skeuomorphism: a date stamp is a 1.5px frame of narrow caps, not an inked rubber impression; there are no gradients, glow, icon tiles or rounded bubbly cards, nothing is rounder than 6px, and the only shadow in the system belongs to things that float (menus, dialogs, toasts).
+The world is flat. PRODUCT.md binds it to no skeuomorphism: a date stamp is a 1.5px frame of narrow caps, not an inked rubber impression; there are no gradients, glow, icon tiles or rounded bubbly cards, nothing is rounder than 6px, and the only shadow in the system belongs to things that float (menus, dialogs, toasts). The brand mark before the wordmark is the one square of colour: it is the logo (the app icon), not an icon tile on content.
 
 **Key Characteristics:**
 - A standard shell: a 14.5rem sidebar whose current route is a filled violet label, and a 3.5rem top bar below 1024px.
@@ -615,7 +615,7 @@ The stored preference is `system`, `light`, `dark` or `contrast`, and the defaul
 - **High contrast** sets black ink on white, darkens hairlines to a mid grey (`contrast-line`), deepens the violet to `contrast-primary` and makes the focus ring black. Its success and error base and ink are the same colour.
 
 ### Named Rules
-**The Due-or-Actionable Rule.** Violet marks only what is due, actionable or current: the current route, primary buttons, selected segments and tabs, selected choices and options, due stamps, due and not-yet-due loan shares, the current progress segment, the loading rule, links and the "Active" status. It never fills a panel, a heading, a tag at rest, or decoration.
+**The Due-or-Actionable Rule.** Violet marks only what is due, actionable or current: the current route, primary buttons, selected segments and tabs, selected choices and options, due stamps, due and not-yet-due loan shares, the current progress segment, the loading rule, links and the "Active" status. It never fills a panel, a heading, a tag at rest, or decoration. The one exception is the brand mark before the wordmark: it is the app icon itself, in the icon's colours.
 
 **The Slip Red Rule.** Red prints only the due slip's header and column heads and marks what is overdue; everywhere else it means an error or a wrong answer. It is never a decorative accent, and never a second action colour.
 
@@ -636,7 +636,7 @@ The stored preference is `system`, `light`, `dark` or `contrast`, and the defaul
 - **Headline** (`page-title`; 700, 1.625rem, 1.75rem from 640px, line-height 1.25, -0.015em): one per route, with the lede (the date, a count, a description) on its baseline; on Session details it is the topic line. `h1`–`h4` use `text-wrap: balance`.
 - **Slip title** (`slip-title`; 800, 1.5rem, line-height 1.25, -0.015em): "Due for return", the loudest heading on the Dashboard.
 - **Figure** (`figure`; Archivo Narrow 700, 1.75rem, line-height 1, tabular): the Dashboard's progress numbers (1.5rem below 640px), the review-complete results, and the Session details facts (1.375rem).
-- **Title** (`wordmark`; 800, 1.375rem, -0.02em, 1.25rem in the top bar; `dialog-title`; 700, 1.125rem): the "Lembrion" wordmark and dialog headings.
+- **Title** (`wordmark`; 800, 1.375rem, -0.02em, 1.25rem in the top bar; `dialog-title`; 700, 1.125rem): the lembrion wordmark and dialog headings. The name is always lower case, also at the start of a sentence.
 - **Panel title** (`panel-title`; 600, 0.9375rem): panel heads and section titles.
 - **Body** (`body`; 400, 1rem, line-height 1.5, `kern` and `liga` on): default text, fields and answer options. `reading` (0.9375rem, 1.625) is the note body and model output; `compact` (0.9375rem, 1.5) sets ledes, slip rows and notices.
 - **Controls** (`control`; 600, 0.9375rem, 1.25): button labels. `nav` and `tab` (500, 0.9375rem) set navigation items and tabs; `small-medium` (500, 0.875rem) sets segments and fact values.
@@ -697,7 +697,7 @@ Near-square, ruled forms with three radii. 2px (`rounded.sm`) for marks and smal
 
 Lines carry the form: 1px borders and hairlines, the stamp's 1.5px frame, the slip's 2px red rule, the selected tab's 2px underline, the 4px progress rule split by 1px gaps, the 3px loading rule and toast rule, 0.5rem loan tracks and 0.25rem extent bars. A Markdown blockquote takes a 2px Control Edge rule on its left; it is a quotation mark, not a state stripe.
 
-The brand mark is the date stamp in miniature: a flat Stamp Violet square (the light-palette violet), a white square stamp frame, and a white Libre Franklin 800 "L". The boot screen in `index.html` repeats the shell before React mounts: the wordmark on the page ground over a hairline, and a 3px violet bar travelling along a track, in the Light colours or, when the boot script marks the page dark (as it does for the default preference), the Dark ones.
+The brand mark is a ribbon marker, the lowercase l of lembrion: a white ribbon with a 45° notched tip on a flat Stamp Violet square. The ribbon is 18% of the square wide, centred, and hangs from 6.25% to 73% of its height; the violet band above it keeps the square closed on a light page or tab strip, where a ribbon running off the edge would turn it into a "u". The app icons set it on the light-palette violet (#4b33b5), full bleed; the maskable icon scales the mark to 80% so it stays inside the safe circle. Beside the wordmark (`BrandMark`) the square takes the theme's `primary` with `onPrimary` for the ribbon and 2px corners, 0.68em on a side, sitting on the baseline so it spans the word from baseline to the top of the l, 0.3em before the word. A one-colour version would read as a "u", so there is none. The boot screen in `index.html` repeats the shell before React mounts: the lockup on the page ground over a hairline, and a 3px violet bar travelling along a track, in the Light colours or, when the boot script marks the page dark (as it does for the default preference), the Dark ones.
 
 ### Named Rules
 **The Three Radii Rule.** 2px for marks, 4px for controls, 6px for containers; nothing rounder, and no pills.
@@ -740,8 +740,8 @@ There are no cards. Containers are the panel, the note, the notice, and the choi
 - **Error / Disabled:** `aria-invalid="true"` turns the border Slip Red; disabled fields go Inset with Muted Ink text. A label sits 0.375rem above (0.875rem semibold Ink); hints and errors sit 0.375rem below (0.875rem Muted Ink or Slip Red Ink).
 
 ### Navigation
-- **Sidebar (from 1024px):** Desk ground, the 1.375rem 800 wordmark, then Dashboard, Study, History and Settings, each a 2.5rem row with an 18px icon (1.75 stroke), 0.9375rem medium Desk Muted text and 4px corners. Hover lifts the text to Desk Ink over a 7% Desk Ink fill (120ms). The current route is a filled Stamp Violet label with On Violet text and `aria-current="page"`. Support and the Theme row sit at the foot above a hairline.
-- **Top bar (below 1024px):** Desk ground, 3.5rem, a hairline below; the wordmark at 1.25rem, then the theme icon button and the menu button (2.5rem squares, 20px icons, 4px corners, the same hover fill, also when expanded). The menu opens under the bar on Desk with the same items, Support included.
+- **Sidebar (from 1024px):** Desk ground, the 1.375rem 800 lockup (mark and wordmark), then Dashboard, Study, History and Settings, each a 2.5rem row with an 18px icon (1.75 stroke), 0.9375rem medium Desk Muted text and 4px corners. Hover lifts the text to Desk Ink over a 7% Desk Ink fill (120ms). The current route is a filled Stamp Violet label with On Violet text and `aria-current="page"`. Support and the Theme row sit at the foot above a hairline.
+- **Top bar (below 1024px):** Desk ground, 3.5rem, a hairline below; the lockup at 1.25rem, then the theme icon button and the menu button (2.5rem squares, 20px icons, 4px corners, the same hover fill, also when expanded). The menu opens under the bar on Desk with the same items, Support included.
 - **Theme menu:** the current preference's icon (or the Theme row in the sidebar) opens a menu of System, Light, Dark and High contrast with a check on the current one; it closes on an outside pointer-down or Escape.
 
 ### Data tables and facts

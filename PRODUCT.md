@@ -10,13 +10,13 @@ web
 
 - University students working through course material (chapters, lecture topics) across a semester.
 - Self-directed adults (professionals, hobbyists) learning a field on their own schedule.
-- The maintainer and the people he shares it with: Lembrion is a personal tool first, and public users are secondary.
+- The maintainer and the people he shares it with: lembrion is a personal tool first, and public users are secondary.
 
 The job: turn a list of topics into active practice (retrieval, review, explanation) instead of rereading notes.
 
 ## Product Purpose
 
-Lembrion turns study topics into AI-generated question sessions (multiple choice, open-ended, or mixed), grades answers, and keeps a history and a cross-session review queue. The techniques come from *Make It Stick*: retrieval practice, spaced repetition, interleaving, elaborative interrogation, self-explanation, and desirable difficulties. Success: the user returns, clears due reviews, and remembers more; the app gets out of the way of the questions.
+lembrion turns study topics into AI-generated question sessions (multiple choice, open-ended, or mixed), grades answers, and keeps a history and a cross-session review queue. The techniques come from *Make It Stick*: retrieval practice, spaced repetition, interleaving, elaborative interrogation, self-explanation, and desirable difficulties. Success: the user returns, clears due reviews, and remembers more; the app gets out of the way of the questions.
 
 ## Positioning
 
@@ -38,8 +38,8 @@ Lembrion turns study topics into AI-generated question sessions (multiple choice
 
 ## Brand Commitments
 
-- Name: Lembrion. Based on Studorama (oluiscabral, MIT); the credit stays in README, LICENSE, and JSON-LD.
-- The orange "L" logo tile and the current palettes are not binding.
+- Name: lembrion, always in lower case, also at the start of a sentence (user-stated, 2026-11-06). Based on Studorama (oluiscabral, MIT); the credit stays in README, LICENSE, and JSON-LD.
+- Mark: a white ribbon marker (the lowercase l) hanging under the top edge of a Stamp Violet square, chosen by the user on 2026-11-06. It is the app icon and stands before the wordmark in the shell. Palettes are not binding.
 - No skeuomorphism (user-stated, binding).
 
 ## Evidence on Hand
