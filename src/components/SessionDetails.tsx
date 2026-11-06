@@ -67,10 +67,10 @@ export default function SessionDetails() {
   ];
 
   return (
-    <div className="page [&>*]:max-w-4xl">
+    <div className="page [&>*]:max-w-4xl lg:[&>*]:max-w-none">
       {backLink}
 
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-4 lg:mt-2">
         <div className="min-w-0">
           <h1 className="page-title break-words">{session.contexts.join(' · ')}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-soft">
@@ -95,7 +95,7 @@ export default function SessionDetails() {
         )}
       </div>
 
-      <dl className="mt-8 grid max-w-3xl grid-cols-2 gap-x-8 gap-y-3 md:grid-cols-4">
+      <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-3 md:grid-cols-4 lg:mt-6">
         {facts.map(([label, value]) => (
           <div key={label} className="facts border-b border-line pb-2">
             <dt>{label}</dt>
@@ -104,7 +104,7 @@ export default function SessionDetails() {
         ))}
       </dl>
 
-      <h2 className="section-title mt-10">{t.questionsAndAnswers}</h2>
+      <h2 className="section-title mt-10 lg:mt-8">{t.questionsAndAnswers}</h2>
       <ol>
         {session.questions.map((question, index) => (
           <li key={question.id} className={`py-8 ${index > 0 ? 'border-t border-line' : ''}`}>
@@ -125,10 +125,21 @@ interface QuestionReviewProps {
 function QuestionReview({ question, number, levelLabels }: QuestionReviewProps) {
   const { t } = useLanguage();
   const answered = isAnswered(question);
+  const options = question.type === 'multipleChoice' ? question.options : undefined;
+  const hasAside = Boolean(
+    (options ? question.explanation : question.feedback || question.correctAnswerText) ||
+      question.aiEvaluation ||
+      question.elaborativeQuestion ||
+      question.selfExplanation ||
+      question.selfExplanationFeedback
+  );
 
   return (
-    <article aria-labelledby={`question-${question.id}`}>
-      <div className="flex flex-wrap items-center gap-2">
+    <article
+      aria-labelledby={`question-${question.id}`}
+      className={hasAside ? 'lg:grid lg:grid-cols-2 lg:gap-x-10' : undefined}
+    >
+      <div className="flex flex-wrap items-center gap-2 lg:col-span-2">
         <h3 id={`question-${question.id}`} className="mr-1 font-medium text-ink">
           {t.question} {number}
         </h3>
@@ -152,101 +163,104 @@ function QuestionReview({ question, number, levelLabels }: QuestionReviewProps) 
         </span>
       </div>
 
-      <div className="mt-3 max-w-measure break-words text-ink">
-        <MarkdownRenderer content={question.question} />
-      </div>
+      <div className={hasAside ? 'max-w-measure lg:max-w-none' : 'max-w-measure'}>
+        <div className="mt-3 break-words text-ink">
+          <MarkdownRenderer content={question.question} />
+        </div>
 
-      <div className="mt-5 space-y-4">
-        {question.type === 'multipleChoice' && question.options ? (
-          <>
-            <div className="max-w-measure">
-              {question.options.map((option, optionIndex) => {
-                const isCorrectOption = optionIndex === question.correctAnswer;
-                const isUserAnswer = optionIndex === question.userAnswer;
-                const state = isCorrectOption ? 'correct' : isUserAnswer ? 'wrong' : 'muted';
-                return (
-                  <div key={optionIndex} className="option" data-state={state}>
-                    <span className="option-key">{OPTION_KEYS[optionIndex] ?? optionIndex + 1}</span>
-                    <div className="min-w-0 break-words">
-                      <MarkdownRenderer content={option} />
-                    </div>
-                    {(isCorrectOption || isUserAnswer) ? (
-                      <span className="option-note">
-                        {isCorrectOption ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}
-                        {isCorrectOption && isUserAnswer
-                          ? `${t.detailsYourAnswer} · ${t.correct}`
-                          : isCorrectOption
-                            ? t.correct
-                            : t.detailsYourAnswer}
-                      </span>
-                    ) : (
-                      <span />
-                    )}
+        <div className="mt-5">
+          {options ? (
+            options.map((option, optionIndex) => {
+              const isCorrectOption = optionIndex === question.correctAnswer;
+              const isUserAnswer = optionIndex === question.userAnswer;
+              const state = isCorrectOption ? 'correct' : isUserAnswer ? 'wrong' : 'muted';
+              return (
+                <div key={optionIndex} className="option" data-state={state}>
+                  <span className="option-key">{OPTION_KEYS[optionIndex] ?? optionIndex + 1}</span>
+                  <div className="min-w-0 break-words">
+                    <MarkdownRenderer content={option} />
                   </div>
-                );
-              })}
-            </div>
-            {question.explanation && (
-              <ReviewBlock title={t.detailsExplanation}>
-                <MarkdownRenderer content={stripExplanationLabel(question.explanation)} />
-              </ReviewBlock>
-            )}
-          </>
-        ) : (
-          <>
+                  {(isCorrectOption || isUserAnswer) ? (
+                    <span className="option-note">
+                      {isCorrectOption ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}
+                      {isCorrectOption && isUserAnswer
+                        ? `${t.detailsYourAnswer} · ${t.correct}`
+                        : isCorrectOption
+                          ? t.correct
+                          : t.detailsYourAnswer}
+                    </span>
+                  ) : (
+                    <span />
+                  )}
+                </div>
+              );
+            })
+          ) : (
             <ReviewBlock title={t.detailsYourAnswer}>
               <MarkdownRenderer content={question.userAnswer?.toString() || t.noAnswerProvided} />
             </ReviewBlock>
-            {question.feedback && (
-              <ReviewBlock
-                title={
-                  question.score !== undefined
-                    ? formatMessage(t.detailsFeedbackScore, { score: question.score })
-                    : t.detailsFeedback
-                }
-                variant={answered ? (question.isCorrect ? 'success' : 'error') : undefined}
-              >
-                <MarkdownRenderer content={question.feedback} />
-              </ReviewBlock>
-            )}
-            {question.correctAnswerText && (
-              <ReviewBlock title={t.detailsModelAnswer}>
-                <MarkdownRenderer content={question.correctAnswerText} />
-              </ReviewBlock>
-            )}
-          </>
-        )}
-
-        {question.aiEvaluation && (
-          <ReviewBlock title={t.detailsEvaluation}>
-            <MarkdownRenderer content={question.aiEvaluation} />
-          </ReviewBlock>
-        )}
-
-        {question.elaborativeQuestion && (
-          <ReviewBlock title={t.elaborativeInterrogation}>
-            <MarkdownRenderer content={question.elaborativeQuestion} />
-            {question.elaborativeAnswer && (
-              <div className="mt-3 border-t border-line pt-3">
-                <p className="text-sm font-medium text-ink">{t.detailsYourAnswer}</p>
-                <p className="mt-1 whitespace-pre-wrap break-words">{question.elaborativeAnswer}</p>
-              </div>
-            )}
-          </ReviewBlock>
-        )}
-
-        {question.selfExplanation && (
-          <ReviewBlock title={t.selfExplanation}>
-            <p className="whitespace-pre-wrap break-words">{question.selfExplanation}</p>
-          </ReviewBlock>
-        )}
-
-        {question.selfExplanationFeedback && (
-          <ReviewBlock title={t.explanationFeedbackTitle}>
-            <MarkdownRenderer content={question.selfExplanationFeedback} />
-          </ReviewBlock>
-        )}
+          )}
+        </div>
       </div>
+
+      {hasAside && (
+        <div className="mt-4 max-w-measure space-y-4 lg:mt-3 lg:max-w-none">
+          {options && question.explanation && (
+            <ReviewBlock title={t.detailsExplanation}>
+              <MarkdownRenderer content={stripExplanationLabel(question.explanation)} />
+            </ReviewBlock>
+          )}
+
+          {!options && question.feedback && (
+            <ReviewBlock
+              title={
+                question.score !== undefined
+                  ? formatMessage(t.detailsFeedbackScore, { score: question.score })
+                  : t.detailsFeedback
+              }
+              variant={answered ? (question.isCorrect ? 'success' : 'error') : undefined}
+            >
+              <MarkdownRenderer content={question.feedback} />
+            </ReviewBlock>
+          )}
+
+          {!options && question.correctAnswerText && (
+            <ReviewBlock title={t.detailsModelAnswer}>
+              <MarkdownRenderer content={question.correctAnswerText} />
+            </ReviewBlock>
+          )}
+
+          {question.aiEvaluation && (
+            <ReviewBlock title={t.detailsEvaluation}>
+              <MarkdownRenderer content={question.aiEvaluation} />
+            </ReviewBlock>
+          )}
+
+          {question.elaborativeQuestion && (
+            <ReviewBlock title={t.elaborativeInterrogation}>
+              <MarkdownRenderer content={question.elaborativeQuestion} />
+              {question.elaborativeAnswer && (
+                <div className="mt-3 border-t border-line pt-3">
+                  <p className="text-sm font-medium text-ink">{t.detailsYourAnswer}</p>
+                  <p className="mt-1 whitespace-pre-wrap break-words">{question.elaborativeAnswer}</p>
+                </div>
+              )}
+            </ReviewBlock>
+          )}
+
+          {question.selfExplanation && (
+            <ReviewBlock title={t.selfExplanation}>
+              <p className="whitespace-pre-wrap break-words">{question.selfExplanation}</p>
+            </ReviewBlock>
+          )}
+
+          {question.selfExplanationFeedback && (
+            <ReviewBlock title={t.explanationFeedbackTitle}>
+              <MarkdownRenderer content={question.selfExplanationFeedback} />
+            </ReviewBlock>
+          )}
+        </div>
+      )}
     </article>
   );
 }
@@ -259,7 +273,7 @@ interface ReviewBlockProps {
 
 function ReviewBlock({ title, variant, children }: ReviewBlockProps) {
   return (
-    <section className={`block max-w-measure ${variant ? `block-${variant}` : ''}`}>
+    <section className={`block ${variant ? `block-${variant}` : ''}`}>
       <h4 className="block-title">{title}</h4>
       <div className="block-body break-words">{children}</div>
     </section>

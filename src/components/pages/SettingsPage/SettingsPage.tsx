@@ -116,11 +116,11 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="page [&>*]:max-w-4xl">
+    <div className="page">
       <h1 className="page-title">{t.settingsTitle}</h1>
       <p className="page-lede">{t.configurePreferences}</p>
 
-      <div role="tablist" aria-label={t.settingsTitle} className="tabs mt-6" onKeyDown={handleTabKeyDown}>
+      <div role="tablist" aria-label={t.settingsTitle} className="tabs mt-6 max-w-4xl lg:max-w-none" onKeyDown={handleTabKeyDown}>
         {TABS.map((id) => (
           <button
             key={id}
@@ -145,11 +145,15 @@ export default function SettingsPage() {
         role="tabpanel"
         id={`settings-panel-${activeTab}`}
         aria-labelledby={`settings-tab-${activeTab}`}
-        className="mt-8"
+        className="mt-8 lg:mt-6"
       >
         {activeTab === 'providers' && (
-          <>
-            <section aria-labelledby="settings-provider-heading">
+          <div className="max-w-4xl lg:grid lg:max-w-none lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
+            {/* Provider list stays in view while the taller settings column scrolls */}
+            <section
+              aria-labelledby="settings-provider-heading"
+              className="min-w-0 lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:self-start"
+            >
               <h2 id="settings-provider-heading" className="section-title">
                 {t.settingsProviderTitle}
               </h2>
@@ -192,13 +196,13 @@ export default function SettingsPage() {
               </div>
             </section>
 
-            <section aria-labelledby="settings-provider-form-heading" className="mt-10">
+            <section aria-labelledby="settings-provider-form-heading" className="mt-10 min-w-0 lg:mt-0">
               <h2 id="settings-provider-form-heading" className="section-title">
                 {formatMessage(t.settingsProviderSettingsTitle, { provider: currentProviderName })}
               </h2>
               <p className="hint">{t.settingsAutoSave}</p>
 
-              <div className="mt-6 max-w-xl space-y-8">
+              <div className="mt-6 max-w-xl space-y-8 lg:max-w-none">
                 {currentProviderConfig.requiresApiKey && (
                   <div>
                     <label htmlFor="provider-api-key" className="label">
@@ -373,11 +377,11 @@ export default function SettingsPage() {
                 )}
               </div>
             </section>
-          </>
+          </div>
         )}
 
         {activeTab === 'language' && (
-          <section aria-labelledby="settings-language-heading">
+          <section aria-labelledby="settings-language-heading" className="max-w-4xl">
             <h2 id="settings-language-heading" className="section-title">
               {t.language}
             </h2>
@@ -403,7 +407,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'data' && (
-          <section aria-labelledby="settings-data-heading">
+          <section aria-labelledby="settings-data-heading" className="max-w-4xl">
             <h2 id="settings-data-heading" className="section-title">
               {t.settingsStoredDataTitle}
             </h2>

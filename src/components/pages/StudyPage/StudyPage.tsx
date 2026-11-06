@@ -535,11 +535,11 @@ export default function StudyPage() {
     const canStart = contexts.length > 0 && isProviderConfigured && !isGenerating;
 
     return (
-      <div className="page grid gap-12 pb-36 lg:grid-cols-[minmax(0,1fr)_18rem] lg:pb-16">
+      <div className="page grid gap-10 pb-36 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12 lg:pb-16">
         <div className="min-w-0">
           <h1 className="page-title">{t.startNewStudySession}</h1>
 
-          <div className="mt-8 space-y-8">
+          <div className="mt-6 space-y-7">
             {/* Topics */}
             <div>
               <label htmlFor="topic-input" className="label">
@@ -629,7 +629,7 @@ export default function StudyPage() {
               <p id="question-type-label" className="label">
                 {t.questionType}
               </p>
-              <div role="radiogroup" aria-labelledby="question-type-label" className="choice-group">
+              <div role="radiogroup" aria-labelledby="question-type-label" className="choice-grid sm:grid-cols-3">
                 {questionTypeOptions.map((option) => (
                   <label key={option.value} className="choice">
                     <input type="radio" name="question-type" value={option.value} checked={questionType === option.value} onChange={() => setQuestionType(option.value)} className="mt-1 h-4 w-4 shrink-0" />
@@ -661,9 +661,9 @@ export default function StudyPage() {
               <p id="techniques-label" className="label">
                 {t.learningTechniques}
               </p>
-              <div role="group" aria-labelledby="techniques-label" className="choice-group">
+              <div role="group" aria-labelledby="techniques-label" className="choice-grid md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2">
                 {techniqueRows.map(({ key, label, desc }) => (
-                  <label key={key} className="choice bg-surface">
+                  <label key={key} className="choice">
                     <input
                       type="checkbox"
                       checked={learningSettings[key]}
@@ -684,16 +684,16 @@ export default function StudyPage() {
           </div>
         </div>
 
-        {/* Session summary and the start action */}
-        <aside className="min-w-0 lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:self-start">
+        {/* Session summary and the start action: a band on wide screens */}
+        <aside className="min-w-0 lg:band lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:self-start lg:rounded-sm lg:p-5">
           <h2 className="section-title">{t.studySessionSummaryTitle}</h2>
-          <dl className="facts mt-3">
+          <dl className="facts mt-3 [&_dt]:whitespace-nowrap">
             <dt>{t.aiProvider}</dt>
             <dd className="min-w-0">
               <span className="break-words">
                 {currentProviderConfig.name} · {currentProviderSettings.model}
               </span>{" "}
-              <Link to="/settings" className="font-normal text-ink-soft underline hover:text-ink">
+              <Link to="/settings" className="font-normal text-ink-soft underline hover:text-ink lg:text-shell-muted lg:hover:text-shell-ink">
                 {t.studyChange}
               </Link>
             </dd>
@@ -718,7 +718,7 @@ export default function StudyPage() {
 
           {/* Phones: the start action stays pinned to the bottom edge while the form scrolls */}
           <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-ground px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 lg:static lg:mt-6 lg:border-0 lg:bg-transparent lg:p-0">
-            <button type="button" onClick={startNewSession} disabled={!canStart} className="btn btn-primary w-full">
+            <button type="button" onClick={startNewSession} disabled={!canStart} className="btn btn-primary w-full lg:btn-inverse">
               {isGenerating ? t.generatingQuestion : t.startEnhancedSession}
             </button>
             {isGenerating && <div className="loading-rule mt-3" role="status" aria-label={t.generatingQuestion} />}
@@ -726,7 +726,7 @@ export default function StudyPage() {
             {!isGenerating && contexts.length > 0 && !isProviderConfigured && (
               <p className="hint">
                 {formatMessage(t.studyProviderNeedsKey, { provider: currentProviderConfig.name })}{" "}
-                <Link to="/settings" className="text-ink underline">
+                <Link to="/settings" className="text-ink underline lg:text-shell-ink">
                   {t.studyOpenSettings}
                 </Link>
               </p>
@@ -794,8 +794,9 @@ export default function StudyPage() {
         ))}
       </div>
       <div className="border-b border-line">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 text-sm text-ink-soft sm:px-6 lg:px-10">
-          <p className="min-w-0 max-w-full truncate sm:max-w-[28rem] lg:max-w-[36rem]" title={currentSession.contexts.join(" · ")}>
+        {/* Phones: topics and End session on one line, the counts under them */}
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-sm text-ink-soft sm:px-6 lg:px-10">
+          <p className="order-1 min-w-0 flex-1 truncate sm:max-w-[28rem] sm:flex-none lg:max-w-[36rem]" title={currentSession.contexts.join(" · ")}>
             {currentSession.contexts.map((context, index) => (
               <Fragment key={context}>
                 {index > 0 && " · "}
@@ -803,15 +804,17 @@ export default function StudyPage() {
               </Fragment>
             ))}
           </p>
-          <span className="tabular">{questionLabel}</span>
-          <span>
-            {t.score}{" "}
-            <span className="tabular font-medium text-ink">
-              {correct} / {answered}
+          <div className="order-3 flex basis-full items-center gap-x-4 sm:order-2 sm:basis-auto sm:gap-x-6">
+            <span className="tabular">{questionLabel}</span>
+            <span>
+              {t.score}{" "}
+              <span className="tabular font-medium text-ink">
+                {correct} / {answered}
+              </span>
             </span>
-          </span>
-          <span className="tag">{levelLabels[shownDifficulty]}</span>
-          <div className="ml-auto flex items-center gap-2">
+            <span className="tag">{levelLabels[shownDifficulty]}</span>
+          </div>
+          <div className="order-2 ml-auto flex shrink-0 items-center gap-2 sm:order-3">
             <span className="mr-2 hidden text-ink-muted lg:inline" title={t.aiProvider}>
               {currentProviderConfig.name} · {currentProviderSettings.model}
             </span>
@@ -828,7 +831,7 @@ export default function StudyPage() {
   );
 
   const sessionFacts = (
-    <aside className="min-w-0 lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:self-start">
+    <aside className="min-w-0 lg:sticky lg:top-[calc(3.5rem+1.5rem)] lg:w-full lg:max-w-[17rem] lg:self-start lg:justify-self-end">
       <h2 className="section-title">{t.studyThisSession}</h2>
       <dl className="facts mt-3">
         <dt>{t.studyAnsweredLabel}</dt>
@@ -909,10 +912,40 @@ export default function StudyPage() {
     ? { label: error ? t.tryAgain : t.nextQuestion, onClick: nextQuestion, disabled: isGenerating || isGettingFeedback || isEvaluating }
     : { label: error ? t.tryAgain : t.submitAnswer, onClick: submitAnswer, disabled: isEvaluating || (!userAnswer && selectedOption === null) };
 
+  // After grading, wide screens put the response (explanation, follow-ups, next action) beside the graded question
+  const feedbackMode = showFeedback && !isGenerating;
+
+  const statusAndAction = (
+    <>
+      {error && (
+        <div className="notice notice-error mt-8 lg:mt-6" role="alert">
+          <AlertCircle aria-hidden="true" />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {waitingLabel && !isGenerating && (
+        <div className="mt-8 lg:mt-6" role="status">
+          <div className="loading-rule" />
+          <p className="mt-2 text-sm text-ink-soft">{waitingLabel}</p>
+        </div>
+      )}
+
+      {/* Primary action: sticky at the bottom on phones */}
+      <div className="sticky bottom-0 z-10 -mx-4 mt-8 flex items-center gap-3 border-t border-line bg-ground px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 sm:static sm:mx-0 sm:border-t-0 sm:bg-transparent sm:p-0 lg:mt-6">
+        <button type="button" onClick={primaryAction.onClick} disabled={primaryAction.disabled} className="btn btn-primary w-full sm:w-auto">
+          {primaryAction.label}
+        </button>
+        <kbd className="hidden font-mono text-xs text-ink-muted lg:inline">{t.studyEnterKey}</kbd>
+      </div>
+    </>
+  );
+
   return (
     <div ref={questionContainerRef} className={frameClass}>
       {strip}
-      <div className="page grid gap-12 lg:grid-cols-[minmax(0,68ch)_17rem] lg:justify-between">
+      {/* The question column keeps one width before and after grading; only the right column changes */}
+      <div className={feedbackMode ? "page lg:grid lg:grid-cols-2 lg:gap-12" : "page grid gap-12 lg:grid-cols-2"}>
         <div className="min-w-0">
           {/* Writing the next question: the old one gives way to the loading line */}
           {isGenerating && (
@@ -999,17 +1032,23 @@ export default function StudyPage() {
               </div>
             )}
 
-            {/* Feedback */}
-            {showFeedback && isMultipleChoice && currentQuestion.explanation && (
-              <div className="block mt-8">
+            {!feedbackMode && statusAndAction}
+          </div>
+        </div>
+
+        {/* Phones: `contents`, so the sticky action spans the whole question as before */}
+        {feedbackMode ? (
+          <div className="contents lg:block lg:min-w-0 lg:[&>*:first-child]:mt-0">
+            {isMultipleChoice && currentQuestion.explanation && (
+              <div className="block mt-8 lg:mt-6">
                 <h2 className="block-title">{t.studyExplanationTitle}</h2>
                 <div className="block-body [&_p:last-child]:mb-0">
                   <MarkdownRenderer content={stripExplanationLabel(currentQuestion.explanation)} />
                 </div>
               </div>
             )}
-            {showFeedback && !isMultipleChoice && currentQuestion.feedback && (
-              <div className={`block mt-8 ${(currentQuestion.score ?? (currentQuestion.isCorrect ? 100 : 0)) >= 70 ? "block-success" : "block-error"}`}>
+            {!isMultipleChoice && currentQuestion.feedback && (
+              <div className={`block mt-8 lg:mt-6 ${(currentQuestion.score ?? (currentQuestion.isCorrect ? 100 : 0)) >= 70 ? "block-success" : "block-error"}`}>
                 <h2 className="block-title">{currentQuestion.score !== undefined ? formatMessage(t.studyFeedbackScoreTitle, { score: currentQuestion.score }) : t.studyFeedbackTitle}</h2>
                 <div className="block-body [&_p:last-child]:mb-0">
                   <MarkdownRenderer content={currentQuestion.feedback} />
@@ -1018,8 +1057,8 @@ export default function StudyPage() {
             )}
 
             {/* Elaborative interrogation after a wrong answer */}
-            {showFeedback && elaborativeQuestion && !currentQuestion.isCorrect && (
-              <div className="mt-8">
+            {elaborativeQuestion && !currentQuestion.isCorrect && (
+              <div className="mt-8 lg:mt-6">
                 <div className="block">
                   <h2 className="block-title">{t.elaborativePrompt}</h2>
                   <div className="block-body [&_p:last-child]:mb-0">
@@ -1035,7 +1074,7 @@ export default function StudyPage() {
 
             {/* Self-explanation: shown when no elaborative question applies */}
             {showSelfExplanation && (
-              <div className="mt-8">
+              <div className="mt-8 lg:mt-6">
                 <label htmlFor="self-explanation" className="label">
                   {isMultipleChoice && correctLetter ? formatMessage(t.studySelfExplanationPromptOption, { letter: correctLetter }) : t.selfExplanationPrompt}
                 </label>
@@ -1069,31 +1108,11 @@ export default function StudyPage() {
               </div>
             )}
 
-            {error && (
-              <div className="notice notice-error mt-8" role="alert">
-                <AlertCircle aria-hidden="true" />
-                <p>{error}</p>
-              </div>
-            )}
-
-            {waitingLabel && !isGenerating && (
-              <div className="mt-8" role="status">
-                <div className="loading-rule" />
-                <p className="mt-2 text-sm text-ink-soft">{waitingLabel}</p>
-              </div>
-            )}
-
-            {/* Primary action: sticky at the bottom on phones */}
-            <div className="sticky bottom-0 z-10 -mx-4 mt-8 flex items-center gap-3 border-t border-line bg-ground px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 sm:static sm:mx-0 sm:border-t-0 sm:bg-transparent sm:p-0">
-              <button type="button" onClick={primaryAction.onClick} disabled={primaryAction.disabled} className="btn btn-primary w-full sm:w-auto">
-                {primaryAction.label}
-              </button>
-              <kbd className="hidden font-mono text-xs text-ink-muted lg:inline">{t.studyEnterKey}</kbd>
-            </div>
+            {statusAndAction}
           </div>
-        </div>
-
-        {sessionFacts}
+        ) : (
+          sessionFacts
+        )}
       </div>
     </div>
   );

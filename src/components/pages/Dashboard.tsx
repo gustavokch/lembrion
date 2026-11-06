@@ -145,78 +145,152 @@ export default function Dashboard() {
       <span className="tag">{t.completed}</span>
     );
 
+  const progressRows: [string, ProgressSummary][] = [
+    [t.dashboardLast7Days, lastWeek],
+    [t.dashboardAllTime, allTime],
+  ];
+
   return (
-    <div className="page">
-      <h1 className="page-title">{t.dashboard}</h1>
+    <div>
+      {/* Overview band: the title bar's ground carried down, with progress, boxes and the next action */}
+      <section aria-labelledby="dashboard-heading" className="band border-t border-[color:var(--band-rule)]">
+        <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-6 sm:px-6 sm:pt-8 lg:px-10 lg:pb-10">
+          <h1 id="dashboard-heading" className="sr-only">
+            {t.dashboard}
+          </h1>
 
-      {!providerReady && (
-        <div className="notice notice-warning mt-6">
-          <AlertTriangle aria-hidden="true" />
-          <p>
-            {t.dashboardProviderNotReady}{' '}
-            <Link to="/settings" className="font-medium underline">
-              {t.dashboardOpenSettings}
-            </Link>
-          </p>
-        </div>
-      )}
+          {!providerReady && (
+            <div className="notice notice-warning mb-8">
+              <AlertTriangle aria-hidden="true" />
+              <p>
+                {t.dashboardProviderNotReady}{' '}
+                <Link to="/settings" className="font-medium underline">
+                  {t.dashboardOpenSettings}
+                </Link>
+              </p>
+            </div>
+          )}
 
-      {totalSessions === 0 ? (
-        <section className="mt-8 max-w-measure">
-          <p className="text-ink-soft">{t.noSessionsYetDesc}</p>
-          <Link to="/study" className="btn btn-primary mt-4">
-            {t.startFirstSession}
-          </Link>
-        </section>
-      ) : (
-        <>
-          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
-            <div className="min-w-0">
-              <section aria-labelledby="progress-heading">
+          {totalSessions === 0 ? (
+            <div className="max-w-measure py-2">
+              <p className="statement">{t.noSessionsYetDesc}</p>
+              <Link to="/study" className="btn btn-inverse mt-6">
+                {t.startFirstSession}
+              </Link>
+            </div>
+          ) : (
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:grid-rows-[auto_1fr] lg:gap-x-12">
+              <section aria-labelledby="progress-heading" className="min-w-0">
                 <h2 id="progress-heading" className="section-title">
                   {t.dashboardProgress}
                 </h2>
-                <table className="data-table mt-2">
+                <table className="data-table mt-1">
                   <thead>
                     <tr>
                       <th scope="col">
-                        <span className="sr-only">{t.dashboardMeasure}</span>
+                        <span className="sr-only">{t.dashboardPeriod}</span>
                       </th>
                       <th scope="col" className="num">
-                        {t.dashboardLast7Days}
+                        {t.dashboardSessions}
                       </th>
                       <th scope="col" className="num">
-                        {t.dashboardAllTime}
+                        {t.questionsAnswered}
+                      </th>
+                      <th scope="col" className="num">
+                        {t.dashboardAccuracy}
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">
-                        {t.dashboardSessions}
-                      </th>
-                      <td className="num">{lastWeek.sessions}</td>
-                      <td className="num">{allTime.sessions}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        {t.questionsAnswered}
-                      </th>
-                      <td className="num">{lastWeek.answered}</td>
-                      <td className="num">{allTime.answered}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        {t.dashboardAccuracy}
-                      </th>
-                      <td className="num">{formatPercent(lastWeek.accuracy)}</td>
-                      <td className="num">{formatPercent(allTime.accuracy)}</td>
-                    </tr>
+                    {progressRows.map(([label, summary]) => (
+                      <tr key={label}>
+                        <th scope="row" className="whitespace-nowrap align-baseline">
+                          {label}
+                        </th>
+                        <td className="num">
+                          <span className="figure">{summary.sessions}</span>
+                        </td>
+                        <td className="num">
+                          <span className="figure">{summary.answered}</span>
+                        </td>
+                        <td className="num">
+                          <span className="figure">{formatPercent(summary.accuracy)}</span>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </section>
 
-              <section aria-labelledby="boxes-heading" className="mt-10">
+              {/* Second in the DOM so phones reach the next action before the box chart */}
+              <section aria-labelledby="next-heading" className="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+                <h2 id="next-heading" className="section-title">
+                  {t.dashboardNext}
+                </h2>
+                <ul className="band-rows">
+                  {dueReviewCount > 0 ? (
+                    <li className="pb-5 pt-4">
+                      <p className="statement tabular">
+                        {formatMessage(dueReviewCount === 1 ? t.reviewDueCountOne : t.reviewDueCountOther, {
+                          count: dueReviewCount,
+                        })}
+                      </p>
+                      <button type="button" onClick={startReview} className="btn btn-inverse mt-4">
+                        {openReview ? t.dashboardResumeReview : t.startReview}
+                      </button>
+                    </li>
+                  ) : (
+                    nextReviewDate && (
+                      <li className="py-4 text-sm text-shell-muted">
+                        {formatMessage(t.reviewNextDue, { date: formatDate(nextReviewDate, language) })}
+                      </li>
+                    )
+                  )}
+                  {activeSessions.map((session) => {
+                    const topics = session.contexts.join(' · ');
+                    return (
+                      <li key={session.id} className="flex items-center gap-3 py-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-medium" title={topics}>
+                            {topics}
+                          </p>
+                          <p className="text-sm text-shell-muted tabular">
+                            {questionCountText(answeredCount(session.questions))}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => navigate('/study', { state: { sessionId: session.id } })}
+                          aria-label={formatMessage(t.dashboardResumeAria, { topics })}
+                          className="btn btn-outline-inverse btn-sm min-h-10"
+                        >
+                          {t.dashboardResume}
+                        </button>
+                      </li>
+                    );
+                  })}
+                  <li className="py-4">
+                    <Link to="/study" className={`btn ${newSessionIsNext ? 'btn-inverse' : 'btn-outline-inverse'}`}>
+                      {t.newSession}
+                    </Link>
+                  </li>
+                </ul>
+                {PATREON_URL && (
+                  <p className="mt-2 text-sm text-shell-muted">
+                    {t.dashboardSupportLine}{' '}
+                    <a
+                      href={PATREON_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-shell-ink underline"
+                    >
+                      {t.supportOnPatreon}
+                    </a>
+                  </p>
+                )}
+              </section>
+
+              <section aria-labelledby="boxes-heading" className="min-w-0 lg:col-start-1 lg:row-start-2">
                 <h2 id="boxes-heading" className="section-title">
                   {t.dashboardReviewBoxes}
                 </h2>
@@ -229,28 +303,29 @@ export default function Dashboard() {
                     {boxes.counts.map((count, index) => {
                       const from = index === 0 ? 0 : REVIEW_INTERVAL_DAYS[index - 1];
                       const to = REVIEW_INTERVAL_DAYS[index];
-                      const fill = boxes.due[index] > 0 ? 'bg-accent' : count > 0 ? 'bg-primary' : 'bg-line-strong';
+                      const state = boxes.due[index] > 0 ? 'due' : count > 0 ? 'scheduled' : 'empty';
                       return (
                         <div key={to} className="contents">
-                          <span className="whitespace-nowrap text-ink-soft tabular">{boxLabel(index)}</span>
-                          <div className="relative h-1 bg-line">
+                          <span className="whitespace-nowrap text-shell-muted tabular">{boxLabel(index)}</span>
+                          <div className="box-track">
                             <span
-                              className={`absolute inset-y-0 ${fill}`}
+                              className="box-fill"
+                              data-state={state}
                               style={{
                                 left: `${(from / AXIS_DAYS) * 100}%`,
                                 width: `${((to - from) / AXIS_DAYS) * 100}%`,
                               }}
                             />
                           </div>
-                          <span className="whitespace-nowrap text-right text-xs font-medium text-accent-ink tabular">
+                          <span className="text-band-accent whitespace-nowrap text-right text-xs font-medium tabular">
                             {boxes.due[index] > 0 ? formatMessage(t.dashboardBoxDue, { count: boxes.due[index] }) : ''}
                           </span>
-                          <span className="text-right font-medium text-ink tabular">{count}</span>
+                          <span className="text-right font-medium tabular">{count}</span>
                         </div>
                       );
                     })}
                     <span />
-                    <div className="relative h-4 text-xs text-ink-muted tabular">
+                    <div className="relative h-4 text-xs text-shell-muted tabular">
                       {AXIS_TICKS.map((day) => (
                         <span
                           key={day}
@@ -285,82 +360,19 @@ export default function Dashboard() {
                       ))}
                     </tbody>
                   </table>
-                  <figcaption className="mt-4 text-sm text-ink-soft tabular">
+                  <figcaption className="mt-4 text-sm text-shell-muted tabular">
                     {formatMessage(t.dashboardBoxSummary, { due: dueReviewCount, retired: boxes.retired })}
                   </figcaption>
                 </figure>
               </section>
             </div>
+          )}
+        </div>
+      </section>
 
-            <section aria-labelledby="next-heading" className="min-w-0">
-              <h2 id="next-heading" className="section-title">
-                {t.dashboardNext}
-              </h2>
-              <ul className="divide-y divide-line">
-                {dueReviewCount > 0 ? (
-                  <li className="py-4">
-                    <p className="tabular">
-                      {formatMessage(dueReviewCount === 1 ? t.reviewDueCountOne : t.reviewDueCountOther, {
-                        count: dueReviewCount,
-                      })}
-                    </p>
-                    <button type="button" onClick={startReview} className="btn btn-primary mt-3">
-                      {openReview ? t.dashboardResumeReview : t.startReview}
-                    </button>
-                  </li>
-                ) : (
-                  nextReviewDate && (
-                    <li className="py-4 text-sm text-ink-soft">
-                      {formatMessage(t.reviewNextDue, { date: formatDate(nextReviewDate, language) })}
-                    </li>
-                  )
-                )}
-                {activeSessions.map((session) => {
-                  const topics = session.contexts.join(' · ');
-                  return (
-                    <li key={session.id} className="flex items-center gap-3 py-3">
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-ink" title={topics}>
-                          {topics}
-                        </p>
-                        <p className="text-sm text-ink-soft tabular">
-                          {questionCountText(answeredCount(session.questions))}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => navigate('/study', { state: { sessionId: session.id } })}
-                        aria-label={formatMessage(t.dashboardResumeAria, { topics })}
-                        className="btn btn-secondary btn-sm min-h-10"
-                      >
-                        {t.dashboardResume}
-                      </button>
-                    </li>
-                  );
-                })}
-                <li className="py-4">
-                  <Link to="/study" className={`btn ${newSessionIsNext ? 'btn-primary' : 'btn-secondary'}`}>
-                    {t.newSession}
-                  </Link>
-                </li>
-              </ul>
-              {PATREON_URL && (
-                <p className="mt-6 text-sm text-ink-muted">
-                  {t.dashboardSupportLine}{' '}
-                  <a
-                    href={PATREON_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-ink-soft underline hover:text-ink"
-                  >
-                    {t.supportOnPatreon}
-                  </a>
-                </p>
-              )}
-            </section>
-          </div>
-
-          <section aria-labelledby="recent-heading" className="mt-12">
+      <div className="page">
+        {totalSessions > 0 && (
+          <section aria-labelledby="recent-heading">
             <div className="flex items-baseline justify-between gap-4 border-b-2 border-ink pb-1.5">
               <h2 id="recent-heading" className="text-[0.9375rem] font-semibold text-ink">
                 {t.recentSessions}
@@ -432,15 +444,15 @@ export default function Dashboard() {
               ))}
             </ul>
           </section>
-        </>
-      )}
+        )}
 
-      <p className="mt-12 max-w-measure text-sm text-ink-muted">
-        {t.dataTipDesc}{' '}
-        <Link to="/settings" className="text-ink-soft underline hover:text-ink">
-          {t.dashboardOpenSettings}
-        </Link>
-      </p>
+        <p className={`${totalSessions > 0 ? 'mt-10 ' : ''}max-w-measure text-sm text-ink-muted`}>
+          {t.dataTipDesc}{' '}
+          <Link to="/settings" className="text-ink-soft underline hover:text-ink">
+            {t.dashboardOpenSettings}
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

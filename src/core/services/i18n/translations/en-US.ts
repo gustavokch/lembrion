@@ -336,7 +336,7 @@ export const enUS: Translations = {
 
   // Dashboard
   dashboardProgress: 'Progress',
-  dashboardMeasure: 'Measure',
+  dashboardPeriod: 'Period',
   dashboardLast7Days: 'Last 7 days',
   dashboardAllTime: 'All time',
   dashboardSessions: 'Sessions',

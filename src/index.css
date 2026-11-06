@@ -157,6 +157,70 @@ html[data-boot='dark'] {
     @apply border-b-2 border-ink pb-1.5 text-[0.9375rem] font-semibold text-ink;
   }
 
+  /*
+   * Band: the Metropolis "standout" frame. The title bar's ground carried
+   * below it to hold a page's overview and next action (Dashboard, study
+   * setup summary). Text, rules, tables, facts and focus switch to the shell
+   * palette inside it.
+   */
+  .band {
+    @apply bg-shell text-shell-ink;
+    --color-focus: var(--color-accent);
+    --band-rule: color-mix(in srgb, var(--color-shellInk) 16%, transparent);
+    --band-accent: color-mix(in srgb, var(--color-accent) 75%, var(--color-shellInk));
+  }
+  .band .section-title {
+    border-color: var(--color-shellInk);
+    color: var(--color-shellInk);
+  }
+  .band .data-table th {
+    border-color: color-mix(in srgb, var(--color-shellInk) 55%, transparent);
+    color: var(--color-shellMuted);
+  }
+  .band .data-table td,
+  .band .data-table tbody th {
+    border-color: var(--band-rule);
+    color: var(--color-shellInk);
+  }
+  .band .facts dt,
+  .band .hint {
+    color: var(--color-shellMuted);
+  }
+  .band .facts dd {
+    color: var(--color-shellInk);
+  }
+  .band-rows > * + * {
+    border-top: 1px solid var(--band-rule);
+  }
+  /* Large figures and statements: Fira Sans Light, the Metropolis title weight. */
+  .figure {
+    @apply text-[1.75rem] font-light leading-none;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .statement {
+    @apply text-2xl font-light leading-tight sm:text-[1.75rem];
+    letter-spacing: -0.01em;
+  }
+  /* Review box strips (Dashboard band): track, interval fill, due fill. */
+  .box-track {
+    @apply relative h-1;
+    background: var(--band-rule, var(--color-line));
+  }
+  .box-fill {
+    @apply absolute inset-y-0;
+    background: color-mix(in srgb, var(--color-shellMuted) 45%, transparent);
+  }
+  .box-fill[data-state='scheduled'] {
+    background: var(--color-shellInk);
+  }
+  .box-fill[data-state='due'] {
+    background: var(--color-accent);
+  }
+  .text-band-accent {
+    color: var(--band-accent);
+  }
+
   .tabular {
     font-variant-numeric: tabular-nums;
   }
@@ -198,6 +262,24 @@ html[data-boot='dark'] {
   .btn-danger:not(:disabled):hover {
     background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
     border-color: var(--color-error);
+  }
+  /* Buttons on a band or the title bar: filled in shell ink, or outlined. */
+  .btn-inverse {
+    border-color: var(--color-shellInk);
+    background: var(--color-shellInk);
+    color: var(--color-shell);
+  }
+  .btn-inverse:not(:disabled):hover {
+    background: color-mix(in srgb, var(--color-shellInk) 86%, var(--color-shell));
+  }
+  .btn-outline-inverse {
+    border-color: color-mix(in srgb, var(--color-shellInk) 45%, transparent);
+    background: transparent;
+    color: var(--color-shellInk);
+  }
+  .btn-outline-inverse:not(:disabled):hover {
+    border-color: var(--color-shellInk);
+    background: color-mix(in srgb, var(--color-shellInk) 10%, transparent);
   }
   .btn-sm {
     @apply min-h-8 px-3 py-1.5 text-sm;
@@ -245,6 +327,15 @@ html[data-boot='dark'] {
   .choice {
     @apply flex w-full cursor-pointer items-start gap-3 px-4 py-3 text-left;
     transition: background-color 120ms ease-out;
+  }
+  /* Choice grid: the same cells tiled in columns, hairlines between them. */
+  .choice-grid {
+    @apply grid gap-px overflow-hidden rounded border border-line-strong;
+    /* Stronger than --color-line so the hairlines survive the checked-cell tint in dark */
+    background: color-mix(in srgb, var(--color-lineStrong) 55%, var(--color-surface));
+  }
+  .choice-grid > .choice {
+    @apply bg-surface;
   }
   .choice:hover {
     @apply bg-sunken;

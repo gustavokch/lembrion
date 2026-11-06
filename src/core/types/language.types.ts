@@ -325,7 +325,7 @@ export interface Translations {
 
   // Dashboard
   dashboardProgress: string;
-  dashboardMeasure: string;
+  dashboardPeriod: string;
   dashboardLast7Days: string;
   dashboardAllTime: string;
   dashboardSessions: string;

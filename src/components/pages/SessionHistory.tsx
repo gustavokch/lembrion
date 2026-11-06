@@ -192,10 +192,10 @@ export default function SessionHistory() {
 
   return (
     <div className="page">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-baseline gap-x-3">
           <h1 className="page-title">{t.studyHistory}</h1>
-          <p className="page-lede tabular">
+          <p className="tabular text-ink-soft">
             {formatMessage(sessions.length === 1 ? t.historySessionCountOne : t.historySessionCountOther, { count: sessions.length })}
           </p>
         </div>
@@ -206,7 +206,7 @@ export default function SessionHistory() {
       </div>
 
       {/* Filters */}
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <div className="relative w-full sm:max-w-xs">
           <label htmlFor="history-search" className="sr-only">
             {t.historySearchLabel}
@@ -284,7 +284,7 @@ export default function SessionHistory() {
       ) : (
         <>
           {/* md and up: table */}
-          <table className="data-table mt-6 hidden md:table">
+          <table className="data-table mt-6 hidden md:table [&_td]:py-1.5">
             <thead>
               <tr>
                 {isSelectionMode && (

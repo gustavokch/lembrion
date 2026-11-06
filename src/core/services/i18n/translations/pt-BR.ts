@@ -336,7 +336,7 @@ export const ptBR: Translations = {
 
   // Dashboard
   dashboardProgress: 'Progresso',
-  dashboardMeasure: 'Medida',
+  dashboardPeriod: 'Período',
   dashboardLast7Days: 'Últimos 7 dias',
   dashboardAllTime: 'Total',
   dashboardSessions: 'Sessões',
