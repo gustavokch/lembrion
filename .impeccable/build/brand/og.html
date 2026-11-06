@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600&family=Libre+Franklin:wght@400;500;800&display=block" rel="stylesheet">
+<style>
+/* Open Graph card, 1200×630, dark default: wordmark, claim, and a fragment of the due slip. */
+:root{--ground:#121212;--panel:#181818;--line:#2a2a2a;--ink:#ececec;--soft:#c8c8c8;--mute:#a3a3a3;--violet:#9d8cff;--red:#ff6b5f}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{background:var(--ground);color:var(--ink);font-family:'Libre Franklin',sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;padding:50px 64px 0}
+.mark{font-size:30px;font-weight:800;letter-spacing:-.015em;line-height:1}
+h1{margin-top:40px;font-size:58px;line-height:1.06;font-weight:800;letter-spacing:-.025em;max-width:940px}
+.lede{margin-top:16px;font-size:24px;line-height:1.3;color:var(--mute)}
+.slip{margin-top:34px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:0 28px}
+.head{display:flex;align-items:center;gap:24px;height:64px;border-bottom:2px solid var(--red)}
+h2{font-size:26px;font-weight:800;letter-spacing:-.015em}
+.head p{margin-left:auto;font-size:18px;color:var(--mute)}
+table{width:100%;border-collapse:collapse}
+th{font:600 15px/1 'Archivo Narrow',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--red);text-align:left;padding:14px 24px 9px 0;border-bottom:1px solid var(--red)}
+td{height:50px;padding-right:24px;border-bottom:1px solid color-mix(in srgb,var(--red) 20%,var(--line));white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th:last-child,td:last-child{padding-right:0;text-align:right}
+.call{width:104px;font:600 21px/1 'Archivo Narrow',sans-serif;letter-spacing:.05em;color:var(--soft)}
+.q{font-size:22px;font-weight:500}
+sub{font-size:.7em;line-height:0;vertical-align:-.2em}
+.stamp{display:inline-block;font:600 18px/1 'Archivo Narrow',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);border:2px solid currentColor;border-radius:3px;padding:7px 11px 6px}
+.stamp.overdue{color:var(--red)}
+</style></head><body>
+<div class="mark">Lembrion</div>
+<h1>Study by answering questions, not rereading notes.</h1>
+<p class="lede">Your topics, your AI provider, your browser.</p>
+<section class="slip">
+<div class="head"><h2>Due for return</h2><p>Missed questions come back on a 1&#8209;3&#8209;7&#8209;14&#8209;30 day schedule.</p></div>
+<table>
+<tr><th>Call no.</th><th>Question</th><th>Due</th></tr>
+<tr><td class="call">CEL·1</td><td class="q">Where does glycolysis take place?</td><td><span class="stamp overdue">Overdue · 05 Nov</span></td></tr>
+<tr><td class="call">CEL·2</td><td class="q">What does one turn of the Krebs cycle yield besides CO<sub>2</sub>?</td><td><span class="stamp">06 Nov 2026</span></td></tr>
+<tr><td class="call">LIN·2</td><td class="q">When is zero an eigenvalue of a matrix?</td><td><span class="stamp">06 Nov 2026</span></td></tr>
+</table>
+</section>
+<script>document.fonts.ready.then(()=>document.body.setAttribute('data-ready','1'))</script>
+</body></html>

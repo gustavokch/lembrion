@@ -1,5 +1,5 @@
 import { Translations } from '../../../core/types/language.types';
-import { Difficulty, LearningSettings, Question } from '../../../types';
+import { Difficulty, LearningSettings, Question, StudySession } from '../../../types';
 
 /** Levels from easiest to hardest; adaptive steps move one position. */
 export const DIFFICULTIES: readonly Difficulty[] = ['easy', 'medium', 'hard'];
@@ -80,6 +80,11 @@ export function isAnswered(question: Question): boolean {
 /** Number of answered questions, review copies included. */
 export function answeredCount(questions: Question[]): number {
   return questions.filter(isAnswered).length;
+}
+
+/** Largest answered count over all sessions: the full length of every extent bar, so one session draws the same length on every page. */
+export function mostAnswered(sessions: StudySession[]): number {
+  return sessions.reduce((max, session) => Math.max(max, answeredCount(session.questions)), 0);
 }
 
 /**

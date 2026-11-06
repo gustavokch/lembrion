@@ -1,12 +1,11 @@
-import { AlertTriangle, BookOpen, Brain, Check, ChevronRight, Clock, Eye, History, Info, Plus, Save, Settings, Target, Trash2, TrendingUp, X, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Plus, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { formatMessage } from '../core/services/i18n';
 import { useLanguage } from '../hooks/useLanguage';
-import { useTheme } from '../hooks/useTheme';
 import { Difficulty, LearningSettings, StudySession } from '../types';
+import { sessionCallNumber, topicCode } from './callNumber';
 import { SessionEditUpdates } from './pages/sessionEdits';
-import { answeredCount, DIFFICULTIES, difficultyLabels, normalizeLearningSettings, sessionScore } from './pages/StudyPage/learningTechniques';
-import IconButton from './ui/IconButton';
+import { DIFFICULTIES, difficultyLabels, normalizeLearningSettings } from './pages/StudyPage/learningTechniques';
 
 interface SessionEditModalProps {
   session: StudySession;
@@ -15,48 +14,28 @@ interface SessionEditModalProps {
   onSave: (updates: SessionEditUpdates) => void;
 }
 
+type QuestionType = 'multipleChoice' | 'dissertative' | 'mixed';
+
+const FOCUSABLE = 'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
+
 export default function SessionEditModal({ session, isOpen, onClose, onSave }: SessionEditModalProps) {
   const { t, language } = useLanguage();
-  const { themeConfig } = useTheme();
   const levelLabels = difficultyLabels(t);
-  
+  const panelRef = useRef<HTMLDivElement>(null);
+
   // Form state
   const [contexts, setContexts] = useState<string[]>(session.contexts || []);
   const [instructions, setInstructions] = useState<string[]>(session.instructions || []);
   const [newContext, setNewContext] = useState('');
   const [newInstruction, setNewInstruction] = useState('');
-  const [questionType, setQuestionType] = useState<'multipleChoice' | 'dissertative' | 'mixed'>(
-    session.questionType || 'multipleChoice'
-  );
+  const [questionType, setQuestionType] = useState<QuestionType>(session.questionType || 'multipleChoice');
   const [enableLatex, setEnableLatex] = useState(session.enableLatex || false);
   const [enableCodeVisualization, setEnableCodeVisualization] = useState(session.enableCodeVisualization || false);
   const [learningSettings, setLearningSettings] = useState<LearningSettings>(() =>
     normalizeLearningSettings(session.learningSettings)
   );
   const [difficulty, setDifficulty] = useState<Difficulty>(session.difficulty ?? 'medium');
-  
-  // UI state
-  const [activeTab, setActiveTab] = useState<'basic' | 'learning' | 'advanced' | 'history'>('basic');
   const [hasChanges, setHasChanges] = useState(false);
-  const [deviceType, setDeviceType] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
-
-  // Detect device type for responsive behavior
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        setDeviceType('mobile');
-      } else if (width < 1024) {
-        setDeviceType('tablet');
-      } else {
-        setDeviceType('desktop');
-      }
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Reset form when modal opens
   useEffect(() => {
@@ -71,7 +50,6 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
       setNewContext('');
       setNewInstruction('');
       setHasChanges(false);
-      setActiveTab('basic');
     }
   }, [isOpen, session]);
 
@@ -85,15 +63,64 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
     const hasLearningChange = JSON.stringify(learningSettings) !== JSON.stringify(normalizeLearningSettings(session.learningSettings));
     const hasDifficultyChange = difficulty !== (session.difficulty ?? 'medium');
     setHasChanges(
-      hasContextsChange || 
-      hasInstructionsChange || 
-      hasQuestionTypeChange || 
-      hasLatexChange || 
-      hasCodeChange || 
+      hasContextsChange ||
+      hasInstructionsChange ||
+      hasQuestionTypeChange ||
+      hasLatexChange ||
+      hasCodeChange ||
       hasLearningChange ||
       hasDifficultyChange
     );
   }, [contexts, instructions, questionType, enableLatex, enableCodeVisualization, learningSettings, difficulty, session]);
+
+  // Focus moves into the dialog on open and back to the trigger on close; the page behind does not scroll.
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    panelRef.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      if (previous?.isConnected) previous.focus();
+    };
+  }, [isOpen]);
+
+  const handleCancel = () => {
+    if (hasChanges) {
+      if (window.confirm(t.unsavedChangesConfirm)) {
+        onClose();
+      }
+    } else {
+      onClose();
+    }
+  };
+
+  // Esc closes (through the unsaved-changes check); Tab stays inside the dialog.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleCancel();
+      } else if (e.key === 'Tab' && panelRef.current) {
+        const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+        if (e.shiftKey && (active === first || active === panelRef.current)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  });
 
   if (!isOpen) return null;
 
@@ -128,27 +155,27 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
 
   const handleSave = () => {
     const updates: SessionEditUpdates = {};
-    
+
     if (JSON.stringify(contexts) !== JSON.stringify(session.contexts || [])) {
       updates.contexts = contexts;
     }
-    
+
     if (JSON.stringify(instructions) !== JSON.stringify(session.instructions || [])) {
       updates.instructions = instructions;
     }
-    
+
     if (questionType !== (session.questionType || 'multipleChoice')) {
       updates.questionType = questionType;
     }
-    
+
     if (enableLatex !== (session.enableLatex || false)) {
       updates.enableLatex = enableLatex;
     }
-    
+
     if (enableCodeVisualization !== (session.enableCodeVisualization || false)) {
       updates.enableCodeVisualization = enableCodeVisualization;
     }
-    
+
     if (JSON.stringify(learningSettings) !== JSON.stringify(normalizeLearningSettings(session.learningSettings))) {
       updates.learningSettings = learningSettings;
     }
@@ -156,811 +183,311 @@ export default function SessionEditModal({ session, isOpen, onClose, onSave }: S
     if (difficulty !== (session.difficulty ?? 'medium')) {
       updates.difficulty = difficulty;
     }
-    
+
     onSave(updates);
     onClose();
-  };
-
-  const handleCancel = () => {
-    if (hasChanges) {
-      if (window.confirm(t.unsavedChangesConfirm)) {
-        onClose();
-      }
-    } else {
-      onClose();
-    }
   };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString(language);
   };
 
-  const tabs = [
-    { 
-      id: 'basic', 
-      label: t.editTabBasic, 
-      icon: BookOpen,
-      description: t.editTabBasicDesc
-    },
-    { 
-      id: 'learning', 
-      label: t.editTabLearning, 
-      icon: Brain,
-      description: t.editTabLearningDesc
-    },
-    { 
-      id: 'advanced', 
-      label: t.editTabAdvanced, 
-      icon: Settings,
-      description: t.editTabAdvancedDesc
-    },
-    { 
-      id: 'history', 
-      label: t.history, 
-      icon: History,
-      description: t.editTabHistoryDesc
-    },
+  const questionTypes: { value: QuestionType; label: string }[] = [
+    { value: 'multipleChoice', label: t.multipleChoice },
+    { value: 'dissertative', label: t.dissertative },
+    { value: 'mixed', label: t.mixed },
   ];
 
-  const learningTechniques = [
-    { 
-      key: 'spacedRepetition', 
-      label: t.spacedRepetition, 
-      desc: t.spacedRepetitionDesc,
-      icon: Clock,
-      color: themeConfig.colors.info
-    },
-    { 
-      key: 'interleaving', 
-      label: t.interleaving, 
-      desc: t.interleavingDesc,
-      icon: Target,
-      color: themeConfig.colors.warning
-    },
-    { 
-      key: 'elaborativeInterrogation', 
-      label: t.elaborativeInterrogation, 
-      desc: t.elaborativeInterrogationDesc,
-      icon: Brain,
-      color: themeConfig.colors.primary
-    },
-    { 
-      key: 'selfExplanation', 
-      label: t.selfExplanation, 
-      desc: t.selfExplanationDesc,
-      icon: Settings,
-      color: themeConfig.colors.success
-    },
-    { 
-      key: 'desirableDifficulties', 
-      label: t.desirableDifficulties, 
-      desc: t.desirableDifficultiesDesc,
-      icon: Plus,
-      color: themeConfig.colors.error
-    }
+  const learningTechniques: { key: keyof LearningSettings; label: string; desc: string }[] = [
+    { key: 'spacedRepetition', label: t.spacedRepetition, desc: t.spacedRepetitionDesc },
+    { key: 'interleaving', label: t.interleaving, desc: t.interleavingDesc },
+    { key: 'elaborativeInterrogation', label: t.elaborativeInterrogation, desc: t.elaborativeInterrogationDesc },
+    { key: 'selfExplanation', label: t.selfExplanation, desc: t.selfExplanationDesc },
+    { key: 'desirableDifficulties', label: t.desirableDifficulties, desc: t.desirableDifficultiesDesc },
   ];
+
+  const hasHistory = Boolean(
+    session.contextsHistory?.length || session.instructionHistory?.length || session.learningSettingsHistory?.length
+  );
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 animate-fade-in">
-      <div 
-        className={`rounded-2xl sm:rounded-3xl shadow-2xl border w-full overflow-hidden flex flex-col animate-scale-in ${
-          deviceType === 'mobile' 
-            ? 'max-w-sm max-h-[95vh]' 
-            : deviceType === 'tablet'
-            ? 'max-w-md max-h-[90vh]'
-            : 'max-w-lg max-h-[85vh]'
-        }`}
-        style={{
-          backgroundColor: themeConfig.colors.surface,
-          borderColor: themeConfig.colors.border,
-          boxShadow: `0 25px 50px ${themeConfig.colors.primary}20`,
-        }}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 sm:p-4"
+      onClick={(e) => e.target === e.currentTarget && handleCancel()}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-session-title"
+        tabIndex={-1}
+        className="flex h-full w-full flex-col bg-surface outline-none overlay-shadow sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-md sm:border sm:border-line"
       >
-        {/* Header - Fixed */}
-        <div 
-          className="p-4 sm:p-5 md:p-6 border-b flex-shrink-0"
-          style={{ 
-            borderColor: themeConfig.colors.border,
-            background: themeConfig.gradients.card
-          }}
-        >
-          <div className="flex items-center justify-between mb-4 sm:mb-5">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div 
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg"
-                style={{ 
-                  background: themeConfig.gradients.primary,
-                  boxShadow: `0 8px 25px ${themeConfig.colors.primary}30`
-                }}
-              >
-                <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-lg sm:text-xl font-bold leading-tight" style={{ color: themeConfig.colors.text }}>
-                  {t.editSession}
-                </h2>
-                <p className="text-xs sm:text-sm mt-0.5" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.customizeSession}
-                </p>
-              </div>
-            </div>
-            <IconButton
-              icon={X}
-              onClick={handleCancel}
-              variant="ghost"
-              size="md"
-              aria-label="Close modal"
-              className="hover:bg-gray-100 transition-colors"
-            />
+        <div className="panel-head shrink-0 flex-nowrap py-2 pr-2 sm:pr-3">
+          <div className="flex min-w-0 items-baseline gap-3">
+            <h2 id="edit-session-title" className="text-lg font-bold leading-tight text-ink">
+              {t.editSession}
+            </h2>
+            <span className="callno">{sessionCallNumber(contexts)}</span>
           </div>
-          
-          {/* Enhanced Tabs - Apple-style segmented control */}
-          <div 
-            className="flex p-1 rounded-xl sm:rounded-2xl shadow-inner overflow-x-auto"
-            style={{ backgroundColor: themeConfig.colors.background }}
-          >
-            {tabs.map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                onClick={() => setActiveTab(id as any)}
-                className={`flex items-center justify-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
-                  activeTab === id ? 'text-white shadow-lg transform scale-[1.02]' : ''
-                }`}
-                style={{
-                  backgroundColor: activeTab === id ? themeConfig.colors.primary : 'transparent',
-                  color: activeTab === id ? '#ffffff' : themeConfig.colors.textSecondary,
-                }}
-              >
-                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                <span className="hidden xs:inline">{label}</span>
-              </button>
-            ))}
-          </div>
-          
-          {/* Tab Description */}
-          <p className="text-xs sm:text-sm mt-2 sm:mt-3 text-center" style={{ color: themeConfig.colors.textMuted }}>
-            {tabs.find(tab => tab.id === activeTab)?.description}
-          </p>
+          <button type="button" onClick={handleCancel} className="btn btn-ghost btn-icon shrink-0" aria-label={t.editClose}>
+            <X aria-hidden="true" />
+          </button>
         </div>
 
-        {/* Content - Scrollable */}
-        <div className="flex-1 overflow-y-auto">
-          {activeTab === 'basic' && (
-            <div className="p-4 sm:p-5 md:p-6 space-y-5 sm:space-y-6">
-              {/* Study Contexts */}
-              <div className="space-y-3">
-                <label className="flex items-center space-x-2 text-sm sm:text-base font-semibold" style={{ color: themeConfig.colors.text }}>
-                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.primary }} />
-                  <span>{t.studyContexts}</span>
-                  <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: themeConfig.colors.error + '20', color: themeConfig.colors.error }}>
-                    {t.required}
+        <div className="flex-1 space-y-7 overflow-y-auto px-4 py-5 sm:px-5">
+          {/* Topics */}
+          <section aria-labelledby="edit-topics-title">
+            <h3 id="edit-topics-title" className="label">{t.editTopics}</h3>
+            <div className="flex gap-2">
+              <label htmlFor="edit-new-topic" className="sr-only">{t.editNewTopic}</label>
+              <input
+                id="edit-new-topic"
+                type="text"
+                value={newContext}
+                onChange={(e) => setNewContext(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addContext();
+                  }
+                }}
+                placeholder={t.editContextPlaceholder}
+                aria-invalid={contexts.length === 0}
+                aria-describedby={contexts.length === 0 ? 'edit-topics-error' : undefined}
+                className="field min-w-0 flex-1"
+              />
+              <button type="button" onClick={addContext} disabled={!newContext.trim()} className="btn btn-secondary">
+                <Plus aria-hidden="true" />
+                {t.add}
+              </button>
+            </div>
+            {contexts.length > 0 ? (
+              <ul className="mt-3 divide-y divide-line rounded-md border border-line" aria-label={formatMessage(contexts.length === 1 ? t.contextCountOne : t.contextCountOther, { count: contexts.length })}>
+                {contexts.map((context, index) => (
+                  <li key={index} className="flex items-center gap-3 py-0.5 pl-3 pr-0.5">
+                    <span className="callno w-10 shrink-0">{topicCode(context)}</span>
+                    <span className="min-w-0 flex-1 break-words text-[0.9375rem] text-ink">{context}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeContext(index)}
+                      className="btn btn-ghost btn-icon shrink-0"
+                      aria-label={formatMessage(t.editRemoveItem, { item: context })}
+                    >
+                      <X aria-hidden="true" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p id="edit-topics-error" className="field-error">{t.atLeastOneContextRequired}</p>
+            )}
+          </section>
+
+          {/* Instructions */}
+          <section aria-labelledby="edit-instructions-title">
+            <h3 id="edit-instructions-title" className="label">
+              {t.editInstructions} <span className="font-normal text-ink-muted">· {t.editOptional}</span>
+            </h3>
+            <div className="flex gap-2">
+              <label htmlFor="edit-new-instruction" className="sr-only">{t.editNewInstruction}</label>
+              <input
+                id="edit-new-instruction"
+                type="text"
+                value={newInstruction}
+                onChange={(e) => setNewInstruction(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addInstruction();
+                  }
+                }}
+                placeholder={t.editInstructionPlaceholder}
+                className="field min-w-0 flex-1"
+              />
+              <button type="button" onClick={addInstruction} disabled={!newInstruction.trim()} className="btn btn-secondary">
+                <Plus aria-hidden="true" />
+                {t.add}
+              </button>
+            </div>
+            {instructions.length > 0 && (
+              <ul className="mt-3 divide-y divide-line rounded-md border border-line" aria-label={formatMessage(instructions.length === 1 ? t.instructionCountOne : t.instructionCountOther, { count: instructions.length })}>
+                {instructions.map((instruction, index) => (
+                  <li key={index} className="flex items-center justify-between gap-3 py-0.5 pl-3 pr-0.5 text-[0.9375rem] text-ink">
+                    <span className="min-w-0 break-words">{instruction}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeInstruction(index)}
+                      className="btn btn-ghost btn-icon shrink-0"
+                      aria-label={formatMessage(t.editRemoveItem, { item: instruction })}
+                    >
+                      <X aria-hidden="true" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          {/* Question type */}
+          <section aria-labelledby="edit-question-type-title">
+            <h3 id="edit-question-type-title" className="label">{t.questionType}</h3>
+            <div role="radiogroup" aria-labelledby="edit-question-type-title" className="segmented flex w-full">
+              {questionTypes.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="radio"
+                  aria-checked={questionType === value}
+                  onClick={() => setQuestionType(value)}
+                  className="flex-1 px-2"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Difficulty */}
+          <section aria-labelledby="edit-difficulty-title">
+            <h3 id="edit-difficulty-title" className="label">{t.difficulty}</h3>
+            <div role="radiogroup" aria-labelledby="edit-difficulty-title" className="segmented flex w-full">
+              {DIFFICULTIES.map(level => (
+                <button
+                  key={level}
+                  type="button"
+                  role="radio"
+                  aria-checked={difficulty === level}
+                  onClick={() => setDifficulty(level)}
+                  className="flex-1"
+                >
+                  {levelLabels[level]}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Learning techniques */}
+          <section aria-labelledby="edit-learning-title">
+            <h3 id="edit-learning-title" className="label">{t.learningTechniques}</h3>
+            <div className="choice-group">
+              {learningTechniques.map(({ key, label, desc }) => (
+                <label key={key} className="choice">
+                  <input
+                    type="checkbox"
+                    checked={learningSettings[key]}
+                    onChange={() => updateLearningSettings(key)}
+                    className="mt-1 h-4 w-4 shrink-0"
+                  />
+                  <span className="min-w-0">
+                    <span className="block font-semibold text-ink">{label}</span>
+                    <span className="mt-0.5 block text-sm text-ink-soft">{desc}</span>
                   </span>
                 </label>
-                
-                {/* Add Context Input */}
-                <div className="flex gap-2 sm:gap-3">
-                  <input
-                    type="text"
-                    value={newContext}
-                    onChange={(e) => setNewContext(e.target.value)}
-                    placeholder={t.editContextPlaceholder}
-                    className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 border-2 rounded-xl focus:border-2 outline-none transition-all duration-200 text-sm"
-                    style={{
-                      backgroundColor: themeConfig.colors.background,
-                      borderColor: newContext ? themeConfig.colors.primary : themeConfig.colors.border,
-                      color: themeConfig.colors.text,
-                      boxShadow: newContext ? `0 0 0 3px ${themeConfig.colors.primary}20` : 'none',
-                    }}
-                    onKeyPress={(e) => e.key === 'Enter' && addContext()}
-                  />
-                  <button
-                    onClick={addContext}
-                    disabled={!newContext.trim()}
-                    className="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-                    style={{
-                      backgroundColor: themeConfig.colors.primary,
-                      color: '#ffffff'
-                    }}
-                    title={t.addContext}
-                  >
-                    <Plus className="w-4 h-4 sm:mr-1" />
-                    <span className="hidden sm:inline">{t.add}</span>
-                  </button>
-                </div>
-                
-                {/* Context List */}
-                {contexts.length > 0 && (
-                  <div className="space-y-2 sm:space-y-3">
-                    <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.textSecondary }}>
-                      {formatMessage(contexts.length === 1 ? t.contextCountOne : t.contextCountOther, { count: contexts.length })}
-                    </p>
-                    {contexts.map((context, index) => (
-                      <div 
-                        key={index} 
-                        className="flex items-center justify-between p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl group hover:shadow-md transition-all duration-200"
-                        style={{
-                          backgroundColor: themeConfig.colors.background,
-                          borderColor: themeConfig.colors.border
-                        }}
-                      >
-                        <span className="text-xs sm:text-sm flex-1 mr-3 break-words leading-relaxed" style={{ color: themeConfig.colors.text }}>
-                          {context}
-                        </span>
-                        <button
-                          onClick={() => removeContext(index)}
-                          className="p-2 rounded-lg transition-all duration-200 hover:shadow-md transform hover:scale-110 active:scale-95"
-                          style={{ 
-                            backgroundColor: themeConfig.colors.error + '20',
-                            color: themeConfig.colors.error
-                          }}
-                          aria-label="Remove context"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              ))}
+            </div>
+          </section>
 
-                {contexts.length === 0 && (
-                  <div 
-                    className="p-4 rounded-xl border-2 border-dashed text-center"
-                    style={{
-                      borderColor: themeConfig.colors.error + '50',
-                      backgroundColor: themeConfig.colors.error + '10'
-                    }}
-                  >
-                    <AlertTriangle className="w-6 h-6 mx-auto mb-2" style={{ color: themeConfig.colors.error }} />
-                    <p className="text-sm font-medium" style={{ color: themeConfig.colors.error }}>
-                      {t.atLeastOneContextRequired}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Special Instructions */}
-              <div className="space-y-3 sm:space-y-4">
-                <label className="flex items-center space-x-2 text-sm sm:text-base font-semibold" style={{ color: themeConfig.colors.text }}>
-                  <Info className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.info }} />
-                  <span>{t.specialInstructionsOptional}</span>
-                </label>
-                
-                {/* Add Instruction Input */}
-                <div className="flex gap-2 sm:gap-3">
-                  <input
-                    type="text"
-                    value={newInstruction}
-                    onChange={(e) => setNewInstruction(e.target.value)}
-                    placeholder={t.editInstructionPlaceholder}
-                    className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 border-2 rounded-xl focus:border-2 outline-none transition-all duration-200 text-sm"
-                    style={{
-                      backgroundColor: themeConfig.colors.background,
-                      borderColor: newInstruction ? themeConfig.colors.info : themeConfig.colors.border,
-                      color: themeConfig.colors.text,
-                      boxShadow: newInstruction ? `0 0 0 3px ${themeConfig.colors.info}20` : 'none',
-                    }}
-                    onKeyPress={(e) => e.key === 'Enter' && addInstruction()}
-                  />
-                  <button
-                    onClick={addInstruction}
-                    disabled={!newInstruction.trim()}
-                    className="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-                    style={{
-                      backgroundColor: themeConfig.colors.info,
-                      color: '#ffffff'
-                    }}
-                    title={t.addInstruction}
-                  >
-                    <Plus className="w-4 h-4 sm:mr-1" />
-                    <span className="hidden sm:inline">{t.add}</span>
-                  </button>
-                </div>
-                
-                {/* Instructions List */}
-                {instructions.length > 0 && (
-                  <div className="space-y-2 sm:space-y-3">
-                    <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.textSecondary }}>
-                      {formatMessage(instructions.length === 1 ? t.instructionCountOne : t.instructionCountOther, { count: instructions.length })}
-                    </p>
-                    {instructions.map((instruction, index) => (
-                      <div 
-                        key={index} 
-                        className="flex items-center justify-between p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl group hover:shadow-md transition-all duration-200"
-                        style={{
-                          backgroundColor: themeConfig.colors.background,
-                          borderColor: themeConfig.colors.border
-                        }}
-                      >
-                        <span className="text-xs sm:text-sm flex-1 mr-3 break-words leading-relaxed" style={{ color: themeConfig.colors.text }}>
-                          {instruction}
-                        </span>
-                        <button
-                          onClick={() => removeInstruction(index)}
-                          className="p-2 rounded-lg transition-all duration-200 hover:shadow-md transform hover:scale-110 active:scale-95"
-                          style={{ 
-                            backgroundColor: themeConfig.colors.error + '20',
-                            color: themeConfig.colors.error
-                          }}
-                          aria-label="Remove instruction"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Question Type */}
-              <div className="space-y-3">
-                <label className="flex items-center space-x-2 text-sm sm:text-base font-semibold" style={{ color: themeConfig.colors.text }}>
-                  <Target className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.warning }} />
-                  <span>{t.questionType}</span>
-                </label>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { value: 'multipleChoice', label: t.multipleChoice, desc: t.quickAssessment, icon: Check },
-                    { value: 'dissertative', label: t.dissertative, desc: t.deepAnalysis, icon: BookOpen },
-                    { value: 'mixed', label: t.mixed, desc: t.interleavedPractice, icon: Zap }
-                  ].map(({ value, label, desc, icon: Icon }) => (
-                    <button
-                      key={value}
-                      onClick={() => setQuestionType(value as any)}
-                      className={`p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl transition-all duration-200 text-left hover:shadow-md ${
-                        questionType === value ? 'shadow-lg transform scale-[1.02]' : ''
-                      }`}
-                      style={{
-                        borderColor: questionType === value ? themeConfig.colors.warning : themeConfig.colors.border,
-                        backgroundColor: questionType === value 
-                          ? themeConfig.colors.warning + '10' 
-                          : themeConfig.colors.background,
-                      }}
-                    >
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center"
-                          style={{ backgroundColor: themeConfig.colors.warning + '20' }}
-                        >
-                          <Icon className="w-4 h-4" style={{ color: themeConfig.colors.warning }} />
-                        </div>
-                        <span className="font-semibold text-sm" style={{ color: themeConfig.colors.text }}>
-                          {label}
-                        </span>
-                      </div>
-                      <p className="text-xs leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-                        {desc}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Difficulty */}
-              <div className="space-y-3">
-                <span id="edit-difficulty-label" className="flex items-center space-x-2 text-sm sm:text-base font-semibold" style={{ color: themeConfig.colors.text }}>
-                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.warning }} />
-                  <span>{t.difficulty}</span>
+          {/* Display */}
+          <section aria-labelledby="edit-display-title">
+            <h3 id="edit-display-title" className="label">{t.editDisplay}</h3>
+            <div className="choice-group">
+              <label className="choice">
+                <input
+                  type="checkbox"
+                  checked={enableLatex}
+                  onChange={(e) => setEnableLatex(e.target.checked)}
+                  className="mt-1 h-4 w-4 shrink-0"
+                />
+                <span className="min-w-0">
+                  <span className="block font-semibold text-ink">{t.enableLatex}</span>
+                  <span className="mt-0.5 block text-sm text-ink-soft">{t.enableLatexDesc}</span>
                 </span>
-                <div
-                  role="radiogroup"
-                  aria-labelledby="edit-difficulty-label"
-                  className="grid grid-cols-3 gap-1 p-1 rounded-xl sm:rounded-2xl border-2"
-                  style={{ borderColor: themeConfig.colors.border, backgroundColor: themeConfig.colors.background }}
-                >
-                  {DIFFICULTIES.map(level => {
-                    const isSelected = difficulty === level;
-                    return (
-                      <button
-                        key={level}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => setDifficulty(level)}
-                        className="min-h-[44px] px-2 rounded-lg sm:rounded-xl text-sm font-semibold transition-colors duration-200"
-                        style={{
-                          backgroundColor: isSelected ? themeConfig.colors.warning : 'transparent',
-                          color: isSelected ? '#ffffff' : themeConfig.colors.textSecondary,
-                        }}
-                      >
-                        {levelLabels[level]}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              </label>
+              <label className="choice">
+                <input
+                  type="checkbox"
+                  checked={enableCodeVisualization}
+                  onChange={(e) => setEnableCodeVisualization(e.target.checked)}
+                  className="mt-1 h-4 w-4 shrink-0"
+                />
+                <span className="min-w-0">
+                  <span className="block font-semibold text-ink">{t.enableCodeVisualization}</span>
+                  <span className="mt-0.5 block text-sm text-ink-soft">{t.enableCodeVisualizationDesc}</span>
+                </span>
+              </label>
             </div>
-          )}
+          </section>
 
-          {activeTab === 'learning' && (
-            <div className="p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-5">
-              <div className="text-center mb-4 sm:mb-6">
-                <h3 className="text-base sm:text-lg font-bold mb-2" style={{ color: themeConfig.colors.text }}>
-                  {t.learningTechniques}
-                </h3>
-                <p className="text-xs sm:text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                  {t.learningScienceBased}
-                </p>
-              </div>
-              
-              <div className="space-y-3 sm:space-y-4">
-                {learningTechniques.map(({ key, label, desc, icon: Icon, color }) => (
-                  <label 
-                    key={key}
-                    className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-md group"
-                    style={{
-                      borderColor: learningSettings[key as keyof LearningSettings] 
-                        ? themeConfig.colors.primary 
-                        : themeConfig.colors.border,
-                      backgroundColor: learningSettings[key as keyof LearningSettings]
-                        ? themeConfig.colors.primary + '10'
-                        : themeConfig.colors.background,
-                      transform: learningSettings[key as keyof LearningSettings] ? 'scale(1.02)' : 'scale(1)',
-                    }}
-                  >
-                    <div className="flex items-center space-x-3 flex-1">
-                      <div 
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm"
-                        style={{ backgroundColor: color + '20' }}
-                      >
-                        <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color }} />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="font-semibold text-xs sm:text-sm" style={{ color: themeConfig.colors.text }}>
-                            {label}
-                          </span>
-                          {learningSettings[key as keyof LearningSettings] && (
-                            <Check className="w-4 h-4 flex-shrink-0" style={{ color: themeConfig.colors.primary }} />
-                          )}
-                        </div>
-                        <p className="text-xs leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-                          {desc}
-                        </p>
-                      </div>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={learningSettings[key as keyof LearningSettings]}
-                      onChange={() => updateLearningSettings(key as keyof LearningSettings)}
-                      className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg focus:ring-2 mt-1 flex-shrink-0 transition-all duration-200"
-                      style={{
-                        accentColor: themeConfig.colors.primary,
-                        '--tw-ring-color': themeConfig.colors.primary,
-                      }}
-                    />
-                  </label>
-                ))}
-              </div>
-              
-              {/* Learning Techniques Info */}
-              <div 
-                className="mt-5 sm:mt-6 p-4 sm:p-5 rounded-xl sm:rounded-2xl border"
-                style={{
-                  backgroundColor: themeConfig.colors.info + '10',
-                  borderColor: themeConfig.colors.info + '30'
-                }}
-              >
-                <div className="flex items-start space-x-3">
-                  <Info className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
-                  <div>
-                    <h4 className="font-semibold text-sm mb-1 sm:mb-2" style={{ color: themeConfig.colors.info }}>
-                      {t.scientificResearchTitle}
-                    </h4>
-                    <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                      {t.scientificResearchDesc}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Change history */}
+          <section aria-labelledby="edit-history-title" className="border-t border-line pt-6">
+            <h3 id="edit-history-title" className="label">{t.editTabHistoryDesc}</h3>
+            {!hasHistory && <p className="text-sm text-ink-muted">{t.noChangesYetDesc}</p>}
 
-          {activeTab === 'advanced' && (
-            <div className="p-4 sm:p-5 md:p-6 space-y-5 sm:space-y-6">
-              {/* Visualization Options */}
-              <div className="space-y-4">
-                <h3 className="text-base sm:text-lg font-bold flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
-                  <Eye className="w-5 h-5" style={{ color: themeConfig.colors.primary }} />
-                  <span>{t.visualizationOptions}</span>
-                </h3>
-                
-                <div className="space-y-3">
-                  <label className="flex items-start space-x-3 p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md"
-                    style={{
-                      borderColor: enableLatex ? themeConfig.colors.primary : themeConfig.colors.border,
-                      backgroundColor: enableLatex ? themeConfig.colors.primary + '10' : themeConfig.colors.background,
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={enableLatex}
-                      onChange={(e) => setEnableLatex(e.target.checked)}
-                      className="w-5 h-5 rounded focus:ring-2 mt-0.5"
-                      style={{
-                        accentColor: themeConfig.colors.primary,
-                        '--tw-ring-color': themeConfig.colors.primary,
-                      }}
-                    />
-                    <div>
-                      <span className="font-medium" style={{ color: themeConfig.colors.text }}>
-                        {t.enableLatex}
+            {session.contextsHistory && session.contextsHistory.length > 0 && (
+              <div className="mt-3">
+                <h4 className="caps-label">{t.contextsHistory}</h4>
+                <ul className="mt-2 divide-y divide-line border-y border-line text-sm">
+                  {session.contextsHistory.map(entry => (
+                    <li key={entry.id} className="grid gap-1 py-2.5 sm:grid-cols-[11rem_1fr] sm:gap-4">
+                      <span className="text-ink-muted tabular">{formatDate(entry.changedAt)}</span>
+                      <span className="min-w-0 break-words text-ink">
+                        <span className="text-ink-muted">{t.previousLabel}</span> {entry.previousContexts.join(', ')}
+                        <br />
+                        <span className="text-ink-muted">{t.newLabel}</span> {entry.newContexts.join(', ')}
                       </span>
-                      <p className="text-sm mt-1" style={{ color: themeConfig.colors.textSecondary }}>
-                        {t.enableLatexDesc}
-                      </p>
-                    </div>
-                  </label>
-                  
-                  <label className="flex items-start space-x-3 p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md"
-                    style={{
-                      borderColor: enableCodeVisualization ? themeConfig.colors.primary : themeConfig.colors.border,
-                      backgroundColor: enableCodeVisualization ? themeConfig.colors.primary + '10' : themeConfig.colors.background,
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={enableCodeVisualization}
-                      onChange={(e) => setEnableCodeVisualization(e.target.checked)}
-                      className="w-5 h-5 rounded focus:ring-2 mt-0.5"
-                      style={{
-                        accentColor: themeConfig.colors.primary,
-                        '--tw-ring-color': themeConfig.colors.primary,
-                      }}
-                    />
-                    <div>
-                      <span className="font-medium" style={{ color: themeConfig.colors.text }}>
-                        {t.enableCodeVisualization}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {session.instructionHistory && session.instructionHistory.length > 0 && (
+              <div className="mt-5">
+                <h4 className="caps-label">{t.instructionsHistory}</h4>
+                <ul className="mt-2 divide-y divide-line border-y border-line text-sm">
+                  {session.instructionHistory.map(entry => (
+                    <li key={entry.id} className="grid gap-1 py-2.5 sm:grid-cols-[11rem_1fr] sm:gap-4">
+                      <span className="text-ink-muted tabular">{formatDate(entry.changedAt)}</span>
+                      <span className="min-w-0 break-words text-ink">
+                        <span className="tag mr-2">{entry.action === 'added' ? t.added : t.removed}</span>
+                        {entry.instruction}
                       </span>
-                      <p className="text-sm mt-1" style={{ color: themeConfig.colors.textSecondary }}>
-                        {t.enableCodeVisualizationDesc}
-                      </p>
-                    </div>
-                  </label>
-                </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
+            )}
 
-              {/* Session Info */}
-              <div 
-                className="p-4 sm:p-5 rounded-xl border"
-                style={{
-                  backgroundColor: themeConfig.colors.info + '10',
-                  borderColor: themeConfig.colors.info + '30'
-                }}
-              >
-                <div className="flex items-start space-x-3">
-                  <Info className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
-                  <div>
-                    <h4 className="font-semibold text-sm mb-2" style={{ color: themeConfig.colors.info }}>
-                      {t.sessionInformation}
-                    </h4>
-                    <div className="space-y-1 text-xs" style={{ color: themeConfig.colors.info }}>
-                      <p><strong>{t.createdLabel}</strong> {formatDate(session.createdAt)}</p>
-                      <p><strong>{t.statusLabel}</strong> {session.status === 'completed' ? t.completed : t.inProgress}</p>
-                      <p><strong>{t.questionsLabel}</strong> {answeredCount(session.questions)}</p>
-                      {session.status === 'completed' && (
-                        <p><strong>{t.scoreLabel}</strong> {sessionScore(session.questions)}%</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+            {session.learningSettingsHistory && session.learningSettingsHistory.length > 0 && (
+              <div className="mt-5">
+                <h4 className="caps-label">{t.learningTechniquesHistory}</h4>
+                <ul className="mt-2 divide-y divide-line border-y border-line text-sm">
+                  {session.learningSettingsHistory.map(entry => (
+                    <li key={entry.id} className="grid gap-1 py-2.5 sm:grid-cols-[11rem_1fr] sm:gap-4">
+                      <span className="text-ink-muted tabular">{formatDate(entry.changedAt)}</span>
+                      <span className="text-ink">{t.learningTechniquesUpdated}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          )}
-
-          {activeTab === 'history' && (
-            <div className="p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-6">
-              {/* Contexts History */}
-              {session.contextsHistory && session.contextsHistory.length > 0 && (
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
-                    <BookOpen className="w-5 h-5" style={{ color: themeConfig.colors.primary }} />
-                    <span>{t.contextsHistory}</span>
-                  </h3>
-                  <div className="space-y-2 sm:space-y-3">
-                    {session.contextsHistory.map((entry) => (
-                      <div 
-                        key={entry.id}
-                        className="p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl"
-                        style={{
-                          backgroundColor: themeConfig.colors.background,
-                          borderColor: themeConfig.colors.border
-                        }}
-                      >
-                        <div className="flex items-center space-x-2 mb-2">
-                          <ChevronRight className="w-4 h-4" style={{ color: themeConfig.colors.primary }} />
-                          <span className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.text }}>
-                            {t.contextsChange}
-                          </span>
-                        </div>
-                        <div className="text-xs sm:text-sm break-words mb-2" style={{ color: themeConfig.colors.text }}>
-                          <div className="mb-1">
-                            <span className="font-medium">{t.previousLabel}</span>
-                            <div className="ml-2">
-                              {entry.previousContexts.map((ctx, i) => (
-                                <span key={i} className="inline-block px-2 py-1 rounded-lg mr-1 mb-1" style={{ backgroundColor: themeConfig.colors.textMuted + '20', color: themeConfig.colors.textMuted }}>
-                                  {ctx}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          <div>
-                            <span className="font-medium">{t.newLabel}</span>
-                            <div className="ml-2">
-                              {entry.newContexts.map((ctx, i) => (
-                                <span key={i} className="inline-block px-2 py-1 rounded-lg mr-1 mb-1" style={{ backgroundColor: themeConfig.colors.primary + '20', color: themeConfig.colors.primary }}>
-                                  {ctx}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                          {formatDate(entry.changedAt)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Instructions History */}
-              {session.instructionHistory && session.instructionHistory.length > 0 && (
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
-                    <Info className="w-5 h-5" style={{ color: themeConfig.colors.info }} />
-                    <span>{t.instructionsHistory}</span>
-                  </h3>
-                  <div className="space-y-2 sm:space-y-3">
-                    {session.instructionHistory.map((entry) => (
-                      <div 
-                        key={entry.id}
-                        className="p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl"
-                        style={{
-                          backgroundColor: themeConfig.colors.background,
-                          borderColor: themeConfig.colors.border
-                        }}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center space-x-2">
-                            <span 
-                              className={`text-xs px-2 py-1 rounded-full font-medium`}
-                              style={{
-                                backgroundColor: entry.action === 'added' ? themeConfig.colors.success + '20' : themeConfig.colors.error + '20',
-                                color: entry.action === 'added' ? themeConfig.colors.success : themeConfig.colors.error
-                              }}
-                            >
-                              {entry.action === 'added' ? t.added : t.removed}
-                            </span>
-                          </div>
-                          <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                            {formatDate(entry.changedAt)}
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-sm break-words" style={{ color: themeConfig.colors.text }}>
-                          {entry.instruction}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Learning Settings History */}
-              {session.learningSettingsHistory && session.learningSettingsHistory.length > 0 && (
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center space-x-2" style={{ color: themeConfig.colors.text }}>
-                    <Brain className="w-5 h-5" style={{ color: themeConfig.colors.accent }} />
-                    <span>{t.learningTechniquesHistory}</span>
-                  </h3>
-                  <div className="space-y-2 sm:space-y-3">
-                    {session.learningSettingsHistory.map((entry) => (
-                      <div 
-                        key={entry.id}
-                        className="p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl"
-                        style={{
-                          backgroundColor: themeConfig.colors.background,
-                          borderColor: themeConfig.colors.border
-                        }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.text }}>
-                            {t.learningTechniquesUpdated}
-                          </span>
-                          <span className="text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                            {formatDate(entry.changedAt)}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Empty State */}
-              {(!session.contextsHistory?.length && !session.instructionHistory?.length && !session.learningSettingsHistory?.length) && (
-                <div className="text-center py-8 sm:py-12">
-                  <div 
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center"
-                    style={{ backgroundColor: themeConfig.colors.textMuted + '20' }}
-                  >
-                    <History className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: themeConfig.colors.textMuted }} />
-                  </div>
-                  <h4 className="text-base sm:text-lg font-semibold mb-2" style={{ color: themeConfig.colors.text }}>
-                    {t.noChangesYet}
-                  </h4>
-                  <p className="text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                    {t.noChangesYetDesc}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+            )}
+          </section>
         </div>
 
-        {/* Footer - Fixed */}
-        <div 
-          className="p-4 sm:p-5 md:p-6 border-t flex-shrink-0"
-          style={{ 
-            borderColor: themeConfig.colors.border,
-            background: themeConfig.gradients.card
-          }}
-        >
-          {/* Changes Indicator */}
-          {hasChanges && (
-            <div 
-              className="mb-3 sm:mb-4 p-2 sm:p-3 rounded-lg sm:rounded-xl border text-center"
-              style={{
-                backgroundColor: themeConfig.colors.warning + '10',
-                borderColor: themeConfig.colors.warning + '30'
-              }}
-            >
-              <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.warning }}>
-                {t.unsavedChanges}
-              </p>
-            </div>
-          )}
-          
-          {/* Validation Error */}
-          {contexts.length === 0 && (
-            <div 
-              className="mb-3 sm:mb-4 p-2 sm:p-3 rounded-lg sm:rounded-xl border text-center"
-              style={{
-                backgroundColor: themeConfig.colors.error + '10',
-                borderColor: themeConfig.colors.error + '30'
-              }}
-            >
-              <p className="text-xs sm:text-sm font-medium" style={{ color: themeConfig.colors.error }}>
-                {t.atLeastOneContextRequired}
-              </p>
-            </div>
-          )}
-          
-          <div className="flex flex-col xs:flex-row gap-3 sm:gap-4">
-            <button
-              onClick={handleCancel}
-              className="flex-1 px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold transition-all duration-200 text-sm sm:text-base border-2 hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                color: themeConfig.colors.textSecondary,
-                borderColor: themeConfig.colors.border
-              }}
-            >
-              {t.cancel}
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={!hasChanges || contexts.length === 0}
-              className="flex-1 px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                background: hasChanges && contexts.length > 0 ? themeConfig.gradients.primary : themeConfig.colors.border,
-                color: '#ffffff'
-              }}
-            >
-              <Save className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <span>{hasChanges ? t.save : t.saved}</span>
-            </button>
-          </div>
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-line px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:px-5">
+          {hasChanges && <p className="mr-auto text-sm text-ink-muted" aria-live="polite">{t.unsavedChanges}</p>}
+          <button type="button" onClick={handleCancel} className="btn btn-secondary">
+            {t.cancel}
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={!hasChanges || contexts.length === 0}
+            className="btn btn-primary"
+          >
+            {t.save}
+          </button>
         </div>
       </div>
     </div>

@@ -219,7 +219,7 @@ export function useApiKeyFromUrl() {
       setTimeout(() => {
         showNotification({
           type: 'error',
-          title: t.invalidApiKey,
+          title: t.apiKeyLinkFailed,
           message: describeApiKeyError(errorData, t),
           duration: 8000,
         });

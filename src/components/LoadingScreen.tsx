@@ -1,37 +1,24 @@
-import { getTranslations } from '../core/services/i18n';
 import { useLanguage } from '../hooks';
-import Logo from './ui/Logo';
 
-export default function LoadingScreen() {
-  const { language } = useLanguage();
-  const t = getTranslations(language);
-  
+interface LoadingScreenProps {
+  /** Draw the wordmark bar too; off inside `Layout`, which already shows the wordmark. */
+  bar?: boolean;
+}
+
+/**
+ * Version-gate and route fallback: a travelling violet rule. With `bar`, it
+ * repeats the boot markup in index.html (the wordmark on the ground over a
+ * hairline), so the hand-off from first paint to React does not jump.
+ */
+export default function LoadingScreen({ bar = true }: LoadingScreenProps) {
+  const { t } = useLanguage();
+
+  if (!bar) return <div className="loading-rule" role="progressbar" aria-label={t.loadingExperience} />;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center">
-      <div className="text-center">
-        {/* Animated Logo */}
-        <div className="mb-6">
-          <Logo size="lg" className="mx-auto animate-pulse" />
-        </div>
-        
-        {/* Loading Text */}
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          Lembrion
-        </h1>
-        <p className="text-gray-600 mb-6">
-          {t.loadingExperience}
-        </p>
-        
-        {/* Loading Spinner */}
-        <div className="flex justify-center">
-          <div className="w-8 h-8 border-3 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
-        </div>
-        
-        {/* Performance Tip */}
-        <div className="mt-8 text-xs text-gray-500 max-w-sm mx-auto">
-          {t.loadingOptimizing}
-        </div>
-      </div>
+    <div className="min-h-screen bg-ground">
+      <div className="wordmark flex h-14 items-center border-b border-line px-6 text-xl text-ink">Lembrion</div>
+      <div className="loading-rule bg-transparent" role="progressbar" aria-label={t.loadingExperience} />
     </div>
   );
 }

@@ -85,6 +85,28 @@ export function nextDueDate(sessions: StudySession[]): string | undefined {
   return earliest?.iso;
 }
 
+/** A scheduled original question with the session that holds it. */
+export interface ScheduledReview {
+  session: StudySession;
+  question: Question;
+  /** Leitner box 1-5. */
+  box: number;
+  /** Due time in ms since the epoch. */
+  due: number;
+}
+
+/** Every scheduled original (box 1-5 with a due time), due or not, soonest due first. */
+export function scheduledReviews(sessions: StudySession[]): ScheduledReview[] {
+  const scheduled: ScheduledReview[] = [];
+  for (const session of sessions) {
+    for (const question of session.questions) {
+      if (!isScheduled(question)) continue;
+      scheduled.push({ session, question, box: question.reviewBox!, due: Date.parse(question.nextReview!) });
+    }
+  }
+  return scheduled.sort((a, b) => a.due - b.due);
+}
+
 /**
  * A new active review session over the questions due at `now`, or `undefined` when none is due.
  * Its contexts are the unique contexts of the source sessions.

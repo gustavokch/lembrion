@@ -94,6 +94,7 @@ export interface Question {
   feedback?: string;
   type: 'multipleChoice' | 'dissertative';
   correctAnswerText?: string;
+  explanation?: string; // Multiple choice: the model's explanation of the correct answer
   aiEvaluation?: string;
   difficulty?: Difficulty; // The level requested, not the model's echo
   context?: string; // Interleaving focus context

@@ -12,16 +12,10 @@ export interface Translations {
   settings: string;
   
   // Dashboard
-  welcomeTitle: string;
-  welcomeSubtitle: string;
   usingModel: string;
   totalSessions: string;
   completed: string;
-  averageScore: string;
   startNewSession: string;
-  beginNewSession: string;
-  viewHistory: string;
-  reviewPastSessions: string;
   recentSessions: string;
   questions: string;
   inProgress: string;
@@ -29,7 +23,6 @@ export interface Translations {
   
   // Study Session
   startNewStudySession: string;
-  configureSession: string;
   questionType: string;
   multipleChoice: string;
   quickAssessment: string;
@@ -54,10 +47,7 @@ export interface Translations {
   confidence: string;
   notConfident: string;
   veryConfident: string;
-  excellent: string;
-  keepLearning: string;
   aiEvaluation: string;
-  modelAnswer: string;
   elaborativePrompt: string;
   explainReasoning: string;
   selfExplanationPrompt: string;
@@ -70,24 +60,18 @@ export interface Translations {
   
   // Session History
   studyHistory: string;
-  reviewProgress: string;
   newSession: string;
   noSessionsYet: string;
   startFirstSession: string;
-  questionsAnswered: string;
   date: string;
   continue: string;
-  viewDetails: string;
-  correctAnswers: string;
   
   // Session Details
   sessionNotFound: string;
   sessionNotFoundDesc: string;
   backToHistory: string;
-  sessionDetails: string;
   questionsAndAnswers: string;
   correct: string;
-  yourAnswer: string;
   feedback: string;
   attempts: string;
   attempt: string;
@@ -105,23 +89,17 @@ export interface Translations {
   selfExplanation: string;
   desirableDifficulties: string;
   language: string;
-  selectLanguage: string;
-  openSourceProject: string;
-  openSourceDescription: string;
   viewOnGitHub: string;
-  ready: string;
   requiresApiKey: string;
   
   // AI Provider Settings
   aiProvider: string;
-  providerConfiguration: string;
   invalidConfiguration: string;
   invalidApiKeyFormat: string;
   costTier: string;
   recommended: string;
   
   // Setup Instructions
-  setupInstructions: string;
   howToGetKey: string;
   
   // Configuration Fields
@@ -143,35 +121,17 @@ export interface Translations {
   // Pricing
   supportLembrion: string;
   supportLembrionDesc: string;
-  freeForever: string;
   freeForeverDesc: string;
-  noAccountRequired: string;
-  startLearningImmediately: string;
-  noAccountRequiredDesc: string;
-  whySponsorLembrion: string;
-  keepItFree: string;
-  keepItFreeDesc: string;
-  fundDevelopment: string;
-  fundDevelopmentDesc: string;
-  serverCosts: string;
-  serverCostsDesc: string;
-  privacyFirst: string;
-  privacyFirstDesc: string;
-  privacyFocused: string;
   dataStaysInBrowser: string;
   noTrackingOrAnalytics: string;
-  completeAnonymity: string;
-  transparencyTrust: string;
-  transparencyTrustDesc: string;
   
   // Theme Support
   theme: string;
-  selectTheme: string;
   
   // API Key Notifications
   apiKeyConfigured: string;
   apiKeyConfiguredDesc: string;
-  invalidApiKey: string;
+  apiKeyLinkFailed: string;
   invalidApiKeyDesc: string;
   apiKeyUnknownProvider: string;
 
@@ -197,10 +157,6 @@ export interface Translations {
   aiErrorTimeout: string;
   aiErrorUnknown: string;
 
-  // Badges
-  freeAppBadgeShort: string;
-  dashboardBadge: string;
-
   // Common
   error: string;
   delete: string;
@@ -222,25 +178,12 @@ export interface Translations {
 
   // Loading Screen
   loadingExperience: string;
-  loadingOptimizing: string;
 
   // Dashboard extras
-  dataTipTitle: string;
   dataTipDesc: string;
-  dismissTip: string;
-  startNow: string;
-  viewHistoryLink: string;
-  supportLembrionShortDesc: string;
-  otherOptions: string;
-  viewAll: string;
-  continueSessionLink: string;
-  noRecentSessions: string;
-  startLearningJourney: string;
-  startLearningJourneyDesc: string;
 
   // Session History extras
   noSessionsYetDesc: string;
-  historyTip: string;
   searchSessions: string;
   /** Placeholder: {count} */
   selectedCountOne: string;
@@ -248,15 +191,12 @@ export interface Translations {
   selectedCountOther: string;
   selectAll: string;
   deleteSelected: string;
-  noSessionsFound: string;
   adjustFilters: string;
   confirmDeletion: string;
   /** Placeholder: {count} */
   deleteSessionsConfirmOne: string;
   /** Placeholder: {count} */
   deleteSessionsConfirmOther: string;
-  searchResults: string;
-  noResultsFound: string;
 
   // Session Details extras
   noAnswerProvided: string;
@@ -271,20 +211,10 @@ export interface Translations {
   specialInstructions: string;
   specialInstructionsHelp: string;
   studyInstructionPlaceholder: string;
-  configurationSummary: string;
-  contextsLabel: string;
   instructionsLabel: string;
   dissertativeAnswerPlaceholder: string;
 
   // Review queue and explanation feedback
-  reviewCardTitle: string;
-  /** Placeholder: {count} */
-  reviewDueCountOne: string;
-  /** Placeholder: {count} */
-  reviewDueCountOther: string;
-  /** Placeholder: {date} */
-  reviewNextDue: string;
-  startReview: string;
   reviewCompleteTitle: string;
   reviewCompleteDesc: string;
   reviewSessionLabel: string;
@@ -294,15 +224,8 @@ export interface Translations {
 
   // Session Edit Modal
   editSession: string;
-  customizeSession: string;
   unsavedChanges: string;
   unsavedChangesConfirm: string;
-  editTabBasic: string;
-  editTabBasicDesc: string;
-  editTabLearning: string;
-  editTabLearningDesc: string;
-  editTabAdvanced: string;
-  editTabAdvancedDesc: string;
   editTabHistoryDesc: string;
   editContextPlaceholder: string;
   addContext: string;
@@ -311,78 +234,44 @@ export interface Translations {
   /** Placeholder: {count} */
   contextCountOther: string;
   atLeastOneContextRequired: string;
-  specialInstructionsOptional: string;
   editInstructionPlaceholder: string;
   addInstruction: string;
   /** Placeholder: {count} */
   instructionCountOne: string;
   /** Placeholder: {count} */
   instructionCountOther: string;
-  learningScienceBased: string;
-  scientificResearchTitle: string;
-  scientificResearchDesc: string;
-  visualizationOptions: string;
   enableLatex: string;
   enableLatexDesc: string;
   enableCodeVisualization: string;
   enableCodeVisualizationDesc: string;
-  sessionInformation: string;
-  createdLabel: string;
-  statusLabel: string;
-  questionsLabel: string;
   scoreLabel: string;
   contextsHistory: string;
-  contextsChange: string;
   previousLabel: string;
   newLabel: string;
   instructionsHistory: string;
   learningTechniquesHistory: string;
   learningTechniquesUpdated: string;
-  noChangesYet: string;
   noChangesYetDesc: string;
 
   // Pricing extras
-  openSourceOnGitHub: string;
   openSourceOnGitHubDesc: string;
-  stars: string;
-  forks: string;
-  contributors: string;
   supportOnPatreon: string;
   supportOnPatreonDesc: string;
   supportOnPatreonButton: string;
 
   // Settings extras
-  languageTip: string;
   languageTipDesc: string;
 
-  // Theme Selector
+  // Theme selector and app shell
   selectThemeAria: string;
-  closeThemeSelector: string;
-  themesOptimized: string;
+  themeNameSystem: string;
   themeNameLight: string;
   themeNameDark: string;
-  themeNameFocus: string;
-  themeNameMidnight: string;
-  themeNameForest: string;
-  themeNameOcean: string;
-  themeNameSunset: string;
-  themeNameNeon: string;
-  themeNameMinimal: string;
-  themeNameWarm: string;
-  themeDescriptionLight: string;
-  themeDescriptionDark: string;
-  themeDescriptionFocus: string;
-  themeDescriptionMidnight: string;
-  themeDescriptionForest: string;
-  themeDescriptionOcean: string;
-  themeDescriptionSunset: string;
-  themeDescriptionNeon: string;
-  themeDescriptionMinimal: string;
-  themeDescriptionWarm: string;
-  themeCategoryStandard: string;
-  themeCategoryFocus: string;
-  themeCategoryEnergy: string;
-  themeCategoryCalm: string;
+  themeNameContrast: string;
+  skipToContent: string;
+  mainNavigation: string;
+  openMenu: string;
+  closeMenu: string;
 
   // AI Provider Registry
   providerDescriptionOpenai: string;
@@ -425,4 +314,201 @@ export interface Translations {
   modelDescriptionLlama3170b: string;
   modelDescriptionMistral7b: string;
   modelDescriptionCodellama13b: string;
+
+  // Dashboard
+  dashboardProgress: string;
+  dashboardLast7Days: string;
+  dashboardAllTime: string;
+  dashboardSessions: string;
+  dashboardAnswered: string;
+  dashboardAccuracy: string;
+  dashboardUnfinishedOne: string;
+  dashboardUnfinishedOther: string;
+  /** Placeholder: {count} */
+  dashboardAnsweredCountOne: string;
+  /** Placeholder: {count} */
+  dashboardAnsweredCountOther: string;
+  /** Placeholder: {percent} */
+  dashboardPercentCorrect: string;
+  /** Placeholder: {date} */
+  dashboardStarted: string;
+  dashboardNoUnfinished: string;
+  dashboardNoUnfinishedDesc: string;
+  dashboardResume: string;
+  /** Placeholder: {topics} */
+  dashboardResumeAria: string;
+  dashboardDueForReturn: string;
+  /** Placeholder: {count} */
+  dashboardOverdueOne: string;
+  /** Placeholder: {count} */
+  dashboardOverdueOther: string;
+  /** Placeholder: {count} */
+  dashboardDueToday: string;
+  /** Placeholder: {count} */
+  dashboardDueThisWeek: string;
+  /** Placeholder: {count} */
+  dashboardStartReview: string;
+  /** Placeholder: {count} */
+  dashboardResumeReview: string;
+  dashboardCallNo: string;
+  dashboardTopic: string;
+  dashboardBox: string;
+  dashboardDueDateColumn: string;
+  /** Placeholders: {box}, {days} */
+  dashboardBoxIntervalOne: string;
+  /** Placeholders: {box}, {days} */
+  dashboardBoxIntervalOther: string;
+  /** Placeholder: {date} */
+  dashboardOverdueStamp: string;
+  /** Placeholder: {count} */
+  dashboardMoreDue: string;
+  dashboardNotYetDue: string;
+  /** Placeholder: {date} */
+  dashboardNextReturn: string;
+  dashboardNothingOnLoan: string;
+  dashboardLoanPeriods: string;
+  /** Placeholder: {count} */
+  dashboardOnLoanCountOne: string;
+  /** Placeholder: {count} */
+  dashboardOnLoanCountOther: string;
+  /** Placeholder: {count} */
+  dashboardRetiredCountOne: string;
+  /** Placeholder: {count} */
+  dashboardRetiredCountOther: string;
+  /** Placeholder: {box} */
+  dashboardBoxNumber: string;
+  /** Placeholder: {days} */
+  dashboardDays: string;
+  /** Placeholder: {days} */
+  dashboardAxisDays: string;
+  dashboardOnLoanColumn: string;
+  dashboardDueColumn: string;
+  /** Placeholder: {count} */
+  dashboardDueCountOne: string;
+  /** Placeholder: {count} */
+  dashboardDueCountOther: string;
+  dashboardRetired: string;
+  dashboardAllHistory: string;
+  dashboardTopics: string;
+  dashboardStatus: string;
+  /** One session's status; `completed` is the plural filter label. */
+  sessionStatusCompleted: string;
+  dashboardProviderNotReady: string;
+  dashboardOpenSettings: string;
+  dashboardSupportLine: string;
+
+  // History, session details, and the session edit dialog
+  /** Placeholder: {count} */
+  historySessionCountOne: string;
+  /** Placeholder: {count} */
+  historySessionCountOther: string;
+  historySearchLabel: string;
+  historyStatusFilter: string;
+  historyStatusActive: string;
+  historySelect: string;
+  historyDoneSelecting: string;
+  historyColTopics: string;
+  historyColType: string;
+  historyColStarted: string;
+  historyColStatus: string;
+  historyColActions: string;
+  historyResume: string;
+  /** Placeholder: {topics} */
+  historyEditAria: string;
+  /** Placeholder: {topics} */
+  historyDeleteAria: string;
+  /** Placeholder: {topics} */
+  historySelectAria: string;
+  historyNoMatch: string;
+  historyClearFilters: string;
+  detailsAnswered: string;
+  detailsIncorrect: string;
+  detailsNotAnswered: string;
+  /** Placeholder: {value} */
+  detailsConfidence: string;
+  detailsYourAnswer: string;
+  detailsModelAnswer: string;
+  detailsFeedback: string;
+  /** Placeholder: {score} */
+  detailsFeedbackScore: string;
+  detailsExplanation: string;
+  detailsEvaluation: string;
+  editClose: string;
+  editTopics: string;
+  editNewTopic: string;
+  editInstructions: string;
+  editNewInstruction: string;
+  editOptional: string;
+  /** Placeholder: {item} */
+  editRemoveItem: string;
+  editDisplay: string;
+  historyColCallNo: string;
+  /** Placeholder: {date} */
+  detailsStampDue: string;
+  /** Placeholder: {date} */
+  detailsStampOverdue: string;
+  detailsStampRetired: string;
+  detailsStampReturned: string;
+
+  // Settings, Support, and Markdown code blocks
+  settingsProviderTitle: string;
+  /** Placeholder: {provider} */
+  settingsProviderSettingsTitle: string;
+  settingsProviderConfigured: string;
+  settingsProviderNeedsKey: string;
+  settingsProviderIncomplete: string;
+  settingsAutoSave: string;
+  settingsShowApiKey: string;
+  settingsOllamaSetupTitle: string;
+  /** Placeholder: {site} */
+  settingsOpenSite: string;
+  settingsStoredDataTitle: string;
+  settingsDeleteConfirmButton: string;
+  supportCostsTitle: string;
+  supportSourceTitle: string;
+  markdownCopyCode: string;
+  markdownCodeCopied: string;
+
+  // Study setup and question loop
+  studyOptional: string;
+  /** Placeholder: {item} */
+  studyRemoveItem: string;
+  studySessionSummaryTitle: string;
+  studyChange: string;
+  studyTechniquesOn: string;
+  /** Placeholder: {provider} */
+  studyProviderNeedsKey: string;
+  studyOpenSettings: string;
+  /** Placeholders: {answered}, {correct} */
+  studyProgressSummary: string;
+  /** Placeholder: {number} */
+  studyQuestionNumber: string;
+  /** Placeholders: {number}, {total} */
+  studyQuestionNumberOf: string;
+  studyAnswerOptions: string;
+  studyCorrectAnswerNote: string;
+  studyYourAnswerNote: string;
+  studyYourAnswerCorrectNote: string;
+  /** Placeholder: {value} */
+  studyConfidenceValue: string;
+  studyExplanationTitle: string;
+  studyFeedbackTitle: string;
+  /** Placeholder: {score} */
+  studyFeedbackScoreTitle: string;
+  studyElaborativeAnswerLabel: string;
+  /** Placeholder: {letter} */
+  studySelfExplanationPromptOption: string;
+  studyWritingFollowUp: string;
+  studyThisSession: string;
+  studyAnsweredLabel: string;
+  studySettingOn: string;
+  studySettingOff: string;
+  studyLeftInQueue: string;
+  studyComesBack: string;
+  studyReturnBox: string;
+  studyReturned: string;
+  studyReturnedForGood: string;
+  studyEnterKey: string;
+  studyEnterFullscreen: string;
+  studyExitFullscreen: string;
 }

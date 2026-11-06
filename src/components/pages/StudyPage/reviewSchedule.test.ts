@@ -11,6 +11,7 @@ import {
   recordReviewResult,
   RETIRED_BOX,
   REVIEW_SESSION_SIZE,
+  scheduledReviews,
   takeNextReview,
 } from './reviewSchedule';
 
@@ -176,6 +177,26 @@ describe('dueReviews', () => {
       ]),
     ];
     expect(dueReviews(sessions, NOW)).toEqual([]);
+  });
+});
+
+describe('scheduledReviews', () => {
+  it('lists due and future originals soonest first, skipping retired questions and review copies', () => {
+    const overdue = scheduled(2, -3);
+    const later = scheduled(4, 9);
+    const today = scheduled(1, 0);
+    const sessions = [
+      session('a', [later, q({ reviewBox: RETIRED_BOX }), overdue]),
+      session('b', [today, scheduled(1, -1, { reviewOf: 'x' }), q()]),
+    ];
+
+    const list = scheduledReviews(sessions);
+    expect(list.map(entry => [entry.session.id, entry.question.id, entry.box])).toEqual([
+      ['a', overdue.id, 2],
+      ['b', today.id, 1],
+      ['a', later.id, 4],
+    ]);
+    expect(list[0].due).toBe(Date.parse(overdue.nextReview!));
   });
 });
 

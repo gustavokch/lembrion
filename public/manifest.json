@@ -4,8 +4,8 @@
   "description": "AI study sessions built on learning science. Free, no account required.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ea580c",
+  "background_color": "#121212",
+  "theme_color": "#0c0c0c",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
@@ -13,7 +13,7 @@
   "icons": [
     {
       "src": "/favicon.ico",
-      "sizes": "16x16 32x32",
+      "sizes": "16x16 32x32 48x48",
       "type": "image/x-icon"
     },
     {
@@ -54,7 +54,7 @@
     {
       "name": "Start Study Session",
       "short_name": "Study",
-      "description": "Start a new AI-powered study session",
+      "description": "Start a new study session",
       "url": "/study",
       "icons": [
         {

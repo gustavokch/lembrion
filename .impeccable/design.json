@@ -1,0 +1,1663 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T12:49:43+00:00",
+  "title": "Design System: Lembrion",
+  "extensions": {
+    "colorMeta": {
+      "shell": {
+        "role": "neutral",
+        "displayName": "Desk",
+        "canonical": "#0c0c0c",
+        "theme": "dark",
+        "cssVar": "--color-shell",
+        "purpose": "Sidebar, top bar and phone menu ground; written to <meta name=\"theme-color\">.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "shellInk": {
+        "role": "neutral",
+        "displayName": "Desk Ink",
+        "canonical": "#ececec",
+        "theme": "dark",
+        "cssVar": "--color-shellInk",
+        "purpose": "Wordmark and hovered navigation text; mixed 7% into transparent for the navigation hover fill.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "shellMuted": {
+        "role": "neutral",
+        "displayName": "Desk Muted",
+        "canonical": "#a3a3a3",
+        "theme": "dark",
+        "cssVar": "--color-shellMuted",
+        "purpose": "Idle navigation labels and icons.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Reading Room",
+        "canonical": "#121212",
+        "theme": "dark",
+        "cssVar": "--color-ground",
+        "purpose": "Page ground, pinned phone action bars, fullscreen study frame.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "#181818",
+        "theme": "dark",
+        "cssVar": "--color-surface",
+        "purpose": "Panels, notes, fields, secondary and danger buttons, segmented frames, menus, dialogs, toasts; base for every state tint.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "sunken": {
+        "role": "neutral",
+        "displayName": "Inset",
+        "canonical": "#202020",
+        "theme": "dark",
+        "cssVar": "--color-sunken",
+        "purpose": "Note title strips, notices, tags, code, loan and extent tracks, hover fills, selected choices and options.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#ececec",
+        "theme": "dark",
+        "cssVar": "--color-ink",
+        "purpose": "Body text, titles and figures.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "inkSoft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#c8c8c8",
+        "theme": "dark",
+        "cssVar": "--color-inkSoft",
+        "purpose": "Call numbers, session strip, ghost and segment labels, toast messages, blockquotes, field hover border.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "inkMuted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#a3a3a3",
+        "theme": "dark",
+        "cssVar": "--color-inkMuted",
+        "purpose": "Column heads, ledes and metadata, not-yet-due rows, hints, placeholders, option keys at rest.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#2a2a2a",
+        "theme": "dark",
+        "cssVar": "--color-line",
+        "purpose": "Panel borders, panel-head rules, row separators, tab baseline, progress and loading tracks, choice-grid gaps.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "lineStrong": {
+        "role": "neutral",
+        "displayName": "Control Edge",
+        "canonical": "#6b6b6b",
+        "theme": "dark",
+        "cssVar": "--color-lineStrong",
+        "purpose": "Borders of fields, choice groups, segmented controls, secondary and danger buttons; extent segments; scrollbar thumb.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Stamp Violet",
+        "canonical": "#5b43d6",
+        "theme": "dark",
+        "cssVar": "--color-primary",
+        "purpose": "Primary buttons, the current navigation item, selected segments, accent-color of native controls.",
+        "tonalRamp": [
+          "oklch(15% 0.084 283)",
+          "oklch(26% 0.146 283)",
+          "oklch(38% 0.184 283)",
+          "oklch(49% 0.200 283)",
+          "oklch(61% 0.200 283)",
+          "oklch(72% 0.184 283)",
+          "oklch(84% 0.146 283)",
+          "oklch(95% 0.084 283)"
+        ]
+      },
+      "primaryHover": {
+        "role": "primary",
+        "displayName": "Stamp Violet Hover",
+        "canonical": "#6a54e6",
+        "theme": "dark",
+        "cssVar": "--color-primaryHover",
+        "purpose": "Primary button hover.",
+        "tonalRamp": [
+          "oklch(15% 0.084 284)",
+          "oklch(26% 0.146 284)",
+          "oklch(38% 0.184 284)",
+          "oklch(49% 0.200 284)",
+          "oklch(61% 0.200 284)",
+          "oklch(72% 0.184 284)",
+          "oklch(84% 0.146 284)",
+          "oklch(95% 0.084 284)"
+        ]
+      },
+      "onPrimary": {
+        "role": "neutral",
+        "displayName": "On Violet",
+        "canonical": "#ffffff",
+        "theme": "dark",
+        "cssVar": "--color-onPrimary",
+        "purpose": "Text and icons on Stamp Violet.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Due Violet",
+        "canonical": "#9d8cff",
+        "theme": "dark",
+        "cssVar": "--color-accent",
+        "purpose": "Due-today loan share (45% into Inset for not yet due), current progress segment, loading rule, selected-tab underline, selected outline, info toast rule, caret, selection tint.",
+        "tonalRamp": [
+          "oklch(15% 0.069 288)",
+          "oklch(26% 0.120 288)",
+          "oklch(38% 0.151 288)",
+          "oklch(49% 0.164 288)",
+          "oklch(61% 0.164 288)",
+          "oklch(72% 0.151 288)",
+          "oklch(84% 0.120 288)",
+          "oklch(95% 0.069 288)"
+        ]
+      },
+      "accentInk": {
+        "role": "primary",
+        "displayName": "Due Violet Ink",
+        "canonical": "#9d8cff",
+        "theme": "dark",
+        "cssVar": "--color-accentInk",
+        "purpose": "Due stamps, links, the Active status, due-today counts, pressed toggles; mixed 62% with Muted Ink for not-yet-due stamps.",
+        "tonalRamp": [
+          "oklch(15% 0.069 288)",
+          "oklch(26% 0.120 288)",
+          "oklch(38% 0.151 288)",
+          "oklch(49% 0.164 288)",
+          "oklch(61% 0.164 288)",
+          "oklch(72% 0.151 288)",
+          "oklch(84% 0.120 288)",
+          "oklch(95% 0.069 288)"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Correct Green",
+        "canonical": "#3fbf74",
+        "theme": "dark",
+        "cssVar": "--color-success",
+        "purpose": "Correct progress segments, correct option tint, success toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.066 154)",
+          "oklch(26% 0.114 154)",
+          "oklch(38% 0.144 154)",
+          "oklch(49% 0.156 154)",
+          "oklch(61% 0.156 154)",
+          "oklch(72% 0.144 154)",
+          "oklch(84% 0.114 154)",
+          "oklch(95% 0.066 154)"
+        ]
+      },
+      "successInk": {
+        "role": "tertiary",
+        "displayName": "Correct Green Ink",
+        "canonical": "#6fd896",
+        "theme": "dark",
+        "cssVar": "--color-successInk",
+        "purpose": "Correct option key and note, success note titles, Correct tags, strings in code.",
+        "tonalRamp": [
+          "oklch(15% 0.057 154)",
+          "oklch(26% 0.100 154)",
+          "oklch(38% 0.126 154)",
+          "oklch(49% 0.137 154)",
+          "oklch(61% 0.137 154)",
+          "oklch(72% 0.126 154)",
+          "oklch(84% 0.100 154)",
+          "oklch(95% 0.057 154)"
+        ]
+      },
+      "error": {
+        "role": "secondary",
+        "displayName": "Slip Red",
+        "canonical": "#ff6b5f",
+        "theme": "dark",
+        "cssVar": "--color-error",
+        "purpose": "Overdue loan share, wrong progress segments, wrong option tint, invalid field border, error toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.077 27)",
+          "oklch(26% 0.134 27)",
+          "oklch(38% 0.168 27)",
+          "oklch(49% 0.183 27)",
+          "oklch(61% 0.183 27)",
+          "oklch(72% 0.168 27)",
+          "oklch(84% 0.134 27)",
+          "oklch(95% 0.077 27)"
+        ]
+      },
+      "errorInk": {
+        "role": "secondary",
+        "displayName": "Slip Red Ink",
+        "canonical": "#ff6b5f",
+        "theme": "dark",
+        "cssVar": "--color-errorInk",
+        "purpose": "Due slip header rule and column heads, overdue stamps and counts, wrong-answer notes, error notes and notices, danger buttons.",
+        "tonalRamp": [
+          "oklch(15% 0.077 27)",
+          "oklch(26% 0.134 27)",
+          "oklch(38% 0.168 27)",
+          "oklch(49% 0.183 27)",
+          "oklch(61% 0.183 27)",
+          "oklch(72% 0.168 27)",
+          "oklch(84% 0.134 27)",
+          "oklch(95% 0.077 27)"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Caution Amber",
+        "canonical": "#e0a526",
+        "theme": "dark",
+        "cssVar": "--color-warning",
+        "purpose": "Warning notice tint and border, warning toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.062 81)",
+          "oklch(26% 0.107 81)",
+          "oklch(38% 0.135 81)",
+          "oklch(49% 0.147 81)",
+          "oklch(61% 0.147 81)",
+          "oklch(72% 0.135 81)",
+          "oklch(84% 0.107 81)",
+          "oklch(95% 0.062 81)"
+        ]
+      },
+      "warningInk": {
+        "role": "tertiary",
+        "displayName": "Caution Amber Ink",
+        "canonical": "#f0c060",
+        "theme": "dark",
+        "cssVar": "--color-warningInk",
+        "purpose": "Warning notice text, numbers in code.",
+        "tonalRamp": [
+          "oklch(15% 0.053 83)",
+          "oklch(26% 0.092 83)",
+          "oklch(38% 0.116 83)",
+          "oklch(49% 0.126 83)",
+          "oklch(61% 0.126 83)",
+          "oklch(72% 0.116 83)",
+          "oklch(84% 0.092 83)",
+          "oklch(95% 0.053 83)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus Ring",
+        "canonical": "#9d8cff",
+        "theme": "dark",
+        "cssVar": "--color-focus",
+        "purpose": "2px focus outline with 2px offset; focused field border and 1px ring.",
+        "tonalRamp": [
+          "oklch(15% 0.069 288)",
+          "oklch(26% 0.120 288)",
+          "oklch(38% 0.151 288)",
+          "oklch(49% 0.164 288)",
+          "oklch(61% 0.164 288)",
+          "oklch(72% 0.151 288)",
+          "oklch(84% 0.120 288)",
+          "oklch(95% 0.069 288)"
+        ]
+      },
+      "light-shell": {
+        "role": "neutral",
+        "displayName": "Light · Desk",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-shell",
+        "purpose": "Sidebar, top bar and phone menu ground; written to <meta name=\"theme-color\">.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-shellInk": {
+        "role": "neutral",
+        "displayName": "Light · Desk Ink",
+        "canonical": "#1c1f2a",
+        "theme": "light",
+        "cssVar": "--color-shellInk",
+        "purpose": "Wordmark and hovered navigation text; mixed 7% into transparent for the navigation hover fill.",
+        "tonalRamp": [
+          "oklch(15% 0.009 273)",
+          "oklch(26% 0.016 273)",
+          "oklch(38% 0.020 273)",
+          "oklch(49% 0.022 273)",
+          "oklch(61% 0.022 273)",
+          "oklch(72% 0.020 273)",
+          "oklch(84% 0.016 273)",
+          "oklch(95% 0.009 273)"
+        ]
+      },
+      "light-shellMuted": {
+        "role": "neutral",
+        "displayName": "Light · Desk Muted",
+        "canonical": "#5d6170",
+        "theme": "light",
+        "cssVar": "--color-shellMuted",
+        "purpose": "Idle navigation labels and icons.",
+        "tonalRamp": [
+          "oklch(15% 0.010 274)",
+          "oklch(26% 0.018 274)",
+          "oklch(38% 0.022 274)",
+          "oklch(49% 0.024 274)",
+          "oklch(61% 0.024 274)",
+          "oklch(72% 0.022 274)",
+          "oklch(84% 0.018 274)",
+          "oklch(95% 0.010 274)"
+        ]
+      },
+      "light-ground": {
+        "role": "neutral",
+        "displayName": "Light · Reading Room",
+        "canonical": "#f7f7f8",
+        "theme": "light",
+        "cssVar": "--color-ground",
+        "purpose": "Page ground, pinned phone action bars, fullscreen study frame.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-surface": {
+        "role": "neutral",
+        "displayName": "Light · Panel",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-surface",
+        "purpose": "Panels, notes, fields, secondary and danger buttons, segmented frames, menus, dialogs, toasts; base for every state tint.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-sunken": {
+        "role": "neutral",
+        "displayName": "Light · Inset",
+        "canonical": "#f1f1f4",
+        "theme": "light",
+        "cssVar": "--color-sunken",
+        "purpose": "Note title strips, notices, tags, code, loan and extent tracks, hover fills, selected choices and options.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-ink": {
+        "role": "neutral",
+        "displayName": "Light · Ink",
+        "canonical": "#1c1f2a",
+        "theme": "light",
+        "cssVar": "--color-ink",
+        "purpose": "Body text, titles and figures.",
+        "tonalRamp": [
+          "oklch(15% 0.009 273)",
+          "oklch(26% 0.016 273)",
+          "oklch(38% 0.020 273)",
+          "oklch(49% 0.022 273)",
+          "oklch(61% 0.022 273)",
+          "oklch(72% 0.020 273)",
+          "oklch(84% 0.016 273)",
+          "oklch(95% 0.009 273)"
+        ]
+      },
+      "light-inkSoft": {
+        "role": "neutral",
+        "displayName": "Light · Soft Ink",
+        "canonical": "#3d4150",
+        "theme": "light",
+        "cssVar": "--color-inkSoft",
+        "purpose": "Call numbers, session strip, ghost and segment labels, toast messages, blockquotes, field hover border.",
+        "tonalRamp": [
+          "oklch(15% 0.011 273)",
+          "oklch(26% 0.019 273)",
+          "oklch(38% 0.024 273)",
+          "oklch(49% 0.026 273)",
+          "oklch(61% 0.026 273)",
+          "oklch(72% 0.024 273)",
+          "oklch(84% 0.019 273)",
+          "oklch(95% 0.011 273)"
+        ]
+      },
+      "light-inkMuted": {
+        "role": "neutral",
+        "displayName": "Light · Muted Ink",
+        "canonical": "#5d6170",
+        "theme": "light",
+        "cssVar": "--color-inkMuted",
+        "purpose": "Column heads, ledes and metadata, not-yet-due rows, hints, placeholders, option keys at rest.",
+        "tonalRamp": [
+          "oklch(15% 0.010 274)",
+          "oklch(26% 0.018 274)",
+          "oklch(38% 0.022 274)",
+          "oklch(49% 0.024 274)",
+          "oklch(61% 0.024 274)",
+          "oklch(72% 0.022 274)",
+          "oklch(84% 0.018 274)",
+          "oklch(95% 0.010 274)"
+        ]
+      },
+      "light-line": {
+        "role": "neutral",
+        "displayName": "Light · Hairline",
+        "canonical": "#e3e3e8",
+        "theme": "light",
+        "cssVar": "--color-line",
+        "purpose": "Panel borders, panel-head rules, row separators, tab baseline, progress and loading tracks, choice-grid gaps.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0.005 286)",
+          "oklch(38% 0.006 286)",
+          "oklch(49% 0.007 286)",
+          "oklch(61% 0.007 286)",
+          "oklch(72% 0.006 286)",
+          "oklch(84% 0.005 286)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-lineStrong": {
+        "role": "neutral",
+        "displayName": "Light · Control Edge",
+        "canonical": "#8b8e9e",
+        "theme": "light",
+        "cssVar": "--color-lineStrong",
+        "purpose": "Borders of fields, choice groups, segmented controls, secondary and danger buttons; extent segments; scrollbar thumb.",
+        "tonalRamp": [
+          "oklch(15% 0.010 277)",
+          "oklch(26% 0.018 277)",
+          "oklch(38% 0.022 277)",
+          "oklch(49% 0.024 277)",
+          "oklch(61% 0.024 277)",
+          "oklch(72% 0.022 277)",
+          "oklch(84% 0.018 277)",
+          "oklch(95% 0.010 277)"
+        ]
+      },
+      "light-primary": {
+        "role": "primary",
+        "displayName": "Light · Stamp Violet",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-primary",
+        "purpose": "Primary buttons, the current navigation item, selected segments, accent-color of native controls.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
+        ]
+      },
+      "light-primaryHover": {
+        "role": "primary",
+        "displayName": "Light · Stamp Violet Hover",
+        "canonical": "#3e289c",
+        "theme": "light",
+        "cssVar": "--color-primaryHover",
+        "purpose": "Primary button hover.",
+        "tonalRamp": [
+          "oklch(15% 0.074 283)",
+          "oklch(26% 0.128 283)",
+          "oklch(38% 0.162 283)",
+          "oklch(49% 0.176 283)",
+          "oklch(61% 0.176 283)",
+          "oklch(72% 0.162 283)",
+          "oklch(84% 0.128 283)",
+          "oklch(95% 0.074 283)"
+        ]
+      },
+      "light-onPrimary": {
+        "role": "neutral",
+        "displayName": "Light · On Violet",
+        "canonical": "#ffffff",
+        "theme": "light",
+        "cssVar": "--color-onPrimary",
+        "purpose": "Text and icons on Stamp Violet.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-accent": {
+        "role": "primary",
+        "displayName": "Light · Due Violet",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-accent",
+        "purpose": "Due-today loan share (45% into Inset for not yet due), current progress segment, loading rule, selected-tab underline, selected outline, info toast rule, caret, selection tint.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
+        ]
+      },
+      "light-accentInk": {
+        "role": "primary",
+        "displayName": "Light · Due Violet Ink",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-accentInk",
+        "purpose": "Due stamps, links, the Active status, due-today counts, pressed toggles; mixed 62% with Muted Ink for not-yet-due stamps.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
+        ]
+      },
+      "light-success": {
+        "role": "tertiary",
+        "displayName": "Light · Correct Green",
+        "canonical": "#1f8a4c",
+        "theme": "light",
+        "cssVar": "--color-success",
+        "purpose": "Correct progress segments, correct option tint, success toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.056 153)",
+          "oklch(26% 0.097 153)",
+          "oklch(38% 0.123 153)",
+          "oklch(49% 0.134 153)",
+          "oklch(61% 0.134 153)",
+          "oklch(72% 0.123 153)",
+          "oklch(84% 0.097 153)",
+          "oklch(95% 0.056 153)"
+        ]
+      },
+      "light-successInk": {
+        "role": "tertiary",
+        "displayName": "Light · Correct Green Ink",
+        "canonical": "#17703d",
+        "theme": "light",
+        "cssVar": "--color-successInk",
+        "purpose": "Correct option key and note, success note titles, Correct tags, strings in code.",
+        "tonalRamp": [
+          "oklch(15% 0.048 153)",
+          "oklch(26% 0.084 153)",
+          "oklch(38% 0.105 153)",
+          "oklch(49% 0.115 153)",
+          "oklch(61% 0.115 153)",
+          "oklch(72% 0.105 153)",
+          "oklch(84% 0.084 153)",
+          "oklch(95% 0.048 153)"
+        ]
+      },
+      "light-error": {
+        "role": "secondary",
+        "displayName": "Light · Slip Red",
+        "canonical": "#c8323a",
+        "theme": "light",
+        "cssVar": "--color-error",
+        "purpose": "Overdue loan share, wrong progress segments, wrong option tint, invalid field border, error toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.078 23)",
+          "oklch(26% 0.136 23)",
+          "oklch(38% 0.171 23)",
+          "oklch(49% 0.186 23)",
+          "oklch(61% 0.186 23)",
+          "oklch(72% 0.171 23)",
+          "oklch(84% 0.136 23)",
+          "oklch(95% 0.078 23)"
+        ]
+      },
+      "light-errorInk": {
+        "role": "secondary",
+        "displayName": "Light · Slip Red Ink",
+        "canonical": "#b8262f",
+        "theme": "light",
+        "cssVar": "--color-errorInk",
+        "purpose": "Due slip header rule and column heads, overdue stamps and counts, wrong-answer notes, error notes and notices, danger buttons.",
+        "tonalRamp": [
+          "oklch(15% 0.076 24)",
+          "oklch(26% 0.132 24)",
+          "oklch(38% 0.167 24)",
+          "oklch(49% 0.181 24)",
+          "oklch(61% 0.181 24)",
+          "oklch(72% 0.167 24)",
+          "oklch(84% 0.132 24)",
+          "oklch(95% 0.076 24)"
+        ]
+      },
+      "light-warning": {
+        "role": "tertiary",
+        "displayName": "Light · Caution Amber",
+        "canonical": "#c98a0b",
+        "theme": "light",
+        "cssVar": "--color-warning",
+        "purpose": "Warning notice tint and border, warning toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.059 76)",
+          "oklch(26% 0.103 76)",
+          "oklch(38% 0.129 76)",
+          "oklch(49% 0.141 76)",
+          "oklch(61% 0.141 76)",
+          "oklch(72% 0.129 76)",
+          "oklch(84% 0.103 76)",
+          "oklch(95% 0.059 76)"
+        ]
+      },
+      "light-warningInk": {
+        "role": "tertiary",
+        "displayName": "Light · Caution Amber Ink",
+        "canonical": "#8a5a00",
+        "theme": "light",
+        "cssVar": "--color-warningInk",
+        "purpose": "Warning notice text, numbers in code.",
+        "tonalRamp": [
+          "oklch(15% 0.045 73)",
+          "oklch(26% 0.079 73)",
+          "oklch(38% 0.099 73)",
+          "oklch(49% 0.108 73)",
+          "oklch(61% 0.108 73)",
+          "oklch(72% 0.099 73)",
+          "oklch(84% 0.079 73)",
+          "oklch(95% 0.045 73)"
+        ]
+      },
+      "light-focus": {
+        "role": "neutral",
+        "displayName": "Light · Focus Ring",
+        "canonical": "#4b33b5",
+        "theme": "light",
+        "cssVar": "--color-focus",
+        "purpose": "2px focus outline with 2px offset; focused field border and 1px ring.",
+        "tonalRamp": [
+          "oklch(15% 0.081 283)",
+          "oklch(26% 0.141 283)",
+          "oklch(38% 0.177 283)",
+          "oklch(49% 0.193 283)",
+          "oklch(61% 0.193 283)",
+          "oklch(72% 0.177 283)",
+          "oklch(84% 0.141 283)",
+          "oklch(95% 0.081 283)"
+        ]
+      },
+      "contrast-shell": {
+        "role": "neutral",
+        "displayName": "High contrast · Desk",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-shell",
+        "purpose": "Sidebar, top bar and phone menu ground; written to <meta name=\"theme-color\">.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-shellInk": {
+        "role": "neutral",
+        "displayName": "High contrast · Desk Ink",
+        "canonical": "#000000",
+        "theme": "contrast",
+        "cssVar": "--color-shellInk",
+        "purpose": "Wordmark and hovered navigation text; mixed 7% into transparent for the navigation hover fill.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-shellMuted": {
+        "role": "neutral",
+        "displayName": "High contrast · Desk Muted",
+        "canonical": "#2b2b33",
+        "theme": "contrast",
+        "cssVar": "--color-shellMuted",
+        "purpose": "Idle navigation labels and icons.",
+        "tonalRamp": [
+          "oklch(15% 0.006 285)",
+          "oklch(26% 0.011 285)",
+          "oklch(38% 0.013 285)",
+          "oklch(49% 0.014 285)",
+          "oklch(61% 0.014 285)",
+          "oklch(72% 0.013 285)",
+          "oklch(84% 0.011 285)",
+          "oklch(95% 0.006 285)"
+        ]
+      },
+      "contrast-ground": {
+        "role": "neutral",
+        "displayName": "High contrast · Reading Room",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-ground",
+        "purpose": "Page ground, pinned phone action bars, fullscreen study frame.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-surface": {
+        "role": "neutral",
+        "displayName": "High contrast · Panel",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-surface",
+        "purpose": "Panels, notes, fields, secondary and danger buttons, segmented frames, menus, dialogs, toasts; base for every state tint.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-sunken": {
+        "role": "neutral",
+        "displayName": "High contrast · Inset",
+        "canonical": "#f0f0f2",
+        "theme": "contrast",
+        "cssVar": "--color-sunken",
+        "purpose": "Note title strips, notices, tags, code, loan and extent tracks, hover fills, selected choices and options.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-ink": {
+        "role": "neutral",
+        "displayName": "High contrast · Ink",
+        "canonical": "#000000",
+        "theme": "contrast",
+        "cssVar": "--color-ink",
+        "purpose": "Body text, titles and figures.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-inkSoft": {
+        "role": "neutral",
+        "displayName": "High contrast · Soft Ink",
+        "canonical": "#1f1f26",
+        "theme": "contrast",
+        "cssVar": "--color-inkSoft",
+        "purpose": "Call numbers, session strip, ghost and segment labels, toast messages, blockquotes, field hover border.",
+        "tonalRamp": [
+          "oklch(15% 0.006 285)",
+          "oklch(26% 0.010 285)",
+          "oklch(38% 0.012 285)",
+          "oklch(49% 0.013 285)",
+          "oklch(61% 0.013 285)",
+          "oklch(72% 0.012 285)",
+          "oklch(84% 0.010 285)",
+          "oklch(95% 0.006 285)"
+        ]
+      },
+      "contrast-inkMuted": {
+        "role": "neutral",
+        "displayName": "High contrast · Muted Ink",
+        "canonical": "#3a3a44",
+        "theme": "contrast",
+        "cssVar": "--color-inkMuted",
+        "purpose": "Column heads, ledes and metadata, not-yet-due rows, hints, placeholders, option keys at rest.",
+        "tonalRamp": [
+          "oklch(15% 0.007 285)",
+          "oklch(26% 0.013 285)",
+          "oklch(38% 0.016 285)",
+          "oklch(49% 0.017 285)",
+          "oklch(61% 0.017 285)",
+          "oklch(72% 0.016 285)",
+          "oklch(84% 0.013 285)",
+          "oklch(95% 0.007 285)"
+        ]
+      },
+      "contrast-line": {
+        "role": "neutral",
+        "displayName": "High contrast · Hairline",
+        "canonical": "#8a8a96",
+        "theme": "contrast",
+        "cssVar": "--color-line",
+        "purpose": "Panel borders, panel-head rules, row separators, tab baseline, progress and loading tracks, choice-grid gaps.",
+        "tonalRamp": [
+          "oklch(15% 0.007 286)",
+          "oklch(26% 0.013 286)",
+          "oklch(38% 0.016 286)",
+          "oklch(49% 0.018 286)",
+          "oklch(61% 0.018 286)",
+          "oklch(72% 0.016 286)",
+          "oklch(84% 0.013 286)",
+          "oklch(95% 0.007 286)"
+        ]
+      },
+      "contrast-lineStrong": {
+        "role": "neutral",
+        "displayName": "High contrast · Control Edge",
+        "canonical": "#4a4a55",
+        "theme": "contrast",
+        "cssVar": "--color-lineStrong",
+        "purpose": "Borders of fields, choice groups, segmented controls, secondary and danger buttons; extent segments; scrollbar thumb.",
+        "tonalRamp": [
+          "oklch(15% 0.008 286)",
+          "oklch(26% 0.013 286)",
+          "oklch(38% 0.017 286)",
+          "oklch(49% 0.018 286)",
+          "oklch(61% 0.018 286)",
+          "oklch(72% 0.017 286)",
+          "oklch(84% 0.013 286)",
+          "oklch(95% 0.008 286)"
+        ]
+      },
+      "contrast-primary": {
+        "role": "primary",
+        "displayName": "High contrast · Stamp Violet",
+        "canonical": "#2a1690",
+        "theme": "contrast",
+        "cssVar": "--color-primary",
+        "purpose": "Primary buttons, the current navigation item, selected segments, accent-color of native controls.",
+        "tonalRamp": [
+          "oklch(15% 0.076 277)",
+          "oklch(26% 0.133 277)",
+          "oklch(38% 0.167 277)",
+          "oklch(49% 0.182 277)",
+          "oklch(61% 0.182 277)",
+          "oklch(72% 0.167 277)",
+          "oklch(84% 0.133 277)",
+          "oklch(95% 0.076 277)"
+        ]
+      },
+      "contrast-primaryHover": {
+        "role": "primary",
+        "displayName": "High contrast · Stamp Violet Hover",
+        "canonical": "#3a24a8",
+        "theme": "contrast",
+        "cssVar": "--color-primaryHover",
+        "purpose": "Primary button hover.",
+        "tonalRamp": [
+          "oklch(15% 0.082 280)",
+          "oklch(26% 0.142 280)",
+          "oklch(38% 0.179 280)",
+          "oklch(49% 0.195 280)",
+          "oklch(61% 0.195 280)",
+          "oklch(72% 0.179 280)",
+          "oklch(84% 0.142 280)",
+          "oklch(95% 0.082 280)"
+        ]
+      },
+      "contrast-onPrimary": {
+        "role": "neutral",
+        "displayName": "High contrast · On Violet",
+        "canonical": "#ffffff",
+        "theme": "contrast",
+        "cssVar": "--color-onPrimary",
+        "purpose": "Text and icons on Stamp Violet.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "contrast-accent": {
+        "role": "primary",
+        "displayName": "High contrast · Due Violet",
+        "canonical": "#2a1690",
+        "theme": "contrast",
+        "cssVar": "--color-accent",
+        "purpose": "Due-today loan share (45% into Inset for not yet due), current progress segment, loading rule, selected-tab underline, selected outline, info toast rule, caret, selection tint.",
+        "tonalRamp": [
+          "oklch(15% 0.076 277)",
+          "oklch(26% 0.133 277)",
+          "oklch(38% 0.167 277)",
+          "oklch(49% 0.182 277)",
+          "oklch(61% 0.182 277)",
+          "oklch(72% 0.167 277)",
+          "oklch(84% 0.133 277)",
+          "oklch(95% 0.076 277)"
+        ]
+      },
+      "contrast-accentInk": {
+        "role": "primary",
+        "displayName": "High contrast · Due Violet Ink",
+        "canonical": "#2a1690",
+        "theme": "contrast",
+        "cssVar": "--color-accentInk",
+        "purpose": "Due stamps, links, the Active status, due-today counts, pressed toggles; mixed 62% with Muted Ink for not-yet-due stamps.",
+        "tonalRamp": [
+          "oklch(15% 0.076 277)",
+          "oklch(26% 0.133 277)",
+          "oklch(38% 0.167 277)",
+          "oklch(49% 0.182 277)",
+          "oklch(61% 0.182 277)",
+          "oklch(72% 0.167 277)",
+          "oklch(84% 0.133 277)",
+          "oklch(95% 0.076 277)"
+        ]
+      },
+      "contrast-success": {
+        "role": "tertiary",
+        "displayName": "High contrast · Correct Green",
+        "canonical": "#0a6b22",
+        "theme": "contrast",
+        "cssVar": "--color-success",
+        "purpose": "Correct progress segments, correct option tint, success toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.057 146)",
+          "oklch(26% 0.099 146)",
+          "oklch(38% 0.125 146)",
+          "oklch(49% 0.136 146)",
+          "oklch(61% 0.136 146)",
+          "oklch(72% 0.125 146)",
+          "oklch(84% 0.099 146)",
+          "oklch(95% 0.057 146)"
+        ]
+      },
+      "contrast-successInk": {
+        "role": "tertiary",
+        "displayName": "High contrast · Correct Green Ink",
+        "canonical": "#0a6b22",
+        "theme": "contrast",
+        "cssVar": "--color-successInk",
+        "purpose": "Correct option key and note, success note titles, Correct tags, strings in code.",
+        "tonalRamp": [
+          "oklch(15% 0.057 146)",
+          "oklch(26% 0.099 146)",
+          "oklch(38% 0.125 146)",
+          "oklch(49% 0.136 146)",
+          "oklch(61% 0.136 146)",
+          "oklch(72% 0.125 146)",
+          "oklch(84% 0.099 146)",
+          "oklch(95% 0.057 146)"
+        ]
+      },
+      "contrast-error": {
+        "role": "secondary",
+        "displayName": "High contrast · Slip Red",
+        "canonical": "#a3140b",
+        "theme": "contrast",
+        "cssVar": "--color-error",
+        "purpose": "Overdue loan share, wrong progress segments, wrong option tint, invalid field border, error toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.074 30)",
+          "oklch(26% 0.129 30)",
+          "oklch(38% 0.162 30)",
+          "oklch(49% 0.176 30)",
+          "oklch(61% 0.176 30)",
+          "oklch(72% 0.162 30)",
+          "oklch(84% 0.129 30)",
+          "oklch(95% 0.074 30)"
+        ]
+      },
+      "contrast-errorInk": {
+        "role": "secondary",
+        "displayName": "High contrast · Slip Red Ink",
+        "canonical": "#a3140b",
+        "theme": "contrast",
+        "cssVar": "--color-errorInk",
+        "purpose": "Due slip header rule and column heads, overdue stamps and counts, wrong-answer notes, error notes and notices, danger buttons.",
+        "tonalRamp": [
+          "oklch(15% 0.074 30)",
+          "oklch(26% 0.129 30)",
+          "oklch(38% 0.162 30)",
+          "oklch(49% 0.176 30)",
+          "oklch(61% 0.176 30)",
+          "oklch(72% 0.162 30)",
+          "oklch(84% 0.129 30)",
+          "oklch(95% 0.074 30)"
+        ]
+      },
+      "contrast-warning": {
+        "role": "tertiary",
+        "displayName": "High contrast · Caution Amber",
+        "canonical": "#9a6700",
+        "theme": "contrast",
+        "cssVar": "--color-warning",
+        "purpose": "Warning notice tint and border, warning toasts.",
+        "tonalRamp": [
+          "oklch(15% 0.049 75)",
+          "oklch(26% 0.085 75)",
+          "oklch(38% 0.108 75)",
+          "oklch(49% 0.117 75)",
+          "oklch(61% 0.117 75)",
+          "oklch(72% 0.108 75)",
+          "oklch(84% 0.085 75)",
+          "oklch(95% 0.049 75)"
+        ]
+      },
+      "contrast-warningInk": {
+        "role": "tertiary",
+        "displayName": "High contrast · Caution Amber Ink",
+        "canonical": "#6b4700",
+        "theme": "contrast",
+        "cssVar": "--color-warningInk",
+        "purpose": "Warning notice text, numbers in code.",
+        "tonalRamp": [
+          "oklch(15% 0.038 76)",
+          "oklch(26% 0.066 76)",
+          "oklch(38% 0.083 76)",
+          "oklch(49% 0.090 76)",
+          "oklch(61% 0.090 76)",
+          "oklch(72% 0.083 76)",
+          "oklch(84% 0.066 76)",
+          "oklch(95% 0.038 76)"
+        ]
+      },
+      "contrast-focus": {
+        "role": "neutral",
+        "displayName": "High contrast · Focus Ring",
+        "canonical": "#000000",
+        "theme": "contrast",
+        "cssVar": "--color-focus",
+        "purpose": "2px focus outline with 2px offset; focused field border and 1px ring.",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "question": {
+        "displayName": "Display",
+        "purpose": "The question stem in the study loop; 1.5rem from 640px."
+      },
+      "page-title": {
+        "displayName": "Headline",
+        "purpose": "One page title per route, beside its lede; 1.75rem from 640px. The topic line on Session details."
+      },
+      "slip-title": {
+        "displayName": "Slip title",
+        "purpose": "\"Due for return\", the loudest heading on the Dashboard."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Progress numbers in Archivo Narrow (1.5rem below 640px), review-complete results, Session details facts at 1.375rem."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "The \"Lembrion\" wordmark in the sidebar; 1.25rem in the top bar."
+      },
+      "dialog-title": {
+        "displayName": "Dialog title",
+        "purpose": "Headings of the delete confirmation and the session edit dialog."
+      },
+      "panel-title": {
+        "displayName": "Panel title",
+        "purpose": "Panel heads and section titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text, fields and answer options, with kern and liga."
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Note bodies and model output."
+      },
+      "compact": {
+        "displayName": "Compact",
+        "purpose": "Ledes, due slip rows, slip summary, notices."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Button labels."
+      },
+      "nav": {
+        "displayName": "Navigation",
+        "purpose": "Sidebar and phone-menu items."
+      },
+      "tab": {
+        "displayName": "Tab",
+        "purpose": "Settings tabs."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Tables, facts labels, hints, metadata, session strip, menus."
+      },
+      "small-medium": {
+        "displayName": "Small medium",
+        "purpose": "Segmented control labels and fact values."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, note titles, small buttons."
+      },
+      "caps-label": {
+        "displayName": "Printed label",
+        "purpose": "Uppercase column heads of tables and the slip, group labels, small list headings."
+      },
+      "call-number": {
+        "displayName": "Call number",
+        "purpose": "Uppercase spine-label codes such as CEL·2, in Archivo Narrow."
+      },
+      "stamp": {
+        "displayName": "Stamp",
+        "purpose": "Uppercase date stamps inside a 1.5px frame, in Archivo Narrow."
+      },
+      "option-key": {
+        "displayName": "Option key",
+        "purpose": "The A–D keys of answer options, in Archivo Narrow."
+      },
+      "tag": {
+        "displayName": "Tag",
+        "purpose": "Status tags."
+      },
+      "note": {
+        "displayName": "Option note",
+        "purpose": "\"Correct answer\" and \"Your answer\" notes on graded options."
+      },
+      "toast-title": {
+        "displayName": "Toast title",
+        "purpose": "The title line of a toast."
+      },
+      "toast-message": {
+        "displayName": "Toast message",
+        "purpose": "The message line of a toast."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code blocks (inline code at 0.9em); keys, model IDs and URLs in Settings fields at 1rem."
+      }
+    },
+    "shadows": [
+      {
+        "name": "overlay",
+        "value": "0 12px 32px -8px rgb(0 0 0 / 0.35), 0 2px 6px rgb(0 0 0 / 0.14)",
+        "purpose": "Theme menu, delete confirmation, session edit dialog and toasts only (.menu, .overlay-shadow, .toast)."
+      },
+      {
+        "name": "tab-underline",
+        "value": "inset 0 -2px 0 var(--color-accent)",
+        "purpose": "The selected tab; transparent at rest. A line device, not elevation."
+      },
+      {
+        "name": "selected-outline",
+        "value": "inset 0 0 0 1px var(--color-accent)",
+        "purpose": "A selected choice or answer option, over Inset."
+      },
+      {
+        "name": "field-focus",
+        "value": "0 0 0 1px var(--color-focus)",
+        "purpose": "Doubles a focused field border (with border-color: var(--color-focus))."
+      },
+      {
+        "name": "extent-separator",
+        "value": "inset 1px 0 0 var(--color-surface)",
+        "purpose": "The 1px Panel line between topic segments of an extent bar."
+      },
+      {
+        "name": "scrim",
+        "value": "rgb(0 0 0 / 0.4)",
+        "purpose": "Background behind dialogs (bg-black/40). A fill, listed for completeness."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "--ease-out: the tab underline, the stamp landing, the rule animations and toast entry."
+      },
+      {
+        "name": "state-colour",
+        "value": "120ms ease-out",
+        "purpose": "Background, border and text colour changes on buttons, fields, rows, segments and navigation (CSS ease-out keyword)."
+      },
+      {
+        "name": "tab-underline",
+        "value": "160ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The selected tab underline (box-shadow)."
+      },
+      {
+        "name": "stamp-land",
+        "value": "260ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "The return stamp lands once after grading: opacity 0 and scale(1.12) to rest."
+      },
+      {
+        "name": "rule-grow",
+        "value": "480ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "Each filled progress segment grows from the left once (scaleX 0 to 1)."
+      },
+      {
+        "name": "toast-in",
+        "value": "240ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "Toast entry: fade in from opacity 0 and translateY(-6px)."
+      },
+      {
+        "name": "toast-out",
+        "value": "160ms ease-in forwards",
+        "purpose": "Toast exit (data-leaving): fade out and rise 6px."
+      },
+      {
+        "name": "rule-travel",
+        "value": "1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite",
+        "purpose": "Loading rule and boot rule: a one-third bar travels translateX(-100%) to translateX(300%)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "prefers-reduced-motion: every animation and transition collapses to 0.01ms; the boot rule stops."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one next step on a screen: Start review, Start session, Submit answer, Next question, Continue session.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\">Start review · 5 due</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-primary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-primary { background: var(--color-primary, #5b43d6); border-color: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-btn-primary:not(:disabled):hover { background: var(--color-primaryHover, #6a54e6); border-color: var(--color-primaryHover, #6a54e6); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Every other action on the ground: the Dashboard's New session, Resume, Add, Cancel, End session.",
+      "html": "<button type=\"button\" class=\"ds-btn-secondary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>New session</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-secondary svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-secondary { background: var(--color-surface, #181818); border-color: var(--color-lineStrong, #6b6b6b); color: var(--color-ink, #ececec); } .ds-btn-secondary:not(:disabled):hover { background: var(--color-sunken, #202020); }"
+    },
+    {
+      "name": "Ghost Icon Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Icon actions without a frame: close, show key, fullscreen, copy code. A 2.5rem square.",
+      "html": "<button type=\"button\" class=\"ds-btn-ghost\" aria-label=\"Close\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-ghost svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-ghost { width: 2.5rem; padding: 0; background: transparent; color: var(--color-inkSoft, #c8c8c8); } .ds-btn-ghost:not(:disabled):hover { background: var(--color-sunken, #202020); color: var(--color-ink, #ececec); }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive actions: delete sessions, delete all data. Red label at rest, a 10% error tint on hover.",
+      "html": "<button type=\"button\" class=\"ds-btn-danger\">Delete</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-btn-danger:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-btn-danger:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-danger svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-btn-danger { background: var(--color-surface, #181818); border-color: var(--color-lineStrong, #6b6b6b); color: var(--color-errorInk, #ff6b5f); } .ds-btn-danger:not(:disabled):hover { background: color-mix(in srgb, var(--color-error, #ff6b5f) 10%, var(--color-surface, #181818)); border-color: var(--color-error, #ff6b5f); }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Bordered input with a label above and a hint below; focus doubles the border with a 1px ring.",
+      "html": "<div class=\"ds-field-wrap\"><label class=\"ds-field-label\" for=\"ds-topic\">Topics</label><input id=\"ds-topic\" class=\"ds-field\" type=\"text\" placeholder=\"e.g., SAT, AP Calculus...\"><p class=\"ds-field-hint\">Add one topic at a time, e.g. \"AP Biology\" or \"Chapter 3\". Press Enter to add.</p></div>",
+      "css": ".ds-field-wrap { max-width: 24rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-field-label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; line-height: 1.25rem; font-weight: 600; color: var(--color-ink, #ececec); } .ds-field { display: block; width: 100%; box-sizing: border-box; padding: 0.5rem 0.75rem; border: 1px solid var(--color-lineStrong, #6b6b6b); border-radius: 0.25rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: inherit; font-size: 1rem; line-height: 1.5; transition: border-color 120ms ease-out, box-shadow 120ms ease-out; } .ds-field::placeholder { color: var(--color-inkMuted, #a3a3a3); opacity: 1; } .ds-field:hover { border-color: var(--color-inkSoft, #c8c8c8); } .ds-field:focus { outline: none; border-color: var(--color-focus, #9d8cff); box-shadow: 0 0 0 1px var(--color-focus, #9d8cff); } .ds-field-hint { margin: 0.375rem 0 0; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-inkMuted, #a3a3a3); }"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "The shell from 1024px: the wordmark and the four routes on Desk; the current route is a filled violet label.",
+      "html": "<aside class=\"ds-sidebar\"><a class=\"ds-wordmark\" href=\"#\">Lembrion</a><nav class=\"ds-nav\" aria-label=\"Main\"><a class=\"ds-nav-item is-active\" href=\"#\" aria-current=\"page\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"7\" height=\"7\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"14\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"3\" y=\"14\" rx=\"1\"/></svg>Dashboard</a><a class=\"ds-nav-item\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/></svg>Study</a><a class=\"ds-nav-item\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M12 7v5l4 2\"/></svg>History</a><a class=\"ds-nav-item\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><line x1=\"21\" x2=\"14\" y1=\"4\" y2=\"4\"/><line x1=\"10\" x2=\"3\" y1=\"4\" y2=\"4\"/><line x1=\"21\" x2=\"12\" y1=\"12\" y2=\"12\"/><line x1=\"8\" x2=\"3\" y1=\"12\" y2=\"12\"/><line x1=\"21\" x2=\"16\" y1=\"20\" y2=\"20\"/><line x1=\"12\" x2=\"3\" y1=\"20\" y2=\"20\"/><line x1=\"14\" x2=\"14\" y1=\"2\" y2=\"6\"/><line x1=\"8\" x2=\"8\" y1=\"10\" y2=\"14\"/><line x1=\"16\" x2=\"16\" y1=\"18\" y2=\"22\"/></svg>Settings</a></nav></aside>",
+      "css": ".ds-sidebar { display: flex; flex-direction: column; width: 14.5rem; padding: 1.5rem 0.75rem 1rem; background: var(--color-shell, #0c0c0c); border-right: 1px solid var(--color-line, #2a2a2a); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-wordmark { padding: 0 0.625rem; font-size: 1.375rem; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--color-shellInk, #ececec); text-decoration: none; } .ds-nav { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 2rem; } .ds-nav-item { display: flex; align-items: center; gap: 0.625rem; min-height: 2.5rem; padding: 0.5rem 0.625rem; box-sizing: border-box; border-radius: 0.25rem; font-size: 0.9375rem; font-weight: 500; color: var(--color-shellMuted, #a3a3a3); text-decoration: none; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-nav-item svg { width: 18px; height: 18px; flex-shrink: 0; stroke-width: 1.75; } .ds-nav-item:hover { color: var(--color-shellInk, #ececec); background: color-mix(in srgb, var(--color-shellInk, #ececec) 7%, transparent); } .ds-nav-item.is-active { background: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-nav-item:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Tags",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Small status labels on Inset; tinted accent, success and error variants with inked text.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag ds-tag-accent\">Active</span><span class=\"ds-tag ds-tag-success\">Correct</span><span class=\"ds-tag ds-tag-error\">Incorrect</span><span class=\"ds-tag\">Medium</span><span class=\"ds-tag\">Review</span></div>",
+      "css": ".ds-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-tag { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 0.125rem 0.375rem; border-radius: 0.125rem; font-size: 0.75rem; font-weight: 600; line-height: 1; background: var(--color-sunken, #202020); color: var(--color-inkSoft, #c8c8c8); } .ds-tag-accent { background: color-mix(in srgb, var(--color-accent, #9d8cff) 16%, var(--color-surface, #181818)); color: var(--color-accentInk, #9d8cff); } .ds-tag-success { background: color-mix(in srgb, var(--color-success, #3fbf74) 14%, var(--color-surface, #181818)); color: var(--color-successInk, #6fd896); } .ds-tag-error { background: color-mix(in srgb, var(--color-error, #ff6b5f) 13%, var(--color-surface, #181818)); color: var(--color-errorInk, #ff6b5f); }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "The one container: 1px Hairline border, 6px corners, a head row over a hairline, no shadow. Here the study setup summary with its forming call number.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-panel-head\"><h2 class=\"ds-panel-title\">Session</h2><span class=\"ds-panel-callno\">CEL/LEA</span></div><div class=\"ds-panel-body\"><dl class=\"ds-facts\"><dt>Topics</dt><dd>2</dd><dt>Question type</dt><dd>Multiple choice</dd><dt>Difficulty</dt><dd>Medium</dd><dt>Techniques on</dt><dd>4 / 5</dd></dl></div></section>",
+      "css": ".ds-panel { max-width: 22rem; border: 1px solid var(--color-line, #2a2a2a); border-radius: 0.375rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 1rem; line-height: 1.5; } .ds-panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1rem; padding: 0.625rem 1.25rem; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-panel-title { margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.5; } .ds-panel-callno { white-space: nowrap; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-inkSoft, #c8c8c8); } .ds-panel-body { padding: 1rem 1.25rem; } .ds-facts { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem 1rem; margin: 0; font-size: 0.875rem; line-height: 1.25rem; } .ds-facts dt { color: var(--color-inkMuted, #a3a3a3); } .ds-facts dd { margin: 0; text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "custom",
+      "refersTo": "segmented",
+      "description": "Single choice among a few values: difficulty, the History status filter, the 1–5 confidence scale. The selected segment fills violet.",
+      "html": "<div class=\"ds-segmented\" role=\"radiogroup\" aria-label=\"Difficulty\"><button type=\"button\" role=\"radio\" aria-checked=\"false\">Easy</button><button type=\"button\" role=\"radio\" aria-checked=\"true\">Medium</button><button type=\"button\" role=\"radio\" aria-checked=\"false\">Hard</button></div>",
+      "css": ".ds-segmented { display: inline-flex; padding: 0.125rem; border: 1px solid var(--color-lineStrong, #6b6b6b); border-radius: 0.25rem; background: var(--color-surface, #181818); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-segmented > button { min-height: 2.25rem; min-width: 5rem; padding: 0 0.875rem; border: 0; border-radius: 0.125rem; background: transparent; font-family: inherit; font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; color: var(--color-inkSoft, #c8c8c8); cursor: pointer; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-segmented > button:hover { color: var(--color-ink, #ececec); } .ds-segmented > button[aria-checked=\"true\"] { background: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-segmented > button:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Date Stamps",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "The signature mark: narrow caps in a 1.5px frame. Violet due, red overdue, faded not yet due, grey returned; the return stamp lands once after grading.",
+      "html": "<div class=\"ds-stamps\"><span class=\"ds-stamp ds-stamp-land\">06 NOV 2026</span><span class=\"ds-stamp ds-stamp-overdue\">Overdue · 04 NOV</span><span class=\"ds-stamp ds-stamp-later\">06 NOV · 01:22 PM</span><span class=\"ds-stamp ds-stamp-quiet\">Returned</span></div>",
+      "css": ".ds-stamps { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; } .ds-stamp { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 3px 0.5rem; border: 1.5px solid currentColor; border-radius: 0.125rem; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-accentInk, #9d8cff); } .ds-stamp-overdue { color: var(--color-errorInk, #ff6b5f); } .ds-stamp-later { color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 62%, var(--color-inkMuted, #a3a3a3)); border-color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 32%, var(--color-line, #2a2a2a)); } .ds-stamp-quiet { color: var(--color-inkMuted, #a3a3a3); border-color: var(--color-line, #2a2a2a); } .ds-stamp-land { animation: ds-stamp-land 260ms cubic-bezier(0.16, 1, 0.3, 1) both; } @keyframes ds-stamp-land { from { opacity: 0; transform: scale(1.12); } to { opacity: 1; transform: none; } } @media (prefers-reduced-motion: reduce) { .ds-stamp-land { animation: none; } }"
+    },
+    {
+      "name": "Due for Return Slip",
+      "kind": "custom",
+      "refersTo": "slip-header",
+      "description": "The review queue as a date-due slip: a red printed header rule and column heads, call numbers, boxes and stamps; not-yet-due rows muted under their group label.",
+      "html": "<section class=\"ds-slip-panel\" aria-labelledby=\"ds-slip-title\"><div class=\"ds-slip-head\"><h2 id=\"ds-slip-title\" class=\"ds-slip-title\">Due for return</h2><p class=\"ds-slip-summary\"><strong>1 overdue</strong> · 1 due today · 1 more this week</p><button type=\"button\" class=\"ds-slip-action\">Start review · 2 due</button></div><table class=\"ds-slip\"><thead><tr><th scope=\"col\">Call no.</th><th scope=\"col\">Question</th><th scope=\"col\">Box</th><th scope=\"col\">Due</th></tr></thead><tbody><tr><td><span class=\"ds-slip-callno\">ORG·3</span></td><td class=\"ds-slip-q\">Which mechanism inverts the configuration at the carbon?</td><td>Box 3 · 7 days</td><td><span class=\"ds-slip-stamp ds-slip-stamp-overdue\">Overdue · 04 NOV</span></td></tr><tr><td><span class=\"ds-slip-callno\">LIN·2</span></td><td class=\"ds-slip-q\">When is zero an eigenvalue of a matrix?</td><td>Box 2 · 3 days</td><td><span class=\"ds-slip-stamp\">06 NOV 2026</span></td></tr><tr class=\"ds-slip-group\"><td colspan=\"4\">On loan · not yet due</td></tr><tr class=\"is-later\"><td><span class=\"ds-slip-callno\">CON·2</span></td><td>What problem does a mutex solve?</td><td>Box 2 · 3 days</td><td><span class=\"ds-slip-stamp ds-slip-stamp-later\">08 NOV 2026</span></td></tr></tbody></table></section>",
+      "css": ".ds-slip-panel { overflow: hidden; border: 1px solid var(--color-line, #2a2a2a); border-radius: 0.375rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-slip-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; padding: 0.75rem 1.25rem; border-bottom: 2px solid var(--color-errorInk, #ff6b5f); } .ds-slip-title { margin: 0; font-size: 1.5rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.015em; } .ds-slip-summary { margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--color-inkMuted, #a3a3a3); font-variant-numeric: tabular-nums; } .ds-slip-summary strong { font-weight: 700; color: var(--color-errorInk, #ff6b5f); } .ds-slip-action { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: 0.25rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.9375rem; font-weight: 600; line-height: 1.25; cursor: pointer; user-select: none; transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; } .ds-slip-action:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-slip-action:disabled { opacity: 0.5; cursor: not-allowed; } .ds-slip-action svg { width: 1rem; height: 1rem; flex-shrink: 0; } .ds-slip-action { margin-left: auto; background: var(--color-primary, #5b43d6); border-color: var(--color-primary, #5b43d6); color: var(--color-onPrimary, #ffffff); } .ds-slip-action:hover { background: var(--color-primaryHover, #6a54e6); border-color: var(--color-primaryHover, #6a54e6); } .ds-slip { width: 100%; border-collapse: collapse; font-size: 0.9375rem; line-height: 1.5; } .ds-slip th { padding: 0.5rem 1rem 0.5rem 0; text-align: left; font-size: 0.6875rem; font-weight: 600; line-height: 1.25; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-errorInk, #ff6b5f); border-bottom: 1px solid var(--color-errorInk, #ff6b5f); } .ds-slip td { padding: 0.5rem 1rem 0.5rem 0; vertical-align: middle; white-space: nowrap; border-bottom: 1px solid color-mix(in srgb, var(--color-errorInk, #ff6b5f) 20%, var(--color-line, #2a2a2a)); } .ds-slip th:first-child, .ds-slip td:first-child { padding-left: 1.25rem; } .ds-slip th:last-child, .ds-slip td:last-child { padding-right: 1.25rem; } .ds-slip tr:last-child td { border-bottom: 0; } .ds-slip-q { font-weight: 500; } .ds-slip .ds-slip-group td { padding-top: 0.75rem; padding-bottom: 0.375rem; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-inkMuted, #a3a3a3); } .ds-slip .is-later td { color: var(--color-inkMuted, #a3a3a3); } .ds-slip-callno { white-space: nowrap; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-inkSoft, #c8c8c8); } .ds-slip .is-later .ds-slip-callno { color: var(--color-inkMuted, #a3a3a3); } .ds-slip-stamp { display: inline-flex; align-items: center; gap: 0.25rem; white-space: nowrap; padding: 3px 0.5rem; border: 1.5px solid currentColor; border-radius: 0.125rem; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-accentInk, #9d8cff); } .ds-slip-stamp-overdue { color: var(--color-errorInk, #ff6b5f); } .ds-slip-stamp-later { color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 62%, var(--color-inkMuted, #a3a3a3)); border-color: color-mix(in srgb, var(--color-accentInk, #9d8cff) 32%, var(--color-line, #2a2a2a)); } .ds-slip-stamp-quiet { color: var(--color-inkMuted, #a3a3a3); border-color: var(--color-line, #2a2a2a); }"
+    },
+    {
+      "name": "Loan Periods",
+      "kind": "custom",
+      "refersTo": "loan-track",
+      "description": "Each Leitner box drawn from day 0 to its interval on one 0–30 day axis, split into not-yet-due, due-today and overdue shares.",
+      "html": "<section class=\"ds-loans\" aria-label=\"Loan periods\"><div class=\"ds-loans-head\"><h2 class=\"ds-loans-title\">Loan periods</h2><span class=\"ds-loans-meta\">9 on loan · 1 retired</span></div><div class=\"ds-loan-row ds-loan-axis\"><span>Box</span><span class=\"ds-loan-ticks\"><span style=\"left: 0%\">0</span><span style=\"left: 23.333%\">7</span><span style=\"left: 46.667%\">14</span><span style=\"left: 100%; transform: translateX(-100%)\">30 days</span></span><span class=\"ds-loan-num\">On loan</span><span class=\"ds-loan-num\">Due</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 1</b> <span>1 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 3.333%\"><span class=\"ds-loan-later\" style=\"width: 50%\"></span><span class=\"ds-loan-overdue\" style=\"width: 50%\"></span></span></span><span class=\"ds-loan-num\">2</span><span class=\"ds-loan-num ds-loan-due-overdue\">1</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 2</b> <span>3 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 10.0%\"><span class=\"ds-loan-later\" style=\"width: 33.333%\"></span><span class=\"ds-loan-today\" style=\"width: 66.667%\"></span></span></span><span class=\"ds-loan-num\">3</span><span class=\"ds-loan-num ds-loan-due-today\">2</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 3</b> <span>7 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 23.333%\"><span class=\"ds-loan-today\" style=\"width: 50%\"></span><span class=\"ds-loan-overdue\" style=\"width: 50%\"></span></span></span><span class=\"ds-loan-num\">2</span><span class=\"ds-loan-num ds-loan-due-overdue\">2</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 4</b> <span>14 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 46.667%\"><span class=\"ds-loan-later\" style=\"width: 100%\"></span></span></span><span class=\"ds-loan-num\">1</span><span class=\"ds-loan-num ds-loan-due-none\">0</span></div><div class=\"ds-loan-row\"><span class=\"ds-loan-box\"><b>Box 5</b> <span>30 d</span></span><span class=\"ds-loan-track\"><span class=\"ds-loan-bar\" style=\"width: 100.0%\"><span class=\"ds-loan-later\" style=\"width: 100%\"></span></span></span><span class=\"ds-loan-num\">1</span><span class=\"ds-loan-num ds-loan-due-none\">0</span></div></section>",
+      "css": ".ds-loans { max-width: 26.5rem; border: 1px solid var(--color-line, #2a2a2a); border-radius: 0.375rem; background: var(--color-surface, #181818); color: var(--color-ink, #ececec); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; } .ds-loans-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1rem; padding: 0.625rem 1.25rem; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-loans-title { margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.5; } .ds-loans-meta { color: var(--color-inkMuted, #a3a3a3); font-variant-numeric: tabular-nums; } .ds-loan-row { display: grid; grid-template-columns: 5rem minmax(0, 1fr) 3.5rem 2rem; align-items: center; gap: 0 0.75rem; padding: 0.25rem 1.25rem; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-loan-row:last-child { border-bottom: 0; } .ds-loan-axis { padding-top: 0.5rem; padding-bottom: 0.5rem; font-size: 0.6875rem; font-weight: 600; line-height: 1.25; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-inkMuted, #a3a3a3); } .ds-loan-ticks { position: relative; height: 0.875rem; } .ds-loan-ticks > span { position: absolute; top: 0; white-space: nowrap; } .ds-loan-box { white-space: nowrap; } .ds-loan-box b { font-weight: 600; } .ds-loan-box span { margin-left: 0.25rem; color: var(--color-inkMuted, #a3a3a3); } .ds-loan-track { position: relative; display: block; height: 0.5rem; overflow: hidden; border-radius: 0.125rem; background: var(--color-sunken, #202020); } .ds-loan-bar { position: absolute; top: 0; bottom: 0; left: 0; display: flex; } .ds-loan-bar > span { display: block; height: 100%; } .ds-loan-bar > span + span { border-left: 1px solid var(--color-surface, #181818); } .ds-loan-later { background: color-mix(in srgb, var(--color-accent, #9d8cff) 45%, var(--color-sunken, #202020)); } .ds-loan-today { background: var(--color-accent, #9d8cff); } .ds-loan-overdue { background: var(--color-error, #ff6b5f); } .ds-loan-num { text-align: right; font-variant-numeric: tabular-nums; } .ds-loan-due-overdue { font-weight: 700; color: var(--color-errorInk, #ff6b5f); } .ds-loan-due-today { font-weight: 700; color: var(--color-accentInk, #9d8cff); } .ds-loan-due-none { color: var(--color-inkMuted, #a3a3a3); }"
+    },
+    {
+      "name": "Answer Options",
+      "kind": "custom",
+      "refersTo": "option",
+      "description": "Rows, not cards. After grading every option stays visible: the correct one tinted green, a wrong pick tinted red, the rest muted.",
+      "html": "<div class=\"ds-options\" role=\"group\" aria-label=\"Answer options\"><button type=\"button\" class=\"ds-option\" data-state=\"wrong\"><span class=\"ds-option-key\">A</span><span>It moves up one box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>Your answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"correct\"><span class=\"ds-option-key\">B</span><span>It returns to the first box</span><span class=\"ds-option-note\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg>Correct answer</span></button><button type=\"button\" class=\"ds-option\" data-state=\"muted\"><span class=\"ds-option-key\">C</span><span>It stays in its current box</span><span class=\"ds-option-note\"></span></button><button type=\"button\" class=\"ds-option\" data-state=\"muted\"><span class=\"ds-option-key\">D</span><span>It is removed from the deck</span><span class=\"ds-option-note\"></span></button></div>",
+      "css": ".ds-options { max-width: 34rem; font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; } .ds-option { display: grid; grid-template-columns: 1.75rem 1fr auto; align-items: baseline; column-gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; border: 0; border-bottom: 1px solid var(--color-line, #2a2a2a); background: transparent; color: var(--color-ink, #ececec); font-family: inherit; font-size: 1rem; line-height: 1.5; text-align: left; cursor: pointer; transition: background-color 120ms ease-out, color 120ms ease-out; } .ds-option:first-child { border-top: 1px solid var(--color-line, #2a2a2a); } .ds-option:hover { background: var(--color-sunken, #202020); } .ds-option:focus-visible { outline: 2px solid var(--color-focus, #9d8cff); outline-offset: 2px; } .ds-option-key { font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.9375rem; font-weight: 700; color: var(--color-inkMuted, #a3a3a3); } .ds-option[data-state=\"selected\"] { background: var(--color-sunken, #202020); box-shadow: inset 0 0 0 1px var(--color-accent, #9d8cff); } .ds-option[data-state=\"selected\"] .ds-option-key { color: var(--color-accentInk, #9d8cff); } .ds-option[data-state=\"correct\"] { background: color-mix(in srgb, var(--color-success, #3fbf74) 13%, var(--color-surface, #181818)); } .ds-option[data-state=\"correct\"] .ds-option-key, .ds-option[data-state=\"correct\"] .ds-option-note { color: var(--color-successInk, #6fd896); } .ds-option[data-state=\"wrong\"] { background: color-mix(in srgb, var(--color-error, #ff6b5f) 11%, var(--color-surface, #181818)); } .ds-option[data-state=\"wrong\"] .ds-option-key, .ds-option[data-state=\"wrong\"] .ds-option-note { color: var(--color-errorInk, #ff6b5f); } .ds-option[data-state=\"muted\"] { color: var(--color-inkMuted, #a3a3a3); } .ds-option-note { display: flex; align-items: center; gap: 0.25rem; white-space: nowrap; font-size: 0.75rem; font-weight: 600; line-height: 1rem; } .ds-option-note svg { width: 0.875rem; height: 0.875rem; }"
+    },
+    {
+      "name": "Progress Rule",
+      "kind": "custom",
+      "refersTo": "progress-rule",
+      "description": "A 4px rule across the top of the study loop: one segment per question, green correct, red wrong, violet current; open-ended sessions grow in blocks of ten.",
+      "html": "<div class=\"ds-progress\" role=\"img\" aria-label=\"4 answered, 3 correct\"><span data-state=\"correct\"></span><span data-state=\"correct\"></span><span data-state=\"wrong\"></span><span data-state=\"correct\"></span><span data-state=\"current\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span><span data-state=\"pending\"></span></div>",
+      "css": ".ds-progress { display: flex; gap: 1px; width: 100%; height: 0.25rem; background: var(--color-line, #2a2a2a); } .ds-progress > span { flex: 1; height: 100%; transform-origin: left center; } .ds-progress > [data-state=\"correct\"] { background: var(--color-success, #3fbf74); } .ds-progress > [data-state=\"wrong\"] { background: var(--color-error, #ff6b5f); } .ds-progress > [data-state=\"current\"] { background: var(--color-accent, #9d8cff); } .ds-progress > [data-state=\"pending\"] { background: transparent; } .ds-progress > [data-state]:not([data-state=\"pending\"]) { animation: ds-rule-grow 480ms cubic-bezier(0.16, 1, 0.3, 1) both; } @keyframes ds-rule-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } } @media (prefers-reduced-motion: reduce) { .ds-progress > [data-state] { animation: none; } }"
+    },
+    {
+      "name": "Extent Bar",
+      "kind": "custom",
+      "refersTo": "extent",
+      "description": "Answered questions per session on one shared scale (the most answered session), one segment per topic; set before the answered count in Recent sessions and History.",
+      "html": "<div class=\"ds-extents\"><div class=\"ds-extent-row\"><span class=\"ds-extent-callno\">CEL/LEA</span><span class=\"ds-extent-topic\">Cellular respiration · Learning science</span><span class=\"ds-extent\" aria-hidden=\"true\"><span style=\"width: 25%\"></span><span style=\"width: 25%\"></span></span><span class=\"ds-extent-count\">4</span></div><div class=\"ds-extent-row\"><span class=\"ds-extent-callno\">LIN</span><span class=\"ds-extent-topic\">Linear algebra: eigenvalues</span><span class=\"ds-extent\" aria-hidden=\"true\"><span style=\"width: 100%\"></span></span><span class=\"ds-extent-count\">8</span></div><div class=\"ds-extent-row\"><span class=\"ds-extent-callno\">ORG</span><span class=\"ds-extent-topic\">Organic chemistry: SN1 vs SN2</span><span class=\"ds-extent\" aria-hidden=\"true\"><span style=\"width: 62.5%\"></span></span><span class=\"ds-extent-count\">5</span></div></div>",
+      "css": ".ds-extents { max-width: 30rem; background: var(--color-surface, #181818); font-family: \"Libre Franklin\", system-ui, -apple-system, \"Segoe UI\", sans-serif; font-size: 0.875rem; line-height: 1.25rem; color: var(--color-ink, #ececec); } .ds-extent-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 3rem 2ch; align-items: center; gap: 0 0.75rem; padding: 0.375rem 0; border-bottom: 1px solid var(--color-line, #2a2a2a); } .ds-extent-row:last-child { border-bottom: 0; } .ds-extent-callno { white-space: nowrap; font-family: \"Archivo Narrow\", \"Arial Narrow\", \"Libre Franklin\", sans-serif; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--color-inkSoft, #c8c8c8); } .ds-extent-topic { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; } .ds-extent { display: inline-flex; width: 3rem; height: 0.25rem; overflow: hidden; border-radius: 0.125rem; background: var(--color-sunken, #202020); } .ds-extent > span { height: 100%; flex-shrink: 0; background: var(--color-lineStrong, #6b6b6b); } .ds-extent > span + span { box-shadow: inset 1px 0 0 var(--color-surface, #181818); } .ds-extent-count { text-align: right; font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Circulation Desk",
+    "overview": "Lembrion is a conventional study-app shell with one library ritual laid over it. The shell is the category standard: a left sidebar from 1024px (a top bar below that), a page title beside the date, and calm bordered panels on a neutral, untinted ground. The ritual is the loan. Every question and every session carries a call number like a spine label (`ORG·3`, `CEL/LEA`), questions that come back for review are listed on a date-due slip, and each one is marked with a date stamp in narrow caps: violet when it is due, red when it is overdue, faded while it is still out, grey once it is returned.\n\nThe density is that of a circulation ledger. Numbers live in tables with small caps column heads, hairline rows and right-aligned tabular figures; progress figures are set in Archivo Narrow; loan periods are drawn to their true length on one 0–30 day axis, and each session's answered questions are drawn as a bar on one shared scale, so lengths can be compared across rows and pages. Colour is spent sparingly: stamp violet marks what is due, actionable or current; slip red prints the due slip's header and marks what is overdue, and doubles as the error hue; green and amber only report state. Dark is the default palette; Light, System and High contrast are one click away in the theme menu, and all of them share one set of token names.\n\nThe world is flat. PRODUCT.md binds it to no skeuomorphism: a date stamp is a 1.5px frame of narrow caps, not an inked rubber impression; there are no gradients, glow, icon tiles or rounded bubbly cards, nothing is rounder than 6px, and the only shadow in the system belongs to things that float (menus, dialogs, toasts).",
+    "keyCharacteristics": [
+      "A standard shell: a 14.5rem sidebar whose current route is a filled violet label, and a 3.5rem top bar below 1024px.",
+      "Panels with 1px hairline borders and 6px corners on a neutral grey ground; no shadow on content.",
+      "A call number in Archivo Narrow caps on every question and session.",
+      "Date stamps in a 1.5px frame: violet due, red overdue, faded not yet due, grey returned or retired.",
+      "The \"Due for return\" slip: the review queue under a red printed header rule and red column heads.",
+      "Loan periods and extent bars drawn to exact length on shared axes.",
+      "Libre Franklin for the interface, Archivo Narrow for marks and figures; hierarchy by size and weight."
+    ],
+    "rules": [
+      {
+        "name": "The Due-or-Actionable Rule",
+        "body": "Violet marks only what is due, actionable or current: the current route, primary buttons, selected segments and tabs, selected choices and options, due stamps, due and not-yet-due loan shares, the current progress segment, the loading rule, links and the \"Active\" status. It never fills a panel, a heading, a tag at rest, or decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Slip Red Rule",
+        "body": "Red prints only the due slip's header and column heads and marks what is overdue; everywhere else it means an error or a wrong answer. It is never a decorative accent, and never a second action colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Twin Rule",
+        "body": "Every signal hue has an ink twin. The base (`accent`, `success`, `error`, `warning`) fills rules, bars and tints; text and stamp frames in that hue always use the `*Ink` token, which holds at least 4.5:1 on Panel in every palette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tint, Not Fill Rule",
+        "body": "State surfaces are tints mixed into Panel with `color-mix(in srgb, <hue> N%, var(--color-surface))`: correct option (success 13%), wrong option (error 11%), success note title (success 10%), error note title (error 9%), error notice (error 9%), warning notice (warning 12%), accent tag (accent 16%), success tag (success 14%), error tag (error 13%), danger button hover (error 10%), pressed suggested model (primary 11%). A selected choice or option is neutral (Inset with a 1px Due Violet inset outline). The only solid fills are primary buttons, the current route, selected segments, progress segments, loan shares, extent segments, the loading bar and toast rules.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Faces Rule",
+        "body": "Libre Franklin sets the interface; Archivo Narrow is reserved for the circulation marks and figures: call numbers, date stamps, figures, option keys and the \"Enter\" key hint. Narrow never sets body text, headings or buttons.",
+        "section": "typography"
+      },
+      {
+        "name": "The Size-and-Weight Rule",
+        "body": "Hierarchy is size and weight (400 through 800) plus Muted Ink for secondary text. Uppercase and tracking belong only to printed labels (column heads and group labels at 0.08em), call numbers (0.05em), stamps (0.06em) and the key hint; negative tracking only to the wordmark, page titles, the slip title and the question. No kickers or eyebrows above titles.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every count, score, percentage, ratio, date and stamp sets in tabular figures and right-aligns in number columns and fact values. Ratios are written with spaced slashes (\"0 / 1\", \"3 / 5\"); lists and metadata join with \" · \".",
+        "section": "typography"
+      },
+      {
+        "name": "The One Measure Rule",
+        "body": "Reading text never runs wider than 68ch. Tables and two-column frames may use the full 76rem; prose may not.",
+        "section": "layout"
+      },
+      {
+        "name": "The Reading Order Rule",
+        "body": "Phones read the panels in DOM order, and wide layouts only place them. The slip always follows Progress: second in the phone stack, the full-width middle row from 1280px.",
+        "section": "layout"
+      },
+      {
+        "name": "The Overlays-Only Rule",
+        "body": "A shadow means \"this floats above the page\". Panels, the slip, tables, notes and every other piece of content sit flat; if it does not float, it does not cast.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Three Radii Rule",
+        "body": "2px for marks, 4px for controls, 6px for containers; nothing rounder, and no pills.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do put every route in the 76rem page frame beside the sidebar (under the top bar on phones), open it with one `page-title` and its lede, and group its content in panels with a 1px Hairline border and 6px corners.",
+      "Do give each screen one Stamp Violet primary button for the next step; make every other action secondary or ghost.",
+      "Do tag every question and session with its call number, and mark every scheduled question with a date stamp: violet due, red overdue, faded not yet due, quiet once returned.",
+      "Do keep violet for what is due, actionable or current, and set violet, green, red and amber text in the `*Ink` tokens.",
+      "Do draw lengths to scale on a shared axis: loan periods on the 0–30 day axis, extent bars against the most answered session.",
+      "Do set counts, scores, ratios, dates and stamps in tabular figures, right-aligned in tables and facts lists.",
+      "Do show grading as a tint mixed into Panel plus inked text, and keep every option, the user's pick, the correct answer and the explanation visible after grading.",
+      "Do style through the semantic tokens (`bg-surface`, `text-ink-muted`, `border-line-strong`) so all three palettes follow; build tints with `color-mix()` in CSS, because the token classes take no `/opacity` modifier.",
+      "Do show any AI wait as the 3px loading rule with a one-line label."
+    ],
+    "donts": [
+      "Don't use skeuomorphic texture, gradients or glow; PRODUCT.md rules out skeuomorphism, so the stamp stays a flat frame of caps.",
+      "Don't build rounded bubbly cards, icon tiles or stat tiles; numbers belong in tables, facts and figures, and nothing is rounder than 6px.",
+      "Don't put a shadow on content; only menus, dialogs and toasts carry the overlay shadow.",
+      "Don't use violet as decoration, or red for anything but the slip's print, overdue and errors.",
+      "Don't add a coloured side stripe to notices, notes or panels; state is a tint plus inked text.",
+      "Don't set body text, headings or buttons in Archivo Narrow, or uppercase anything but printed labels, call numbers, stamps and the key hint.",
+      "Don't put kickers or eyebrows above titles.",
+      "Don't hard-code hex in components; every colour comes from a `--color-*` token so the three palettes stay whole."
+    ]
+  }
+}

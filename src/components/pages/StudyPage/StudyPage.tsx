@@ -1,22 +1,27 @@
-import { ArrowRight, Award, BookOpen, Brain, CheckCircle, ChevronDown, ChevronUp, Lightbulb, Loader2, Maximize, MessageSquare, Minimize, Monitor, Play, Settings, Smartphone, Sparkles, Tablet, Target, XCircle, Zap } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { AlertCircle, Check, Maximize, Minimize, X } from "lucide-react";
+import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { STORAGE_KEYS } from "../../../core/config/constants";
 import { aiService, getAIErrorMessage } from "../../../core/services/ai";
 import { debugLog } from "../../../core/services/ai/debug";
 import { getProviderConfig } from "../../../core/services/ai/providers/registry";
+import { formatMessage } from "../../../core/services/i18n";
 import { createId } from "../../../core/utils/id";
-import { useLanguage, useLocalStorage, useMultiProviderSettings, useTheme } from "../../../hooks";
+import { useLanguage, useLocalStorage, useMultiProviderSettings } from "../../../hooks";
 import { Difficulty, LearningSettings, Question, StudySession } from "../../../types";
 import MarkdownRenderer from "../../MarkdownRenderer";
-import { createReviewCopy, DIFFICULTIES, difficultyLabels, findDueReview, isAnswered, nextDifficulty, nextFocusContext, normalizeLearningSettings, sessionScore } from "./learningTechniques";
-import { enterQueue, recordReviewResult, takeNextReview } from "./reviewSchedule";
+import { sessionCallNumber } from "../../callNumber";
+import { stripExplanationLabel } from "../../explanationText";
+import { stampDate } from "../../stampDate";
+import { answeredCount, createReviewCopy, DIFFICULTIES, difficultyLabels, findDueReview, isAnswered, nextDifficulty, nextFocusContext, normalizeLearningSettings, sessionScore } from "./learningTechniques";
+import { enterQueue, recordReviewResult, RETIRED_BOX, takeNextReview } from "./reviewSchedule";
+
+const OPTION_KEYS = ["A", "B", "C", "D"];
 
 export default function StudyPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, language } = useLanguage();
-  const { themeConfig } = useTheme();
 
   // State management
   const [sessions, setSessions] = useLocalStorage<StudySession[]>(STORAGE_KEYS.SESSIONS, []);
@@ -38,7 +43,6 @@ export default function StudyPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">("desktop");
 
   // Session setup state
   const [isSetupMode, setIsSetupMode] = useState(true);
@@ -55,9 +59,6 @@ export default function StudyPage() {
   const levelLabels = difficultyLabels(t);
 
   // UI state
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
-  const [showContextsPanel, setShowContextsPanel] = useState(true);
-  const [showInstructionsPanel, setShowInstructionsPanel] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const questionContainerRef = React.useRef<HTMLDivElement>(null);
@@ -68,24 +69,6 @@ export default function StudyPage() {
 
   // Check if provider is configured
   const isProviderConfigured = currentProviderConfig.requiresApiKey ? !!currentProviderSettings.apiKey : true;
-
-  // Detect device type for responsive layout
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        setDeviceType("mobile");
-      } else if (width < 1024) {
-        setDeviceType("tablet");
-      } else {
-        setDeviceType("desktop");
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // Toggle fullscreen mode for focused studying
   const toggleFullscreen = () => {
@@ -183,11 +166,11 @@ export default function StudyPage() {
       if (reviewPick?.next) {
         // A due question from an earlier session comes back as a reshuffled copy without an API call
         const { original, sourceSessionId } = reviewPick.next;
-        question = { ...createReviewCopy(original, [], createId, Math.random), sourceSessionId };
+        question = { ...createReviewCopy(original, [], createId, Math.random), sourceSessionId, explanation: original.explanation };
       } else if (dueReview) {
         // A missed question comes back as a reshuffled copy without an API call
         const priorCopies = session.questions.filter((q) => q.reviewOf === dueReview.id);
-        question = createReviewCopy(dueReview, priorCopies, createId, Math.random);
+        question = { ...createReviewCopy(dueReview, priorCopies, createId, Math.random), explanation: dueReview.explanation };
       } else {
         let questionTypeToGenerate: "multipleChoice" | "dissertative" = "multipleChoice";
         if (session.questionType === "mixed") {
@@ -224,6 +207,7 @@ export default function StudyPage() {
           options: generatedQuestion.options,
           correctAnswer: generatedQuestion.correctAnswer,
           correctAnswerText: generatedQuestion.sampleAnswer,
+          explanation: generatedQuestion.explanation,
           evaluationCriteria: generatedQuestion.evaluationCriteria,
           attempts: 0,
           difficulty: requestedDifficulty,
@@ -488,495 +472,290 @@ export default function StudyPage() {
     navigate("/history");
   };
 
-  // Apple-inspired setup mode UI
+  // Keyboard: 1-4 / A-D pick an option, Enter submits and then moves on. Text fields keep their keys.
+  const keyHandlerRef = useRef<(event: KeyboardEvent) => void>(() => {});
+  useEffect(() => {
+    keyHandlerRef.current = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
+      if (isSetupMode || reviewComplete || !currentSession || !currentQuestion) return;
+
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+      const onOption = !!target?.closest("[data-option]");
+
+      if (event.key === "Enter") {
+        // Other focused controls (End session, Next question, confidence) activate natively
+        if (event.shiftKey || (!onOption && target?.closest("button, a, summary, [role='button']"))) return;
+        if (!showFeedback) {
+          if (isEvaluating || isAnswered(currentQuestion) || (!userAnswer && selectedOption === null)) return;
+          event.preventDefault();
+          submitAnswer();
+        } else {
+          if (isGenerating || isGettingFeedback || isEvaluating) return;
+          event.preventDefault();
+          nextQuestion();
+        }
+        return;
+      }
+
+      if (currentQuestion.type !== "multipleChoice" || isAnswerSubmitted || showFeedback) return;
+      const digit = ["1", "2", "3", "4"].indexOf(event.key);
+      const index = digit >= 0 ? digit : ["a", "b", "c", "d"].indexOf(event.key.toLowerCase());
+      if (index >= 0 && index < (currentQuestion.options?.length ?? 0)) {
+        event.preventDefault();
+        setSelectedOption(index);
+      }
+    };
+  });
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => keyHandlerRef.current(event);
+    window.addEventListener("keydown", listener);
+    return () => window.removeEventListener("keydown", listener);
+  }, []);
+
+  const techniqueRows: { key: keyof LearningSettings; label: string; desc: string }[] = [
+    { key: "spacedRepetition", label: t.spacedRepetition, desc: t.spacedRepetitionDesc },
+    { key: "interleaving", label: t.interleaving, desc: t.interleavingDesc },
+    { key: "elaborativeInterrogation", label: t.elaborativeInterrogation, desc: t.elaborativeInterrogationDesc },
+    { key: "selfExplanation", label: t.selfExplanation, desc: t.selfExplanationDesc },
+    { key: "desirableDifficulties", label: t.desirableDifficulties, desc: t.desirableDifficultiesDesc },
+  ];
+
+  const questionTypeLabels: Record<"multipleChoice" | "dissertative" | "mixed", string> = {
+    multipleChoice: t.multipleChoice,
+    dissertative: t.dissertative,
+    mixed: t.mixed,
+  };
+
   if (isSetupMode) {
+    const questionTypeOptions = [
+      { value: "multipleChoice" as const, desc: t.quickAssessment },
+      { value: "dissertative" as const, desc: t.deepAnalysis },
+      { value: "mixed" as const, desc: t.interleavedPractice },
+    ];
+    const techniquesOn = techniqueRows.filter(({ key }) => learningSettings[key]).length;
+    const canStart = contexts.length > 0 && isProviderConfigured && !isGenerating;
+
     return (
-      <div className="min-h-screen safe-top safe-bottom flex flex-col items-center justify-center" style={{ background: themeConfig.gradients.background }}>
-        <div className="w-full max-w-md px-4 py-6">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg"
-              style={{
-                background: themeConfig.gradients.primary,
-                boxShadow: `0 8px 32px ${themeConfig.colors.primary}40`,
-              }}
-            >
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold mb-2" style={{ color: themeConfig.colors.text }}>
-              {t.startNewStudySession}
-            </h1>
-            <p className="text-base leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-              {t.configureSession}
-            </p>
-          </div>
+      <div className="page pb-36 lg:pb-16">
+        <header className="page-header">
+          <h1 className="page-title">{t.startNewStudySession}</h1>
+        </header>
 
-          {/* Provider Status Card */}
-          <div
-            className="rounded-2xl p-4 mb-6 border"
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              borderColor: themeConfig.colors.border,
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: themeConfig.colors.primary + "20" }}>
-                  <Brain className="w-5 h-5" style={{ color: themeConfig.colors.primary }} />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm" style={{ color: themeConfig.colors.text }}>
-                    {currentProviderConfig.name}
-                  </p>
-                  <p className="text-xs" style={{ color: themeConfig.colors.textSecondary }}>
-                    {currentProviderSettings.model}
-                  </p>
-                </div>
+        <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-6">
+          <div className="min-w-0 space-y-4">
+            {/* Topics */}
+            <section className="panel">
+              <div className="panel-head">
+                <h2 className="panel-title">
+                  <label htmlFor="topic-input">{t.studyContexts}</label>
+                </h2>
               </div>
-              <div className={`px-3 py-1 rounded-full text-xs font-semibold ${isProviderConfigured ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{isProviderConfigured ? t.ready : t.requiresApiKey}</div>
-            </div>
-          </div>
-
-          {/* Contexts Panel */}
-          <div className="mb-6">
-            <button
-              onClick={() => setShowContextsPanel(!showContextsPanel)}
-              className="w-full flex items-center justify-between p-4 rounded-2xl mb-4 transition-colors"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                color: themeConfig.colors.text,
-              }}
-            >
-              <div className="flex items-center space-x-3">
-                <BookOpen className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} />
-                <span className="font-medium">{t.studyContexts}</span>
-                {contexts.length > 0 && (
-                  <div
-                    className="px-2 py-0.5 rounded-full text-xs font-medium"
-                    style={{
-                      backgroundColor: themeConfig.colors.primary + "20",
-                      color: themeConfig.colors.primary,
+              <div className="panel-body">
+                <div className="flex gap-2">
+                  <input
+                    id="topic-input"
+                    type="text"
+                    value={newContext}
+                    onChange={(e) => setNewContext(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addContext();
+                      }
                     }}
-                  >
-                    {contexts.length}
-                  </div>
-                )}
-              </div>
-              {showContextsPanel ? <ChevronUp className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} /> : <ChevronDown className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} />}
-            </button>
-
-            {showContextsPanel && (
-              <div
-                className="rounded-2xl p-4 mb-4 border animate-fade-in"
-                style={{
-                  backgroundColor: themeConfig.colors.surface,
-                  borderColor: themeConfig.colors.border,
-                }}
-              >
-                <p className="text-sm mb-3" style={{ color: themeConfig.colors.textSecondary }}>
+                    placeholder={t.studyContextPlaceholder}
+                    aria-describedby="topic-hint"
+                    className="field min-w-0 flex-1"
+                  />
+                  <button type="button" onClick={addContext} disabled={!newContext.trim()} className="btn btn-secondary">
+                    {t.add}
+                  </button>
+                </div>
+                <p id="topic-hint" className="hint">
                   {t.studyContextsHelp}
                 </p>
-
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={newContext}
-                      onChange={(e) => setNewContext(e.target.value)}
-                      placeholder={t.studyContextPlaceholder}
-                      className="flex-1 min-w-0 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-offset-2 outline-none transition-colors text-sm"
-                      style={{
-                        backgroundColor: themeConfig.colors.background,
-                        borderColor: themeConfig.colors.border,
-                        color: themeConfig.colors.text,
-                        "--tw-ring-color": themeConfig.colors.primary,
-                      }}
-                      onKeyPress={(e) => e.key === "Enter" && addContext()}
-                    />
-                    <button
-                      onClick={addContext}
-                      disabled={!newContext.trim()}
-                      className="px-3 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm"
-                      style={{
-                        backgroundColor: themeConfig.colors.primary,
-                        color: "#ffffff",
-                      }}
-                    >
-                      {t.add}
-                    </button>
-                  </div>
-
-                  {contexts.length > 0 && (
-                    <div className="space-y-2">
-                      {contexts.map((context, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between p-3 border rounded-lg"
-                          style={{
-                            backgroundColor: themeConfig.colors.background,
-                            borderColor: themeConfig.colors.border,
-                          }}
-                        >
-                          <span className="text-sm" style={{ color: themeConfig.colors.text }}>
-                            {context}
-                          </span>
-                          <button onClick={() => removeContext(index)} className="p-1 rounded-lg transition-colors" style={{ color: themeConfig.colors.error }} aria-label="Remove context">
-                            <XCircle className="w-5 h-5" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Instructions Panel */}
-          <div className="mb-6">
-            <button
-              onClick={() => setShowInstructionsPanel(!showInstructionsPanel)}
-              className="w-full flex items-center justify-between p-4 rounded-2xl mb-4 transition-colors"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                color: themeConfig.colors.text,
-              }}
-            >
-              <div className="flex items-center space-x-3">
-                <MessageSquare className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} />
-                <span className="font-medium">{t.specialInstructions}</span>
-                {instructions.length > 0 && (
-                  <div
-                    className="px-2 py-0.5 rounded-full text-xs font-medium"
-                    style={{
-                      backgroundColor: themeConfig.colors.primary + "20",
-                      color: themeConfig.colors.primary,
-                    }}
-                  >
-                    {instructions.length}
-                  </div>
+                {contexts.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-3">
+                    {contexts.map((context, index) => (
+                      <li key={context} className="tag max-w-full whitespace-normal py-1 pl-2 pr-0 text-sm text-ink">
+                        <span className="min-w-0 break-words">{context}</span>
+                        <button type="button" onClick={() => removeContext(index)} aria-label={formatMessage(t.studyRemoveItem, { item: context })} className="-my-2 inline-flex h-10 w-9 shrink-0 items-center justify-center text-ink-muted hover:text-ink">
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
-              {showInstructionsPanel ? <ChevronUp className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} /> : <ChevronDown className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} />}
-            </button>
+            </section>
 
-            {showInstructionsPanel && (
-              <div
-                className="rounded-2xl p-4 mb-4 border animate-fade-in"
-                style={{
-                  backgroundColor: themeConfig.colors.surface,
-                  borderColor: themeConfig.colors.border,
-                }}
-              >
-                <p className="text-sm mb-3" style={{ color: themeConfig.colors.textSecondary }}>
+            {/* Instructions */}
+            <section className="panel">
+              <div className="panel-head">
+                <h2 className="panel-title">
+                  <label htmlFor="instruction-input">{t.specialInstructions}</label>
+                </h2>
+                <span className="panel-meta">{t.studyOptional}</span>
+              </div>
+              <div className="panel-body">
+                <div className="flex gap-2">
+                  <input
+                    id="instruction-input"
+                    type="text"
+                    value={newInstruction}
+                    onChange={(e) => setNewInstruction(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addInstruction();
+                      }
+                    }}
+                    placeholder={t.studyInstructionPlaceholder}
+                    aria-describedby="instruction-hint"
+                    className="field min-w-0 flex-1"
+                  />
+                  <button type="button" onClick={addInstruction} disabled={!newInstruction.trim()} className="btn btn-secondary">
+                    {t.add}
+                  </button>
+                </div>
+                <p id="instruction-hint" className="hint">
                   {t.specialInstructionsHelp}
                 </p>
-
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={newInstruction}
-                      onChange={(e) => setNewInstruction(e.target.value)}
-                      placeholder={t.studyInstructionPlaceholder}
-                      className="flex-1 min-w-0 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-offset-2 outline-none transition-colors text-sm"
-                      style={{
-                        backgroundColor: themeConfig.colors.background,
-                        borderColor: themeConfig.colors.border,
-                        color: themeConfig.colors.text,
-                        "--tw-ring-color": themeConfig.colors.primary,
-                      }}
-                      onKeyPress={(e) => e.key === "Enter" && addInstruction()}
-                    />
-                    <button
-                      onClick={addInstruction}
-                      disabled={!newInstruction.trim()}
-                      className="px-3 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm"
-                      style={{
-                        backgroundColor: themeConfig.colors.primary,
-                        color: "#ffffff",
-                      }}
-                    >
-                      {t.add}
-                    </button>
-                  </div>
-
-                  {instructions.length > 0 && (
-                    <div className="space-y-2">
-                      {instructions.map((instruction, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between p-3 border rounded-lg"
-                          style={{
-                            backgroundColor: themeConfig.colors.background,
-                            borderColor: themeConfig.colors.border,
-                          }}
-                        >
-                          <span className="text-sm" style={{ color: themeConfig.colors.text }}>
-                            {instruction}
-                          </span>
-                          <button onClick={() => removeInstruction(index)} className="p-1 rounded-lg transition-colors" style={{ color: themeConfig.colors.error }} aria-label="Remove instruction">
-                            <XCircle className="w-5 h-5" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {instructions.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-3">
+                    {instructions.map((instruction, index) => (
+                      <li key={instruction} className="tag max-w-full whitespace-normal py-1 pl-2 pr-0 text-sm text-ink">
+                        <span className="min-w-0 break-words">{instruction}</span>
+                        <button type="button" onClick={() => removeInstruction(index)} aria-label={formatMessage(t.studyRemoveItem, { item: instruction })} className="-my-2 inline-flex h-10 w-9 shrink-0 items-center justify-center text-ink-muted hover:text-ink">
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            )}
-          </div>
+            </section>
 
-          {/* Context/Instruction Summary */}
-          {(contexts.length > 0 || instructions.length > 0) && (
-            <div
-              className="mb-6 p-4 rounded-2xl border"
-              style={{
-                backgroundColor: themeConfig.colors.info + "10",
-                borderColor: themeConfig.colors.info + "30",
-              }}
-            >
-              <div className="flex items-start space-x-3">
-                <Lightbulb className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
-                <div>
-                  <p className="text-sm font-medium mb-2" style={{ color: themeConfig.colors.info }}>
-                    {t.configurationSummary}
-                  </p>
-                  {contexts.length > 0 && (
-                    <div className="mb-2">
-                      <p className="text-xs font-medium mb-1" style={{ color: themeConfig.colors.info }}>
-                        {t.contextsLabel}
-                      </p>
-                      <ul className="list-disc list-inside text-xs space-y-1" style={{ color: themeConfig.colors.info }}>
-                        {contexts.map((context, index) => (
-                          <li key={index}>{context}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {instructions.length > 0 && (
-                    <div>
-                      <p className="text-xs font-medium mb-1" style={{ color: themeConfig.colors.info }}>
-                        {t.instructionsLabel}
-                      </p>
-                      <ul className="list-disc list-inside text-xs space-y-1" style={{ color: themeConfig.colors.info }}>
-                        {instructions.map((instruction, index) => (
-                          <li key={index}>{instruction}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+            {/* Question type, then difficulty on its own row; the choice cells run to the panel edges */}
+            <section className="panel overflow-hidden">
+              <div className="panel-head">
+                <h2 id="question-type-label" className="panel-title">
+                  {t.questionType}
+                </h2>
               </div>
-            </div>
-          )}
-
-          {/* Question Type Selection */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold mb-3" style={{ color: themeConfig.colors.text }}>
-              {t.questionType}
-            </label>
-            <div className="space-y-3">
-              {[
-                {
-                  value: "multipleChoice",
-                  label: t.multipleChoice,
-                  desc: t.quickAssessment,
-                  icon: Target,
-                  color: themeConfig.colors.info,
-                },
-                {
-                  value: "dissertative",
-                  label: t.dissertative,
-                  desc: t.deepAnalysis,
-                  icon: MessageSquare,
-                  color: themeConfig.colors.warning,
-                },
-                {
-                  value: "mixed",
-                  label: t.mixed,
-                  desc: t.interleavedPractice,
-                  icon: Zap,
-                  color: themeConfig.colors.primary,
-                },
-              ].map((option) => {
-                const Icon = option.icon;
-                const isSelected = questionType === option.value;
-
-                return (
-                  <button
-                    key={option.value}
-                    onClick={() => setQuestionType(option.value as any)}
-                    className={`w-full p-4 rounded-2xl border-2 text-left transition-all duration-200 ${isSelected ? "shadow-lg" : "hover:shadow-md"}`}
-                    style={{
-                      backgroundColor: isSelected ? option.color + "10" : themeConfig.colors.surface,
-                      borderColor: isSelected ? option.color : themeConfig.colors.border,
-                    }}
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: option.color + "20" }}>
-                        <Icon className="w-5 h-5" style={{ color: option.color }} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-sm mb-1" style={{ color: themeConfig.colors.text }}>
-                          {option.label}
-                        </div>
-                        <div className="text-xs leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-                          {option.desc}
-                        </div>
-                      </div>
-                      {isSelected && <CheckCircle className="w-5 h-5 flex-shrink-0" style={{ color: option.color }} />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Difficulty Selection */}
-          <div className="mb-6">
-            <label id="difficulty-label" className="block text-sm font-semibold mb-3" style={{ color: themeConfig.colors.text }}>
-              {t.difficulty}
-            </label>
-            <div
-              role="radiogroup"
-              aria-labelledby="difficulty-label"
-              className="grid grid-cols-3 gap-1 p-1 rounded-2xl border"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                borderColor: themeConfig.colors.border,
-              }}
-            >
-              {DIFFICULTIES.map((level) => {
-                const isSelected = difficulty === level;
-                return (
-                  <button
-                    key={level}
-                    type="button"
-                    role="radio"
-                    aria-checked={isSelected}
-                    onClick={() => setDifficulty(level)}
-                    className="min-h-[44px] px-2 rounded-xl text-sm font-semibold transition-colors duration-200"
-                    style={{
-                      backgroundColor: isSelected ? themeConfig.colors.primary : "transparent",
-                      color: isSelected ? "#ffffff" : themeConfig.colors.textSecondary,
-                    }}
-                  >
-                    {levelLabels[level]}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Advanced Options Toggle */}
-          <button
-            onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
-            className="w-full flex items-center justify-between p-4 rounded-2xl mb-4 transition-colors"
-            style={{
-              backgroundColor: themeConfig.colors.surface,
-              color: themeConfig.colors.text,
-            }}
-          >
-            <div className="flex items-center space-x-3">
-              <Settings className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} />
-              <span className="font-medium">{t.learningTechniques}</span>
-            </div>
-            {showAdvancedOptions ? <ChevronUp className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} /> : <ChevronDown className="w-5 h-5" style={{ color: themeConfig.colors.textSecondary }} />}
-          </button>
-
-          {/* Advanced Options */}
-          {showAdvancedOptions && (
-            <div
-              className="rounded-2xl p-4 mb-6 border"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                borderColor: themeConfig.colors.border,
-              }}
-            >
-              <div className="space-y-4">
-                {[
-                  { key: "spacedRepetition", label: t.spacedRepetition, desc: t.spacedRepetitionDesc },
-                  { key: "interleaving", label: t.interleaving, desc: t.interleavingDesc },
-                  { key: "elaborativeInterrogation", label: t.elaborativeInterrogation, desc: t.elaborativeInterrogationDesc },
-                  { key: "selfExplanation", label: t.selfExplanation, desc: t.selfExplanationDesc },
-                  { key: "desirableDifficulties", label: t.desirableDifficulties, desc: t.desirableDifficultiesDesc },
-                ].map(({ key, label, desc }) => (
-                  <label key={key} className="flex items-start space-x-3 cursor-pointer">
-                    <div className="relative mt-1">
-                      <input
-                        type="checkbox"
-                        checked={learningSettings[key as keyof LearningSettings]}
-                        onChange={(e) =>
-                          setLearningSettings((prev) => ({
-                            ...prev,
-                            [key]: e.target.checked,
-                          }))
-                        }
-                        className="w-5 h-5 rounded-lg border-2 appearance-none transition-all duration-200"
-                        style={{
-                          backgroundColor: learningSettings[key as keyof LearningSettings] ? themeConfig.colors.primary : themeConfig.colors.background,
-                          borderColor: learningSettings[key as keyof LearningSettings] ? themeConfig.colors.primary : themeConfig.colors.border,
-                        }}
-                      />
-                      {learningSettings[key as keyof LearningSettings] && <CheckCircle className="absolute inset-0 w-5 h-5 text-white pointer-events-none" />}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-sm" style={{ color: themeConfig.colors.text }}>
-                        {label}
-                      </div>
-                      <div className="text-xs mt-1 leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-                        {desc}
-                      </div>
-                    </div>
+              <div role="radiogroup" aria-labelledby="question-type-label" className="choice-grid rounded-none border-0 sm:grid-cols-3">
+                {questionTypeOptions.map((option) => (
+                  <label key={option.value} className="choice sm:px-5">
+                    <input type="radio" name="question-type" value={option.value} checked={questionType === option.value} onChange={() => setQuestionType(option.value)} className="mt-1 h-4 w-4 shrink-0" />
+                    <span className="min-w-0">
+                      <span className="block font-medium text-ink">{questionTypeLabels[option.value]}</span>
+                      <span className="block text-sm text-ink-soft">{option.desc}</span>
+                    </span>
                   </label>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Error Display */}
-          {error && (
-            <div
-              className="p-4 rounded-2xl mb-6 border"
-              style={{
-                backgroundColor: themeConfig.colors.error + "10",
-                borderColor: themeConfig.colors.error + "30",
-              }}
-            >
-              <div className="flex items-start space-x-3">
-                <XCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.error }} />
-                <p className="text-sm leading-relaxed" style={{ color: themeConfig.colors.error }}>
-                  {error}
+              <div className="panel-body flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line">
+                <p id="difficulty-label" className="text-sm font-semibold text-ink">
+                  {t.difficulty}
                 </p>
+                <div role="radiogroup" aria-labelledby="difficulty-label" className="segmented">
+                  {DIFFICULTIES.map((level) => (
+                    <button key={level} type="button" role="radio" aria-checked={difficulty === level} onClick={() => setDifficulty(level)} className="min-w-20">
+                      {levelLabels[level]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Learning techniques */}
+            <section className="panel overflow-hidden">
+              <div className="panel-head">
+                <h2 id="techniques-label" className="panel-title">
+                  {t.learningTechniques}
+                </h2>
+              </div>
+              <div role="group" aria-labelledby="techniques-label" className="choice-grid rounded-none border-0 md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2">
+                {techniqueRows.map(({ key, label, desc }) => (
+                  <label key={key} className="choice sm:px-5">
+                    <input
+                      type="checkbox"
+                      checked={learningSettings[key]}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setLearningSettings((prev) => ({ ...prev, [key]: checked }));
+                      }}
+                      className="mt-1 h-4 w-4 shrink-0"
+                    />
+                    <span className="min-w-0">
+                      <span className="block font-medium text-ink">{label}</span>
+                      <span className="block text-sm text-ink-soft">{desc}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* Session summary and the start action; the call number forms as topics are added */}
+          <aside className="panel min-w-0 lg:sticky lg:top-6">
+            <div className="panel-head">
+              <h2 className="panel-title">{t.studySessionSummaryTitle}</h2>
+              {contexts.length > 0 && (
+                <span className="callno" aria-hidden="true">
+                  {sessionCallNumber(contexts)}
+                </span>
+              )}
+            </div>
+            <div className="panel-body">
+              <dl className="facts [&_dt]:whitespace-nowrap">
+                <dt>{t.aiProvider}</dt>
+                <dd className="min-w-0">
+                  <span className="break-words">
+                    {currentProviderConfig.name} · {currentProviderSettings.model}
+                  </span>{" "}
+                  <Link to="/settings" className="font-semibold text-accent-ink underline">
+                    {t.studyChange}
+                  </Link>
+                </dd>
+                <dt>{t.studyContexts}</dt>
+                <dd>{contexts.length}</dd>
+                <dt>{t.questionType}</dt>
+                <dd>{questionTypeLabels[questionType]}</dd>
+                <dt>{t.difficulty}</dt>
+                <dd>{levelLabels[difficulty]}</dd>
+                <dt>{t.studyTechniquesOn}</dt>
+                <dd>
+                  {techniquesOn} / {techniqueRows.length}
+                </dd>
+              </dl>
+
+              {error && (
+                <div className="notice notice-error mt-5" role="alert">
+                  <AlertCircle aria-hidden="true" />
+                  <p>{error}</p>
+                </div>
+              )}
+
+              {/* Phones: the start action stays pinned to the bottom edge while the form scrolls */}
+              <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-ground px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 lg:static lg:mt-5 lg:border-0 lg:bg-transparent lg:p-0">
+                <button type="button" onClick={startNewSession} disabled={!canStart} className="btn btn-primary w-full">
+                  {isGenerating ? t.generatingQuestion : t.startEnhancedSession}
+                </button>
+                {isGenerating && <div className="loading-rule mt-3" role="status" aria-label={t.generatingQuestion} />}
+                {!isGenerating && contexts.length === 0 && <p className="hint">{t.aiErrorMissingContext}</p>}
+                {!isGenerating && contexts.length > 0 && !isProviderConfigured && (
+                  <p className="hint">
+                    {formatMessage(t.studyProviderNeedsKey, { provider: currentProviderConfig.name })}{" "}
+                    <Link to="/settings" className="font-semibold text-accent-ink underline">
+                      {t.studyOpenSettings}
+                    </Link>
+                  </p>
+                )}
               </div>
             </div>
-          )}
-
-          {/* Start Button */}
-          <button
-            onClick={startNewSession}
-            disabled={isGenerating || contexts.length === 0 || !isProviderConfigured}
-            className="w-full py-4 px-6 rounded-2xl font-semibold text-base transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl disabled:shadow-md"
-            style={{
-              background: themeConfig.gradients.primary,
-              color: "#ffffff",
-              transform: isGenerating ? "scale(0.98)" : "scale(1)",
-            }}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>{t.generatingQuestion}</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-5 h-5" />
-                <span>{t.startEnhancedSession}</span>
-              </>
-            )}
-          </button>
+          </aside>
         </div>
       </div>
     );
@@ -984,553 +763,437 @@ export default function StudyPage() {
 
   // A review session whose queue is empty: show the result instead of a new question
   if (currentSession && reviewComplete) {
+    const results = [
+      { label: t.studyAnsweredLabel, value: String(answeredCount(currentSession.questions)) },
+      { label: t.correct, value: String(currentSession.questions.filter((q) => q.isCorrect === true).length) },
+      { label: t.score, value: `${sessionScore(currentSession.questions)}%` },
+    ];
     return (
-      <div className="min-h-screen flex items-center justify-center safe-top safe-bottom px-4" style={{ background: themeConfig.gradients.background }}>
-        <div
-          className="w-full max-w-md rounded-3xl p-6 shadow-lg border text-center space-y-4"
-          style={{
-            backgroundColor: themeConfig.colors.surface,
-            borderColor: themeConfig.colors.border,
-          }}
-        >
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto" style={{ backgroundColor: themeConfig.colors.success + "20" }}>
-            <CheckCircle className="w-8 h-8" style={{ color: themeConfig.colors.success }} />
+      <div className="page">
+        <header className="page-header">
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
+            <h1 className="page-title">{t.reviewCompleteTitle}</h1>
+            <p className="page-lede">{t.reviewCompleteDesc}</p>
           </div>
-          <h1 className="text-xl font-bold" style={{ color: themeConfig.colors.text }}>
-            {t.reviewCompleteTitle}
-          </h1>
-          <p className="text-sm leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-            {t.reviewCompleteDesc}
-          </p>
-          <div className="flex items-center justify-center space-x-2">
-            <Award className="w-5 h-5" style={{ color: themeConfig.colors.warning }} />
-            <span className="text-lg font-semibold" style={{ color: themeConfig.colors.text }}>
-              {t.score}: {sessionScore(currentSession.questions)}%
+          <button type="button" onClick={endSession} className="btn btn-primary">
+            {t.endSession}
+          </button>
+        </header>
+        <section className="panel mt-6 max-w-xl">
+          <div className="panel-head">
+            <h2 className="panel-title">{t.studyThisSession}</h2>
+            <span className="callno" aria-hidden="true">
+              {sessionCallNumber(currentSession.contexts)}
             </span>
           </div>
-          <button
-            onClick={endSession}
-            className="w-full py-3 px-4 rounded-2xl font-semibold text-sm flex items-center justify-center space-x-2 shadow-lg"
-            style={{ background: themeConfig.gradients.primary, color: "#ffffff" }}
-          >
-            <CheckCircle className="w-5 h-5" />
-            <span>{t.endSession}</span>
-          </button>
-        </div>
+          <dl className="grid grid-cols-3 divide-x divide-line">
+            {results.map(({ label, value }) => (
+              <div key={label} className="min-w-0 px-4 py-4 sm:px-5">
+                <dt className="caps-label">{label}</dt>
+                <dd className="figure mt-2">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       </div>
     );
   }
 
-  // Study session UI
-  if (!currentSession || !currentQuestion) {
-    // A failed first generation leaves the session without a question: show the error and a way out.
-    if (currentSession && error && !isGenerating) {
-      return (
-        <div className="min-h-screen flex items-center justify-center safe-top safe-bottom px-4" style={{ background: themeConfig.gradients.background }}>
-          <div className="w-full max-w-md space-y-4">
-            <div
-              className="p-4 rounded-2xl border"
-              style={{
-                backgroundColor: themeConfig.colors.error + "10",
-                borderColor: themeConfig.colors.error + "30",
-              }}
-            >
-              <div className="flex items-start space-x-3">
-                <XCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.error }} />
-                <p className="text-sm leading-relaxed" style={{ color: themeConfig.colors.error }}>
-                  {error}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => generateNextQuestion(currentSession)}
-              className="w-full py-3 px-4 rounded-2xl font-semibold text-sm flex items-center justify-center space-x-2 shadow-lg"
-              style={{ background: themeConfig.gradients.primary, color: "#ffffff" }}
-            >
-              <ArrowRight className="w-5 h-5" />
-              <span>{t.tryAgain}</span>
+  if (!currentSession) {
+    return (
+      <div className="page" role="status" aria-label={t.generatingQuestion}>
+        <div className="loading-rule max-w-measure" />
+      </div>
+    );
+  }
+
+  // Study session: progress rule, session strip, question column and session facts
+  const answeredQuestions = currentSession.questions.filter(isAnswered);
+  const answered = answeredQuestions.length;
+  const correct = answeredQuestions.filter((q) => q.isCorrect).length;
+  const isReview = currentSession.kind === "review";
+  const queueLeft = currentSession.reviewQueue?.length ?? 0;
+  const ruleStates = currentSession.questions.map((q) => (isAnswered(q) ? (q.isCorrect ? "correct" : "wrong") : q.id === currentQuestion?.id ? "current" : "pending"));
+  // Normal sessions are open-ended, so the rule grows in blocks of ten
+  const slots = isReview ? ruleStates.length + queueLeft : Math.max(10, Math.ceil(ruleStates.length / 10) * 10);
+  const ruleSlots = [...ruleStates, ...Array<string>(Math.max(0, slots - ruleStates.length)).fill("pending")];
+  const questionNumber = currentQuestion ? (currentSession.currentQuestionIndex ?? 0) + 1 : currentSession.questions.length + 1;
+  const questionLabel = isReview ? formatMessage(t.studyQuestionNumberOf, { number: questionNumber, total: slots }) : formatMessage(t.studyQuestionNumber, { number: questionNumber });
+  const shownDifficulty = currentQuestion?.difficulty ?? currentSession.difficulty ?? "medium";
+  const focusContext = sessionSettings.interleaving ? currentQuestion?.context : undefined;
+  const lastConfidence = [...answeredQuestions].reverse().find((q) => q.confidence !== undefined)?.confidence;
+
+  const strip = (
+    <>
+      <div className="progress-rule" role="img" aria-label={formatMessage(t.studyProgressSummary, { answered, correct })}>
+        {ruleSlots.map((state, index) => (
+          <span key={index} data-state={state} />
+        ))}
+      </div>
+      <div className="border-b border-line">
+        {/* Phones: topics and End session on one line, the counts under them */}
+        <div className="mx-auto flex w-full max-w-[76rem] flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-sm text-ink-soft sm:px-6 lg:px-8">
+          <p className="order-1 flex min-w-0 flex-1 items-baseline gap-2.5" title={currentSession.contexts.join(" · ")}>
+            <span className="callno" aria-hidden="true">
+              {sessionCallNumber(currentSession.contexts)}
+            </span>
+            <span className="min-w-0 truncate">
+              {currentSession.contexts.map((context, index) => (
+                <Fragment key={context}>
+                  {index > 0 && " · "}
+                  <span className={focusContext === undefined ? "text-ink" : context === focusContext ? "font-medium text-ink" : undefined}>{context}</span>
+                </Fragment>
+              ))}
+            </span>
+          </p>
+          <div className="order-3 flex basis-full items-center gap-x-4 sm:order-2 sm:basis-auto sm:gap-x-6">
+            <span className="tabular whitespace-nowrap">{questionLabel}</span>
+            <span className="whitespace-nowrap">
+              {t.score}{" "}
+              <span className="tabular font-medium text-ink">
+                {correct} / {answered}
+              </span>
+            </span>
+            <span className="tag">{levelLabels[shownDifficulty]}</span>
+          </div>
+          <div className="order-2 flex shrink-0 items-center gap-2 sm:order-3">
+            <span className="mr-2 hidden max-w-[16rem] truncate text-ink-muted xl:inline" title={t.aiProvider}>
+              {currentProviderConfig.name} · {currentProviderSettings.model}
+            </span>
+            <button type="button" onClick={toggleFullscreen} aria-pressed={isFullscreen} aria-label={isFullscreen ? t.studyExitFullscreen : t.studyEnterFullscreen} title={isFullscreen ? t.studyExitFullscreen : t.studyEnterFullscreen} className="btn btn-ghost btn-icon hidden sm:inline-flex">
+              {isFullscreen ? <Minimize aria-hidden="true" /> : <Maximize aria-hidden="true" />}
             </button>
-            <button
-              onClick={endSession}
-              className="w-full py-3 px-4 rounded-2xl font-semibold text-sm border"
-              style={{ borderColor: themeConfig.colors.border, color: themeConfig.colors.textSecondary }}
-            >
+            <button type="button" onClick={endSession} className="btn btn-secondary btn-sm min-h-10">
               {t.endSession}
             </button>
           </div>
         </div>
-      );
-    }
+      </div>
+    </>
+  );
 
+  const sessionFacts = (
+    <aside className="panel min-w-0 lg:sticky lg:top-6 lg:w-full lg:max-w-[19rem] lg:self-start lg:justify-self-end">
+      <div className="panel-head">
+        <h2 className="panel-title">{t.studyThisSession}</h2>
+      </div>
+      <dl className="facts panel-body">
+        <dt>{t.studyAnsweredLabel}</dt>
+        <dd>{answered}</dd>
+        <dt>{t.correct}</dt>
+        <dd>{correct}</dd>
+        <dt>{t.score}</dt>
+        <dd>{sessionScore(currentSession.questions)}%</dd>
+        <dt>{t.difficulty}</dt>
+        <dd>{levelLabels[currentSession.difficulty ?? "medium"]}</dd>
+        <dt>{t.confidence}</dt>
+        <dd>{lastConfidence !== undefined ? `${lastConfidence} / 5` : "–"}</dd>
+        {isReview && (
+          <>
+            <dt>{t.studyLeftInQueue}</dt>
+            <dd>{queueLeft}</dd>
+          </>
+        )}
+      </dl>
+      <div className="hidden border-t border-line lg:block">
+        <h3 className="caps-label px-4 pt-4 sm:px-5">{t.learningTechniques}</h3>
+        <dl className="facts panel-body pt-2.5">
+          {techniqueRows.map(({ key, label }) => (
+            <Fragment key={key}>
+              <dt>{label}</dt>
+              <dd>{sessionSettings[key] ? t.studySettingOn : t.studySettingOff}</dd>
+            </Fragment>
+          ))}
+        </dl>
+      </div>
+    </aside>
+  );
+
+  const frameClass = isFullscreen ? "fixed inset-0 z-50 overflow-y-auto bg-ground" : undefined;
+
+  if (!currentQuestion) {
+    // No question yet: the first generation is running, or it failed and needs a way out
     return (
-      <div className="min-h-screen flex items-center justify-center safe-top safe-bottom" style={{ background: themeConfig.gradients.background }}>
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse" style={{ backgroundColor: themeConfig.colors.primary + "20" }}>
-            <Loader2 className="w-8 h-8 animate-spin" style={{ color: themeConfig.colors.primary }} />
+      <div ref={questionContainerRef} className={frameClass}>
+        {strip}
+        <div className="page grid gap-12 lg:grid-cols-2">
+          <div className="min-w-0">
+            <h1 className="sr-only">{questionLabel}</h1>
+            {error && !isGenerating ? (
+              <div className="max-w-measure">
+                <div className="notice notice-error" role="alert">
+                  <AlertCircle aria-hidden="true" />
+                  <p>{error}</p>
+                </div>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <button type="button" onClick={() => generateNextQuestion(currentSession)} className="btn btn-primary">
+                    {t.tryAgain}
+                  </button>
+                  <button type="button" onClick={endSession} className="btn btn-secondary">
+                    {t.endSession}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="max-w-measure" role="status">
+                <div className="loading-rule" />
+                <p className="mt-2 text-sm text-ink-soft">{t.generatingQuestion}</p>
+              </div>
+            )}
           </div>
-          <p className="text-base" style={{ color: themeConfig.colors.textSecondary }}>
-            {t.generatingQuestion}
-          </p>
+          {sessionFacts}
         </div>
       </div>
     );
   }
 
+  const isMultipleChoice = currentQuestion.type === "multipleChoice";
+  const graded = showFeedback && isAnswered(currentQuestion);
+  const pickedOption = typeof currentQuestion.userAnswer === "number" ? currentQuestion.userAnswer : selectedOption;
+  const correctLetter = currentQuestion.correctAnswer !== undefined ? OPTION_KEYS[currentQuestion.correctAnswer] : undefined;
+  const showSelfExplanation = showFeedback && sessionSettings.selfExplanation && (currentQuestion.isCorrect || !sessionSettings.elaborativeInterrogation);
+  const explanationFeedback = currentQuestion.selfExplanationFeedback && selfExplanation.trim() === currentQuestion.selfExplanation ? currentQuestion.selfExplanationFeedback : undefined;
+
+  // The return mark: once graded, every original carries one. A scheduled question comes back on
+  // a date stamp; one that stays out of the queue is returned; a retired original is returned for
+  // good. A review copy reads its original in the source session, which `recordReviewResult` has
+  // just moved; an in-session copy moves no schedule, so it shows none.
+  const onLoan = !graded
+    ? undefined
+    : currentQuestion.reviewOf === undefined
+      ? currentQuestion
+      : currentQuestion.sourceSessionId
+        ? sessions.find((s) => s.id === currentQuestion.sourceSessionId)?.questions.find((q) => q.id === currentQuestion.reviewOf)
+        : undefined;
+  const returnBox = onLoan?.reviewBox ?? 0;
+  const returnDue = returnBox >= 1 && returnBox < RETIRED_BOX ? onLoan?.nextReview : undefined;
+  const returnStamp = returnDue ? stampDate(returnDue, language) : "";
+  const quietMark = returnBox === RETIRED_BOX ? t.studyReturnedForGood : graded && currentQuestion.reviewOf === undefined && currentQuestion.reviewBox === undefined ? t.studyReturned : undefined;
+
+  const waitingLabel = isGenerating ? t.generatingQuestion : isEvaluating ? (showFeedback ? t.studyWritingFollowUp : t.evaluating) : null;
+  const primaryAction = showFeedback
+    ? { label: error ? t.tryAgain : t.nextQuestion, onClick: nextQuestion, disabled: isGenerating || isGettingFeedback || isEvaluating }
+    : { label: error ? t.tryAgain : t.submitAnswer, onClick: submitAnswer, disabled: isEvaluating || (!userAnswer && selectedOption === null) };
+
+  // After grading, wide screens put the response (explanation, follow-ups, next action) beside the graded question
+  const feedbackMode = showFeedback && !isGenerating;
+
+  const statusAndAction = (
+    <>
+      {error && (
+        <div className="notice notice-error mt-8 lg:mt-6" role="alert">
+          <AlertCircle aria-hidden="true" />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {waitingLabel && !isGenerating && (
+        <div className="mt-8 lg:mt-6" role="status">
+          <div className="loading-rule" />
+          <p className="mt-2 text-sm text-ink-soft">{waitingLabel}</p>
+        </div>
+      )}
+
+      {/* Primary action: sticky at the bottom on phones */}
+      <div className="sticky bottom-0 z-10 -mx-4 mt-8 flex items-center gap-3 border-t border-line bg-ground px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 sm:static sm:mx-0 sm:border-t-0 sm:bg-transparent sm:p-0 lg:mt-6">
+        <button type="button" onClick={primaryAction.onClick} disabled={primaryAction.disabled} className="btn btn-primary w-full sm:w-auto">
+          {primaryAction.label}
+        </button>
+        <kbd className="hidden rounded-sm border border-line px-1.5 py-0.5 font-narrow text-xs font-semibold uppercase tracking-wide text-ink-muted lg:inline">{t.studyEnterKey}</kbd>
+      </div>
+    </>
+  );
+
   return (
-    <div className="min-h-screen safe-top safe-bottom" style={{ background: themeConfig.gradients.background }}>
-      <div className="w-full max-w-3xl mx-auto px-4 py-6">
-        {/* Session Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-bold truncate" style={{ color: themeConfig.colors.text }}>
-              {currentSession.contexts.join(", ")}
-            </h1>
-            <div className="flex items-center space-x-4 mt-1">
-              <span className="text-xs sm:text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                {t.question} {(currentSession.currentQuestionIndex || 0) + 1}
-              </span>
-              <div className="flex items-center space-x-1">
-                <Award className="w-4 h-4" style={{ color: themeConfig.colors.warning }} />
-                <span className="text-sm font-medium" style={{ color: themeConfig.colors.text }}>
-                  {sessionScore(currentSession.questions)}%
-                </span>
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={endSession}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-medium transition-all duration-200 text-xs sm:text-sm"
-            style={{
-              backgroundColor: themeConfig.colors.error + "20",
-              color: themeConfig.colors.error,
-            }}
-          >
-            {t.endSession}
-          </button>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-6">
-          <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: themeConfig.colors.border }}>
-            <div
-              className="h-full transition-all duration-500 ease-out rounded-full"
-              style={{
-                width: `${Math.min(((currentSession.currentQuestionIndex || 0) + 1) * 10, 100)}%`,
-                background: themeConfig.gradients.primary,
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Question Card */}
-        <div
-          ref={questionContainerRef}
-          className="rounded-3xl p-6 mb-6 shadow-lg border"
-          style={{
-            backgroundColor: themeConfig.colors.surface,
-            borderColor: themeConfig.colors.border,
-            ...(isFullscreen
-              ? {
-                  position: "fixed",
-                  top: "0",
-                  left: "0",
-                  right: "0",
-                  bottom: "0",
-                  zIndex: 50,
-                  borderRadius: "0",
-                }
-              : {}),
-          }}
-        >
-          {/* Question Type Badge */}
-          <div className="flex items-center space-x-2 mb-4">
-            <div
-              className="px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1"
-              style={{
-                backgroundColor: themeConfig.colors.primary + "20",
-                color: themeConfig.colors.primary,
-              }}
-            >
-              <Target className="w-3 h-3" />
-              <span>{currentQuestion.type === "multipleChoice" ? t.multipleChoice : t.dissertative}</span>
-            </div>
-
-            {/* Fullscreen toggle button (tablet and desktop only) */}
-            {deviceType !== "mobile" && (
-              <button
-                onClick={toggleFullscreen}
-                className="p-1.5 rounded-full transition-colors"
-                style={{
-                  backgroundColor: themeConfig.colors.primary + "20",
-                  color: themeConfig.colors.primary,
-                }}
-              >
-                {isFullscreen ? <Minimize className="w-3.5 h-3.5" /> : <Maximize className="w-3.5 h-3.5" />}
-              </button>
-            )}
-          </div>
-
-          {/* Question Content */}
-          <div className="mb-6">
-            <div className="prose max-w-none">
-              <MarkdownRenderer content={currentQuestion.question} />
-            </div>
-          </div>
-
-          {/* Answer Input */}
-          {!showFeedback && (
-            <div className="space-y-6">
-              {currentQuestion.type === "multipleChoice" ? (
-                <div className="space-y-3">
-                  {currentQuestion.options?.map((option, index) => {
-                    const isSelected = selectedOption === index;
-                    const isSubmitted = isAnswerSubmitted;
-                    const isCorrect = index === currentQuestion.correctAnswer;
-
-                    let buttonStyle = {
-                      backgroundColor: themeConfig.colors.background,
-                      borderColor: themeConfig.colors.border,
-                      color: themeConfig.colors.text,
-                    };
-
-                    if (isSubmitted) {
-                      if (isCorrect) {
-                        buttonStyle = {
-                          backgroundColor: themeConfig.colors.success + "20",
-                          borderColor: themeConfig.colors.success,
-                          color: themeConfig.colors.success,
-                        };
-                      } else if (isSelected && !isCorrect) {
-                        buttonStyle = {
-                          backgroundColor: themeConfig.colors.error + "20",
-                          borderColor: themeConfig.colors.error,
-                          color: themeConfig.colors.error,
-                        };
-                      }
-                    } else if (isSelected) {
-                      buttonStyle = {
-                        backgroundColor: themeConfig.colors.primary + "10",
-                        borderColor: themeConfig.colors.primary,
-                        color: themeConfig.colors.primary,
-                      };
-                    }
-
-                    return (
-                      <button key={index} onClick={() => !isSubmitted && setSelectedOption(index)} disabled={isSubmitted} className={`w-full p-3 sm:p-4 rounded-2xl border-2 text-left transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed ${isSelected ? "transform scale-[1.01]" : ""}`} style={buttonStyle}>
-                        <div className="flex items-start space-x-3">
-                          <div
-                            className="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5"
-                            style={{
-                              borderColor: isSubmitted ? (isCorrect ? themeConfig.colors.success : isSelected ? themeConfig.colors.error : themeConfig.colors.border) : isSelected ? themeConfig.colors.primary : themeConfig.colors.border,
-                              backgroundColor: isSelected || (isSubmitted && isCorrect) ? (isSubmitted && isCorrect ? themeConfig.colors.success : themeConfig.colors.primary) : "transparent",
-                            }}
-                          >
-                            {(isSelected || (isSubmitted && isCorrect)) && <CheckCircle className="w-4 h-4 text-white" />}
-                          </div>
-                          <div className="flex-1 prose max-w-none">
-                            <MarkdownRenderer content={option} />
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div>
-                  <textarea
-                    value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
-                    placeholder={t.dissertativeAnswerPlaceholder}
-                    rows={deviceType === "mobile" ? 4 : 6}
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border-2 rounded-2xl focus:border-2 outline-none transition-all duration-200 resize-none text-sm sm:text-base"
-                    style={{
-                      backgroundColor: themeConfig.colors.background,
-                      borderColor: userAnswer ? themeConfig.colors.primary : themeConfig.colors.border,
-                      color: themeConfig.colors.text,
-                      boxShadow: userAnswer ? `0 0 0 4px ${themeConfig.colors.primary}20` : "none",
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Confidence Slider */}
-              <div>
-                <label className="block text-sm font-semibold mb-3" style={{ color: themeConfig.colors.text }}>
-                  {t.confidenceQuestion}
-                </label>
-                <div className="space-y-2 sm:space-y-3">
-                  <div className="flex items-center space-x-2 sm:space-x-4">
-                    <span className="text-xs sm:text-sm flex-shrink-0" style={{ color: themeConfig.colors.textSecondary }}>
-                      {t.notConfident}
-                    </span>
-                    <div className="flex-1 relative">
-                      <input
-                        type="range"
-                        min="1"
-                        max="5"
-                        value={confidence}
-                        onChange={(e) => setConfidence(parseInt(e.target.value))}
-                        className="w-full h-2 rounded-full appearance-none cursor-pointer"
-                        style={{
-                          background: `linear-gradient(to right, ${themeConfig.colors.primary} 0%, ${themeConfig.colors.primary} ${(confidence - 1) * 25}%, ${themeConfig.colors.border} ${(confidence - 1) * 25}%, ${themeConfig.colors.border} 100%)`,
-                        }}
-                      />
-                      <div className="absolute top-0 left-0 right-0 flex justify-between px-0.5" style={{ pointerEvents: "none" }}>
-                        {[1, 2, 3, 4, 5].map((level) => (
-                          <div
-                            key={level}
-                            className="w-1 h-1 rounded-full"
-                            style={{
-                              backgroundColor: level <= confidence ? themeConfig.colors.primary : themeConfig.colors.border,
-                              transform: "translateY(-50%)",
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <span className="text-xs sm:text-sm flex-shrink-0" style={{ color: themeConfig.colors.textSecondary }}>
-                      {t.veryConfident}
-                    </span>
-                  </div>
-                  <div className="flex justify-center">
-                    <div className="flex space-x-1">
-                      {[1, 2, 3, 4, 5].map((level) => (
-                        <div
-                          key={level}
-                          className="w-3 h-3 rounded-full transition-all duration-200"
-                          style={{
-                            backgroundColor: level <= confidence ? themeConfig.colors.primary : themeConfig.colors.border,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                onClick={submitAnswer}
-                disabled={isEvaluating || (!userAnswer && selectedOption === null)}
-                className="w-full py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold text-sm sm:text-base transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 sm:space-x-3 shadow-lg hover:shadow-xl disabled:shadow-md"
-                style={{
-                  background: themeConfig.gradients.primary,
-                  color: "#ffffff",
-                  transform: isEvaluating ? "scale(0.98)" : "scale(1)",
-                }}
-              >
-                {isEvaluating ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="text-sm sm:text-base">{t.evaluating}</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="w-5 h-5" />
-                    <span className="text-sm sm:text-base">{t.submitAnswer}</span>
-                  </>
-                )}
-              </button>
+    <div ref={questionContainerRef} className={frameClass}>
+      {strip}
+      {/* The question column keeps one width before and after grading; only the right column changes */}
+      <div className={feedbackMode ? "page lg:grid lg:grid-cols-2 lg:gap-12" : "page grid gap-12 lg:grid-cols-2"}>
+        <div className="min-w-0">
+          {/* Writing the next question: the old one gives way to the loading line */}
+          {isGenerating && (
+            <div className="max-w-measure" role="status">
+              <div className="loading-rule" />
+              <p className="mt-2 text-sm text-ink-soft">{t.generatingQuestion}</p>
             </div>
           )}
+          <div hidden={isGenerating}>
+            <h1 className="sr-only">{questionLabel}</h1>
+            <div className="text-xl font-medium leading-snug tracking-[-0.01em] text-ink sm:text-2xl [&_p:last-child]:mb-0 [&_p]:leading-snug">
+              <MarkdownRenderer content={currentQuestion.question} />
+            </div>
 
-          {/* Feedback */}
-          {showFeedback && currentQuestion.feedback && (
-            <div className="space-y-6">
-              <div
-                className={`p-4 sm:p-6 rounded-2xl border-2 ${currentQuestion.isCorrect ? "shadow-lg" : "shadow-lg"}`}
-                style={{
-                  backgroundColor: currentQuestion.isCorrect ? themeConfig.colors.success + "10" : themeConfig.colors.error + "10",
-                  borderColor: currentQuestion.isCorrect ? themeConfig.colors.success + "30" : themeConfig.colors.error + "30",
-                }}
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  {currentQuestion.isCorrect ? (
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: themeConfig.colors.success }}>
-                      <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: themeConfig.colors.error }}>
-                      <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                    </div>
-                  )}
-                  <div>
-                    <span
-                      className="font-bold text-base sm:text-lg"
-                      style={{
-                        color: currentQuestion.isCorrect ? themeConfig.colors.success : themeConfig.colors.error,
-                      }}
+            {/* Answer */}
+            {isMultipleChoice ? (
+              <div role="group" aria-label={t.studyAnswerOptions} className="mt-8">
+                {currentQuestion.options?.map((option, index) => {
+                  const isCorrectOption = index === currentQuestion.correctAnswer;
+                  const isPicked = index === pickedOption;
+                  const state = graded ? (isCorrectOption ? "correct" : isPicked ? "wrong" : "muted") : selectedOption === index ? "selected" : undefined;
+                  return (
+                    <button
+                      key={index}
+                      type="button"
+                      data-option=""
+                      data-state={state}
+                      aria-pressed={graded ? undefined : selectedOption === index}
+                      disabled={isAnswerSubmitted || showFeedback}
+                      onClick={() => setSelectedOption(index)}
+                      className="option disabled:cursor-default"
                     >
-                      {currentQuestion.isCorrect ? t.excellent : t.keepLearning}
-                    </span>
-                  </div>
+                      <span className="option-key">{OPTION_KEYS[index]}</span>
+                      <span className="min-w-0 break-words [&_p:last-child]:mb-0 [&_p]:mb-2">
+                        <MarkdownRenderer content={option} />
+                      </span>
+                      <span className="option-note">
+                        {graded && isCorrectOption && (
+                          <>
+                            <Check aria-hidden="true" />
+                            {isPicked ? t.studyYourAnswerCorrectNote : t.studyCorrectAnswerNote}
+                          </>
+                        )}
+                        {graded && isPicked && !isCorrectOption && (
+                          <>
+                            <X aria-hidden="true" />
+                            {t.studyYourAnswerNote}
+                          </>
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="mt-8">
+                <label htmlFor="dissertative-answer" className="label">
+                  {t.studyYourAnswerNote}
+                </label>
+                <textarea id="dissertative-answer" value={userAnswer} onChange={(e) => setUserAnswer(e.target.value)} placeholder={t.dissertativeAnswerPlaceholder} rows={8} readOnly={isEvaluating || showFeedback} className="field" />
+              </div>
+            )}
+
+            {/* Confidence, before grading */}
+            {!showFeedback && (
+              <div className="mt-8">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <p id="confidence-label" className="label mb-0">
+                    {t.confidenceQuestion}
+                  </p>
+                  <p className="tabular text-sm text-ink-soft">{formatMessage(t.studyConfidenceValue, { value: confidence })}</p>
                 </div>
-                <div
-                  className="prose max-w-none"
-                  style={{
-                    color: currentQuestion.isCorrect ? themeConfig.colors.success : themeConfig.colors.error,
-                  }}
-                >
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <span className="text-sm text-ink-muted">{t.notConfident}</span>
+                  <div role="group" aria-labelledby="confidence-label" className="segmented">
+                    {[1, 2, 3, 4, 5].map((level) => (
+                      <button key={level} type="button" aria-pressed={confidence === level} onClick={() => setConfidence(level)} disabled={isEvaluating} className="tabular min-w-10 px-0">
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-sm text-ink-muted">{t.veryConfident}</span>
+                </div>
+              </div>
+            )}
+
+            {!feedbackMode && statusAndAction}
+          </div>
+        </div>
+
+        {/* Phones: `contents`, so the sticky action spans the whole question as before */}
+        {feedbackMode ? (
+          <div className="contents lg:block lg:min-w-0 lg:[&>*:first-child]:mt-0">
+            {/* The return mark heads the response; the options in the other column do not move */}
+            {returnStamp ? (
+              <p className="mt-8 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-ink-soft lg:mt-6">
+                <span>{t.studyComesBack}</span>
+                <time key={returnDue} dateTime={returnDue} className="stamp stamp-land">
+                  {returnStamp}
+                </time>
+                <span>· {formatMessage(t.studyReturnBox, { box: returnBox })}</span>
+              </p>
+            ) : (
+              quietMark && (
+                <p className="mt-8 lg:mt-6">
+                  <span key={quietMark} className="stamp stamp-quiet stamp-land">
+                    {quietMark}
+                  </span>
+                </p>
+              )
+            )}
+
+            {isMultipleChoice && currentQuestion.explanation && (
+              <div className="note mt-8 lg:mt-6">
+                <h2 className="note-title">{t.studyExplanationTitle}</h2>
+                <div className="note-body [&_p:last-child]:mb-0">
+                  <MarkdownRenderer content={stripExplanationLabel(currentQuestion.explanation)} />
+                </div>
+              </div>
+            )}
+            {!isMultipleChoice && currentQuestion.feedback && (
+              <div className={`note mt-8 lg:mt-6 ${(currentQuestion.score ?? (currentQuestion.isCorrect ? 100 : 0)) >= 70 ? "note-success" : "note-error"}`}>
+                <h2 className="note-title">{currentQuestion.score !== undefined ? formatMessage(t.studyFeedbackScoreTitle, { score: currentQuestion.score }) : t.studyFeedbackTitle}</h2>
+                <div className="note-body [&_p:last-child]:mb-0">
                   <MarkdownRenderer content={currentQuestion.feedback} />
                 </div>
               </div>
+            )}
 
-              {/* Elaborative Question */}
-              {elaborativeQuestion && !currentQuestion.isCorrect && (
-                <div
-                  className="p-4 sm:p-6 rounded-2xl border-2"
-                  style={{
-                    backgroundColor: themeConfig.colors.info + "10",
-                    borderColor: themeConfig.colors.info + "30",
-                  }}
-                >
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: themeConfig.colors.info + "20" }}>
-                      <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: themeConfig.colors.info }} />
-                    </div>
-                    <span className="font-bold text-sm sm:text-base" style={{ color: themeConfig.colors.info }}>
-                      {t.elaborativePrompt}
-                    </span>
-                  </div>
-                  <div className="prose max-w-none mb-4" style={{ color: themeConfig.colors.info }}>
+            {/* Elaborative interrogation after a wrong answer: the "why" question and the reply in one block */}
+            {elaborativeQuestion && !currentQuestion.isCorrect && (
+              <div className="note mt-8 lg:mt-6">
+                <h2 className="note-title">{t.elaborativePrompt}</h2>
+                <div className="note-body">
+                  <div className="[&_p:last-child]:mb-0">
                     <MarkdownRenderer content={elaborativeQuestion} />
                   </div>
-                  <textarea
-                    value={elaborativeAnswer}
-                    onChange={(e) => setElaborativeAnswer(e.target.value)}
-                    placeholder={t.explainReasoning}
-                    rows={deviceType === "mobile" ? 2 : 3}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 rounded-xl focus:border-2 outline-none transition-all duration-200 resize-none text-xs sm:text-sm"
-                    style={{
-                      backgroundColor: themeConfig.colors.background,
-                      borderColor: elaborativeAnswer ? themeConfig.colors.info : themeConfig.colors.border,
-                      color: themeConfig.colors.text,
-                    }}
-                  />
+                  <label htmlFor="elaborative-answer" className="label mt-4">
+                    {t.studyElaborativeAnswerLabel}
+                  </label>
+                  <textarea id="elaborative-answer" value={elaborativeAnswer} onChange={(e) => setElaborativeAnswer(e.target.value)} placeholder={t.explainReasoning} rows={3} className="field" />
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Self-Explanation: shown when no elaborative question applies */}
-              {sessionSettings.selfExplanation && (currentQuestion.isCorrect || !sessionSettings.elaborativeInterrogation) && (
-                <div
-                  className="p-4 sm:p-6 rounded-2xl border-2"
-                  style={{
-                    backgroundColor: themeConfig.colors.success + "10",
-                    borderColor: themeConfig.colors.success + "30",
-                  }}
-                >
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: themeConfig.colors.success + "20" }}>
-                      <Brain className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: themeConfig.colors.success }} />
-                    </div>
-                    <label htmlFor="self-explanation" className="font-bold text-sm sm:text-base" style={{ color: themeConfig.colors.success }}>
-                      {t.selfExplanationPrompt}
-                    </label>
-                  </div>
-                  <textarea
-                    id="self-explanation"
-                    value={selfExplanation}
-                    onChange={(e) => setSelfExplanation(e.target.value)}
-                    placeholder={t.selfExplanationPlaceholder}
-                    rows={deviceType === "mobile" ? 2 : 3}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 rounded-xl focus:border-2 outline-none transition-all duration-200 resize-none text-xs sm:text-sm"
-                    style={{
-                      backgroundColor: themeConfig.colors.background,
-                      borderColor: selfExplanation ? themeConfig.colors.success : themeConfig.colors.border,
-                      color: themeConfig.colors.text,
-                    }}
-                  />
-                  <div className="mt-3 flex justify-end">
-                    <button
-                      onClick={requestExplanationFeedback}
-                      disabled={isGettingFeedback || !selfExplanation.trim()}
-                      className="px-4 py-2 rounded-xl font-medium text-xs sm:text-sm flex items-center space-x-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        backgroundColor: themeConfig.colors.success + "20",
-                        color: themeConfig.colors.success,
-                      }}
-                    >
-                      {isGettingFeedback ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                      <span>{isGettingFeedback ? t.gettingFeedback : t.getFeedback}</span>
-                    </button>
-                  </div>
-                  {/* Shown while the text is the one the feedback reviewed */}
-                  {currentQuestion.selfExplanationFeedback && selfExplanation.trim() === currentQuestion.selfExplanation && (
-                    <div className="mt-4 pt-4 border-t" style={{ borderColor: themeConfig.colors.success + "30" }}>
-                      <h4 className="font-semibold text-xs sm:text-sm mb-2" style={{ color: themeConfig.colors.success }}>
-                        {t.explanationFeedbackTitle}
-                      </h4>
-                      <div className="prose max-w-none text-sm" style={{ color: themeConfig.colors.text }}>
-                        <MarkdownRenderer content={currentQuestion.selfExplanationFeedback} />
-                      </div>
+            {/* Self-explanation: shown when no elaborative question applies */}
+            {showSelfExplanation && (
+              <div className="note mt-8 lg:mt-6">
+                <h2 className="note-title">
+                  <label htmlFor="self-explanation">{isMultipleChoice && correctLetter ? formatMessage(t.studySelfExplanationPromptOption, { letter: correctLetter }) : t.selfExplanationPrompt}</label>
+                </h2>
+                <div className="note-body">
+                  <textarea id="self-explanation" value={selfExplanation} onChange={(e) => setSelfExplanation(e.target.value)} placeholder={t.selfExplanationPlaceholder} rows={3} className="field" />
+                  <button type="button" onClick={requestExplanationFeedback} disabled={isGettingFeedback || !selfExplanation.trim()} className="btn btn-secondary mt-3">
+                    {t.getFeedback}
+                  </button>
+                  {isGettingFeedback && (
+                    <div className="mt-4" role="status">
+                      <div className="loading-rule" />
+                      <p className="mt-2 text-sm text-ink-soft">{t.gettingFeedback}</p>
                     </div>
                   )}
                   {explanationFeedbackError && (
-                    <div className="mt-3 flex items-start space-x-2" role="alert">
-                      <XCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.error }} />
-                      <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.error }}>
-                        {explanationFeedbackError}
-                      </p>
+                    <div className="notice notice-error mt-4" role="alert">
+                      <AlertCircle aria-hidden="true" />
+                      <p>{explanationFeedbackError}</p>
                     </div>
                   )}
                 </div>
-              )}
+              </div>
+            )}
+            {/* Shown while the text is the one the feedback reviewed */}
+            {showSelfExplanation && explanationFeedback && (
+              <div className="note mt-4">
+                <h2 className="note-title">{t.explanationFeedbackTitle}</h2>
+                <div className="note-body [&_p:last-child]:mb-0">
+                  <MarkdownRenderer content={explanationFeedback} />
+                </div>
+              </div>
+            )}
 
-              {/* Next Question Button */}
-              <button
-                onClick={nextQuestion}
-                disabled={isGenerating || isGettingFeedback}
-                className="w-full py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-semibold text-sm sm:text-base transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 sm:space-x-3 shadow-lg hover:shadow-xl disabled:shadow-md"
-                style={{
-                  background: themeConfig.gradients.primary,
-                  color: "#ffffff",
-                  transform: isGenerating ? "scale(0.98)" : "scale(1)",
-                }}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="text-sm sm:text-base">{t.generatingQuestion}</span>
-                  </>
-                ) : (
-                  <>
-                    <ArrowRight className="w-5 h-5" />
-                    <span className="text-sm sm:text-base">{t.nextQuestion}</span>
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Error Display */}
-        {error && (
-          <div
-            className="p-3 sm:p-4 rounded-2xl border mb-6"
-            style={{
-              backgroundColor: themeConfig.colors.error + "10",
-              borderColor: themeConfig.colors.error + "30",
-            }}
-          >
-            <div className="flex items-start space-x-3">
-              <XCircle className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.error }} />
-              <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.error }}>
-                {error}
-              </p>
-            </div>
+            {statusAndAction}
           </div>
-        )}
-
-        {/* Device Type Indicator (for development) */}
-        {import.meta.env.DEV && (
-          <div className="fixed bottom-2 right-2 px-2 py-1 rounded-full text-xs bg-black/50 text-white">
-            <div className="flex items-center space-x-1">
-              {deviceType === "mobile" && <Smartphone className="w-3 h-3" />}
-              {deviceType === "tablet" && <Tablet className="w-3 h-3" />}
-              {deviceType === "desktop" && <Monitor className="w-3 h-3" />}
-              <span>{deviceType}</span>
-            </div>
-          </div>
+        ) : (
+          sessionFacts
         )}
       </div>
     </div>

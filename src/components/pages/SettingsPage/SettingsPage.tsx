@@ -1,25 +1,7 @@
-import {
-  AlertCircle,
-  Brain,
-  Check,
-  ChevronRight,
-  Cloud,
-  Cpu,
-  Eye,
-  EyeOff,
-  Globe,
-  HelpCircle,
-  Info,
-  Monitor,
-  Settings as SettingsIcon,
-  Shield,
-  Smartphone,
-  Tablet,
-  Trash2,
-  Zap
-} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { AlertCircle, AlertTriangle, Check, ExternalLink, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import { clearAllAppData } from '../../../core/services/storage/localStorage';
+import { formatMessage } from '../../../core/services/i18n';
 import {
   getAllProviders,
   getLocalizedApiKeyLabel,
@@ -35,64 +17,68 @@ import {
 } from '../../../core/services/ai/providers/registry';
 import { Language } from '../../../core/types';
 import { AIProvider, ProviderSettings } from '../../../core/types/ai.types';
-import { useLanguage, useMultiProviderSettings, useTheme } from '../../../hooks';
+import { useLanguage, useMultiProviderSettings } from '../../../hooks';
 
-interface DeviceInfo {
-  type: 'mobile' | 'tablet' | 'desktop';
-  orientation: 'portrait' | 'landscape';
-}
+const TABS = ['providers', 'language', 'data'] as const;
+type SettingsTab = (typeof TABS)[number];
+
+/** Where each provider hands out keys (or, for Ollama, the installer). */
+const PROVIDER_SETUP_URLS: Record<AIProvider, string> = {
+  openai: 'https://platform.openai.com/api-keys',
+  gemini: 'https://aistudio.google.com/apikey',
+  anthropic: 'https://console.anthropic.com/settings/keys',
+  deepseek: 'https://platform.deepseek.com/api_keys',
+  ollama: 'https://ollama.com/download',
+};
+
+/** Language names are shown in their own language. */
+const LANGUAGES: { value: Language; label: string }[] = [
+  { value: 'en-US', label: 'English' },
+  { value: 'pt-BR', label: 'Português (Brasil)' },
+];
 
 export default function SettingsPage() {
   const { t, language, changeLanguage } = useLanguage();
-  const { themeConfig } = useTheme();
-  
-  // Multi-provider settings
   const [multiProviderSettings, setMultiProviderSettings] = useMultiProviderSettings();
 
-  // UI state
-  const [activeTab, setActiveTab] = useState<'providers' | 'language' | 'data'>('providers');
+  const [activeTab, setActiveTab] = useState<SettingsTab>('providers');
   const [showApiKey, setShowApiKey] = useState(false);
-  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>({
-    type: 'desktop',
-    orientation: 'portrait'
-  });
-  const [expandedProvider, setExpandedProvider] = useState<AIProvider | null>('openai');
-  const settingsRef = useRef<HTMLDivElement>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const tabRefs = useRef<Partial<Record<SettingsTab, HTMLButtonElement | null>>>({});
+  const deleteButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Get all available providers
   const availableProviders = getAllProviders();
-  const currentProviderConfig = getProviderConfig(multiProviderSettings.currentProvider);
-  const currentProviderSettings = multiProviderSettings.providers[multiProviderSettings.currentProvider];
+  const currentProvider = multiProviderSettings.currentProvider;
+  const currentProviderConfig = getProviderConfig(currentProvider);
+  const currentProviderSettings = multiProviderSettings.providers[currentProvider];
+  const currentProviderName = getLocalizedProviderName(currentProvider, language);
+  const selectedModel = getModel(currentProvider, currentProviderSettings.model);
+  const setupUrl = PROVIDER_SETUP_URLS[currentProvider];
 
-  // Validate current provider
-  const validation = validateProviderConfig(
-    multiProviderSettings.currentProvider,
-    currentProviderSettings,
-    language
-  );
+  const validation = validateProviderConfig(currentProvider, currentProviderSettings, language);
 
-  // Detect device type and orientation
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      
-      let type: DeviceInfo['type'] = 'desktop';
-      if (width < 640) {
-        type = 'mobile';
-      } else if (width < 1024) {
-        type = 'tablet';
-      }
-      
-      const orientation: DeviceInfo['orientation'] = width > height ? 'landscape' : 'portrait';
-      
-      setDeviceInfo({ type, orientation });
+  const tabLabels: Record<SettingsTab, string> = {
+    providers: t.aiProvider,
+    language: t.language,
+    data: t.data,
+  };
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const index = TABS.indexOf(activeTab);
+    const lastIndex = TABS.length - 1;
+    const targets: Record<string, number> = {
+      ArrowRight: index === lastIndex ? 0 : index + 1,
+      ArrowLeft: index === 0 ? lastIndex : index - 1,
+      Home: 0,
+      End: lastIndex,
     };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    const nextIndex = targets[event.key];
+    if (nextIndex === undefined) return;
+    event.preventDefault();
+    const nextTab = TABS[nextIndex];
+    setActiveTab(nextTab);
+    tabRefs.current[nextTab]?.focus();
+  };
 
   const handleProviderChange = (providerId: AIProvider) => {
     setMultiProviderSettings(prev => ({
@@ -118,599 +104,371 @@ export default function SettingsPage() {
     }));
   };
 
-  const toggleProviderExpansion = (providerId: AIProvider) => {
-    setExpandedProvider(expandedProvider === providerId ? null : providerId);
-    
-    // Scroll to the expanded provider after a short delay
-    if (expandedProvider !== providerId) {
-      setTimeout(() => {
-        const element = document.getElementById(`provider-${providerId}`);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
-  };
-
   const handleDeleteAllData = () => {
-    if (window.confirm(t.deleteAllDataConfirm)) {
-      clearAllAppData();
-      
-      // Reload the page to reset the app
-      window.location.reload();
-    }
+    clearAllAppData();
+    // Reload the page to reset the app
+    window.location.reload();
   };
 
-  const toggleShowApiKey = () => {
-    setShowApiKey(!showApiKey);
-  };
-
-  const getProviderIcon = (providerId: AIProvider) => {
-    switch (providerId) {
-      case 'openai': return <Cloud className="w-5 h-5" />;
-      case 'gemini': return <Zap className="w-5 h-5" />;
-      case 'anthropic': return <Shield className="w-5 h-5" />;
-      case 'deepseek': return <Brain className="w-5 h-5" />;
-      case 'ollama': return <Cpu className="w-5 h-5" />;
-      default: return <Brain className="w-5 h-5" />;
-    }
-  };
-
-  const getProviderStatusColor = (providerId: AIProvider) => {
-    const settings = multiProviderSettings.providers[providerId];
-    const config = getProviderConfig(providerId);
-    const validation = validateProviderConfig(providerId, settings, language);
-    
-    if (!validation.valid) return 'text-red-500';
-    if (config.requiresApiKey && !settings.apiKey) return 'text-yellow-500';
-    return 'text-green-500';
-  };
-
-  const getModelBadge = (providerId: AIProvider, modelId: string) => {
-    const model = getModel(providerId, modelId);
-    if (!model) return null;
-
-    const badgeColors = {
-      free: 'bg-green-100 text-green-800',
-      low: 'bg-blue-100 text-blue-800',
-      medium: 'bg-yellow-100 text-yellow-800',
-      high: 'bg-red-100 text-red-800',
-    };
-
-    return (
-      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${badgeColors[model.costTier]}`}>
-        {getLocalizedCostTier(model.costTier, language)}
-      </span>
-    );
+  const cancelDelete = () => {
+    setConfirmingDelete(false);
+    deleteButtonRef.current?.focus();
   };
 
   return (
-    <div 
-      className="min-h-screen safe-top safe-bottom" 
-      style={{ background: themeConfig.gradients.background }}
-      ref={settingsRef}
-    >
-      <div className="w-full max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div 
-            className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl mb-3 sm:mb-4 shadow-lg"
-            style={{ 
-              background: themeConfig.gradients.primary,
-              boxShadow: `0 8px 32px ${themeConfig.colors.primary}40`
+    <div className="page">
+      <header className="page-header">
+        <div className="flex min-w-0 flex-wrap items-baseline gap-x-3.5 gap-y-1">
+          <h1 className="page-title">{t.settingsTitle}</h1>
+          <p className="page-lede">{t.configurePreferences}</p>
+        </div>
+      </header>
+
+      <div role="tablist" aria-label={t.settingsTitle} className="tabs mt-6" onKeyDown={handleTabKeyDown}>
+        {TABS.map((id) => (
+          <button
+            key={id}
+            ref={(element) => {
+              tabRefs.current[id] = element;
             }}
+            type="button"
+            role="tab"
+            id={`settings-tab-${id}`}
+            aria-selected={activeTab === id}
+            aria-controls={activeTab === id ? `settings-panel-${id}` : undefined}
+            tabIndex={activeTab === id ? 0 : -1}
+            onClick={() => setActiveTab(id)}
+            className="tab min-h-10"
           >
-            <SettingsIcon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2" style={{ color: themeConfig.colors.text }}>
-            {t.settingsTitle}
-          </h1>
-          <p className="text-sm sm:text-base leading-relaxed" style={{ color: themeConfig.colors.textSecondary }}>
-            {t.configurePreferences}
-          </p>
-        </div>
+            {tabLabels[id]}
+          </button>
+        ))}
+      </div>
 
-        {/* Tabs */}
-        <div 
-          className="flex space-x-1 p-1 rounded-2xl mb-4 sm:mb-6 shadow-sm" 
-          style={{ backgroundColor: themeConfig.colors.surface }}
-        >
-          {[
-            { id: 'providers', label: t.aiProvider, icon: Brain },
-            { id: 'language', label: t.language, icon: Globe },
-            { id: 'data', label: t.data, icon: Trash2 },
-          ].map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id as any)}
-              className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium rounded-xl transition-all duration-200 ${
-                activeTab === id ? 'text-white shadow-lg' : ''
-              }`}
-              style={{
-                backgroundColor: activeTab === id ? themeConfig.colors.primary : 'transparent',
-                color: activeTab === id ? '#ffffff' : themeConfig.colors.textSecondary,
-                transform: activeTab === id ? 'scale(1.02)' : 'scale(1)',
-              }}
+      <div
+        role="tabpanel"
+        id={`settings-panel-${activeTab}`}
+        aria-labelledby={`settings-tab-${activeTab}`}
+        className="mt-6"
+      >
+        {activeTab === 'providers' && (
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            {/* Provider list stays in view while the taller settings column scrolls */}
+            <section
+              aria-labelledby="settings-provider-heading"
+              className="panel min-w-0 overflow-hidden lg:sticky lg:top-6 lg:self-start"
             >
-              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>{label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        <div className="space-y-4 sm:space-y-6">
-          {activeTab === 'providers' && (
-            <div className="space-y-4 sm:space-y-6">
-              {/* Current Provider Selection */}
-              <div 
-                className="rounded-2xl p-4 sm:p-6 shadow-lg border"
-                style={{
-                  backgroundColor: themeConfig.colors.surface,
-                  borderColor: themeConfig.colors.border,
-                }}
-              >
-                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4" style={{ color: themeConfig.colors.text }}>
-                  {t.aiProvider}
-                </h3>
-                
-                <div className="space-y-2 sm:space-y-3">
-                  {availableProviders.map((provider) => (
-                    <button
-                      key={provider.id}
-                      onClick={() => {
-                        handleProviderChange(provider.id);
-                        toggleProviderExpansion(provider.id);
-                      }}
-                      id={`provider-${provider.id}`}
-                      className={`w-full p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 text-left ${
-                        multiProviderSettings.currentProvider === provider.id
-                          ? 'shadow-lg transform scale-[1.02]'
-                          : 'hover:shadow-md'
-                      }`}
-                      style={{
-                        borderColor: multiProviderSettings.currentProvider === provider.id 
-                          ? themeConfig.colors.primary 
-                          : themeConfig.colors.border,
-                        backgroundColor: multiProviderSettings.currentProvider === provider.id
-                          ? themeConfig.colors.primary + '10'
-                          : themeConfig.colors.background,
-                        transform: multiProviderSettings.currentProvider === provider.id ? 'scale(1.02)' : 'scale(1)',
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div 
-                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center"
-                            style={{ backgroundColor: themeConfig.colors.primary + '20' }}
-                          >
-                            {getProviderIcon(provider.id)}
-                          </div>
-                          <div>
-                            <span className="font-semibold text-sm sm:text-base" style={{ color: themeConfig.colors.text }}>
-                              {getLocalizedProviderName(provider.id, language)}
-                            </span>
-                            {deviceInfo.type !== 'mobile' && (
-                              <p className="text-xs sm:text-sm mt-0.5 sm:mt-1" style={{ color: themeConfig.colors.textSecondary }}>
-                                {getLocalizedProviderDescription(provider.id, language)}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className={`w-3 h-3 rounded-full ${getProviderStatusColor(provider.id)}`} />
-                          <ChevronRight 
-                            className={`w-4 h-4 transition-transform duration-200 ${
-                              multiProviderSettings.currentProvider === provider.id && expandedProvider === provider.id ? 'rotate-90' : ''
-                            }`} 
-                            style={{ color: themeConfig.colors.textSecondary }}
-                          />
-                        </div>
-                      </div>
-                      
-                      {/* Mobile description */}
-                      {deviceInfo.type === 'mobile' && (
-                        <p className="text-xs mt-1 ml-11" style={{ color: themeConfig.colors.textSecondary }}>
+              <div className="panel-head">
+                <h2 id="settings-provider-heading" className="panel-title">
+                  {t.settingsProviderTitle}
+                </h2>
+              </div>
+              <div role="radiogroup" aria-labelledby="settings-provider-heading" className="choice-group rounded-none border-0">
+                {availableProviders.map((provider) => {
+                  const settings = multiProviderSettings.providers[provider.id];
+                  const configured = validateProviderConfig(provider.id, settings, language).valid;
+                  const needsKey = provider.requiresApiKey && !settings.apiKey;
+                  return (
+                    <label key={provider.id} className="choice sm:px-5">
+                      <input
+                        type="radio"
+                        name="settings-provider"
+                        value={provider.id}
+                        checked={currentProvider === provider.id}
+                        onChange={() => handleProviderChange(provider.id)}
+                        className="mt-1 h-4 w-4 shrink-0"
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-semibold text-ink">
+                          {getLocalizedProviderName(provider.id, language)}
+                        </span>
+                        <span className="mt-0.5 block text-sm text-ink-muted">
                           {getLocalizedProviderDescription(provider.id, language)}
-                        </p>
+                        </span>
+                      </span>
+                      {configured ? (
+                        <span className="tag mt-1 shrink-0 text-ink">
+                          <Check aria-hidden="true" className="h-3 w-3" />
+                          {t.settingsProviderConfigured}
+                        </span>
+                      ) : needsKey ? (
+                        <span className="tag mt-1 shrink-0 text-ink-muted">{t.settingsProviderNeedsKey}</span>
+                      ) : (
+                        <span className="tag tag-error mt-1 shrink-0">{t.settingsProviderIncomplete}</span>
                       )}
-                    </button>
-                  ))}
-                </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section aria-labelledby="settings-provider-form-heading" className="panel min-w-0">
+              <div className="panel-head">
+                <h2 id="settings-provider-form-heading" className="panel-title">
+                  {formatMessage(t.settingsProviderSettingsTitle, { provider: currentProviderName })}
+                </h2>
+                <p className="panel-meta">{t.settingsAutoSave}</p>
               </div>
 
-              {/* Provider Configuration */}
-              {multiProviderSettings.currentProvider === expandedProvider && (
-                <div 
-                  className="rounded-2xl p-4 sm:p-6 shadow-lg border animate-fade-in"
-                  style={{
-                    backgroundColor: themeConfig.colors.surface,
-                    borderColor: themeConfig.colors.border,
-                  }}
-                >
-                  <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-                    <div 
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center"
-                      style={{ backgroundColor: themeConfig.colors.primary + '20' }}
-                    >
-                      {getProviderIcon(multiProviderSettings.currentProvider)}
-                    </div>
-                    <div>
-                      <h3 className="text-base sm:text-lg font-semibold" style={{ color: themeConfig.colors.text }}>
-                        {getLocalizedProviderName(multiProviderSettings.currentProvider, language)}
-                      </h3>
-                      <p className="text-xs sm:text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                        {t.providerConfiguration}
-                      </p>
-                    </div>
-                  </div>
-  
-                  <div className="space-y-4 sm:space-y-6">
-                    {/* API Key */}
-                    {currentProviderConfig.requiresApiKey && (
-                      <div>
-                        <label className="block text-sm font-semibold mb-2 sm:mb-3" style={{ color: themeConfig.colors.text }}>
-                          {getLocalizedApiKeyLabel(multiProviderSettings.currentProvider, language)}
-                        </label>
-                        <div className="relative">
-                          <input
-                            type={showApiKey ? "text" : "password"}
-                            value={currentProviderSettings.apiKey}
-                            onChange={(e) => handleProviderSettingChange(
-                              multiProviderSettings.currentProvider,
-                              'apiKey',
-                              e.target.value
-                            )}
-                            placeholder={currentProviderConfig.apiKeyPlaceholder}
-                            className="w-full px-3 sm:px-4 py-3 sm:py-4 pr-12 border-2 rounded-xl sm:rounded-2xl focus:border-2 outline-none transition-all duration-200 text-sm sm:text-base"
-                            style={{
-                              backgroundColor: themeConfig.colors.background,
-                              borderColor: currentProviderSettings.apiKey ? themeConfig.colors.primary : themeConfig.colors.border,
-                              color: themeConfig.colors.text,
-                              boxShadow: currentProviderSettings.apiKey ? `0 0 0 4px ${themeConfig.colors.primary}20` : 'none',
-                            }}
-                          />
-                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex space-x-2">
-                            <button
-                              onClick={toggleShowApiKey}
-                              className="p-1.5 rounded-full transition-colors"
-                              style={{ color: themeConfig.colors.textMuted }}
-                              aria-label={showApiKey ? "Hide API key" : "Show API key"}
-                            >
-                              {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                            </button>
-                            {currentProviderSettings.apiKey && (
-                              <div 
-                                className="w-6 h-6 rounded-full flex items-center justify-center"
-                                style={{ backgroundColor: themeConfig.colors.success }}
-                              >
-                                <Check className="w-4 h-4 text-white" />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <p className="mt-2 text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                          {t.apiKeyStored}
-                        </p>
-                        
-                        {/* Setup Instructions - Collapsible on mobile */}
-                        <div 
-                          className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl border"
-                          style={{ 
-                            backgroundColor: themeConfig.colors.info + '10',
-                            borderColor: themeConfig.colors.info + '30'
-                          }}
-                        >
-                          <div className="flex items-center space-x-2 mb-2 sm:mb-3">
-                            <Info className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: themeConfig.colors.info }} />
-                            <p className="text-xs sm:text-sm font-semibold" style={{ color: themeConfig.colors.info }}>
-                              {t.howToGetKey}
-                            </p>
-                          </div>
-                          <div className="space-y-2">
-                            {getLocalizedSetupInstructions(multiProviderSettings.currentProvider, language).map((instruction, index) => (
-                              <div key={index} className="flex items-start space-x-2">
-                                <div 
-                                  className="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-xs font-bold mt-0.5 flex-shrink-0"
-                                  style={{ 
-                                    backgroundColor: themeConfig.colors.info,
-                                    color: 'white'
-                                  }}
-                                >
-                                  {index + 1}
-                                </div>
-                                <span className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                                  {instruction}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-  
-                    {/* Base URL (for local providers) */}
-                    {(multiProviderSettings.currentProvider === 'ollama') && (
-                      <div>
-                        <label className="block text-sm font-semibold mb-2 sm:mb-3" style={{ color: themeConfig.colors.text }}>
-                          {t.baseUrl}
-                        </label>
-                        <input
-                          type="url"
-                          value={currentProviderSettings.baseUrl || ''}
-                          onChange={(e) => handleProviderSettingChange(
-                            multiProviderSettings.currentProvider,
-                            'baseUrl',
-                            e.target.value
-                          )}
-                          placeholder={t.baseUrlPlaceholder}
-                          className="w-full px-3 sm:px-4 py-3 sm:py-4 border-2 rounded-xl sm:rounded-2xl focus:border-2 outline-none transition-all duration-200 text-sm sm:text-base"
-                          style={{
-                            backgroundColor: themeConfig.colors.background,
-                            borderColor: currentProviderSettings.baseUrl ? themeConfig.colors.primary : themeConfig.colors.border,
-                            color: themeConfig.colors.text,
-                            boxShadow: currentProviderSettings.baseUrl ? `0 0 0 4px ${themeConfig.colors.primary}20` : 'none',
-                          }}
-                        />
-                      </div>
-                    )}
-  
-                    {/* Model Selection */}
-                    <div>
-                      <label
-                        htmlFor="provider-model-input"
-                        className="block text-sm font-semibold mb-2 sm:mb-3"
-                        style={{ color: themeConfig.colors.text }}
-                      >
-                        {t.model}
-                      </label>
+              <div className="panel-body space-y-7">
+                {currentProviderConfig.requiresApiKey && (
+                  <div>
+                    <label htmlFor="provider-api-key" className="label">
+                      {getLocalizedApiKeyLabel(currentProvider, language)}
+                    </label>
+                    <div className="flex gap-2">
                       <input
-                        id="provider-model-input"
-                        type="text"
-                        list="provider-model-suggestions"
-                        value={currentProviderSettings.model}
+                        id="provider-api-key"
+                        type={showApiKey ? 'text' : 'password'}
+                        value={currentProviderSettings.apiKey}
                         onChange={(e) => handleProviderSettingChange(
-                          multiProviderSettings.currentProvider,
-                          'model',
-                          e.target.value.trim()
+                          currentProvider,
+                          'apiKey',
+                          e.target.value
                         )}
+                        placeholder={currentProviderConfig.apiKeyPlaceholder}
                         autoComplete="off"
                         autoCapitalize="none"
                         autoCorrect="off"
                         spellCheck={false}
-                        aria-describedby="provider-model-help"
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 border-2 rounded-xl sm:rounded-2xl focus:border-2 outline-none transition-all duration-200 text-sm sm:text-base"
-                        style={{
-                          backgroundColor: themeConfig.colors.background,
-                          borderColor: themeConfig.colors.border,
-                          color: themeConfig.colors.text,
-                        }}
+                        aria-describedby="provider-api-key-hint"
+                        className="field min-w-0 font-mono"
                       />
-                      <datalist id="provider-model-suggestions">
-                        {currentProviderConfig.models.map((model) => (
-                          <option key={model.id} value={model.id}>
-                            {getLocalizedModelName(multiProviderSettings.currentProvider, model.id, language)}
-                          </option>
-                        ))}
-                      </datalist>
-                      <p id="provider-model-help" className="mt-2 text-xs" style={{ color: themeConfig.colors.textMuted }}>
-                        {t.modelInputHelp}
-                      </p>
-
-                      {/* Registry models as tappable suggestions (datalist support on mobile is unreliable) */}
-                      {currentProviderConfig.models.length > 0 && (
-                        <div className="mt-3">
-                          <p className="text-xs font-semibold mb-2" style={{ color: themeConfig.colors.textSecondary }}>
-                            {t.suggestedModels}
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {currentProviderConfig.models.map((model) => {
-                              const isSelected = model.id === currentProviderSettings.model;
-                              return (
-                                <button
-                                  key={model.id}
-                                  type="button"
-                                  aria-pressed={isSelected}
-                                  onClick={() => handleProviderSettingChange(
-                                    multiProviderSettings.currentProvider,
-                                    'model',
-                                    model.id
-                                  )}
-                                  className="min-h-[44px] px-3 py-2 rounded-xl border-2 text-xs sm:text-sm font-medium transition-colors"
-                                  style={{
-                                    backgroundColor: isSelected ? themeConfig.colors.primary + '15' : themeConfig.colors.background,
-                                    borderColor: isSelected ? themeConfig.colors.primary : themeConfig.colors.border,
-                                    color: isSelected ? themeConfig.colors.primary : themeConfig.colors.text,
-                                  }}
-                                >
-                                  {getLocalizedModelName(multiProviderSettings.currentProvider, model.id, language)}
-                                  {model.recommended ? ` (${t.recommended})` : ''}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Model Info */}
-                      {(() => {
-                        const selectedModel = getModel(multiProviderSettings.currentProvider, currentProviderSettings.model);
-                        if (!selectedModel) return null;
-                        
-                        return (
-                          <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-between gap-2">
-                            <p className="text-xs sm:text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                              {getLocalizedModelDescription(multiProviderSettings.currentProvider, selectedModel.id, language)}
-                            </p>
-                            {getModelBadge(multiProviderSettings.currentProvider, currentProviderSettings.model)}
-                          </div>
-                        );
-                      })()}
-                    </div>
-  
-                    {/* Validation Status */}
-                    {!validation.valid && (
-                      <div 
-                        className="p-3 sm:p-4 rounded-xl sm:rounded-2xl border"
-                        style={{ 
-                          backgroundColor: themeConfig.colors.error + '10',
-                          borderColor: themeConfig.colors.error + '30'
-                        }}
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKey(prev => !prev)}
+                        aria-label={t.settingsShowApiKey}
+                        aria-pressed={showApiKey}
+                        className="btn btn-secondary btn-icon shrink-0"
                       >
-                        <div className="flex items-start space-x-3">
-                          <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.error }} />
-                          <div>
-                            <p className="text-xs sm:text-sm font-semibold mb-1 sm:mb-2" style={{ color: themeConfig.colors.error }}>
-                              {t.invalidConfiguration}
-                            </p>
-                            <div className="space-y-1">
-                              {validation.errors.map((error, index) => (
-                                <p key={index} className="text-xs sm:text-sm" style={{ color: themeConfig.colors.error }}>
-                                  • {error}
-                                </p>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                        {showApiKey ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                      </button>
+                    </div>
+                    <p id="provider-api-key-hint" className="hint">
+                      {t.apiKeyStored}
+                    </p>
+                  </div>
+                )}
+
+                {/* Setup steps: an inset beside the fields they explain */}
+                <div className="rounded border border-line bg-sunken px-4 pb-2 pt-3">
+                  <h3 className="caps-label">
+                    {currentProviderConfig.requiresApiKey ? t.howToGetKey : t.settingsOllamaSetupTitle}
+                  </h3>
+                  <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-ink-soft marker:text-ink-muted">
+                    {getLocalizedSetupInstructions(currentProvider, language).map((instruction, index) => (
+                      <li key={index}>{instruction}</li>
+                    ))}
+                  </ol>
+                  <a
+                    href={setupUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-accent-ink underline hover:decoration-2"
+                  >
+                    {formatMessage(t.settingsOpenSite, { site: new URL(setupUrl).host })}
+                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </div>
+
+                <div>
+                  <label htmlFor="provider-model-input" className="label">
+                    {t.model}
+                  </label>
+                  <input
+                    id="provider-model-input"
+                    type="text"
+                    list="provider-model-suggestions"
+                    value={currentProviderSettings.model}
+                    onChange={(e) => handleProviderSettingChange(
+                      currentProvider,
+                      'model',
+                      e.target.value.trim()
                     )}
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    aria-describedby="provider-model-help"
+                    className="field font-mono"
+                  />
+                  <datalist id="provider-model-suggestions">
+                    {currentProviderConfig.models.map((model) => (
+                      <option key={model.id} value={model.id}>
+                        {getLocalizedModelName(currentProvider, model.id, language)}
+                      </option>
+                    ))}
+                  </datalist>
+                  <p id="provider-model-help" className="hint">
+                    {t.modelInputHelp}
+                  </p>
+
+                  {/* Registry models as tappable suggestions (datalist support on mobile is unreliable) */}
+                  {currentProviderConfig.models.length > 0 && (
+                    <div className="mt-4">
+                      <p id="provider-model-suggestions-label" className="caps-label">
+                        {t.suggestedModels}
+                      </p>
+                      <div
+                        role="group"
+                        aria-labelledby="provider-model-suggestions-label"
+                        className="mt-2 flex flex-wrap gap-2"
+                      >
+                        {currentProviderConfig.models.map((model) => {
+                          const isSelected = model.id === currentProviderSettings.model;
+                          return (
+                            <button
+                              key={model.id}
+                              type="button"
+                              aria-pressed={isSelected}
+                              onClick={() => handleProviderSettingChange(
+                                currentProvider,
+                                'model',
+                                model.id
+                              )}
+                              className="btn btn-secondary btn-sm min-h-10 aria-pressed:border-accent aria-pressed:bg-[color-mix(in_srgb,var(--color-primary)_11%,var(--color-surface))] aria-pressed:text-accent-ink sm:min-h-8"
+                            >
+                              {isSelected && <Check aria-hidden="true" />}
+                              {getLocalizedModelName(currentProvider, model.id, language)}
+                              {model.recommended ? ` (${t.recommended})` : ''}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedModel && (
+                    <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+                      <span>{getLocalizedModelDescription(currentProvider, selectedModel.id, language)}</span>
+                      <span className="tag">{getLocalizedCostTier(selectedModel.costTier, language)}</span>
+                    </p>
+                  )}
+                </div>
+
+                {currentProvider === 'ollama' && (
+                  <div>
+                    <label htmlFor="provider-base-url" className="label">
+                      {t.baseUrl}
+                    </label>
+                    <input
+                      id="provider-base-url"
+                      type="url"
+                      value={currentProviderSettings.baseUrl || ''}
+                      onChange={(e) => handleProviderSettingChange(
+                        currentProvider,
+                        'baseUrl',
+                        e.target.value
+                      )}
+                      placeholder={t.baseUrlPlaceholder}
+                      autoComplete="off"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      aria-invalid={validation.errors.includes(t.invalidBaseUrlFormat)}
+                      className="field font-mono"
+                    />
+                  </div>
+                )}
+
+                {!validation.valid && (
+                  <div className="notice notice-error">
+                    <AlertCircle aria-hidden="true" />
+                    <div>
+                      <p className="font-semibold">{t.invalidConfiguration}</p>
+                      <ul className="mt-1 list-disc space-y-0.5 pl-5">
+                        {validation.errors.map((error, index) => (
+                          <li key={index}>{error}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        )}
+
+        {activeTab === 'language' && (
+          <section aria-labelledby="settings-language-heading" className="panel max-w-3xl overflow-hidden">
+            <div className="panel-head">
+              <h2 id="settings-language-heading" className="panel-title">
+                {t.language}
+              </h2>
+            </div>
+            <div role="radiogroup" aria-labelledby="settings-language-heading" className="choice-group rounded-none border-0">
+              {LANGUAGES.map((lang) => (
+                <label key={lang.value} className="choice items-center sm:px-5">
+                  <input
+                    type="radio"
+                    name="settings-language"
+                    value={lang.value}
+                    checked={language === lang.value}
+                    onChange={() => changeLanguage(lang.value)}
+                    className="h-4 w-4 shrink-0"
+                  />
+                  <span lang={lang.value} className="font-semibold text-ink">
+                    {lang.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p className="panel-body border-t border-line py-3 text-sm text-ink-muted">{t.languageTipDesc}</p>
+          </section>
+        )}
+
+        {activeTab === 'data' && (
+          <section aria-labelledby="settings-data-heading" className="panel max-w-3xl">
+            <div className="panel-head">
+              <h2 id="settings-data-heading" className="panel-title">
+                {t.settingsStoredDataTitle}
+              </h2>
+            </div>
+            <div className="panel-body">
+              <p className="max-w-measure text-ink-soft">{t.manageYourData}</p>
+            </div>
+
+            <div className="panel-body border-t border-line">
+              <h3 className="font-semibold text-ink">{t.deleteAllData}</h3>
+              <p className="mt-1 max-w-measure text-sm text-ink-soft">{t.deleteAllDataDesc}</p>
+              <button
+                ref={deleteButtonRef}
+                type="button"
+                onClick={() => setConfirmingDelete(true)}
+                aria-expanded={confirmingDelete}
+                aria-controls="settings-delete-confirm"
+                className="btn btn-danger mt-4"
+              >
+                <Trash2 aria-hidden="true" />
+                {t.deleteAllData}
+              </button>
+
+              {confirmingDelete && (
+                <div
+                  id="settings-delete-confirm"
+                  role="alertdialog"
+                  aria-labelledby="settings-delete-confirm-text"
+                  onKeyDown={(event) => {
+                    if (event.key === 'Escape') cancelDelete();
+                  }}
+                  className="notice notice-error mt-4 max-w-measure"
+                >
+                  <AlertTriangle aria-hidden="true" />
+                  <div>
+                    <p id="settings-delete-confirm-text">{t.deleteAllDataConfirm}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button type="button" onClick={handleDeleteAllData} className="btn btn-danger">
+                        {t.settingsDeleteConfirmButton}
+                      </button>
+                      <button type="button" onClick={cancelDelete} autoFocus className="btn btn-secondary">
+                        {t.cancel}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
-          )}
-
-          {activeTab === 'language' && (
-            <div 
-              className="rounded-2xl p-4 sm:p-6 shadow-lg border"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                borderColor: themeConfig.colors.border,
-              }}
-            >
-              <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6" style={{ color: themeConfig.colors.text }}>
-                {t.selectLanguage}
-              </h3>
-              
-              <div className="space-y-3 sm:space-y-4">
-                {[
-                  { value: 'en-US', label: 'English (US)', flag: '🇺🇸' },
-                  { value: 'pt-BR', label: 'Português (Brasil)', flag: '🇧🇷' },
-                ].map((lang) => (
-                  <button
-                    key={lang.value}
-                    onClick={() => changeLanguage(lang.value as Language)}
-                    className={`w-full p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 text-left ${
-                      language === lang.value ? 'shadow-lg transform scale-[1.02]' : 'hover:shadow-md'
-                    }`}
-                    style={{
-                      borderColor: language === lang.value ? themeConfig.colors.primary : themeConfig.colors.border,
-                      backgroundColor: language === lang.value 
-                        ? themeConfig.colors.primary + '10' 
-                        : themeConfig.colors.background,
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 sm:space-x-4">
-                        <span className="text-2xl sm:text-3xl">{lang.flag}</span>
-                        <div>
-                          <span className="font-semibold text-sm sm:text-base block" style={{ color: themeConfig.colors.text }}>
-                            {lang.label}
-                          </span>
-                          <span className="text-xs sm:text-sm" style={{ color: themeConfig.colors.textSecondary }}>
-                            {lang.value === 'en-US' ? 'Default language' : 'Idioma padrão'}
-                          </span>
-                        </div>
-                      </div>
-                      {language === lang.value && (
-                        <Check className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: themeConfig.colors.primary }} />
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-              
-              {/* Language help section */}
-              <div 
-                className="mt-4 sm:mt-6 p-3 sm:p-4 rounded-xl sm:rounded-2xl border"
-                style={{ 
-                  backgroundColor: themeConfig.colors.info + '10',
-                  borderColor: themeConfig.colors.info + '30'
-                }}
-              >
-                <div className="flex items-start space-x-3">
-                  <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" style={{ color: themeConfig.colors.info }} />
-                  <div>
-                    <p className="text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: themeConfig.colors.info }}>
-                      {t.languageTip}
-                    </p>
-                    <p className="text-xs sm:text-sm leading-relaxed" style={{ color: themeConfig.colors.info }}>
-                      {t.languageTipDesc}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'data' && (
-            <div 
-              className="rounded-2xl p-4 sm:p-6 shadow-lg border"
-              style={{
-                backgroundColor: themeConfig.colors.surface,
-                borderColor: themeConfig.colors.border,
-              }}
-            >
-              <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6" style={{ color: themeConfig.colors.text }}>
-                {t.manageYourData}
-              </h3>
-              
-              <div 
-                className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border"
-                style={{ 
-                  backgroundColor: themeConfig.colors.error + '10',
-                  borderColor: themeConfig.colors.error + '30'
-                }}
-              >
-                <div className="flex items-start space-x-4">
-                  <div 
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: themeConfig.colors.error + '20' }}
-                  >
-                    <Trash2 className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: themeConfig.colors.error }} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-sm sm:text-base mb-1 sm:mb-2" style={{ color: themeConfig.colors.error }}>
-                      {t.deleteAllData}
-                    </h4>
-                    <p className="text-xs sm:text-sm mb-4 sm:mb-6 leading-relaxed" style={{ color: themeConfig.colors.error }}>
-                      {t.deleteAllDataDesc}
-                    </p>
-                    <button
-                      onClick={handleDeleteAllData}
-                      className="w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium sm:font-semibold text-sm sm:text-base transition-all duration-200 text-white shadow-lg hover:shadow-xl"
-                      style={{ backgroundColor: themeConfig.colors.error }}
-                    >
-                      {t.deleteAllData}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        {/* Device Type Indicator (for development) */}
-        {import.meta.env.DEV && (
-          <div className="fixed bottom-2 right-2 px-2 py-1 rounded-full text-xs bg-black/50 text-white">
-            <div className="flex items-center space-x-1">
-              {deviceInfo.type === 'mobile' && <Smartphone className="w-3 h-3" />}
-              {deviceInfo.type === 'tablet' && <Tablet className="w-3 h-3" />}
-              {deviceInfo.type === 'desktop' && <Monitor className="w-3 h-3" />}
-              <span>{deviceInfo.type}</span>
-            </div>
-          </div>
+          </section>
         )}
       </div>
     </div>
