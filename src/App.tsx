@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import Layout from './components/layout/Layout';
 import { processApiKeyFromUrl, useApiKeyFromUrl, useVersionControl } from './hooks';
 import { cleanupCorruptedEntries } from './core/services/storage/localStorage';
@@ -50,6 +51,7 @@ function App() {
           </Routes>
         </Suspense>
       </Layout>
+      <Analytics />
     </Router>
   );
 }
